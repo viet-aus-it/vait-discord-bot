@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  bot:
+    build:
+      target: development
+    container_name: discord_bot_dev
+    image: viet-aus-it/discord_bot:development
+    restart: unless-stopped
+    volumes:
+      - ./discord-bot:/src/app
+      - "src/app/node_modules"
+
+  # Database service should go here for local testing

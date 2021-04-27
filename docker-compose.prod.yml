@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  bot:
+    build:
+      target: production
+    container_name: discord_bot_prod
+    image: viet-aus-it/discord_bot:production
+    restart: always

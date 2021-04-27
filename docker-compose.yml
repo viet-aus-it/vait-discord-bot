@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  bot:
+    build:
+      context: "./discord-bot"
+      dockerfile: ".docker/Dockerfile"
+    env_file: "discord-bot/.env"
