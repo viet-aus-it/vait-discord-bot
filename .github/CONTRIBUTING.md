@@ -30,7 +30,7 @@ Pull requests are the best way to propose changes to the codebase. We actively w
 
 ## Use a Consistent Coding Style
 
-- 4 spaces for indentation rather than tabs
+- 2 spaces for indentation rather than tabs
 - You can try running `yarn format` for style unification
 
 ## License
