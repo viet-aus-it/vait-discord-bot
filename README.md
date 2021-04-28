@@ -14,6 +14,7 @@ For Contributions, please have a look at our [CONTRIBUTORS.md](.github/CONTRIBUT
 git clone https://github.com/viet-aus-it/vait-discord-bot.git
 cd vait-discord-bot
 nvm use # If you have nvm
+cp discord-bot/.env.sample discord-bot/.env
 docker-compose build
 docker-compose up
 ```
