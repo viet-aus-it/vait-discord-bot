@@ -1,0 +1,22 @@
+{
+  "name": "@viet-aus-it/dashboard",
+  "version": "0.0.1",
+  "description": "Dashboard for VAIT's Discord bot",
+  "engines": {
+    "node": "^14.0.0",
+    "npm": "^6.0.0",
+    "yarn": "^1.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viet-aus-it/vait-discord-bot.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "ttps://github.com/viet-aus-it/vait-discord-bot"
+  },
+  "homepage": "ttps://github.com/viet-aus-it/vait-discord-bot#readme",
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {}
+}
