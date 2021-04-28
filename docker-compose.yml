@@ -6,3 +6,9 @@ services:
       context: "./discord-bot"
       dockerfile: ".docker/Dockerfile"
     env_file: "discord-bot/.env"
+
+  # dashboard:
+  #   build:
+  #     context: "./dashboard"
+  #     dockerfile: ".docker/Dockerfile"
+  #   env_file: "dashboard/.env"

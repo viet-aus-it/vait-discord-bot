@@ -7,3 +7,10 @@ services:
     container_name: discord_bot_prod
     image: viet-aus-it/discord_bot:production
     restart: always
+
+  # dashboard:
+  #   build:
+  #     target: production
+  #   container_name: dashboard_prod
+  #   image: viet-aus-it/dashboard:production
+  #   restart: always

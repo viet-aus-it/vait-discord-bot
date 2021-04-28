@@ -11,4 +11,14 @@ services:
       - ./discord-bot:/src
       - "src/node_modules"
 
+  # dashboard:
+  #   build:
+  #     target: development
+  #   container_name: dashboard_dev
+  #   image: viet-aus-it/dashboard:development
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./dashboard:/var/www/
+  #     - "/var/www/html"
+
   # Database service should go here for local testing
