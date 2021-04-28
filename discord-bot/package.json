@@ -14,9 +14,9 @@
   },
   "license": "ISC",
   "bugs": {
-    "url": "ttps://github.com/viet-aus-it/vait-discord-bot"
+    "url": "https://github.com/viet-aus-it/vait-discord-bot"
   },
-  "homepage": "ttps://github.com/viet-aus-it/vait-discord-bot#readme",
+  "homepage": "https://github.com/viet-aus-it/vait-discord-bot#readme",
   "scripts": {
     "clean:all": "npm run prebuild && npm run pretest",
     "prebuild": "rimraf build",
@@ -31,15 +31,15 @@
     "serve": "node build/index.js"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
-    "@types/node": "14"
   },
   "devDependencies": {
+    "@babel/runtime": "^7.11.2",
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-typescript": "^7.10.4",
     "@types/faker": "^5.5.3",
     "@types/jest": "^26.0.13",
+    "@types/node": "14",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
     "babel-jest": "^26.3.0",
