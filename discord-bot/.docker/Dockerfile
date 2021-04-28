@@ -1,5 +1,5 @@
 FROM node:14.16-alpine3.13 as base
-WORKDIR /srv/app
+WORKDIR /src
 
 #############
 # Dev image #
@@ -32,8 +32,8 @@ RUN yarn install --production --non-interactive
 ####################
 FROM base as production
 
-COPY --chown=node:node --from=build /src/app/build build
-COPY --chown=node:node --from=build /src/app/node_modules node_modules
+COPY --chown=node:node --from=build /src/build build
+COPY --chown=node:node --from=build /src/node_modules node_modules
 
 USER node
 CMD ["node", "build/index.js"]
