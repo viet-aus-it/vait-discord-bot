@@ -11,9 +11,6 @@
 
 # production
 /build
-spongetext-linux
-spongetext-macos
-spongetext-win.exe
 
 # misc
 Thumbs.db
