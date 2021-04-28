@@ -30,7 +30,15 @@
     "start": "ts-node-dev --watch src/index.ts",
     "serve": "node build/index.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@discordjs/opus": "^0.5.0",
+    "bufferutil": "^4.0.3",
+    "discord.js": "^12.5.3",
+    "discord/erlpack": "discord/erlpack",
+    "sodium": "^3.0.2",
+    "utf-8-validate": "^5.0.4",
+    "zlib-sync": "^0.1.7"
+  },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
