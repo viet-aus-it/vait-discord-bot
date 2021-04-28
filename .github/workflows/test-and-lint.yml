@@ -5,11 +5,16 @@ on:
     branches:
       - master
     paths:
-      - discord-bot/src/**
+      - discord-bot/**
+      - dashboard/**
 
 jobs:
-  test-and-lint:
+  test-and-lint-discord-bot:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: discord-bot
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -22,7 +27,6 @@ jobs:
 
       - name: Set up project
         run: |
-          cd discord-bot
           npm -g install yarn
           yarn install
           yarn cache clean
@@ -32,3 +36,31 @@ jobs:
 
       - name: Run tests
         run: yarn test
+
+  # test-and-lint-dashboard:
+  #     runs-on: ubuntu-latest
+  #     defaults:
+  #       run:
+  #         working-directory: dashboard
+
+  #     steps:
+  #       - uses: actions/checkout@v2
+  #         with:
+  #           token: ${{ github.token }}
+
+  #       - name: Set up Node 14
+  #         uses: actions/setup-node@v1
+  #         with:
+  #           node-version: '14.x'
+
+  #       - name: Set up project
+  #         run: |
+  #           npm -g install yarn
+  #           yarn install
+  #           yarn cache clean
+
+  #       - name: Run linting
+  #         run: yarn lint
+
+  #       - name: Run tests
+  #         run: yarn test

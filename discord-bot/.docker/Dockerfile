@@ -1,6 +1,14 @@
 FROM node:14.16-alpine3.13 as base
 WORKDIR /src
 
+# Install OS dependencies
+RUN set -xe && \
+    apk update && \
+    apk add --nocache git curl py-pip && \
+    apk add --no-cache -t build-dependencies make gcc g++ libtool autoconf automake && \
+    rm -rf /var/cache/apk/*
+RUN yarn global add node-gyp
+
 #############
 # Dev image #
 #############
@@ -17,15 +25,10 @@ CMD ["yarn", "start"]
 # Production build #
 #####################
 FROM development as build
-
+ENV NODE_ENV=production
+RUN yarn install --production --non-interactive
 RUN yarn build && \
     yarn cache clean
-
-# Clear build node_modules
-RUN rm -rf node_modules
-# install modules
-RUN yarn install --production --non-interactive
-
 
 ####################
 # Production image #
@@ -36,4 +39,5 @@ COPY --chown=node:node --from=build /src/build build
 COPY --chown=node:node --from=build /src/node_modules node_modules
 
 USER node
+ENV NODE_ENV=production
 CMD ["node", "build/index.js"]
