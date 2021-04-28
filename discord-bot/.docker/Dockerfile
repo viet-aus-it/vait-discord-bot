@@ -21,9 +21,7 @@ FROM development as build
 RUN yarn build && \
     yarn cache clean
 
-# Clear build node_modules
-RUN rm -rf node_modules
-# install modules
+# install production deps
 RUN yarn install --production --non-interactive
 
 
