@@ -11,16 +11,3 @@ services:
   #     context: "./dashboard"
   #     dockerfile: ".docker/Dockerfile"
   #   env_file: "dashboard/.env"
-  db:
-    image: postgres
-    restart: unless-stopped
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - db:/var/lib/postgresql/data
-    
-volumes:
-  db: ~
