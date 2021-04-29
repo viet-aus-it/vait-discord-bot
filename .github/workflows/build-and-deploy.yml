@@ -3,7 +3,7 @@ name: Build and deploy Docker Image
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - discord-bot/**
       - .github/workflows/build-and-deploy.yml

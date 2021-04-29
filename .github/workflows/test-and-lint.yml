@@ -1,9 +1,9 @@
-name: Run Tests and Lints before merging into main branch
+name: Tests and Lints packages
 
 on:
   pull_request:
     branches:
-      - main
+      - master
     paths:
       - discord-bot/src/**
 
