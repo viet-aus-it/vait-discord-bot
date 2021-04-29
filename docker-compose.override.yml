@@ -20,4 +20,13 @@ services:
   #     - ./dashboard:/var/www/
   #     - "/var/www/html"
 
-  # Database service should go here for local testing
+  db:
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
