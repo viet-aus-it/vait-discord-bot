@@ -7,11 +7,23 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl"]
 }
 
 model User {
-  id         String @id
-  reputation Int    @default(0)
+  id String @id
+
+  reputation Int             @default(0)
+  thankTo    ReputationLog[] @relation("FromUser")
+  thankBy    ReputationLog[] @relation("ToUser")
+}
+
+model ReputationLog {
+  id         String   @id @default(cuid())
+  from       User     @relation(name: "FromUser", fields: [fromUserId], references: [id])
+  fromUserId String
+  to         User     @relation(name: "ToUser", fields: [toUserId], references: [id])
+  toUserId   String
+  createdAt  DateTime @default(now())
 }

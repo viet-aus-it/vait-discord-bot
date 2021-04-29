@@ -8,15 +8,17 @@ import thanks from './thanks';
 const { TOKEN } = process.env;
 const client = new Client();
 const prisma = new PrismaClient();
+let botId: string | undefined;
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user?.tag}!`);
+  botId = client.user?.id;
 });
 
 client.on('message', (msg) => {
   pingPong(msg);
   danhSomeone(msg);
-  thanks(msg, prisma);
+  thanks(msg, botId as any, prisma);
 });
 
 client.login(TOKEN);
