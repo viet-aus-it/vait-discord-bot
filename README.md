@@ -25,3 +25,10 @@ cp dashboard/.env.sample dashboard/.env
 docker-compose build
 docker-compose up
 ```
+
+To migrate db
+
+```shell
+docker-compose exec bot yarn prisma:migrate
+docker-compose exec bot yarn prisma:generate
+```
