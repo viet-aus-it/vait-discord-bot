@@ -4,7 +4,7 @@ WORKDIR /src
 # Install OS dependencies
 RUN set -xe && \
     apk update && \
-    apk add --nocache git curl py-pip && \
+    apk add --no-cache git curl py-pip && \
     apk add --no-cache -t build-dependencies make gcc g++ libtool autoconf automake && \
     rm -rf /var/cache/apk/*
 RUN yarn global add node-gyp
