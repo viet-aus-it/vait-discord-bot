@@ -1,9 +1,5 @@
 import { Message } from 'discord.js';
-
-const getRandomBoolean = (): boolean => {
-  const randomBinaryNumber = Math.floor(Math.random() * Math.floor(2));
-  return Boolean(randomBinaryNumber);
-};
+import { getRandomBoolean } from '../utils/random';
 
 const generateMockText = (message: string): string =>
   message
