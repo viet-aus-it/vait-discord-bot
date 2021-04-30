@@ -35,11 +35,12 @@ const generateMockText = (message: string): string =>
     }, '');
 
 const mockSomeone = async (msg: Message) => {
+  const mockPrefix = '-mock';
   const { content, channel, id } = msg;
   const hasMockPrefix = content.startsWith('-mock');
   if (!hasMockPrefix) return;
 
-  let chatContent = content.slice(5);
+  let chatContent = content.slice(mockPrefix.length);
 
   // If -mock is detected but content is blank, fetch the previous message
   if (isBlank(chatContent)) {
