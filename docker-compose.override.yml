@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./discord-bot:/src
+      - "/src/node_modules"
 
   # dashboard:
   #   build:
