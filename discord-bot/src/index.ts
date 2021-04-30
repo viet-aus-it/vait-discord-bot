@@ -1,7 +1,6 @@
 import { Client } from 'discord.js';
 import { PrismaClient } from '@prisma/client';
 
-import pingPong from './pingPong';
 import danhSomeone from './danhSomeone';
 import thanks from './thanks';
 
@@ -16,7 +15,6 @@ client.on('ready', () => {
 });
 
 client.on('message', (msg) => {
-  pingPong(msg);
   danhSomeone(msg);
   thanks(msg, botId as any, prisma);
 });
