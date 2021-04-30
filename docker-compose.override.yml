@@ -23,6 +23,7 @@ services:
   db:
     image: postgres
     restart: unless-stopped
+    container_name: discord_bot_db
     ports:
       - 5432:5432
     environment:
