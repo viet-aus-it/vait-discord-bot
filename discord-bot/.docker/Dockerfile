@@ -9,6 +9,10 @@ RUN set -xe && \
     rm -rf /var/cache/apk/*
 RUN yarn global add node-gyp
 
+ARG WAIT_FOR=2.1.2
+RUN curl -LkSso /usr/bin/wait-for https://github.com/eficode/wait-for/releases/download/v${WAIT_FOR}/wait-for && \
+    chmod 0755 /usr/bin/wait-for
+
 #############
 # Dev image #
 #############
