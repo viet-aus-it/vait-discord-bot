@@ -19,7 +19,7 @@ COPY package.json yarn.lock tsconfig.json ./
 RUN yarn install --non-interactive
 
 COPY . .
-CMD ["yarn", "start"]
+CMD ["./entrypoint.sh", "yarn", "start"]
 
 #####################
 # Production build #

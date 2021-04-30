@@ -5,6 +5,8 @@ services:
     build:
       target: development
     container_name: discord_bot_dev
+    depends_on:
+      - db
     env_file: "discord-bot/.env.docker"
     image: viet-aus-it/discord_bot:development
     restart: unless-stopped
