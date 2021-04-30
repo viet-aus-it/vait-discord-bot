@@ -39,8 +39,19 @@ describe('mockSomeone test', () => {
       },
     });
 
-    it('Should throw error if previous message cannot be retrieved', async () => {
+    it('Should throw error if previous message fetch function screwed up', async () => {
       const fetchMock = jest.fn(async () => undefined);
+      const mockMsg: any = getMockMsg(fetchMock);
+
+      await mockSomeone(mockMsg);
+      expect(replyMock.mock.calls.length).toBe(0);
+      expect(fetchMock.mock.calls.length).toBe(1);
+    });
+
+    it('Should throw error if previous message cannot be retrieved', async () => {
+      const fetchMock = jest.fn(async () => ({
+        first: () => undefined,
+      }));
       const mockMsg: any = getMockMsg(fetchMock);
 
       await mockSomeone(mockMsg);
