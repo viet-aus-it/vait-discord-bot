@@ -30,5 +30,5 @@ To migrate db
 
 ```shell
 docker-compose exec bot yarn prisma:migrate
-docker-compose exec bot yarn prisma:generate
+docker-compose exec bot yarn prisma:gen
 ```
