@@ -30,7 +30,7 @@
     "start": "ts-node-dev --poll --transpile-only --no-notify ./src/index.ts",
     "serve": "node build/index.js",
     "prisma:migrate": "npx prisma migrate dev",
-    "prisma:gen": "npx prisma"
+    "prisma:gen": "npx prisma generate"
   },
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
