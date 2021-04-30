@@ -6,8 +6,8 @@ services:
       context: "./discord-bot"
       dockerfile: ".docker/Dockerfile"
     environment: 
-      TOKEN: 
-      DATABASE_URL: 
+      TOKEN: ODM2ODk4MDk4NDA3NjY5Nzcw.YIksFw.FiakxNflFxXDGM_IsU1fQBsSnrU
+      DATABASE_URL: postgresql://postgres:postgres@discord_bot_db:5432/discordbot?schema=public
   # dashboard:
   #   build:
   #     context: "./dashboard"
