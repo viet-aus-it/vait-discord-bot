@@ -23,7 +23,7 @@ services:
   #     - "/var/www/html"
 
   db:
-    image: postgres
+    image: postgres:13-alpine
     restart: unless-stopped
     container_name: discord_bot_db
     ports:
