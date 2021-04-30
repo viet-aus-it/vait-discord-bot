@@ -2,6 +2,7 @@ import { Client } from 'discord.js';
 import { PrismaClient } from '@prisma/client';
 
 import danhSomeone from './danhSomeone';
+import mockSomeone from './mockSomeone';
 import thanks from './thanks';
 
 const { TOKEN } = process.env;
@@ -16,6 +17,7 @@ client.on('ready', () => {
 
 client.on('message', (msg) => {
   danhSomeone(msg);
+  mockSomeone(msg);
   thanks(msg, botId as any, prisma);
 });
 
