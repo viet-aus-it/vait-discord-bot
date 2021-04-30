@@ -21,6 +21,7 @@ git clone https://github.com/viet-aus-it/vait-discord-bot.git
 cd vait-discord-bot
 nvm use # If you have nvm
 cp discord-bot/.env.sample discord-bot/.env
+cp discord-bot/.env.docker.sample discord-bot/.env.docker
 cp dashboard/.env.sample dashboard/.env
 docker-compose build
 docker-compose up
