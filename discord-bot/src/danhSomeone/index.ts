@@ -1,10 +1,5 @@
 import { Message } from 'discord.js';
-
-const getRandomIntInclusive = (min: number, max: number) => {
-  const intMin = Math.ceil(min);
-  const intMax = Math.floor(max);
-  return Math.floor(Math.random() * (intMax - intMin + 1) + min);
-};
+import { getRandomIntInclusive } from '../utils/random';
 
 const danhSomeone = (msg: Message) => {
   if (msg.content.toLowerCase().includes('danh')) {
