@@ -5,10 +5,12 @@ services:
     build:
       target: development
     container_name: discord_bot_dev
+    env_file: "discord-bot/.env.docker"
     image: viet-aus-it/discord_bot:development
     restart: unless-stopped
     volumes:
       - ./discord-bot:/src
+      - "/src/node_modules"
 
   # dashboard:
   #   build:
@@ -23,6 +25,7 @@ services:
   db:
     image: postgres
     restart: unless-stopped
+    container_name: discord_bot_db
     ports:
       - 5432:5432
     environment:
