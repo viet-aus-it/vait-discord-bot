@@ -27,4 +27,49 @@ describe('mockSomeone test', () => {
     await mockSomeone(mockMsg);
     expect(replyMock.mock.calls.length).toBe(1);
   });
+
+  describe('For -mock prefix with blank content', () => {
+    const getMockMsg = (fetchCallback: Function) => ({
+      content: `-mock`,
+      channel: {
+        send: replyMock,
+        messages: {
+          fetch: fetchCallback,
+        },
+      },
+    });
+
+    it('Should throw error if previous message cannot be retrieved', async () => {
+      const fetchMock = jest.fn(async () => undefined);
+      const mockMsg: any = getMockMsg(fetchMock);
+
+      await mockSomeone(mockMsg);
+      expect(replyMock.mock.calls.length).toBe(0);
+      expect(fetchMock.mock.calls.length).toBe(1);
+    });
+
+    it('Should return blank if previous message is blank', async () => {
+      const blankMessage = { content: '' };
+      const fetchMock = jest.fn(async () => ({
+        first: () => blankMessage,
+      }));
+      const mockMsg: any = getMockMsg(fetchMock);
+
+      await mockSomeone(mockMsg);
+      expect(replyMock.mock.calls.length).toBe(0);
+      expect(fetchMock.mock.calls.length).toBe(1);
+    });
+
+    it('Should mock the previous message', async () => {
+      const messageWithContent = { content: faker.lorem.words(25) };
+      const fetchMock = jest.fn(async () => ({
+        first: () => messageWithContent,
+      }));
+      const mockMsg: any = getMockMsg(fetchMock);
+
+      await mockSomeone(mockMsg);
+      expect(replyMock.mock.calls.length).toBe(1);
+      expect(fetchMock.mock.calls.length).toBe(1);
+    });
+  });
 });
