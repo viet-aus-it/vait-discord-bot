@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 Developers should add to the **Unreleased** section once they feel their branch is ready.
 
 ## [Unreleased - 1.0.0]
+
 ### Added
+
 - Initial project setup
 - Added reps, thanks, "đánh" features
+- Added mock someone feature
+
 ### Changed
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
+
 ### Security
