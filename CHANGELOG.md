@@ -8,6 +8,9 @@ Developers should add to the **Unreleased** section once they feel their branch 
 
 ## [Unreleased - 1.0.0]
 ### Added
+- Initial project setup
+- Added reps, thanks, "đánh" features
+### Changed
 ### Deprecated
 ### Removed
 ### Fixed
