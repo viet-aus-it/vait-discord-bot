@@ -3,45 +3,12 @@ import { getRandomBoolean } from '../utils/random';
 
 const isBlank = (content: string) => content.trim() === '';
 
-const fetchMessageById = async (
-  channel: TextChannel,
-  id: string
-): Promise<string> => {
-  try {
-    const message = await channel.messages.fetch(id);
-    if (!message) {
-      throw new Error('Cannot fetch message');
-    }
-    return message.content;
-  } catch (error) {
-    console.error('CANNOT FETCH MESSAGE', error);
-    return '';
-  }
-};
-
-const fetchLastMessageBeforeId = async (
-  channel: TextChannel,
-  id: string
-): Promise<string> => {
-  try {
-    const lastMessages = await channel.messages.fetch({ limit: 1, before: id });
-    const messageRightBefore = lastMessages.first();
-    if (!messageRightBefore) {
-      throw new Error('Cannot fetch previous messages');
-    }
-    return messageRightBefore.content;
-  } catch (error) {
-    console.error('CANNOT FETCH MESSAGES IN CHANNEL', error);
-    return '';
-  }
-};
-
-const generateMockText = (message: string): string =>
+const generateMockText = (message: string) =>
   message
     .trim()
     .toLowerCase()
     .split('')
-    .reduce((outputText, character): string => {
+    .reduce((outputText, character) => {
       const randomBoolean = getRandomBoolean();
       const spongeCharacter = randomBoolean
         ? character.toUpperCase()
@@ -50,6 +17,36 @@ const generateMockText = (message: string): string =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
+const handleFetchMessageError = (error: any) => {
+  console.error('CANNOT FETCH MESSAGES IN CHANNEL', error);
+  return '';
+};
+
+const fetchMessageById = async (channel: TextChannel, id: string) => {
+  try {
+    const message = await channel.messages.fetch(id);
+    if (!message) {
+      throw new Error('Cannot fetch message');
+    }
+    return message.content;
+  } catch (error) {
+    return handleFetchMessageError(error);
+  }
+};
+
+const fetchLastMessageBeforeId = async (channel: TextChannel, id: string) => {
+  try {
+    const lastMessages = await channel.messages.fetch({ limit: 1, before: id });
+    const messageRightBefore = lastMessages.first();
+    if (!messageRightBefore) {
+      throw new Error('Cannot fetch previous messages');
+    }
+    return messageRightBefore.content;
+  } catch (error) {
+    return handleFetchMessageError(error);
+  }
+};
+
 const mockSomeone = async (msg: Message) => {
   const mockPrefix = '-mock';
   const { content, channel, id, reference } = msg;
@@ -57,6 +54,11 @@ const mockSomeone = async (msg: Message) => {
   if (!hasMockPrefix) return;
 
   let chatContent = content.slice(mockPrefix.length);
+  if (!isBlank(chatContent)) {
+    const mockText = generateMockText(chatContent);
+    channel.send(mockText);
+    return;
+  }
 
   // If -mock is detected and it's replying to another message, mock that message
   if (reference && reference.messageID !== null) {
