@@ -8,7 +8,9 @@ export const thankUser = async (
   prisma: PrismaClient
 ) => {
   const thankKeywords = ['thank', 'thanks', 'cảm ơn'];
-  const hasKeyword = thankKeywords.some((keyword) => msg.content.toLowerCase().includes(keyword));
+  const hasKeyword = thankKeywords.some((keyword) =>
+    msg.content.toLowerCase().includes(keyword)
+  );
   if (!hasKeyword) return;
 
   const hasExactlyOneUser = msg.mentions.users.size === 1;

@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import danhSomeone from './danhSomeone';
 import mockSomeone from './mockSomeone';
 import thanks from './thanks';
+import ask8Ball from './8ball';
 
 const { TOKEN } = process.env;
 const client = new Client();
@@ -18,6 +19,7 @@ client.on('ready', () => {
 client.on('message', (msg) => {
   danhSomeone(msg);
   mockSomeone(msg);
+  ask8Ball(msg);
   thanks(msg, botId as any, prisma);
 });
 
