@@ -49,3 +49,11 @@ docker-compose up
 docker-compose exec bot yarn prisma:migrate
 docker-compose exec bot yarn prisma:gen
 ```
+
+## Running tests
+
+```shell
+docker-compose up -d
+docker-compose exec bot yarn test
+docker-compose stop
+```
