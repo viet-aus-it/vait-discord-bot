@@ -10,8 +10,8 @@ RUN set -xe && \
 RUN yarn global add node-gyp
 
 ARG WAIT_FOR=2.1.2
-RUN curl -LkSso /usr/bin/wait-for https://github.com/eficode/wait-for/releases/download/v${WAIT_FOR}/wait-for && \
-    chmod 0755 /usr/bin/wait-for
+RUN curl -LkSso /usr/local/bin/wait-for https://github.com/eficode/wait-for/releases/download/v${WAIT_FOR}/wait-for && \
+    chmod +x /usr/local/bin/wait-for
 
 #############
 # Dev image #
@@ -23,7 +23,9 @@ COPY package.json yarn.lock tsconfig.json ./
 RUN yarn install --non-interactive
 
 COPY . .
-CMD ["./entrypoint.sh", "yarn", "start"]
+RUN cp ./entrypoint.sh /usr/local/bin/discord-bot-entrypoint.sh && \
+    chmod +x /usr/local/bin/discord-bot-entrypoint.sh
+CMD ["/usr/local/bin/discord-bot-entrypoint.sh", "yarn", "start"]
 
 #####################
 # Production build #
