@@ -29,6 +29,7 @@ describe('ask 8Ball test', () => {
     const mockMsg: any = {
       content: `-8ball`,
       channel: { send: replyMock },
+      author: { bot: false },
     };
 
     await ask8Ball(mockMsg);
