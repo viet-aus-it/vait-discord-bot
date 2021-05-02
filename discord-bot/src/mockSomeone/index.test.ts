@@ -39,6 +39,14 @@ describe('mockSomeone test', () => {
       },
     });
 
+    const getMockMessageWithReference = (
+      fetchCallback: Function,
+      reference: undefined | { messageID: string }
+    ) => ({
+      ...getMockMsg(fetchCallback),
+      reference,
+    });
+
     it('Should throw error if previous message fetch function screwed up', async () => {
       const fetchMock = jest.fn(async () => undefined);
       const mockMsg: any = getMockMsg(fetchMock);
@@ -78,6 +86,32 @@ describe('mockSomeone test', () => {
           first: () => messageWithContent,
         }));
         const mockMsg: any = getMockMsg(fetchMock);
+
+        await mockSomeone(mockMsg);
+        expect(replyMock.mock.calls.length).toBe(1);
+        expect(fetchMock.mock.calls.length).toBe(1);
+      });
+    });
+
+    describe('Fetching referred message', () => {
+      it('Should return blank if referred message is blank', async () => {
+        const blankMessage = { content: '' };
+        const fetchMock = jest.fn(async () => blankMessage);
+        const mockMsg: any = getMockMessageWithReference(fetchMock, {
+          messageID: '1234',
+        });
+
+        await mockSomeone(mockMsg);
+        expect(replyMock.mock.calls.length).toBe(0);
+        expect(fetchMock.mock.calls.length).toBe(1);
+      });
+
+      it('Should mock the referred message', async () => {
+        const messageWithContent = { content: faker.lorem.words(25) };
+        const fetchMock = jest.fn(async () => messageWithContent);
+        const mockMsg: any = getMockMessageWithReference(fetchMock, {
+          messageID: '1234',
+        });
 
         await mockSomeone(mockMsg);
         expect(replyMock.mock.calls.length).toBe(1);
