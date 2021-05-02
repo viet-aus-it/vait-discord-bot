@@ -54,22 +54,22 @@ const mockSomeone = async (msg: Message) => {
   if (!hasMockPrefix) return;
 
   let chatContent = content.slice(mockPrefix.length);
+  // If -mock is detected and it has content
   if (!isBlank(chatContent)) {
     const mockText = generateMockText(chatContent);
     channel.send(mockText);
     return;
   }
 
-  // If -mock is detected and it's replying to another message, mock that message
+  // If -mock is detected but content is blank...
   if (reference && reference.messageID !== null) {
+    // and it's referring to another message, fetch that message
     chatContent = await fetchMessageById(
       channel as TextChannel,
       reference.messageID
     );
-  }
-
-  // If -mock is detected but content is blank, fetch the previous message
-  if (isBlank(chatContent)) {
+  } else {
+    // fetch the previous message in the channel
     chatContent = await fetchLastMessageBeforeId(channel as TextChannel, id);
   }
 
