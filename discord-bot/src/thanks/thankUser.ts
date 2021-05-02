@@ -22,8 +22,7 @@ export const thankUser = async (
   const isAuthor = discordUser.id === msg.author.id;
   if (isAuthor) return;
 
-  const isBot = discordUser.id === botId;
-  if (isBot) return;
+  if (msg.author.bot) return;//check if author is a Discord bot
 
   const user = await getOrCreateUser(prisma, discordUser.id);
 
