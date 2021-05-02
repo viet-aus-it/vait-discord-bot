@@ -47,9 +47,8 @@ const fetchLastMessageBeforeId = async (channel: TextChannel, id: string) => {
   }
 };
 
-const mockSomeone = async (msg: Message) => {
+const mockSomeone = async ({ content, channel, id, reference }: Message) => {
   const mockPrefix = '-mock';
-  const { content, channel, id, reference } = msg;
   const hasMockPrefix = content.toLowerCase().startsWith(mockPrefix);
   if (!hasMockPrefix) return;
 
