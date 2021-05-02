@@ -37,11 +37,15 @@ const generateMockText = (message: string): string =>
 const mockSomeone = async (msg: Message) => {
   const mockPrefix = '-mock';
   const { content, channel, id } = msg;
-  const hasMockPrefix = content.startsWith('-mock');
+  const hasMockPrefix = content.toLowerCase().startsWith('-mock'.toLowerCase());
   if (!hasMockPrefix) return;
 
   let chatContent = content.slice(mockPrefix.length);
 
+  if(isBlank(chatContent) && msg.reference?.messageID != null)  {
+    const repliedTo = await msg.channel.messages.fetch(msg.reference.messageID);
+    chatContent = repliedTo.content;
+  }
   // If -mock is detected but content is blank, fetch the previous message
   if (isBlank(chatContent)) {
     chatContent = await fetchLastMessage(channel as TextChannel, id);
