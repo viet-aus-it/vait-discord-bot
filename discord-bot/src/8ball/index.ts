@@ -14,7 +14,7 @@ const ask8Ball = ({ content, channel, author }: Message) => {
     'Go for it',
     "Don't even think about it",
     'Are you even trying?',
-    'Keep it up'
+    'Keep it up',
   ];
   const hasPrefix = content.toLowerCase().startsWith(prefix);
   if (!hasPrefix) return; // return if no prefix

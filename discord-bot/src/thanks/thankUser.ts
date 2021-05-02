@@ -12,17 +12,16 @@ export const thankUser = async (
     msg.content.toLowerCase().includes(keyword)
   );
   if (!hasKeyword) return;
-
+  if (msg.author.bot) return; // return if author is a Discord bot
   const hasExactlyOneUser = msg.mentions.users.size === 1;
   if (!hasExactlyOneUser) return;
 
   const discordUser = msg.mentions.users.first();
   if (!discordUser) return;
+  if (discordUser.bot) return; // return if mention bot
 
   const isAuthor = discordUser.id === msg.author.id;
   if (isAuthor) return;
-
-  if (msg.author.bot) return; // check if author is a Discord bot
 
   const user = await getOrCreateUser(prisma, discordUser.id);
 
