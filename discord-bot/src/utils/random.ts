@@ -5,6 +5,6 @@ export const getRandomIntInclusive = (min: number, max: number) => {
 };
 
 export const getRandomBoolean = (): boolean => {
-  const randomBinaryNumber = Math.floor(Math.random() * Math.floor(2));
+  const randomBinaryNumber = Math.floor(Math.random() * 2);
   return Boolean(randomBinaryNumber);
 };
