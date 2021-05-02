@@ -17,7 +17,7 @@ client.on('ready', () => {
 });
 
 client.on('message', (msg) => {
-  danhSomeone(msg,botId as any);
+  danhSomeone(msg, botId as any);
   mockSomeone(msg);
   ask8Ball(msg);
   thanks(msg, botId as any, prisma);
