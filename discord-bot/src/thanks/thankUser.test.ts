@@ -13,10 +13,9 @@ describe('thankUser', () => {
       content: 'bla bla',
       reply: replyMock,
     };
-    const mockBotId = '0';
     const mockPrisma: any = {};
 
-    await thankUser(mockMsg, mockBotId, mockPrisma);
+    await thankUser(mockMsg, mockPrisma);
 
     expect(replyMock.mock.calls.length).toBe(0);
   });
@@ -36,10 +35,9 @@ describe('thankUser', () => {
         bot: false,
       },
     };
-    const mockBotId = '0';
     const mockPrisma: any = {};
 
-    await thankUser(mockMsg, mockBotId, mockPrisma);
+    await thankUser(mockMsg, mockPrisma);
 
     expect(replyMock.mock.calls.length).toBe(0);
   });
@@ -60,10 +58,9 @@ describe('thankUser', () => {
       },
     };
 
-    const mockBotId = '0';
     const mockPrisma: any = {};
 
-    await thankUser(mockMsg, mockBotId, mockPrisma);
+    await thankUser(mockMsg, mockPrisma);
 
     expect(replyMock.mock.calls.length).toBe(0);
   });
@@ -84,7 +81,6 @@ describe('thankUser', () => {
       },
     };
 
-    const mockBotId = '0';
     const mockPrisma: any = {
       user: {
         findUnique: findUniqueMock,
@@ -96,7 +92,7 @@ describe('thankUser', () => {
       $transaction: transactionMock,
     };
 
-    await thankUser(mockMsg, mockBotId, mockPrisma);
+    await thankUser(mockMsg, mockPrisma);
     expect(findUniqueMock.mock.calls.length).toBe(0);
     expect(replyMock.mock.calls.length).toBe(0);
     expect(reputationCreateMock.mock.calls.length).toBe(0);
@@ -119,7 +115,6 @@ describe('thankUser', () => {
       },
     };
 
-    const mockBotId = '0';
     const mockPrisma: any = {
       user: {
         findUnique: findUniqueMock,
@@ -131,7 +126,7 @@ describe('thankUser', () => {
       $transaction: transactionMock,
     };
 
-    await thankUser(mockMsg, mockBotId, mockPrisma);
+    await thankUser(mockMsg, mockPrisma);
     expect(findUniqueMock.mock.calls.length).toBe(0);
     expect(replyMock.mock.calls.length).toBe(0);
     expect(reputationCreateMock.mock.calls.length).toBe(0);
@@ -153,7 +148,6 @@ describe('thankUser', () => {
       },
     };
 
-    const mockBotId = '2';
     const mockPrisma: any = {
       user: {
         findUnique: findUniqueMock,
@@ -165,7 +159,7 @@ describe('thankUser', () => {
       $transaction: transactionMock,
     };
 
-    await thankUser(mockMsg, mockBotId, mockPrisma);
+    await thankUser(mockMsg, mockPrisma);
 
     expect(findUniqueMock.mock.calls.length).toBe(1);
     expect(updateUserMock.mock.calls.length).toBe(1);
