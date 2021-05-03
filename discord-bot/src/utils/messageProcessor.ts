@@ -1,5 +1,24 @@
 import { Message } from "discord.js";
-import { CommandConfig, KeywordMatchCommand, PrefixedCommands } from "./utils/config";
+
+export interface PrefixedCommand {
+  matcher: string;
+  fn: (message: Message) => Promise<any>;
+}
+
+export interface PrefixedCommands {
+  prefix: string;
+  commands: Array<PrefixedCommand>;
+}
+
+export interface KeywordMatchCommand {
+  matchers: Array<string>;
+  fn: (message: Message) => Promise<any>;
+}
+
+export interface CommandConfig {
+  prefixedCommands: PrefixedCommands;
+  keywordMatchCommands: Array<KeywordMatchCommand>;
+}
 
 export const processMessage = async (message: Message, config: CommandConfig) => {
   const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);

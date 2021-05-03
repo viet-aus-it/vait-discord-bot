@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { getRandomBoolean } from '../utils/random';
+import { getRandomBoolean } from '../../utils/random';
 
 const isBlank = (content: string) => content.trim() === '';
 

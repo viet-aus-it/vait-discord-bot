@@ -1,24 +1,39 @@
-import { Client } from 'discord.js';
+import { processMessage } from './utils/messageProcessor';
+import { getDiscordClient } from './clients/discord';
 
-import danhSomeone from './danhSomeone';
-import { processMessage } from './messageProcessor';
-import { getDefaultConfig, initializeConfig } from './utils/config';
+import ask8Ball from './commands/8ball';
+import danhSomeone from './commands/danhSomeone';
+import mockSomeone from './commands/mockSomeone';
+import { thankUser, checkReputation } from './commands/thanks';
 
 const { TOKEN } = process.env;
-const client = new Client();
-let botId: string | undefined;
+getDiscordClient({
+  token: TOKEN,
+})
+.then(client => {
+  if(!(client.user)) throw new Error('Something went wrong!')
 
-const config = initializeConfig(getDefaultConfig());
+  console.log(`Logged in as ${client.user.tag}!`);
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user?.tag}!`);
-  botId = client.user?.id;
+  client.on('message', (msg) => {
+    processMessage(msg, {
+      prefixedCommands: {
+        prefix: '-',
+        commands: [
+          { matcher: 'rep', fn: checkReputation },
+          { matcher: '8ball', fn: ask8Ball },
+          { matcher: 'mock', fn: mockSomeone },
+          { matcher: 'hit', fn: (message) => danhSomeone(message, (client.user as any).id) }
+        ],
+      },
+      keywordMatchCommands: [
+        {
+          matchers: ['thank', 'thanks', 'cảm ơn'],
+          fn: thankUser,
+        },
+      ],
+    });
+  });
 });
 
-client.on('message', (msg) => {
-  danhSomeone(msg, botId as any);
-  processMessage(msg, config);
-});
-
-client.login(TOKEN);
 process.on('SIGTERM', () => process.exit());

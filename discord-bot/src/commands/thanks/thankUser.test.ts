@@ -1,8 +1,8 @@
 import { Collection, User } from 'discord.js';
 import { thankUser } from './thankUser';
-import { getPrismaClient } from '../clients/prisma';
+import { getPrismaClient } from '../../clients/prisma';
 
-jest.mock('../clients/prisma', () => ({
+jest.mock('../../clients/prisma', () => ({
   getPrismaClient: jest.fn(),
 }));
 

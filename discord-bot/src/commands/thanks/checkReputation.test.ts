@@ -1,7 +1,7 @@
 import { checkReputation } from './checkReputation';
-import { getPrismaClient } from '../clients/prisma';
+import { getPrismaClient } from '../../clients/prisma';
 
-jest.mock('../clients/prisma', () => ({
+jest.mock('../../clients/prisma', () => ({
   getPrismaClient: jest.fn(),
 }));
 

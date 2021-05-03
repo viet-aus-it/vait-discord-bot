@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import { getOrCreateUser } from './_helpers';
-import { getPrismaClient } from '../clients/prisma';
+import { getPrismaClient } from '../../clients/prisma';
 
 export const thankUser = async (msg: Message) => {
   const prisma = getPrismaClient();
