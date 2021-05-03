@@ -1,11 +1,10 @@
 import { Message } from 'discord.js';
-import { PrismaClient } from '.prisma/client';
 import { getOrCreateUser } from './_helpers';
+import { getPrismaClient } from '../clients/prisma';
 
-export const thankUser = async (
-  msg: Message,
-  prisma: PrismaClient
-) => {
+export const thankUser = async (msg: Message) => {
+  const prisma = getPrismaClient();
+
   const thankKeywords = ['thank', 'thanks', 'cảm ơn', 'cám ơn'];
   const hasKeyword = thankKeywords.some((keyword) =>
     msg.content.toLowerCase().includes(keyword)

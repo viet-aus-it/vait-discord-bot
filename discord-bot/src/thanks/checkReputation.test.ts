@@ -1,4 +1,9 @@
 import { checkReputation } from './checkReputation';
+import { getPrismaClient } from '../clients/prisma';
+
+jest.mock('../clients/prisma', () => ({
+  getPrismaClient: jest.fn(),
+}));
 
 const replyMock = jest.fn(() => {});
 const findUniqueMock = jest.fn(() => ({ id: '1' }));
@@ -9,9 +14,10 @@ describe('checkReputation', () => {
       content: 'weeee',
       reply: replyMock,
     };
-    const primsaMock: any = {};
 
-    await checkReputation(messageMock, primsaMock);
+    (getPrismaClient as jest.Mock).mockReturnValue({});
+
+    await checkReputation(messageMock);
 
     expect(replyMock.mock.calls.length).toBe(0);
   });
@@ -22,11 +28,12 @@ describe('checkReputation', () => {
       author: { id: '1' },
       reply: replyMock,
     };
-    const primsaMock: any = {
-      user: { findUnique: findUniqueMock },
-    };
 
-    await checkReputation(messageMock, primsaMock);
+    (getPrismaClient as jest.Mock).mockReturnValue({
+      user: { findUnique: findUniqueMock },
+    });
+
+    await checkReputation(messageMock);
 
     expect(findUniqueMock.mock.calls.length).toBe(1);
     expect(replyMock.mock.calls.length).toBe(1);

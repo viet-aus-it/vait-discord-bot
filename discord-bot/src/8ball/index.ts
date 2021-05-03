@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-const ask8Ball = ({ content, channel, author }: Message) => {
+const ask8Ball = async ({ content, channel, author }: Message) => {
   const prefix = '-8ball';
   const replies = [
     'Yes',
@@ -20,6 +20,6 @@ const ask8Ball = ({ content, channel, author }: Message) => {
   if (!hasPrefix) return; // return if no prefix
   if (author.bot) return; // return if sender is a bot
   if (content.slice(prefix.length).trim().length === 0) return; // return if no question ask
-  channel.send(replies[Math.floor(Math.random() * replies.length)]);
+  await channel.send(replies[Math.floor(Math.random() * replies.length)]);
 };
 export default ask8Ball;

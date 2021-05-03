@@ -1,15 +1,14 @@
 import { Client } from 'discord.js';
-import { PrismaClient } from '@prisma/client';
 
 import danhSomeone from './danhSomeone';
-import mockSomeone from './mockSomeone';
-import thanks from './thanks';
-import ask8Ball from './8ball';
+import { processMessage } from './messageProcessor';
+import { getDefaultConfig, initializeConfig } from './utils/config';
 
 const { TOKEN } = process.env;
 const client = new Client();
-const prisma = new PrismaClient();
 let botId: string | undefined;
+
+const config = initializeConfig(getDefaultConfig());
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user?.tag}!`);
@@ -18,9 +17,7 @@ client.on('ready', () => {
 
 client.on('message', (msg) => {
   danhSomeone(msg, botId as any);
-  mockSomeone(msg);
-  ask8Ball(msg);
-  thanks(msg, prisma);
+  processMessage(msg, config);
 });
 
 client.login(TOKEN);

@@ -1,8 +1,10 @@
 import { Message } from 'discord.js';
-import { PrismaClient } from '.prisma/client';
 import { getOrCreateUser } from './_helpers';
+import { getPrismaClient } from '../clients/prisma';
 
-export const checkReputation = async (msg: Message, prisma: PrismaClient) => {
+export const checkReputation = async (msg: Message) => {
+  const prisma = getPrismaClient();
+
   const keyword = '-rep';
   const hasKeyword = msg.content === keyword;
   if (!hasKeyword) return;
