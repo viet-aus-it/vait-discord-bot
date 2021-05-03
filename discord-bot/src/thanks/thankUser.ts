@@ -6,7 +6,7 @@ export const thankUser = async (
   msg: Message,
   prisma: PrismaClient
 ) => {
-  const thankKeywords = ['thank', 'thanks', 'cảm ơn'];
+  const thankKeywords = ['thank', 'thanks', 'cảm ơn', 'cám ơn'];
   const hasKeyword = thankKeywords.some((keyword) =>
     msg.content.toLowerCase().includes(keyword)
   );
