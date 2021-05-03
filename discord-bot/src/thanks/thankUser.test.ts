@@ -14,16 +14,6 @@ describe('thankUser', () => {
   const reputationCreateMock = jest.fn();
   const transactionMock = jest.fn(() => [{ id: 0 }]);
   (getPrismaClient as jest.Mock).mockReturnValue({});
-  it('should do nothing if message not contains keyword', async () => {
-    const mockMsg: any = {
-      content: 'bla bla',
-      reply: replyMock,
-    };
-
-    await thankUser(mockMsg);
-
-    expect(replyMock.mock.calls.length).toBe(0);
-  });
 
   it('should do nothing if mentions more than one user', async () => {
     const mockUsers = new Collection<string, User>();
