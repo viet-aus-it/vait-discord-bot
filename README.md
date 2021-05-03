@@ -27,7 +27,23 @@ docker-compose build
 docker-compose up
 ```
 
-To migrate db
+## Filling in ENV files for the discord bot
+
+- The `.env` can be ignored for now.
+- The `.env.docker` file needs to be filled in with these values:
+  - DB_HOST: db
+  - DB_USER, DB_PASSWORD, DB: You can fill in whatever you like with these,
+    since it only affects your local dev environment. But please keep it
+    consistent since if you lose it, you will lose access to your local
+    database and will need to re-create it.
+  - TOKEN: You will need to create your own app and bot for the token.
+    Follow the instructions on
+    [discord.js guide on setting up a bot application](https://discordjs.guide/preparations/setting-up-a-bot-application.html "Discord js guide")
+    on how to create a Discord Bot, with its token and client ID. When
+    you're done, we will add your bot into a test server so you can test it
+    out. :D
+
+## DB migration for backend bot
 
 ```shell
 docker-compose exec bot yarn prisma:migrate
