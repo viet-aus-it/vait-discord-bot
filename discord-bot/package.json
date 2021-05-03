@@ -28,7 +28,9 @@
     "format": "yarn lint:fix && prettier -w src/**/*",
     "pretest": "rimraf coverage",
     "test": "jest",
-    "start": "ts-node-dev --poll --transpile-only --no-notify ./src/index.ts",
+    "test:watch": "yarn test --watchAll",
+    "start:script": "ts-node-dev --poll --transpile-only --no-notify ./src/index.ts",
+    "start": "concurrently \"yarn:start:script\" \"yarn:lint:watch\" \"yarn:test:watch\"",
     "serve": "node build/index.js",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:gen": "npx prisma generate"
