@@ -19,7 +19,8 @@
   },
   "plugins": [
     "@typescript-eslint",
-    "eslint-plugin-import"
+    "eslint-plugin-import",
+    "prettier"
   ],
   "settings": {
     "import/resolver": {
@@ -29,6 +30,7 @@
     }
   },
   "rules": {
+    "prettier/prettier": "error",
     "import/extensions": ["error", "never"],
     "no-console": "off",
     "@typescript-eslint/no-unused-vars": ["error"],
