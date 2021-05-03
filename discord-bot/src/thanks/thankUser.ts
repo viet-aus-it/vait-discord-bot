@@ -4,7 +4,6 @@ import { getOrCreateUser } from './_helpers';
 
 export const thankUser = async (
   msg: Message,
-  botId: string,
   prisma: PrismaClient
 ) => {
   const thankKeywords = ['thank', 'thanks', 'cảm ơn'];
