@@ -21,7 +21,7 @@ For Contributions, please have a look at our [CONTRIBUTORS.md](.github/CONTRIBUT
 
 ## Onboarding
 
-### Using the onboarding script
+## Using the onboarding script
 
 For most UNIX-like users (macOS & Linux), you should be fine with running the
 onboarding script. Please ensure that you have all of the required
@@ -34,79 +34,84 @@ process.
 ./onboarding.sh
 ```
 
-### Manually
+## Manually
+## Creating your discord app and bot
+You will need to manually create a new discord application and a new bot. Please check out [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) for more details
 
-Note: After copying out the .env file, remember to FILL IT IN for the bot to
-work.
+## Create config file
+After creating your discord app and bot, create config file and fill in the values you get from the previous step
+```bash
+cd discord-bot/
+cp .env.dist .env
+cp .env.docker.dist .env.docker
+```
+- The `.env` can be ignored for now.
+- The `.env.docker` file needs to be filled in with these values:
+  - `DB_HOST`: db
+  - `DB_USER`, `DB_PASSWORD`, `DB`: You can fill in whatever you like with these or just leave it with default value,
+    since it only affects your local dev environment. But please keep it
+    consistent since if you lose it, you will lose access to your local
+    database and will need to re-create it.
+  - `TOKEN`: Your bot token created in previous step
 
-```shell
-nvm use # If you have nvm
 
-# Creating env files and installing dependencies for discord-bot
-cd discord-bot
-cp .env.sample .env
-cp .env.docker.sample .env.docker
+## Install npm dependency
+```bash
+cd discord-bot/
 yarn install
-cd ..
+```
 
-# Building the docker services
-docker-compose build
+## Build and run docker container
+```bash
+# On the root folder of the project RUN
 docker-compose up
+# OR
+docker composer up -d # to run the container in the background (detach mode)
 ```
 
 ---
 
 ## Notes on working with the repo
-
 ### How to run commands inside the container
+For `Debian/Linux/WSL` you can just use the `discord-bot/container-exec.sh` bash script to:
+```bash
+# multiline command - interactive mode - allow us to run multiple command
+./container-exec.sh
 
-- While the bot is running, you can open a new terminal window and run
-  this command: `docker-compose <service-name> command`
+# or just run a specific command
+./container-exec.sh yarn test # run yarn install inside the container
+```
+If you can't or don't want to use `./container-exec.sh` wrapper script then you can run it manually:
+- `docker-compose <service-name> command`
 
 ```bash
-docker-compose exec bot yarn test
+docker-compose exec discord_bot_dev yarn test
+# same as ./container-exec.sh yarn test
 ```
 
+```bash
+# Run interactive mode, multiple command
+docker exec -it discord_bot_dev bash
+# same as ./container-exec.sh
+```
 - To run a command intereractively with a command prompt inside the
   container, run this comand: `docker-compose <service-name> bash`
-
-```bash
-docker-compose exec bot bash
-```
 
 - The service name is defined within the [docker-compose.yml](/docker-compose.yml) file.
 
 ---
 
-## Filling in ENV files for the discord bot
-
-- The `.env` can be ignored for now.
-- The `.env.docker` file needs to be filled in with these values:
-  - `DB_HOST`: db
-  - `DB_USER`, `DB_PASSWORD`, `DB`: You can fill in whatever you like with these,
-    since it only affects your local dev environment. But please keep it
-    consistent since if you lose it, you will lose access to your local
-    database and will need to re-create it.
-  - `TOKEN`: You will need to create your own app and bot for the token.
-    Follow the instructions on
-    [discord.js guide on setting up a bot application](https://discordjs.guide/preparations/setting-up-a-bot-application.html "Discord js guide")
-    on how to create a Discord Bot, with its token and client ID. When
-    you're done, we will add your bot into a test server so you can test it
-    out.
-
----
-
 ## DB migration for backend bot
 
-```shell
-docker-compose exec bot yarn prisma:migrate
-docker-compose exec bot yarn prisma:gen
+```bash
+# Run this inside the container
+yarn prisma:migrate
+yarn prisma:gen
 ```
 
 ## Running tests
 
-```shell
-docker-compose up -d
-docker-compose exec bot yarn test
-docker-compose stop
+```bash
+# Run this inside the container
+yarn test
 ```
