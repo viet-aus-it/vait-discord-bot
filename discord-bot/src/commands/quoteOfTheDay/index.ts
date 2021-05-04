@@ -20,6 +20,9 @@ const getQuoteOfTheDay = async ({ channel, author }: Message) => {
   channel.send({
     embed: {
       color: 0x0072a8,
+      author: {
+        name: 'Inspirational quotes provided by ZenQuotes API',
+      },
       title: 'Quote of the day',
       description: quote.q,
       footer: {
