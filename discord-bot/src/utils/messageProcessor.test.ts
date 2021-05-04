@@ -1,11 +1,10 @@
-import { Message } from "discord.js";
-import { processMessage } from "./messageProcessor";
-import { CommandConfig } from "./messageProcessor";
+import { Message } from 'discord.js';
+import { processMessage, CommandConfig } from './messageProcessor';
 
 describe('processMessage', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-  })
+  });
 
   it('process keyword matches', async () => {
     const km1 = jest.fn();
@@ -25,16 +24,16 @@ describe('processMessage', () => {
         {
           matchers: ['nein'],
           fn: noMatch,
-        }
+        },
       ],
       prefixedCommands: {
         prefix: '-',
         commands: [],
-      }
+      },
     };
 
     const message = {
-      content: "star this thing"
+      content: 'star this thing',
     } as Message;
 
     await processMessage(message, config);
@@ -48,8 +47,7 @@ describe('processMessage', () => {
     it('process prefix matches with correct prefix', async () => {
       const km1 = jest.fn();
       const km2 = jest.fn();
-      const noMatch = jest.fn();
-  
+
       const config: CommandConfig = {
         keywordMatchCommands: [],
         prefixedCommands: {
@@ -58,15 +56,15 @@ describe('processMessage', () => {
             { matcher: 'km1', fn: km1 },
             { matcher: 'km2', fn: km2 },
           ],
-        }
+        },
       };
-  
+
       const message = {
-        content: "-km2 star this thing"
+        content: '-km2 star this thing',
       } as Message;
-  
+
       await processMessage(message, config);
-  
+
       expect(km1).not.toHaveBeenCalled();
       expect(km2).toHaveBeenCalled();
     });
@@ -74,8 +72,7 @@ describe('processMessage', () => {
     it('does not process prefix matches with correct prefix', async () => {
       const km1 = jest.fn();
       const km2 = jest.fn();
-      const noMatch = jest.fn();
-  
+
       const config: CommandConfig = {
         keywordMatchCommands: [],
         prefixedCommands: {
@@ -84,17 +81,17 @@ describe('processMessage', () => {
             { matcher: 'km1', fn: km1 },
             { matcher: 'km2', fn: km2 },
           ],
-        }
+        },
       };
-  
+
       const message = {
-        content: "-km2 star this thing"
+        content: '-km2 star this thing',
       } as Message;
-  
+
       await processMessage(message, config);
-  
+
       expect(km1).not.toHaveBeenCalled();
       expect(km2).not.toHaveBeenCalled();
     });
-  })
-})
+  });
+});

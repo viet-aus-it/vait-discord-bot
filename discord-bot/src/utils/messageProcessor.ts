@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message } from 'discord.js';
 
 export interface PrefixedCommand {
   matcher: string;
@@ -20,14 +20,22 @@ export interface CommandConfig {
   keywordMatchCommands: Array<KeywordMatchCommand>;
 }
 
-export const processMessage = async (message: Message, config: CommandConfig) => {
-  const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
+export const processMessage = async (
+  message: Message,
+  config: CommandConfig
+) => {
+  const keywordPromises = processKeywordMatch(
+    message,
+    config.keywordMatchCommands
+  );
   const prefixPromises = processPrefixedMatch(message, config.prefixedCommands);
 
-  const promises = [...keywordPromises, ...prefixPromises].filter(p => p !== undefined);
+  const promises = [...keywordPromises, ...prefixPromises].filter(
+    (p) => p !== undefined
+  );
 
-  await Promise.all(promises);
-}
+  await Promise.all(promises).catch(console.error);
+};
 
 const processKeywordMatch = (
   message: Message,
@@ -44,7 +52,7 @@ const processKeywordMatch = (
 
     return conf.fn(message);
   });
-}
+};
 
 const processPrefixedMatch = (
   message: Message,
@@ -60,5 +68,5 @@ const processPrefixedMatch = (
     }
 
     return conf.fn(message);
-  })
-}
+  });
+};
