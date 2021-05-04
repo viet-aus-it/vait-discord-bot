@@ -23,10 +23,9 @@ Issue Template that we have created.
 Pull requests are the best way to propose changes to the codebase. We actively welcome your pull requests:
 
 1. Fork the repo and create your branch from `develop`.
-2. If you've added code that should be tested, add tests.
-3. Ensure the test suite passes. (`yarn test`)
-4. Make sure your code lints. (`yarn lint`)
-5. Submit that pull request!
+2. If you've added new features, remember to add unit tests.
+3. Ensure the code passes the linting tests (`yarn lint`) and all of the test suite passes. (`yarn test`)
+4. Submit that pull request!
 
 ## Use a Consistent Coding Style
 
