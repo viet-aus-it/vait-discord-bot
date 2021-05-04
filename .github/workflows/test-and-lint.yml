@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - discord-bot/**
-      - dashboard/**
 
 jobs:
   test-and-lint-discord-bot:
@@ -36,31 +35,3 @@ jobs:
 
       - name: Run tests
         run: yarn test:silent
-
-  # test-and-lint-dashboard:
-  #     runs-on: ubuntu-latest
-  #     defaults:
-  #       run:
-  #         working-directory: dashboard
-
-  #     steps:
-  #       - uses: actions/checkout@v2
-  #         with:
-  #           token: ${{ github.token }}
-
-  #       - name: Set up Node 14
-  #         uses: actions/setup-node@v1
-  #         with:
-  #           node-version: '14.x'
-
-  #       - name: Set up project
-  #         run: |
-  #           npm -g install yarn
-  #           yarn install
-  #           yarn cache clean
-
-  #       - name: Run linting
-  #         run: yarn lint
-
-  #       - name: Run tests
-  #         run: yarn test
