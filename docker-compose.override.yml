@@ -13,16 +13,6 @@ services:
     volumes:
       - ./discord-bot:/src
 
-  # dashboard:
-  #   build:
-  #     target: development
-  #   container_name: dashboard_dev
-  #   image: viet-aus-it/dashboard:development
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ./dashboard:/var/www/
-  #     - "/var/www/html"
-
   db:
     image: postgres:13-alpine
     restart: unless-stopped
