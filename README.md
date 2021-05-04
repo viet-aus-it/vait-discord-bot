@@ -21,7 +21,13 @@ For Contributions, please have a look at our [CONTRIBUTORS.md](.github/CONTRIBUT
 
 ## Onboarding
 
-## Using the onboarding script
+### Creating your discord app and bot
+
+You will need to manually create a new discord application and a new bot. Please check out[this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) for more details
+
+### Creating the config files
+
+#### Using the onboarding script
 
 For most UNIX-like users (macOS & Linux), you should be fine with running the
 onboarding script. Please ensure that you have all of the required
@@ -34,17 +40,16 @@ process.
 ./onboarding.sh
 ```
 
-## Manually
-## Creating your discord app and bot
-You will need to manually create a new discord application and a new bot. Please check out [this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) for more details
+#### Manually
 
-## Create config file
 After creating your discord app and bot, create config file and fill in the values you get from the previous step
+
 ```bash
 cd discord-bot/
 cp .env.dist .env
 cp .env.docker.dist .env.docker
 ```
+
 - The `.env` can be ignored for now.
 - The `.env.docker` file needs to be filled in with these values:
   - `DB_HOST`: db
@@ -54,14 +59,15 @@ cp .env.docker.dist .env.docker
     database and will need to re-create it.
   - `TOKEN`: Your bot token created in previous step
 
+### Install npm dependency
 
-## Install npm dependency
 ```bash
 cd discord-bot/
 yarn install
 ```
 
-## Build and run docker container
+### Build and run docker container
+
 ```bash
 # On the root folder of the project RUN
 docker-compose up
@@ -72,8 +78,11 @@ docker composer up -d # to run the container in the background (detach mode)
 ---
 
 ## Notes on working with the repo
+
 ### How to run commands inside the container
-For `Debian/Linux/WSL` you can just use the `discord-bot/container-exec.sh` bash script to:
+
+For macOS and `Debian/Linux/WSL` users, you can just use the `discord-bot/container-exec.sh` bash script:
+
 ```bash
 # multiline command - interactive mode - allow us to run multiple command
 ./container-exec.sh
@@ -81,7 +90,9 @@ For `Debian/Linux/WSL` you can just use the `discord-bot/container-exec.sh` bash
 # or just run a specific command
 ./container-exec.sh yarn test # run yarn install inside the container
 ```
+
 If you can't or don't want to use `./container-exec.sh` wrapper script then you can run it manually:
+
 - `docker-compose <service-name> command`
 
 ```bash
@@ -94,6 +105,7 @@ docker-compose exec discord_bot_dev yarn test
 docker exec -it discord_bot_dev bash
 # same as ./container-exec.sh
 ```
+
 - To run a command intereractively with a command prompt inside the
   container, run this comand: `docker-compose <service-name> bash`
 
@@ -101,7 +113,11 @@ docker exec -it discord_bot_dev bash
 
 ---
 
-## DB migration for backend bot
+## Docker related commands
+
+### For the bot service container
+
+#### DB migration
 
 ```bash
 # Run this inside the container
@@ -109,7 +125,7 @@ yarn prisma:migrate
 yarn prisma:gen
 ```
 
-## Running tests
+#### Running tests
 
 ```bash
 # Run this inside the container
