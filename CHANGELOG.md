@@ -13,6 +13,7 @@ Developers should add to the **Unreleased** section once they feel their branch 
 - Initial project setup
 - Added reps, thanks, "đánh" features
 - Added mock someone feature
+- Added ask 8ball (-8ball) and quote of the day (-qotd) feature
 
 ### Changed
 
