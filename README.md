@@ -1,5 +1,21 @@
 # VAIT Discord Bot Project
 
+## Table of contents
+
+- [Requirements](#requirements)
+- [Contributions](#contributions)
+- [Onboarding](#onboarding)
+  - [Creating your discord app and bot](#creating-your-discord-app-and-bot)
+  - [Creating the config files](#creating-the-config-files)
+  - [Install node dependencies](#install-node-dependencies)
+  - [Build and run docker container](#build-and-run-docker-container)
+- [Notes on working with the repo](#notes-on-working-with-the-repo)
+  - [How to run commands inside the container](#how-to-run-commands-inside-the-container)
+- [Docker related commands](#docker-related-commands)
+  - [For the bot service container](#for-the-bot-service-container)
+
+***
+
 ## Requirements
 
 - [Node 14+](https://nodejs.org/en/)
@@ -17,7 +33,7 @@
 
 For Contributions, please have a look at our [CONTRIBUTORS.md](.github/CONTRIBUTING.md)
 
----
+***
 
 ## Onboarding
 
@@ -59,7 +75,7 @@ cp .env.docker.dist .env.docker
     database and will need to re-create it.
   - `TOKEN`: Your bot token created in previous step
 
-### Install npm dependency
+### Install node dependency
 
 ```bash
 cd discord-bot/
@@ -75,7 +91,7 @@ docker-compose up
 docker composer up -d # to run the container in the background (detach mode)
 ```
 
----
+***
 
 ## Notes on working with the repo
 
@@ -111,7 +127,7 @@ docker exec -it discord_bot_dev bash
 
 - The service name is defined within the [docker-compose.yml](/docker-compose.yml) file.
 
----
+***
 
 ## Docker related commands
 
