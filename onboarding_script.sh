@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Setting up git-hooks"
+git config core.hookPaths githooks
+
 echo "Please enter your discord bot token if you have one, or leave it blank:"
 read BOT_TOKEN
 if [ -z "$BOT_TOKEN" ]; then

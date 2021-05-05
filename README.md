@@ -46,7 +46,8 @@ You will need to manually create a new discord application and a new bot. Please
 #### Using the onboarding script
 
 On most UNIX-like systems (macOS, Linux and WSL), you should be able to run the
-onboarding script.
+onboarding script. This script will create a local dev environment file, install
+dependencies, build the docker containers and set up a pre-commit git hook.
 
 ```shell
 ./onboarding.sh
@@ -90,6 +91,12 @@ yarn install
 docker-compose up
 # OR
 docker composer up -d # to run the container in the background (detach mode)
+```
+
+### Setting up the pre-commit git hook
+
+```bash
+git config core.hookPaths githooks
 ```
 
 ***
