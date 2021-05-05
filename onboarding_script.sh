@@ -15,21 +15,11 @@ echo "Creating env files for discord-bot"
 cd discord-bot
 cp .env.docker.dist .env.docker
 
-function fill_env() {
-  KEY="$1"
-  VALUE="$2"
-  sed -ri -e "s!${KEY}=!${KEY}=${VALUE}!g" .env.docker
-}
-
-fill_env DB_HOST db
-fill_env DB discordbot
-fill_env DB_USER postgres
-fill_env DB_PASSWORD postgres
-fill_env TOKEN ${BOT_TOKEN}
+sed -i'' -e "s/TOKEN=YOUR_BOT_TOKEN_HERE/TOKEN=${BOT_TOKEN}/g" .env.docker
 
 NODE_VER=$(node --version)
 if [[ $NODE_VER != *"14"* ]]; then
-  echo "Please ensure you are using the correct version of Node (v14+) or else you cannot install the dependencies.\n"
+  echo "Please ensure you are using the correct version of Node (v14+) or else you cannot install the dependencies."
 else
   echo "Installing node dependencies"
   yarn install
