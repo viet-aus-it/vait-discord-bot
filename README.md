@@ -45,16 +45,17 @@ You will need to manually create a new discord application and a new bot. Please
 
 #### Using the onboarding script
 
-For most UNIX-like users (macOS & Linux), you should be fine with running the
-onboarding script. Please ensure that you have all of the required
-programs/executable are installed on your machine before running the script.
-If somehow the script does not work for you, please let us know via the Issue
-tab or ping us on Discord, and you might need to follow through the manual
-process.
+On most UNIX-like systems (macOS, Linux and WSL), you should be able to run the
+onboarding script.
 
 ```shell
 ./onboarding.sh
 ```
+
+Please ensure that you have all of the required programs/executable are
+installed on your machine before running the script. If somehow the script
+does not work for you, please let us know via the Issue tab or ping us on
+Discord, and you might need to follow through the manual process.
 
 #### Manually
 
@@ -97,7 +98,7 @@ docker composer up -d # to run the container in the background (detach mode)
 
 ### How to run commands inside the container
 
-For macOS and `Debian/Linux/WSL` users, you can just use the `discord-bot/container-exec.sh` bash script:
+On most UNIX-like systems (macOS, Linux and WSL), you can just use the `discord-bot/container-exec.sh` bash script:
 
 ```bash
 # multiline command - interactive mode - allow us to run multiple command
