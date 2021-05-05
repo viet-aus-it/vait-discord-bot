@@ -1,0 +1,13 @@
+#!/bin/bash
+
+linter_exit_code=1
+cd discord-bot
+yarn lint
+linter_exit_code=$?
+
+if [ $linter_exit_code -ne 0 ]; then
+  echo "LINT FAILED. PLEASE FIX ALL LINTING ISSUES AND TRY AGAIN."
+  exit 1
+else
+  exit 0
+fi
