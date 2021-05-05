@@ -31,7 +31,7 @@
     "test:silent": "jest --silent",
     "test:watch": "yarn test --watchAll",
     "start:script": "ts-node-dev --poll --transpile-only --no-notify ./src/index.ts",
-    "start": "concurrently \"yarn:start:script\" \"yarn:lint:watch\" \"yarn:test:watch\"",
+    "start": "concurrently \"yarn:start:script\" \"yarn:lint:watch\"",
     "serve": "node build/index.js",
     "prisma:migrate": "npx prisma migrate dev",
     "prisma:gen": "npx prisma generate"
