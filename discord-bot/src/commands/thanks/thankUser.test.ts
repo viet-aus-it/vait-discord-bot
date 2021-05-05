@@ -1,5 +1,10 @@
 import { Collection, User } from 'discord.js';
 import { thankUser } from './thankUser';
+import { getPrismaClient } from '../../clients/prisma';
+
+jest.mock('../../clients/prisma', () => ({
+  getPrismaClient: jest.fn(),
+}));
 
 const replyMock = jest.fn(() => {});
 
@@ -8,17 +13,7 @@ describe('thankUser', () => {
   const updateUserMock = jest.fn();
   const reputationCreateMock = jest.fn();
   const transactionMock = jest.fn(() => [{ id: 0 }]);
-  it('should do nothing if message not contains keyword', async () => {
-    const mockMsg: any = {
-      content: 'bla bla',
-      reply: replyMock,
-    };
-    const mockPrisma: any = {};
-
-    await thankUser(mockMsg, mockPrisma);
-
-    expect(replyMock.mock.calls.length).toBe(0);
-  });
+  (getPrismaClient as jest.Mock).mockReturnValue({});
 
   it('should do nothing if mentions more than one user', async () => {
     const mockUsers = new Collection<string, User>();
@@ -35,9 +30,9 @@ describe('thankUser', () => {
         bot: false,
       },
     };
-    const mockPrisma: any = {};
+    (getPrismaClient as jest.Mock).mockReturnValue({});
 
-    await thankUser(mockMsg, mockPrisma);
+    await thankUser(mockMsg);
 
     expect(replyMock.mock.calls.length).toBe(0);
   });
@@ -58,9 +53,9 @@ describe('thankUser', () => {
       },
     };
 
-    const mockPrisma: any = {};
+    (getPrismaClient as jest.Mock).mockReturnValue({});
 
-    await thankUser(mockMsg, mockPrisma);
+    await thankUser(mockMsg);
 
     expect(replyMock.mock.calls.length).toBe(0);
   });
@@ -81,7 +76,7 @@ describe('thankUser', () => {
       },
     };
 
-    const mockPrisma: any = {
+    (getPrismaClient as jest.Mock).mockReturnValue({
       user: {
         findUnique: findUniqueMock,
         update: updateUserMock,
@@ -90,9 +85,9 @@ describe('thankUser', () => {
         create: reputationCreateMock,
       },
       $transaction: transactionMock,
-    };
+    });
 
-    await thankUser(mockMsg, mockPrisma);
+    await thankUser(mockMsg);
     expect(findUniqueMock.mock.calls.length).toBe(0);
     expect(replyMock.mock.calls.length).toBe(0);
     expect(reputationCreateMock.mock.calls.length).toBe(0);
@@ -115,7 +110,7 @@ describe('thankUser', () => {
       },
     };
 
-    const mockPrisma: any = {
+    (getPrismaClient as jest.Mock).mockReturnValue({
       user: {
         findUnique: findUniqueMock,
         update: updateUserMock,
@@ -124,9 +119,9 @@ describe('thankUser', () => {
         create: reputationCreateMock,
       },
       $transaction: transactionMock,
-    };
+    });
 
-    await thankUser(mockMsg, mockPrisma);
+    await thankUser(mockMsg);
     expect(findUniqueMock.mock.calls.length).toBe(0);
     expect(replyMock.mock.calls.length).toBe(0);
     expect(reputationCreateMock.mock.calls.length).toBe(0);
@@ -148,7 +143,7 @@ describe('thankUser', () => {
       },
     };
 
-    const mockPrisma: any = {
+    (getPrismaClient as jest.Mock).mockReturnValue({
       user: {
         findUnique: findUniqueMock,
         update: updateUserMock,
@@ -157,9 +152,9 @@ describe('thankUser', () => {
         create: reputationCreateMock,
       },
       $transaction: transactionMock,
-    };
+    });
 
-    await thankUser(mockMsg, mockPrisma);
+    await thankUser(mockMsg);
 
     expect(findUniqueMock.mock.calls.length).toBe(1);
     expect(updateUserMock.mock.calls.length).toBe(1);

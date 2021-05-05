@@ -41,6 +41,8 @@
     "@prisma/client": "^2.21.2",
     "concurrently": "^6.0.2",
     "discord.js": "^12.5.3",
+    "eslint-plugin-prettier": "^3.4.0",
+    "ramda": "^0.27.1",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
@@ -51,6 +53,7 @@
     "@types/faker": "^5.5.3",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.0.1",
+    "@types/ramda": "^0.27.40",
     "@types/node-fetch": "^2.5.10",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",

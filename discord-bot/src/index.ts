@@ -1,29 +1,16 @@
-import { Client } from 'discord.js';
-import { PrismaClient } from '@prisma/client';
-
-import danhSomeone from './danhSomeone';
-import mockSomeone from './mockSomeone';
-import thanks from './thanks';
-import ask8Ball from './8ball';
-import getQuoteOfTheDay from './quoteOfTheDay';
+import { processMessage } from './utils/messageProcessor';
+import { getDiscordClient } from './clients/discord';
+import { getConfigs } from './config';
 
 const { TOKEN } = process.env;
-const client = new Client();
-const prisma = new PrismaClient();
-let botId: string | undefined;
+getDiscordClient({
+  token: TOKEN,
+}).then((client) => {
+  if (!client.user) throw new Error('Something went wrong!');
+  console.log(`Logged in as ${client.user.tag}!`);
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user?.tag}!`);
-  botId = client.user?.id;
+  const configs = getConfigs(client);
+  client.on('message', (msg) => processMessage(msg, configs));
 });
 
-client.on('message', (msg) => {
-  danhSomeone(msg, botId as any);
-  mockSomeone(msg);
-  ask8Ball(msg);
-  getQuoteOfTheDay(msg);
-  thanks(msg, prisma);
-});
-
-client.login(TOKEN);
 process.on('SIGTERM', () => process.exit());

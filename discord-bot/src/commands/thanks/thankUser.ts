@@ -1,13 +1,10 @@
 import { Message } from 'discord.js';
-import { PrismaClient } from '.prisma/client';
 import { getOrCreateUser } from './_helpers';
+import { getPrismaClient } from '../../clients/prisma';
 
-export const thankUser = async (msg: Message, prisma: PrismaClient) => {
-  const thankKeywords = ['thank', 'thanks', 'cảm ơn', 'cám ơn'];
-  const hasKeyword = thankKeywords.some((keyword) =>
-    msg.content.toLowerCase().includes(keyword)
-  );
-  if (!hasKeyword) return;
+export const thankUser = async (msg: Message) => {
+  const prisma = getPrismaClient();
+
   if (msg.author.bot) return; // return if author is a Discord bot
   const hasExactlyOneUser = msg.mentions.users.size === 1;
   if (!hasExactlyOneUser) return;

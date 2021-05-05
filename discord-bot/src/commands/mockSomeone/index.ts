@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { getRandomBoolean } from '../utils/random';
+import { getRandomBoolean } from '../../utils/random';
 
 const isBlank = (content: string) => content.trim() === '';
 
@@ -48,11 +48,11 @@ const fetchLastMessageBeforeId = async (channel: TextChannel, id: string) => {
 };
 
 const mockSomeone = async ({ content, channel, id, reference }: Message) => {
-  const mockPrefix = '-mock';
-  const hasMockPrefix = content.toLowerCase().startsWith(mockPrefix);
-  if (!hasMockPrefix) return;
+  const indexOfMockPrefix = content.trimEnd().indexOf(' ');
 
-  let chatContent = content.slice(mockPrefix.length);
+  let chatContent =
+    indexOfMockPrefix !== -1 ? content.slice(indexOfMockPrefix) : '';
+
   // If -mock is detected and it has content
   if (!isBlank(chatContent)) {
     const mockText = generateMockText(chatContent);
