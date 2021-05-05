@@ -1,8 +1,19 @@
 #!/bin/bash
 
-linter_exit_code=1
-cd discord-bot
-yarn lint
+# Exit early if no files changed
+changed_files==$(git diff --diff-filter=d --cached --name-only)
+if [ -z "$changed_files" ]; then
+  exit 0
+fi
+
+
+discord_bot_files=$(git diff --diff-filter=d --cached --name-only -- "discord-bot/src")
+# Ignore linting if no ts files are changed
+if [ -z "$discord_bot_files" ]; then
+  exit 0
+fi
+linter_exit_code=0
+./discord-bot/node_modules/.bin/esw $discord_bot_files
 linter_exit_code=$?
 
 if [ $linter_exit_code -ne 0 ]; then
