@@ -1,4 +1,3 @@
-import faker from 'faker';
 import getQuoteOfTheDay from '.';
 
 const replyMock = jest.fn(() => {});

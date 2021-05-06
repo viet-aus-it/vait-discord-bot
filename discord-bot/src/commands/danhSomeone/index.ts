@@ -12,11 +12,13 @@ export const danhSomeone = async (msg: Message, botId: string) => {
         `${msg.author.username}, I'm your father, you can't hit me`
       );
     }
-    
+
     if (msg.author.id === user.id) {
-      return msg.reply(`Stop hitting yourself ${user.username}, hit someone else`);
+      return msg.reply(
+        `Stop hitting yourself ${user.username}, hit someone else`
+      );
     }
-    
+
     return msg.channel.send(
       `${user.username} takes ${getRandomIntInclusive(0, 100)} dmg`
     );

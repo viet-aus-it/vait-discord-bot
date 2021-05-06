@@ -16,17 +16,16 @@ const getQuoteOfTheDay = async ({ channel, author }: Message) => {
   const body: Quote[] = await response.json();
   if (body.length === 0) return; // return if no quote is downloaded
   const quote = body[0];
-  
   channel.send({
     embed: {
       color: 0x0072a8,
+      title: quote.q,
+      description: `- ${quote.a} -`,
       author: {
-        name: 'Inspirational quotes provided by ZenQuotes API',
+        name: `Quote of the day`,
       },
-      title: 'Quote of the day',
-      description: quote.q,
       footer: {
-        text: quote.a,
+        text: `Inspirational quotes provided by ZenQuotes API`,
       },
     },
   });
