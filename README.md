@@ -96,7 +96,7 @@ docker composer up -d # to run the container in the background (detach mode)
 ### Setting up the pre-commit git hook
 
 ```bash
-git config core.hookPaths githooks
+git config core.hooksPath githooks
 ```
 
 ***
