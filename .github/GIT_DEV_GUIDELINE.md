@@ -12,7 +12,7 @@
 - Make small/atomic commits.
 - Do not commit vendor/compiled code.
 - Do not commit commented-out code — just delete it.
-- Explain the why, not the what, in your commit message:
+- [Explain the why, not the what, in your commit message](https://chris.beams.io/posts/git-commit/):
   ```
   // Bad
   Updated index.js field
