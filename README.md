@@ -31,7 +31,9 @@
 
 ## Contributions
 
-For Contributions, please have a look at our [CONTRIBUTORS.md](.github/CONTRIBUTING.md)
+For Contributions, please have a look these document
+- [GIT_DEV_GUIDELINE.md](.github/GIT_DEV_GUIDELINE.md) [MUST READ]
+- [CONTRIBUTORS.md](.github/CONTRIBUTING.md) [MUST READ]
 
 ***
 
