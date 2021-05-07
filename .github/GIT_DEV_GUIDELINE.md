@@ -19,11 +19,12 @@
   // Good
   Remove debug statement from index.js
   ```
+  - Keep in mind: [This](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) [has](https://www.git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project#_commit_guidelines) [all](https://github.com/torvalds/subsurface-for-dirk/blob/master/README.md#contributing) [been](http://who-t.blogspot.co.at/2009/12/on-commit-messages.html) [said](https://github.com/erlang/otp/wiki/writing-good-commit-messages) [before.](https://github.com/spring-projects/spring-framework/blob/30bce7/CONTRIBUTING.md#format-commit-messages)
 - Your commit message must also refer to issue number:
   ```
   #9 Remove debug statement from index.js
   ```
-- Rebase instead of merge to resolve conflicts. However oo not rebase or ammend your branch/commit of your branch is already pull down by someone else
+- Rebase instead of merge to resolve conflicts. However do not rebase or amend your branch/commit of your branch is already pull down by someone else
 ### PR / CHANGELOG
 - Use pull requests. Get reviews.
 - Do not commit or push directly to the master branch (you won't have permission to do this anyway)
