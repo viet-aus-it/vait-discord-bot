@@ -1,9 +1,10 @@
 import { checkReputation } from './checkReputation';
 import { getPrismaClient } from '../../clients/prisma';
 
-jest.mock('../../clients/prisma', () => ({
-  getPrismaClient: jest.fn(),
-}));
+jest.mock('../../clients/prisma');
+const mockGetPrismaClient = getPrismaClient as jest.MockedFunction<
+  typeof getPrismaClient
+>;
 
 const replyMock = jest.fn(() => {});
 const findUniqueMock = jest.fn(() => ({ id: '1' }));
@@ -16,9 +17,10 @@ describe('checkReputation', () => {
       reply: replyMock,
     };
 
-    (getPrismaClient as jest.Mock).mockReturnValue({
+    const mockPrismaClient: any = {
       user: { findUnique: findUniqueMock },
-    });
+    };
+    mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
     await checkReputation(messageMock);
 
