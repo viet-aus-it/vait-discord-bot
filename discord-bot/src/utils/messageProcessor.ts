@@ -14,10 +14,14 @@ export interface KeywordMatchCommand {
   matchers: Array<string>;
   fn: (message: Message) => Promise<any>;
 }
-
+export interface EmojiMatchCommand {
+  matcher: string;
+  fn: (message: Message) => Promise<any>;
+}
 export interface CommandConfig {
   prefixedCommands: PrefixedCommands;
   keywordMatchCommands: Array<KeywordMatchCommand>;
+  emojiMatchCommand: EmojiMatchCommand;
 }
 
 export const processMessage = async (
@@ -29,12 +33,25 @@ export const processMessage = async (
     config.keywordMatchCommands
   );
   const prefixPromises = processPrefixedMatch(message, config.prefixedCommands);
-
-  const promises = [...keywordPromises, ...prefixPromises].filter(
-    (p) => p !== undefined
-  );
+  const emojiPromises = processEmojiMatch(message, config.emojiMatchCommand);
+  const promises = [
+    ...keywordPromises,
+    ...prefixPromises,
+    emojiPromises,
+  ].filter((p) => p !== undefined);
 
   await Promise.all(promises).catch(console.error);
+};
+
+const processEmojiMatch = (
+  message: Message,
+  config: EmojiMatchCommand
+): Promise<any> | undefined => {
+  const hasEmoji = message.content.match(config.matcher);
+  if (!hasEmoji) {
+    return;
+  }
+  return config.fn(message);
 };
 
 const processKeywordMatch = (
