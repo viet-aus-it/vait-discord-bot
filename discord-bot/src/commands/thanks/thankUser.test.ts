@@ -17,8 +17,8 @@ describe('thankUser', () => {
 
   it('should do nothing if mentions more than one user', async () => {
     const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '0' } as any);
-    mockUsers.set('1', { id: '1' } as any);
+    mockUsers.set('0', { id: '0' } as User);
+    mockUsers.set('1', { id: '1' } as User);
 
     const mockMsg: any = {
       content: 'thank',
@@ -39,7 +39,7 @@ describe('thankUser', () => {
 
   it('should do nothing if user mention himself', async () => {
     const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '0' } as any);
+    mockUsers.set('0', { id: '0' } as User);
 
     const mockMsg: any = {
       content: 'thank',
@@ -130,7 +130,7 @@ describe('thankUser', () => {
 
   it('should call reply', async () => {
     const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '0' } as any);
+    mockUsers.set('0', { id: '0' } as User);
 
     const mockMsg: any = {
       content: 'thank',
