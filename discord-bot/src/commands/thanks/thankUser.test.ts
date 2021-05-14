@@ -63,6 +63,44 @@ describe('thankUser', () => {
     expect(replyMock.mock.calls.length).toBe(0);
   });
 
+  it('should do nothing if user mention no one', async () => {
+    const mockUsers = new Collection<string, User>();
+    mockUsers.set('0', { id: '0' } as User);
+
+    const mockMsg: any = {
+      content: 'thank',
+      reply: replyMock,
+      mentions: {
+        users: {
+          first: () => undefined,
+          size: 1,
+        },
+      },
+      author: {
+        id: '5',
+        bot: false,
+      },
+    };
+
+    const mockPrismaClient: any = {
+      user: {
+        findUnique: findUniqueMock,
+        update: updateUserMock,
+      },
+      reputationLog: {
+        create: reputationCreateMock,
+      },
+      $transaction: transactionMock,
+    };
+    mockGetPrismaClient.mockReturnValue(mockPrismaClient);
+
+    await thankUser(mockMsg);
+    expect(findUniqueMock.mock.calls.length).toBe(0);
+    expect(replyMock.mock.calls.length).toBe(0);
+    expect(reputationCreateMock.mock.calls.length).toBe(0);
+    expect(transactionMock.mock.calls.length).toBe(0);
+  });
+
   it('should do nothing if bot is mentioned', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1', bot: true } as User);
