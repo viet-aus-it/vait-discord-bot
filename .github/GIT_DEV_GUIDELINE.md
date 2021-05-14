@@ -1,6 +1,6 @@
 # GIT development guideline
 
-## Commandments:
+## Commandments
 
 ### Branch
 
@@ -20,9 +20,9 @@
 - [Explain the why, not the what, in your commit message](https://chris.beams.io/posts/git-commit/):
 
   ```gitcommit
-  // Bad
+  # Bad
   Updated index.js field
-  // Good
+  # Good
   Remove debug statement from index.js
   ```
 

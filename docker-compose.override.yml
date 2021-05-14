@@ -19,8 +19,6 @@ services:
     container_name: discord_bot_db
     ports:
       - 5432:5432
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+    env_file: "discord-bot/.env.docker"
     volumes:
       - ./db/data:/var/lib/postgresql/data

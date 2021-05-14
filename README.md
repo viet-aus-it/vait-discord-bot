@@ -14,7 +14,7 @@
 - [Docker related commands](#docker-related-commands)
   - [For the bot service container](#for-the-bot-service-container)
 
-***
+---
 
 ## Requirements
 
@@ -32,10 +32,11 @@
 ## Contributions
 
 For Contributions, please have a look these document
+
 - [GIT_DEV_GUIDELINE.md](.github/GIT_DEV_GUIDELINE.md) [MUST READ]
 - [CONTRIBUTORS.md](.github/CONTRIBUTING.md) [MUST READ]
 
-***
+---
 
 ## Onboarding
 
@@ -72,11 +73,12 @@ cp .env.docker.dist .env.docker
 
 - The `.env` can be ignored for now.
 - The `.env.docker` file needs to be filled in with these values:
-  - `DB_HOST`: db
-  - `DB_USER`, `DB_PASSWORD`, `DB`: You can fill in whatever you like with these or just leave it with default value,
-    since it only affects your local dev environment. But please keep it
-    consistent since if you lose it, you will lose access to your local
-    database and will need to re-create it.
+  - DB Values: We already fill in some defaults for this to work in a local environment.
+    - `POSTGRES_HOST`: db
+    - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: You can fill in whatever
+      you like with these or just leave it with default value, since it only affects
+      your local dev environment. But please keep it consistent since if you lose it,
+      you will lose access to your local database and will need to re-create it.
   - `TOKEN`: Your bot token created in previous step
 
 ### Install node dependency
@@ -101,7 +103,7 @@ docker composer up -d # to run the container in the background (detach mode)
 git config core.hooksPath githooks
 ```
 
-***
+---
 
 ## Notes on working with the repo
 
@@ -137,7 +139,7 @@ docker exec -it discord_bot_dev bash
 
 - The service name is defined within the [docker-compose.yml](/docker-compose.yml) file.
 
-***
+---
 
 ## Docker related commands
 
