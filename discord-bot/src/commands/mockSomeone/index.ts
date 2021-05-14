@@ -17,7 +17,7 @@ const generateMockText = (message: string) =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
-const handleFetchMessageError = (error: any) => {
+const handleFetchMessageError = (error: Error) => {
   console.error('CANNOT FETCH MESSAGES IN CHANNEL', error);
   return '';
 };
