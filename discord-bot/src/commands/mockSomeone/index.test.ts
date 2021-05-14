@@ -46,7 +46,7 @@ describe('mockSomeone test', () => {
       expect(fetchMock.mock.calls.length).toBe(1);
     });
 
-    describe('Fetching previuos message', () => {
+    describe('Fetching previous message', () => {
       it('Should throw error if previous message cannot be retrieved', async () => {
         const fetchMock = jest.fn(async () => ({
           first: () => undefined,
@@ -84,6 +84,17 @@ describe('mockSomeone test', () => {
     });
 
     describe('Fetching referred message', () => {
+      it('Should throw error if referred message cannot be fetched by id', async () => {
+        const fetchMock = jest.fn(async () => undefined);
+        const mockMsg: any = getMockMessageWithReference(fetchMock, {
+          messageID: '1234',
+        });
+
+        await mockSomeone(mockMsg);
+        expect(replyMock.mock.calls.length).toBe(0);
+        expect(fetchMock.mock.calls.length).toBe(1);
+      });
+
       it('Should return blank if referred message is blank', async () => {
         const blankMessage = { content: '' };
         const fetchMock = jest.fn(async () => blankMessage);
