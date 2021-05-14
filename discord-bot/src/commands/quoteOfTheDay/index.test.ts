@@ -1,4 +1,8 @@
 import getQuoteOfTheDay from '.';
+import fetchQuote from './fetchQuote';
+
+jest.mock('./fetchQuote');
+const mockFetch = fetchQuote as jest.MockedFunction<typeof fetchQuote>;
 
 const replyMock = jest.fn(() => {});
 
@@ -19,7 +23,23 @@ describe('Get quote of the day test', () => {
       channel: { send: replyMock },
       author: { bot: false },
     };
+    mockFetch.mockImplementationOnce(async () => ({
+      quote: 'This is a quote',
+      author: 'Author',
+      html: '<h1>This is a quote</h1>',
+    }));
     await getQuoteOfTheDay(mockMsg);
     expect(replyMock.mock.calls.length).toBe(1);
+  });
+
+  it('Should return if no quote can be downloaded', async () => {
+    const mockMsg: any = {
+      content: `-qotd`,
+      channel: { send: replyMock },
+      author: { bot: false },
+    };
+    mockFetch.mockImplementationOnce(async () => undefined);
+    await getQuoteOfTheDay(mockMsg);
+    expect(replyMock.mock.calls.length).toBe(0);
   });
 });
