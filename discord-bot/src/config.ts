@@ -6,6 +6,7 @@ import danhSomeone from './commands/danhSomeone';
 import mockSomeone from './commands/mockSomeone';
 import { thankUser, checkReputation } from './commands/thanks';
 import getQuoteOfTheDay from './commands/quoteOfTheDay';
+import animatedEmoji from './commands/animatedEmoji';
 
 export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   prefixedCommands: {
@@ -27,4 +28,8 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
       fn: thankUser,
     },
   ],
+  emojiMatchCommand: {
+    matcher: ':.+:',
+    fn: animatedEmoji,
+  },
 });
