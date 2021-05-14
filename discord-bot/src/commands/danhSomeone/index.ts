@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import { getRandomIntInclusive } from '../../utils/random';
 
 export const danhSomeone = async (msg: Message, botId: string) => {
-  if (msg.author.id === botId) return; // return if message is from a Discord bot
+  if (msg.author.id === botId) return; // return if message is from this bot
   if (!msg.mentions) return;
   if (!msg.mentions.users?.first()) return; // return if no user is mentioned
 

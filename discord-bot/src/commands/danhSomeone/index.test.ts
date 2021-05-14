@@ -55,13 +55,30 @@ describe('danhSomeone', () => {
     expect(replyMock.mock.calls.length).toBe(0);
   });
 
+  it('it should return if mentioned users is undefined', () => {
+    const mockMsg: any = {
+      content: '-hit',
+      reply: replyMock,
+      channel: { send: replyMock },
+      mentions: {
+        users: undefined,
+      },
+      author: {
+        id: '1',
+      },
+    };
+    const mockBotId = '0';
+    danhSomeone(mockMsg, mockBotId);
+    expect(replyMock.mock.calls.length).toBe(0);
+  });
+
   it('it should return if no user is mentioned', () => {
     const mockMsg: any = {
       content: '-hit',
       reply: replyMock,
       channel: { send: replyMock },
       mentions: {
-        users: { first: jest.fn(() => {}) },
+        users: { first: jest.fn(() => undefined) },
       },
       author: {
         id: '1',
