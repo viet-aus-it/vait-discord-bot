@@ -9,7 +9,7 @@ getDiscordClient({
   if (!client.user) throw new Error('Something went wrong!');
   console.log(`Logged in as ${client.user.tag}!`);
 
-  const configs = getConfigs(client);
+  const configs = getConfigs(client.user);
   client.on('message', (msg) => processMessage(msg, configs));
 });
 

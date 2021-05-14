@@ -1,4 +1,4 @@
-import { Client } from 'discord.js';
+import { ClientUser } from 'discord.js';
 import { CommandConfig } from './utils/messageProcessor';
 
 import ask8Ball from './commands/8ball';
@@ -7,7 +7,7 @@ import mockSomeone from './commands/mockSomeone';
 import { thankUser, checkReputation } from './commands/thanks';
 import getQuoteOfTheDay from './commands/quoteOfTheDay';
 
-export const getConfigs = (client: Client): CommandConfig => ({
+export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   prefixedCommands: {
     prefix: '-',
     commands: [
@@ -16,7 +16,7 @@ export const getConfigs = (client: Client): CommandConfig => ({
       { matcher: 'mock', fn: mockSomeone },
       {
         matcher: 'hit',
-        fn: (message) => danhSomeone(message, (client.user as any).id),
+        fn: (message) => danhSomeone(message, botUser.id),
       },
       { matcher: 'qotd', fn: getQuoteOfTheDay },
     ],
