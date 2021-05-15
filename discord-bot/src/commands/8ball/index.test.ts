@@ -12,7 +12,7 @@ describe('ask 8Ball test', () => {
     };
 
     await ask8Ball(mockMsg);
-    expect(replyMock.mock.calls.length).toBe(1);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
   it('Should return if no question asked', async () => {
@@ -23,7 +23,7 @@ describe('ask 8Ball test', () => {
     };
 
     await ask8Ball(mockMsg);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('Should return if author is a bot', async () => {
@@ -34,6 +34,6 @@ describe('ask 8Ball test', () => {
     };
 
     await ask8Ball(mockMsg);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 });

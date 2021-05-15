@@ -22,7 +22,7 @@ describe('danhSomeone', () => {
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
-    expect(replyMock.mock.calls.length).toBe(4);
+    expect(replyMock).toHaveBeenCalledTimes(4);
   });
 
   it('it should not hit yourself', () => {
@@ -42,7 +42,7 @@ describe('danhSomeone', () => {
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
-    expect(replyMock.mock.calls.length).toBe(1);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
   it('it should return if no keyword is mentioned', () => {
@@ -52,7 +52,7 @@ describe('danhSomeone', () => {
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('it should return if mentioned users is undefined', () => {
@@ -69,7 +69,7 @@ describe('danhSomeone', () => {
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('it should return if no user is mentioned', () => {
@@ -86,7 +86,7 @@ describe('danhSomeone', () => {
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('should return if no user is mentioned', () => {
@@ -100,7 +100,7 @@ describe('danhSomeone', () => {
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('should do nothing if bot message has keywords', () => {
@@ -114,6 +114,6 @@ describe('danhSomeone', () => {
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 });

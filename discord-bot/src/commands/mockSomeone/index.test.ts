@@ -15,7 +15,7 @@ describe('mockSomeone test', () => {
     };
 
     await mockSomeone(mockMsg);
-    expect(replyMock.mock.calls.length).toBe(1);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
   describe('For -mock prefix with blank content', () => {
@@ -42,8 +42,8 @@ describe('mockSomeone test', () => {
       const mockMsg: any = getMockMsg(fetchMock);
 
       await mockSomeone(mockMsg);
-      expect(replyMock.mock.calls.length).toBe(0);
-      expect(fetchMock.mock.calls.length).toBe(1);
+      expect(replyMock).not.toHaveBeenCalled();
+      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     describe('Fetching previous message', () => {
@@ -54,8 +54,8 @@ describe('mockSomeone test', () => {
         const mockMsg: any = getMockMsg(fetchMock);
 
         await mockSomeone(mockMsg);
-        expect(replyMock.mock.calls.length).toBe(0);
-        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(replyMock).not.toHaveBeenCalled();
+        expect(fetchMock).toHaveBeenCalledTimes(1);
       });
 
       it('Should return blank if previous message is blank', async () => {
@@ -66,8 +66,8 @@ describe('mockSomeone test', () => {
         const mockMsg: any = getMockMsg(fetchMock);
 
         await mockSomeone(mockMsg);
-        expect(replyMock.mock.calls.length).toBe(0);
-        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(replyMock).not.toHaveBeenCalled();
+        expect(fetchMock).toHaveBeenCalledTimes(1);
       });
 
       it('Should mock the previous message', async () => {
@@ -78,8 +78,8 @@ describe('mockSomeone test', () => {
         const mockMsg: any = getMockMsg(fetchMock);
 
         await mockSomeone(mockMsg);
-        expect(replyMock.mock.calls.length).toBe(1);
-        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(replyMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -91,8 +91,8 @@ describe('mockSomeone test', () => {
         });
 
         await mockSomeone(mockMsg);
-        expect(replyMock.mock.calls.length).toBe(0);
-        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(replyMock).not.toHaveBeenCalled();
+        expect(fetchMock).toHaveBeenCalledTimes(1);
       });
 
       it('Should return blank if referred message is blank', async () => {
@@ -103,8 +103,8 @@ describe('mockSomeone test', () => {
         });
 
         await mockSomeone(mockMsg);
-        expect(replyMock.mock.calls.length).toBe(0);
-        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(replyMock).not.toHaveBeenCalled();
+        expect(fetchMock).toHaveBeenCalledTimes(1);
       });
 
       it('Should mock the referred message', async () => {
@@ -115,8 +115,8 @@ describe('mockSomeone test', () => {
         });
 
         await mockSomeone(mockMsg);
-        expect(replyMock.mock.calls.length).toBe(1);
-        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(replyMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
       });
     });
   });

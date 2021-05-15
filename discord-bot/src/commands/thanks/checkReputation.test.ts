@@ -24,7 +24,7 @@ describe('checkReputation', () => {
 
     await checkReputation(messageMock);
 
-    expect(findUniqueMock.mock.calls.length).toBe(1);
-    expect(replyMock.mock.calls.length).toBe(1);
+    expect(findUniqueMock).toHaveBeenCalledTimes(1);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 });
