@@ -1,3 +1,4 @@
+import faker from 'faker';
 import fetch from 'node-fetch';
 import fetchQuote from './fetchQuote';
 
@@ -22,10 +23,11 @@ describe('Fetching quotes', () => {
   });
 
   it('Should return the quote when it finally got it', async () => {
+    const fakeQuote = faker.lorem.words(25);
     const sampleQuote = {
-      q: 'This is a quote',
+      q: fakeQuote,
       a: 'Author',
-      h: '<h1>This is a quote</h1>',
+      h: `<h1>${fakeQuote}</h1>`,
     };
     const mockedQuote: any = {
       json: async () => [sampleQuote],
