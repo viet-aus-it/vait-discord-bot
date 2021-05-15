@@ -36,7 +36,7 @@ describe('thankUser', () => {
 
     await thankUser(mockMsg);
 
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('should do nothing if user mention himself', async () => {
@@ -60,7 +60,7 @@ describe('thankUser', () => {
 
     await thankUser(mockMsg);
 
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('should do nothing if user mention no one', async () => {
@@ -95,10 +95,10 @@ describe('thankUser', () => {
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
     await thankUser(mockMsg);
-    expect(findUniqueMock.mock.calls.length).toBe(0);
-    expect(replyMock.mock.calls.length).toBe(0);
-    expect(reputationCreateMock.mock.calls.length).toBe(0);
-    expect(transactionMock.mock.calls.length).toBe(0);
+    expect(findUniqueMock).not.toHaveBeenCalled();
+    expect(replyMock).not.toHaveBeenCalled();
+    expect(reputationCreateMock).not.toHaveBeenCalled();
+    expect(transactionMock).not.toHaveBeenCalled();
   });
 
   it('should do nothing if bot is mentioned', async () => {
@@ -130,10 +130,10 @@ describe('thankUser', () => {
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
     await thankUser(mockMsg);
-    expect(findUniqueMock.mock.calls.length).toBe(0);
-    expect(replyMock.mock.calls.length).toBe(0);
-    expect(reputationCreateMock.mock.calls.length).toBe(0);
-    expect(transactionMock.mock.calls.length).toBe(0);
+    expect(findUniqueMock).not.toHaveBeenCalled();
+    expect(replyMock).not.toHaveBeenCalled();
+    expect(reputationCreateMock).not.toHaveBeenCalled();
+    expect(transactionMock).not.toHaveBeenCalled();
   });
 
   it('should do nothing if bot is saying the keywords', async () => {
@@ -165,10 +165,10 @@ describe('thankUser', () => {
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
     await thankUser(mockMsg);
-    expect(findUniqueMock.mock.calls.length).toBe(0);
-    expect(replyMock.mock.calls.length).toBe(0);
-    expect(reputationCreateMock.mock.calls.length).toBe(0);
-    expect(transactionMock.mock.calls.length).toBe(0);
+    expect(findUniqueMock).not.toHaveBeenCalled();
+    expect(replyMock).not.toHaveBeenCalled();
+    expect(reputationCreateMock).not.toHaveBeenCalled();
+    expect(transactionMock).not.toHaveBeenCalled();
   });
 
   it('should call reply', async () => {
@@ -200,10 +200,10 @@ describe('thankUser', () => {
 
     await thankUser(mockMsg);
 
-    expect(findUniqueMock.mock.calls.length).toBe(1);
-    expect(updateUserMock.mock.calls.length).toBe(1);
-    expect(reputationCreateMock.mock.calls.length).toBe(1);
-    expect(transactionMock.mock.calls.length).toBe(1);
-    expect(replyMock.mock.calls.length).toBe(1);
+    expect(findUniqueMock).toHaveBeenCalledTimes(1);
+    expect(updateUserMock).toHaveBeenCalledTimes(1);
+    expect(reputationCreateMock).toHaveBeenCalledTimes(1);
+    expect(transactionMock).toHaveBeenCalledTimes(1);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 });

@@ -15,7 +15,7 @@ describe('Get quote of the day test', () => {
       author: { bot: true },
     };
     await getQuoteOfTheDay(mockMsg);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('Should return a random quote if somebody sends the prefix', async () => {
@@ -31,7 +31,7 @@ describe('Get quote of the day test', () => {
       html: `<h1>${fakeQuote}</h1>`,
     }));
     await getQuoteOfTheDay(mockMsg);
-    expect(replyMock.mock.calls.length).toBe(1);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
   it('Should return if no quote can be downloaded', async () => {
@@ -42,6 +42,6 @@ describe('Get quote of the day test', () => {
     };
     mockFetch.mockImplementationOnce(async () => undefined);
     await getQuoteOfTheDay(mockMsg);
-    expect(replyMock.mock.calls.length).toBe(0);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 });
