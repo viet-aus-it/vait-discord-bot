@@ -1,3 +1,4 @@
+import faker from 'faker';
 import getQuoteOfTheDay from '.';
 import fetchQuote from './fetchQuote';
 
@@ -23,10 +24,11 @@ describe('Get quote of the day test', () => {
       channel: { send: replyMock },
       author: { bot: false },
     };
+    const fakeQuote = faker.lorem.words(25);
     mockFetch.mockImplementationOnce(async () => ({
-      quote: 'This is a quote',
+      quote: fakeQuote,
       author: 'Author',
-      html: '<h1>This is a quote</h1>',
+      html: `<h1>${fakeQuote}</h1>`,
     }));
     await getQuoteOfTheDay(mockMsg);
     expect(replyMock.mock.calls.length).toBe(1);
