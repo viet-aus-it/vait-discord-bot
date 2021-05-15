@@ -116,7 +116,7 @@ On most UNIX-like systems (macOS, Linux and WSL), you can just use the `discord-
 ./container-exec.sh
 
 # or just run a specific command
-./container-exec.sh yarn test # run yarn install inside the container
+./container-exec.sh yarn test # run yarn test inside the container
 ```
 
 If you can't or don't want to use `./container-exec.sh` wrapper script then you can run it manually:
