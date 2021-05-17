@@ -14,9 +14,7 @@ describe('Fetching quotes', () => {
   });
 
   it('Should return undefined if it downloaded a blank array', async () => {
-    const mockedQuote: any = {
-      json: async () => [],
-    };
+    const mockedQuote: any = { json: async () => [] };
     mockFetch.mockImplementationOnce(async () => mockedQuote);
     const output = await fetchQuote();
     expect(output).toEqual(undefined);
@@ -29,9 +27,7 @@ describe('Fetching quotes', () => {
       a: 'Author',
       h: `<h1>${fakeQuote}</h1>`,
     };
-    const mockedQuote: any = {
-      json: async () => [sampleQuote],
-    };
+    const mockedQuote: any = { json: async () => [sampleQuote] };
     mockFetch.mockImplementationOnce(async () => mockedQuote);
     const output = await fetchQuote();
     expect(output).toEqual({
