@@ -23,9 +23,7 @@ describe('mockSomeone test', () => {
       content: `-mock`,
       channel: {
         send: replyMock,
-        messages: {
-          fetch: fetchCallback,
-        },
+        messages: { fetch: fetchCallback },
       },
     });
 

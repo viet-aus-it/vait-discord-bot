@@ -13,12 +13,8 @@ describe('danhSomeone', () => {
       content: '-hit',
       reply: replyMock,
       channel: { send: replyMock },
-      mentions: {
-        users: mockUsers,
-      },
-      author: {
-        id: '5',
-      },
+      mentions: { users: mockUsers },
+      author: { id: '5' },
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
@@ -33,12 +29,8 @@ describe('danhSomeone', () => {
       content: '-hit',
       reply: replyMock,
       channel: { send: replyMock },
-      mentions: {
-        users: mockUsers,
-      },
-      author: {
-        id: '1',
-      },
+      mentions: { users: mockUsers },
+      author: { id: '1' },
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
@@ -60,12 +52,8 @@ describe('danhSomeone', () => {
       content: '-hit',
       reply: replyMock,
       channel: { send: replyMock },
-      mentions: {
-        users: undefined,
-      },
-      author: {
-        id: '1',
-      },
+      mentions: { users: undefined },
+      author: { id: '1' },
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
@@ -80,9 +68,7 @@ describe('danhSomeone', () => {
       mentions: {
         users: { first: jest.fn(() => undefined) },
       },
-      author: {
-        id: '1',
-      },
+      author: { id: '1' },
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
@@ -94,9 +80,7 @@ describe('danhSomeone', () => {
       content: '-hit',
       channel: { send: replyMock },
       reply: replyMock,
-      author: {
-        id: '1',
-      },
+      author: { id: '1' },
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
@@ -108,9 +92,7 @@ describe('danhSomeone', () => {
       content: '-hit',
       channel: { send: replyMock },
       reply: replyMock,
-      author: {
-        id: '0',
-      },
+      author: { id: '0' },
     };
     const mockBotId = '0';
     danhSomeone(mockMsg, mockBotId);
