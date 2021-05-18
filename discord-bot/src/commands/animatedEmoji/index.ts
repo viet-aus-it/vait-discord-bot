@@ -1,40 +1,47 @@
-import { Message, TextChannel, Webhook } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 
-const animatedEmoji = async (msg: Message) => {
-  const { author, content, guild, channel } = msg;
+const animatedEmoji = async (originalMessage: Message) => {
+  const { author, content, guild, channel } = originalMessage;
   if (author.bot) return; // return if bot sends the message
 
   const emojiRegex = '(:.+:)+';
   const matches = content.match(emojiRegex);
-  if (matches && matches.length < 1) return; // return if no emoji name found
-
-  let webhook = (await (channel as TextChannel).fetchWebhooks()).find(
-    ({ name, channelID }) => name === 'Jkiller-Hook' && channelID === channel.id
+  if (!matches) return; // return if no match
+  const textChannel = channel as TextChannel;
+  const webHooks = await textChannel.fetchWebhooks();
+  let webhook = webHooks.find(
+    ({ name, channelID }) => name === 'VAIT-Hook' && channelID === channel.id
   );
 
   if (!webhook) {
-    // create webhook if not found
-    webhook = await (channel as TextChannel).createWebhook('Jkiller-Hook');
+    webhook = await textChannel.createWebhook('VAIT-Hook'); // create webhook if not found
   }
   if (!webhook) return; // return if can't find or create webhook
 
-  let message = content;
+  let newMessage = content;
   const emojis = content.split(':').filter((e) => e !== '');
+  let emojiCount = 0;
   emojis.forEach((emoji) => {
     const emoteName = emoji.replace(/:/gi, '');
     const emote = guild?.emojis.cache.find(({ name }) => name === emoteName);
     if (!emote) return; // return if no matching emoji found on server
-    message = message.replace(
+    newMessage = newMessage.replace(
       new RegExp(`:${emoji}:`, 'gi'),
       emote.animated
         ? `<a:${emote.name}:${emote.id}>`
         : `<${emote.name}:${emote.id}>`
     ); // replace emoji name in the message with the actual emoji syntax
+    emojiCount += 1;
   });
-  (webhook as Webhook).send(message, {
-    username: author.username,
-    avatarURL: author.avatarURL() ?? undefined,
-  });
-  msg.delete();
+  if (emojiCount === 0) return; // return if no emoji found
+  try {
+    await webhook.send(newMessage, {
+      username: author.username,
+      avatarURL: author.avatarURL() ?? undefined,
+    });
+    await originalMessage.delete();
+  } catch (error) {
+    console.error(error);
+  }
 };
 export default animatedEmoji;
