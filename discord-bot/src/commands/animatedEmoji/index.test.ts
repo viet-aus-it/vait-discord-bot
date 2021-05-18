@@ -8,9 +8,11 @@ const fakeHook: any = {
   channelID: '123',
   send: webhookSendMock,
 };
-const fakeEmoji: any = {
+const fakeAnimatedEmoji: any = {
   name: 'sadparrot',
+  animated: true,
 };
+
 const fakeWebhooks = new Collection<string, Webhook>();
 fakeWebhooks.set('0', fakeHook);
 
@@ -25,11 +27,12 @@ describe('animated emoji test', () => {
       channel: {
         fetchWebhooks: async () => fakeWebhooks,
         createWebhook: async () => fakeHook,
+        id: '123',
       },
       guild: {
         emojis: {
           cache: {
-            find: () => fakeEmoji,
+            find: () => fakeAnimatedEmoji,
           },
         },
       },
@@ -51,15 +54,38 @@ describe('animated emoji test', () => {
       guild: {
         emojis: {
           cache: {
-            find: () => fakeEmoji,
+            find: () => fakeAnimatedEmoji,
           },
         },
       },
-      delete: () => msgDeleteMock,
+      delete: msgDeleteMock,
     };
 
     await animatedEmoji(mockMsg);
-    expect(webhookSendMock).toHaveBeenCalledTimes(0);
+    expect(webhookSendMock).not.toHaveBeenCalled();
+  });
+
+  it('Should return if author has nitro', async () => {
+    const fetchHookMock = jest.fn(() => {});
+    const mockMsg: any = {
+      content: `Hello <a:sadparrot:123121233>`,
+      author: { bot: false },
+      channel: {
+        fetchWebhooks: async () => fetchHookMock(),
+        createWebhook: async () => fakeHook,
+      },
+      guild: {
+        emojis: {
+          cache: {
+            find: () => fakeAnimatedEmoji,
+          },
+        },
+      },
+      delete: msgDeleteMock,
+    };
+
+    await animatedEmoji(mockMsg);
+    expect(fetchHookMock).not.toHaveBeenCalled();
   });
 
   it('Should create a webhook if nothing found', async () => {
@@ -74,20 +100,20 @@ describe('animated emoji test', () => {
       guild: {
         emojis: {
           cache: {
-            find: () => fakeEmoji,
+            find: () => fakeAnimatedEmoji,
           },
         },
       },
-      delete: () => msgDeleteMock,
+      delete: msgDeleteMock,
     };
 
     await animatedEmoji(mockMsg);
     expect(createHookMock).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return if no emoji is found', async () => {
+  it('Should return if no matching emoji is found on server', async () => {
     const mockMsg: any = {
-      content: `:invalid:`,
+      content: `:not-emoji:`,
       author: {
         bot: false,
         avatarURL: () => jest.fn(() => {}),
@@ -99,16 +125,16 @@ describe('animated emoji test', () => {
       guild: {
         emojis: {
           cache: {
-            find: () => fakeEmoji,
+            find: () => fakeAnimatedEmoji,
           },
         },
       },
-      delete: () => msgDeleteMock,
+      delete: msgDeleteMock,
     };
 
     await animatedEmoji(mockMsg);
-    expect(webhookSendMock).toHaveBeenCalled();
-    expect(msgDeleteMock).toHaveBeenCalledTimes(0);
+    expect(webhookSendMock).not.toHaveBeenCalled();
+    expect(msgDeleteMock).not.toHaveBeenCalled();
   });
 
   it('Should return if no emoji name is found in content', async () => {
@@ -125,15 +151,15 @@ describe('animated emoji test', () => {
       guild: {
         emojis: {
           cache: {
-            find: () => fakeEmoji,
+            find: () => fakeAnimatedEmoji,
           },
         },
       },
-      delete: () => msgDeleteMock,
+      delete: msgDeleteMock,
     };
 
     await animatedEmoji(mockMsg);
-    expect(webhookSendMock).toHaveBeenCalledTimes(0);
-    expect(msgDeleteMock).toHaveBeenCalledTimes(0);
+    expect(webhookSendMock).not.toHaveBeenCalled();
+    expect(msgDeleteMock).not.toHaveBeenCalled();
   });
 });
