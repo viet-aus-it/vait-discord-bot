@@ -9,6 +9,7 @@ describe('processMessage', () => {
   it('process keyword matches', async () => {
     const km1 = jest.fn();
     const km2 = jest.fn();
+    const km3 = jest.fn();
     const noMatch = jest.fn();
 
     const config: CommandConfig = {
@@ -30,16 +31,21 @@ describe('processMessage', () => {
         prefix: '-',
         commands: [],
       },
+      emojiMatchCommand: {
+        matcher: ':.+:',
+        fn: km3,
+      },
     };
 
     const message = {
-      content: 'star this thing',
+      content: 'star this thing :sadparrot:',
     } as Message;
 
     await processMessage(message, config);
 
     expect(km1).toHaveBeenCalled();
     expect(km2).toHaveBeenCalled();
+    expect(km3).toHaveBeenCalled();
     expect(noMatch).not.toHaveBeenCalled();
   });
 
@@ -47,7 +53,7 @@ describe('processMessage', () => {
     it('process prefix matches with correct prefix', async () => {
       const km1 = jest.fn();
       const km2 = jest.fn();
-
+      const km3 = jest.fn();
       const config: CommandConfig = {
         keywordMatchCommands: [],
         prefixedCommands: {
@@ -56,6 +62,10 @@ describe('processMessage', () => {
             { matcher: 'km1', fn: km1 },
             { matcher: 'km2', fn: km2 },
           ],
+        },
+        emojiMatchCommand: {
+          matcher: ':.+:',
+          fn: km3,
         },
       };
 
@@ -67,11 +77,13 @@ describe('processMessage', () => {
 
       expect(km1).not.toHaveBeenCalled();
       expect(km2).toHaveBeenCalled();
+      expect(km3).not.toHaveBeenCalled();
     });
 
     it('does not process prefix matches with correct prefix', async () => {
       const km1 = jest.fn();
       const km2 = jest.fn();
+      const km3 = jest.fn();
 
       const config: CommandConfig = {
         keywordMatchCommands: [],
@@ -81,6 +93,10 @@ describe('processMessage', () => {
             { matcher: 'km1', fn: km1 },
             { matcher: 'km2', fn: km2 },
           ],
+        },
+        emojiMatchCommand: {
+          matcher: ':.+:',
+          fn: km3,
         },
       };
 
@@ -92,6 +108,7 @@ describe('processMessage', () => {
 
       expect(km1).not.toHaveBeenCalled();
       expect(km2).not.toHaveBeenCalled();
+      expect(km3).not.toHaveBeenCalled();
     });
   });
 });
