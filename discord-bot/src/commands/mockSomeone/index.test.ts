@@ -12,10 +12,26 @@ describe('mockSomeone test', () => {
     const mockMsg: any = {
       content: `-mock ${faker.lorem.words(25)}`,
       channel: { send: replyMock },
+      author: {
+        bot: false,
+      },
     };
 
     await mockSomeone(mockMsg);
     expect(replyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should not mock text if author is bot', async () => {
+    const mockMsg: any = {
+      content: `-mock ${faker.lorem.words(25)}`,
+      channel: { send: replyMock },
+      author: {
+        bot: true,
+      },
+    };
+
+    await mockSomeone(mockMsg);
+    expect(replyMock).not.toHaveBeenCalled();
   });
 
   describe('For -mock prefix with blank content', () => {
@@ -24,6 +40,20 @@ describe('mockSomeone test', () => {
       channel: {
         send: replyMock,
         messages: { fetch: fetchCallback },
+      },
+      author: {
+        bot: false,
+      },
+    });
+
+    const getBotMockMsg = (fetchCallback: Function) => ({
+      content: `-mock`,
+      channel: {
+        send: replyMock,
+        messages: { fetch: fetchCallback },
+      },
+      author: {
+        bot: true,
       },
     });
 
@@ -66,6 +96,18 @@ describe('mockSomeone test', () => {
         await mockSomeone(mockMsg);
         expect(replyMock).not.toHaveBeenCalled();
         expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
+
+      it('Should return blank if sender is a bot', async () => {
+        const blankMessage = { content: '' };
+        const fetchMock = jest.fn(async () => ({
+          first: () => blankMessage,
+        }));
+        const mockMsg: any = getBotMockMsg(fetchMock);
+
+        await mockSomeone(mockMsg);
+        expect(replyMock).not.toHaveBeenCalled();
+        expect(fetchMock).not.toHaveBeenCalled();
       });
 
       it('Should mock the previous message', async () => {
