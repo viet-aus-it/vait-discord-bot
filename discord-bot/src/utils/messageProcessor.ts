@@ -18,10 +18,15 @@ export interface EmojiMatchCommand {
   matcher: string;
   fn: (message: Message) => Promise<any>;
 }
+
+export interface LinkMatchCommand {
+  fn: (message: Message) => Promise<any>;
+}
 export interface CommandConfig {
   prefixedCommands: PrefixedCommands;
   keywordMatchCommands: Array<KeywordMatchCommand>;
   emojiMatchCommand: EmojiMatchCommand;
+  linkMatchCommand: LinkMatchCommand;
 }
 
 export const processMessage = async (
@@ -34,15 +39,19 @@ export const processMessage = async (
   );
   const prefixPromises = processPrefixedMatch(message, config.prefixedCommands);
   const emojiPromises =
-    prefixPromises.length > 0
+    prefixPromises.filter((p) => p !== undefined).length > 0
       ? undefined
       : processEmojiMatch(message, config.emojiMatchCommand); // if match any prefix commands, don't process emoji
+  const linkPromises =
+    prefixPromises.filter((p) => p !== undefined).length > 0
+      ? undefined
+      : processLinkMatch(message, config.linkMatchCommand); // if match any prefix commands, don't process link
   const promises = [
     ...keywordPromises,
     ...prefixPromises,
     emojiPromises,
+    linkPromises,
   ].filter((p) => p !== undefined);
-
   await Promise.all(promises).catch(console.error);
 };
 
@@ -52,6 +61,19 @@ const processEmojiMatch = (
 ): Promise<any> | undefined => {
   const hasEmoji = message.content.match(config.matcher);
   if (!hasEmoji) {
+    return;
+  }
+  return config.fn(message);
+};
+
+const processLinkMatch = (
+  message: Message,
+  config: LinkMatchCommand
+): Promise<any> | undefined => {
+  const hasDiscordLink = message.content.match(
+    /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+/gim
+  );
+  if (!hasDiscordLink) {
     return;
   }
   return config.fn(message);
