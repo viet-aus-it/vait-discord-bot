@@ -47,7 +47,14 @@ const fetchLastMessageBeforeId = async (channel: TextChannel, id: string) => {
   }
 };
 
-const mockSomeone = async ({ content, channel, id, reference }: Message) => {
+const mockSomeone = async ({
+  content,
+  channel,
+  id,
+  reference,
+  author,
+}: Message) => {
+  if (author.bot) return; // return if sender is bot
   const indexOfMockPrefix = content.trimEnd().indexOf(' ');
 
   let chatContent =
