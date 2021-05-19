@@ -33,7 +33,10 @@ export const processMessage = async (
     config.keywordMatchCommands
   );
   const prefixPromises = processPrefixedMatch(message, config.prefixedCommands);
-  const emojiPromises = processEmojiMatch(message, config.emojiMatchCommand);
+  const emojiPromises =
+    prefixPromises.length > 0
+      ? undefined
+      : processEmojiMatch(message, config.emojiMatchCommand); // if match any prefix commands, don't process emoji
   const promises = [
     ...keywordPromises,
     ...prefixPromises,
