@@ -1,12 +1,12 @@
 import { ClientUser } from 'discord.js';
 import { CommandConfig } from './utils/messageProcessor';
-
 import ask8Ball from './commands/8ball';
 import danhSomeone from './commands/danhSomeone';
 import mockSomeone from './commands/mockSomeone';
 import { thankUser, checkReputation } from './commands/thanks';
 import getQuoteOfTheDay from './commands/quoteOfTheDay';
 import animatedEmoji from './commands/animatedEmoji';
+import embedLink from './commands/embedLink';
 
 export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   prefixedCommands: {
@@ -31,5 +31,8 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   emojiMatchCommand: {
     matcher: ':.+:',
     fn: animatedEmoji,
+  },
+  linkMatchCommand: {
+    fn: embedLink,
   },
 });

@@ -1,4 +1,5 @@
-import { Message, TextChannel } from 'discord.js';
+import { Message } from 'discord.js';
+import { fetchWebhook, createWebhook } from '../../utils/webhookProcessor';
 
 const animatedEmoji = async (originalMessage: Message) => {
   const { author, content, guild, channel } = originalMessage;
@@ -13,14 +14,9 @@ const animatedEmoji = async (originalMessage: Message) => {
   const hasEmoji = content.match(emojiRegex);
   if (!hasEmoji) return; // return if no emoji found
 
-  const textChannel = channel as TextChannel;
-  const webHooks = await textChannel.fetchWebhooks();
-  let webhook = webHooks.find(
-    ({ name, channelID }) => name === 'VAIT-Hook' && channelID === channel.id
-  );
-
+  let webhook = await fetchWebhook(channel);
   if (!webhook) {
-    webhook = await textChannel.createWebhook('VAIT-Hook'); // create webhook if not found
+    webhook = await createWebhook(channel); // create webhook if not found
   }
   if (!webhook) return; // return if can't find or create webhook
 
@@ -37,9 +33,7 @@ const animatedEmoji = async (originalMessage: Message) => {
 
     newMessage = newMessage.replace(
       new RegExp(`:${emoji}:`, 'gi'),
-      emote.animated
-        ? `<a:${emote.name}:${emote.id}>`
-        : `<${emote.name}:${emote.id}>`
+      `<a:${emote.name}:${emote.id}>`
     ); // replace emoji name in the message with the actual emoji syntax
     emojiCount += 1;
   });
