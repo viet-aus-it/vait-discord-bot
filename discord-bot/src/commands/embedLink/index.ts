@@ -19,7 +19,6 @@ const embedLink = async (msg: Message) => {
   if (!hasDiscordUrl) return; // return if no discord url found
 
   const firstUrl = hasDiscordUrl[0];
-
   const idString = firstUrl.replace('https://discord.com/channels/', '');
 
   if (idString.trim().length === 0 || idString.split('/').length < 3) return; // return if link is wrong
@@ -49,9 +48,9 @@ const embedLink = async (msg: Message) => {
     .addFields({ name: 'Jump', value: `[Go to message](${firstUrl})` })
     .setTimestamp(originalTime)
     .setFooter(`#${sourceChannel.name}`);
-
+  console.log('Before sending');
   try {
-    await webhook.send({
+    await webhook.send(content.replace(firstUrl, ''), {
       embeds: [embed],
       username: author.username,
       avatarURL: author.avatarURL() ?? undefined,
