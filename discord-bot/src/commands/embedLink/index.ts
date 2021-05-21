@@ -20,10 +20,10 @@ const embedLink = async (msg: Message) => {
 
   const firstUrl = hasDiscordUrl[0];
   const idString = firstUrl.replace('https://discord.com/channels/', '');
-
   if (idString.trim().length === 0 || idString.split('/').length < 3) return; // return if link is wrong
 
   const [, channelId, messageId] = idString.split('/');
+
   const sourceChannel = guild?.channels.cache.find(
     ({ id }) => id === channelId
   );
@@ -33,6 +33,7 @@ const embedLink = async (msg: Message) => {
     sourceChannel as TextChannel,
     messageId
   );
+  console.log(`original message ${typeof originalMessage}`);
   if (typeof originalMessage === 'string') return; // return if original message doesn't exist anymore
   originalMessage = originalMessage as Message;
   const originalAuthor = originalMessage.author;
