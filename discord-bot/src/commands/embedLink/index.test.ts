@@ -1,4 +1,5 @@
 import { Collection, Webhook } from 'discord.js';
+import faker from 'faker';
 import embedLink from '.';
 
 const webhookSendMock = jest.fn(() => {});
@@ -12,10 +13,16 @@ const fakeWebhooks = new Collection<string, Webhook>();
 fakeWebhooks.set('0', fakeHook);
 
 describe('Embed link test', () => {
-  it.only('Should return a message with embeded message from the URL', async () => {
+  it('Should return a message with embeded message from the URL', async () => {
+    const mockedChannel: any = { id: 345 };
+    const mockedFetchedMsg: any = {
+      author: faker.lorem.words(5),
+      createdTimestamp: 1235123123,
+      content: faker.lorem.words(25),
+      id: 678,
+    };
     const mockMsg: any = {
-      content:
-        'https://discord.com/channels/836907335263060028/844572466517245954/844667107581100073',
+      content: 'https://discord.com/channels/836907335263060028/345/678',
       author: {
         bot: false,
         avatarURL: () => jest.fn(() => {}),
@@ -23,7 +30,16 @@ describe('Embed link test', () => {
       channel: {
         fetchWebhooks: async () => fakeWebhooks,
         createWebhook: async () => fakeHook,
-        id: '123',
+        messages: {
+          fetch: async () => mockedFetchedMsg,
+        },
+      },
+      guild: {
+        channels: {
+          cache: {
+            find: () => mockedChannel,
+          },
+        },
       },
       delete: msgDeleteMock,
     };

@@ -22,7 +22,6 @@ const animatedEmoji = async (originalMessage: Message) => {
 
   let newMessage = content;
   const emojis = content.split(':').filter((e) => e !== '');
-  console.log(`emoji: ${emojis}`);
   let emojiCount = 0;
   emojis.forEach((emoji) => {
     const emoteName = emoji.replace(/:/gim, '');
