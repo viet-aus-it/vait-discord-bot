@@ -4,10 +4,10 @@ import { fetchWebhook, createWebhook } from '../../utils/webhookProcessor';
 
 const embedLink = async (msg: Message) => {
   const { author, content, guild, channel } = msg;
-
-  let webhook = await fetchWebhook(channel);
+  const currentTextChannel = channel as TextChannel;
+  let webhook = await fetchWebhook(currentTextChannel);
   if (!webhook) {
-    webhook = await createWebhook(channel); // create webhook if not found
+    webhook = await createWebhook(currentTextChannel); // create webhook if not found
   }
 
   if (!webhook) return; // return if can't find or create webhook
@@ -23,19 +23,19 @@ const embedLink = async (msg: Message) => {
   if (idString.trim().length === 0 || idString.split('/').length < 3) return; // return if link is wrong
 
   const [, channelId, messageId] = idString.split('/');
-
   const sourceChannel = guild?.channels.cache.find(
     ({ id }) => id === channelId
   );
   if (!sourceChannel) return; // return if source channel doesn't exist anymore
-
+  const sourceChannelAsTextChannel = sourceChannel as TextChannel;
   let originalMessage = await fetchMessageObjectById(
-    sourceChannel as TextChannel,
+    sourceChannelAsTextChannel,
     messageId
   );
-  console.log(`original message ${typeof originalMessage}`);
+
   if (typeof originalMessage === 'string') return; // return if original message doesn't exist anymore
   originalMessage = originalMessage as Message;
+
   const originalAuthor = originalMessage.author;
   const originalTime = originalMessage.createdTimestamp;
   const embed = new MessageEmbed()
@@ -49,7 +49,6 @@ const embedLink = async (msg: Message) => {
     .addFields({ name: 'Jump', value: `[Go to message](${firstUrl})` })
     .setTimestamp(originalTime)
     .setFooter(`#${sourceChannel.name}`);
-  console.log('Before sending');
   try {
     await webhook.send(content.replace(firstUrl, ''), {
       embeds: [embed],

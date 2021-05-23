@@ -1,6 +1,7 @@
 import { Collection, Webhook } from 'discord.js';
 import faker from 'faker';
 import embedLink from '.';
+import { fetchMessageObjectById } from '../../utils/messageFetcher';
 
 const webhookSendMock = jest.fn(() => {});
 const msgDeleteMock = jest.fn(() => {});
@@ -11,28 +12,38 @@ const fakeHook: any = {
 };
 const fakeWebhooks = new Collection<string, Webhook>();
 fakeWebhooks.set('0', fakeHook);
+jest.mock('../../utils/messageFetcher');
+const mockedMessageFetch = fetchMessageObjectById as jest.MockedFunction<
+  typeof fetchMessageObjectById
+>;
 
 describe('Embed link test', () => {
   it('Should return a message with embeded message from the URL', async () => {
-    const mockedChannel: any = { id: 345 };
     const mockedFetchedMsg: any = {
-      author: faker.lorem.words(5),
+      author: {
+        username: faker.lorem.words(5),
+        avatarURL: () => jest.fn(),
+      },
       createdTimestamp: 1235123123,
       content: faker.lorem.words(25),
       id: 678,
+    };
+    mockedMessageFetch.mockReturnValue(mockedFetchedMsg);
+    const mockedChannel: any = {
+      id: 345,
+      messages: {
+        fetch: mockedMessageFetch,
+      },
     };
     const mockMsg: any = {
       content: 'https://discord.com/channels/836907335263060028/345/678',
       author: {
         bot: false,
-        avatarURL: () => jest.fn(() => {}),
+        avatarURL: () => jest.fn(),
       },
       channel: {
         fetchWebhooks: async () => fakeWebhooks,
         createWebhook: async () => fakeHook,
-        messages: {
-          fetch: async () => mockedFetchedMsg,
-        },
       },
       guild: {
         channels: {
@@ -44,6 +55,7 @@ describe('Embed link test', () => {
       delete: msgDeleteMock,
     };
     await embedLink(mockMsg);
+    expect(mockedMessageFetch).toHaveBeenCalledTimes(1);
     expect(webhookSendMock).toHaveBeenCalledTimes(1);
     expect(msgDeleteMock).toHaveBeenCalledTimes(1);
   });
