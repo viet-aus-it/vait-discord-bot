@@ -101,11 +101,10 @@ const processPrefixedMatch = (
   config: PrefixedCommands
 ): Array<Promise<any> | undefined> => {
   return config.commands.map((conf) => {
-    const hasMockPrefix = message.content
-      .toLowerCase()
-      .startsWith(`${config.prefix}${conf.matcher}`);
+    const prefixCommand = `${config.prefix}${conf.matcher}`;
+    const hasMatchingPrefix = message.content.startsWith(prefixCommand);
 
-    if (!hasMockPrefix) {
+    if (!hasMatchingPrefix) {
       return;
     }
 
