@@ -39,7 +39,7 @@ describe('thankUser', () => {
     expect(replyMock).not.toHaveBeenCalled();
   });
 
-  it('should do nothing if user mention himself', async () => {
+  it('should send reject message if user mention himself', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '0' } as User);
 
@@ -60,7 +60,7 @@ describe('thankUser', () => {
 
     await thankUser(mockMsg);
 
-    expect(replyMock).not.toHaveBeenCalled();
+    expect(replyMock).toHaveBeenCalled();
   });
 
   it('should do nothing if user mention no one', async () => {
@@ -181,6 +181,7 @@ describe('thankUser', () => {
       mentions: {
         users: mockUsers,
       },
+      channel: { send: replyMock },
       author: {
         id: '1',
       },
