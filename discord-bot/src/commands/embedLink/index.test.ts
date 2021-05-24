@@ -99,7 +99,7 @@ describe('Embed link test', () => {
     expect(msgDeleteMock).not.toHaveBeenCalled();
   });
 
-  it('Should create a webhook if nothing found', async () => {
+  it("Should create a webhook if there's none existing in the current channel", async () => {
     const createHookMock = jest.fn(() => {});
     const mockMsg: any = {
       content: `https://google.com.au`,
