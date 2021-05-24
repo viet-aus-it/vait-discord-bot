@@ -22,6 +22,11 @@ const createEmbeddedMessage = (
 const embedLink = async (msg: Message) => {
   const { author, content, guild, channel } = msg;
 
+  // return if guild is invalid.
+  // Guild is only invalid if we're sending a private DM.
+  // Which this bot shouldn't be able to do anyway.
+  if (!guild) return;
+
   if (author.bot) return; // return if bot sends the message
 
   const currentTextChannel = channel as TextChannel;
@@ -40,9 +45,7 @@ const embedLink = async (msg: Message) => {
   if (idString.trim().length === 0 || idString.split('/').length < 3) return; // return if link is wrong
 
   const [, channelId, messageId] = idString.split('/');
-  const sourceChannel = guild?.channels.cache.find(
-    ({ id }) => id === channelId
-  );
+  const sourceChannel = guild.channels.cache.find(({ id }) => id === channelId);
   if (!sourceChannel) return; // return if source channel doesn't exist anymore
 
   const sourceTextChannel = sourceChannel as TextChannel;
