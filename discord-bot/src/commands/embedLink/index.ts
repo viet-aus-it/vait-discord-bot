@@ -2,23 +2,40 @@ import { Message, TextChannel, MessageEmbed } from 'discord.js';
 import { fetchMessageObjectById } from '../../utils/messageFetcher';
 import { fetchWebhook, createWebhook } from '../../utils/webhookProcessor';
 
+const createEmbeddedMessage = (
+  { author, createdTimestamp, content }: Message,
+  { name: channelName }: TextChannel,
+  firstUrl: string
+) => {
+  const { username, avatarURL } = author;
+  const embed = new MessageEmbed()
+    .setColor('#0072a8')
+    .setAuthor(username, avatarURL() ?? undefined, firstUrl)
+    .setDescription(content)
+    .addFields({ name: 'Jump', value: `[Go to message](${firstUrl})` })
+    .setTimestamp(createdTimestamp)
+    .setFooter(`#${channelName}`);
+
+  return embed;
+};
+
 const embedLink = async (msg: Message) => {
   const { author, content, guild, channel } = msg;
+
+  if (author.bot) return; // return if bot sends the message
+
   const currentTextChannel = channel as TextChannel;
   let webhook = await fetchWebhook(currentTextChannel);
   if (!webhook) {
     webhook = await createWebhook(currentTextChannel); // create webhook if not found
   }
-
   if (!webhook) return; // return if can't find or create webhook
-  if (author.bot) return; // return if bot sends the message
 
-  const hasDiscordUrl = content.match(
-    /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+/gim
-  );
+  const messageURLRegex = /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+/gim;
+  const hasDiscordUrl = content.match(messageURLRegex);
   if (!hasDiscordUrl) return; // return if no discord url found
 
-  const firstUrl = hasDiscordUrl[0];
+  const [firstUrl] = hasDiscordUrl;
   const idString = firstUrl.replace('https://discord.com/channels/', '');
   if (idString.trim().length === 0 || idString.split('/').length < 3) return; // return if link is wrong
 
@@ -27,28 +44,20 @@ const embedLink = async (msg: Message) => {
     ({ id }) => id === channelId
   );
   if (!sourceChannel) return; // return if source channel doesn't exist anymore
-  const sourceChannelAsTextChannel = sourceChannel as TextChannel;
-  let originalMessage = await fetchMessageObjectById(
-    sourceChannelAsTextChannel,
+
+  const sourceTextChannel = sourceChannel as TextChannel;
+  const originalMessage = await fetchMessageObjectById(
+    sourceTextChannel,
     messageId
   );
+  if (!originalMessage) return; // return if original message doesn't exist anymore
 
-  if (typeof originalMessage === 'string') return; // return if original message doesn't exist anymore
-  originalMessage = originalMessage as Message;
+  const embed = createEmbeddedMessage(
+    originalMessage,
+    sourceTextChannel,
+    firstUrl
+  );
 
-  const originalAuthor = originalMessage.author;
-  const originalTime = originalMessage.createdTimestamp;
-  const embed = new MessageEmbed()
-    .setColor('#0072a8')
-    .setAuthor(
-      originalAuthor.username,
-      originalAuthor.avatarURL() ?? undefined,
-      firstUrl
-    )
-    .setDescription(originalMessage.content)
-    .addFields({ name: 'Jump', value: `[Go to message](${firstUrl})` })
-    .setTimestamp(originalTime)
-    .setFooter(`#${sourceChannel.name}`);
   try {
     await webhook.send(content.replace(firstUrl, ''), {
       embeds: [embed],
