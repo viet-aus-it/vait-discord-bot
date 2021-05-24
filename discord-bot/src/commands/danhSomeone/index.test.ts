@@ -37,16 +37,6 @@ describe('danhSomeone', () => {
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
-  it('it should return if no keyword is mentioned', () => {
-    const mockMsg: any = {
-      content: 'danh',
-      reply: replyMock,
-    };
-    const mockBotId = '0';
-    danhSomeone(mockMsg, mockBotId);
-    expect(replyMock).not.toHaveBeenCalled();
-  });
-
   it('it should return if mentioned users is undefined', () => {
     const mockMsg: any = {
       content: '-hit',
