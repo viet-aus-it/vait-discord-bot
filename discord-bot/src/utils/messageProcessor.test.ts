@@ -54,102 +54,125 @@ describe('processMessage', () => {
     expect(noMatch).not.toHaveBeenCalled();
   });
 
-  it('process discord link matches', async () => {
-    const km1 = jest.fn();
-    const km2 = jest.fn();
-    const km3 = jest.fn();
-    const km4 = jest.fn();
-    const noMatch = jest.fn();
+  describe('process embeded links and emojis', () => {
+    it('process discord link matches', async () => {
+      const em = jest.fn();
+      const lm = jest.fn();
 
-    const config: CommandConfig = {
-      keywordMatchCommands: [
-        {
-          matchers: ['litte', 'star'],
+      const config: CommandConfig = {
+        keywordMatchCommands: [],
+        prefixedCommands: {
+          prefix: '-',
+          commands: [],
+        },
+        emojiMatchCommand: {
+          matcher: ':.+:',
+          fn: em,
+        },
+        linkMatchCommand: {
+          fn: lm,
+        },
+      };
+
+      const message = {
+        content:
+          'test https://discord.com/channels/836907335263060028/844572466517245954/844667107581100073',
+      } as Message;
+
+      await processMessage(message, config);
+
+      expect(em).not.toHaveBeenCalled();
+      expect(lm).toHaveBeenCalled();
+    });
+
+    it('process broken discord link', async () => {
+      const km1 = jest.fn();
+      const km2 = jest.fn();
+
+      const config: CommandConfig = {
+        keywordMatchCommands: [],
+        prefixedCommands: {
+          prefix: '-',
+          commands: [],
+        },
+        emojiMatchCommand: {
+          matcher: ':.+:',
           fn: km1,
         },
-        {
-          matchers: ['star'],
+        linkMatchCommand: {
           fn: km2,
         },
-        {
-          matchers: ['nein'],
-          fn: noMatch,
+      };
+
+      const message = {
+        content:
+          'test https://discord.com/channels/836907335263060028/844572466517245954/',
+      } as Message;
+
+      await processMessage(message, config);
+
+      expect(km1).not.toHaveBeenCalled();
+      expect(km2).not.toHaveBeenCalled();
+    });
+
+    it('process emojis', async () => {
+      const km1 = jest.fn();
+      const km2 = jest.fn();
+
+      const config: CommandConfig = {
+        keywordMatchCommands: [],
+        prefixedCommands: {
+          prefix: '-',
+          commands: [],
         },
-      ],
-      prefixedCommands: {
-        prefix: '-',
-        commands: [],
-      },
-      emojiMatchCommand: {
-        matcher: ':.+:',
-        fn: km3,
-      },
-      linkMatchCommand: {
-        fn: km4,
-      },
-    };
-
-    const message = {
-      content:
-        'test https://discord.com/channels/836907335263060028/844572466517245954/844667107581100073',
-    } as Message;
-
-    await processMessage(message, config);
-
-    expect(km1).not.toHaveBeenCalled();
-    expect(km2).not.toHaveBeenCalled();
-    expect(km3).not.toHaveBeenCalled();
-    expect(km4).toHaveBeenCalled();
-    expect(noMatch).not.toHaveBeenCalled();
-  });
-
-  it('process broken discord link', async () => {
-    const km1 = jest.fn();
-    const km2 = jest.fn();
-    const km3 = jest.fn();
-    const km4 = jest.fn();
-    const noMatch = jest.fn();
-
-    const config: CommandConfig = {
-      keywordMatchCommands: [
-        {
-          matchers: ['litte', 'star'],
+        emojiMatchCommand: {
+          matcher: ':.+:',
           fn: km1,
         },
-        {
-          matchers: ['star'],
+        linkMatchCommand: {
           fn: km2,
         },
-        {
-          matchers: ['nein'],
-          fn: noMatch,
+      };
+
+      const message = {
+        content: ':sadparrot:',
+      } as Message;
+      await processMessage(message, config);
+
+      expect(km1).toHaveBeenCalled();
+      expect(km2).not.toHaveBeenCalled();
+    });
+
+    it('does not process if there is a prefix command', async () => {
+      const km1 = jest.fn(async () => ({}));
+      const em = jest.fn();
+      const lm = jest.fn();
+
+      const config: CommandConfig = {
+        keywordMatchCommands: [],
+        prefixedCommands: {
+          prefix: '-',
+          commands: [{ matcher: 'km1', fn: km1 }],
         },
-      ],
-      prefixedCommands: {
-        prefix: '-',
-        commands: [],
-      },
-      emojiMatchCommand: {
-        matcher: ':.+:',
-        fn: km3,
-      },
-      linkMatchCommand: {
-        fn: km4,
-      },
-    };
+        emojiMatchCommand: {
+          matcher: ':.+:',
+          fn: em,
+        },
+        linkMatchCommand: {
+          fn: lm,
+        },
+      };
 
-    const message = {
-      content:
-        'test https://discord.com/channels/836907335263060028/844572466517245954/',
-    } as Message;
+      const message = {
+        content:
+          '-km1 https://discord.com/channels/836907335263060028/844572466517245954/844667107581100073',
+      } as Message;
 
-    await processMessage(message, config);
-
-    expect(km1).not.toHaveBeenCalled();
-    expect(km2).not.toHaveBeenCalled();
-    expect(km3).not.toHaveBeenCalled();
-    expect(km4).not.toHaveBeenCalled();
-    expect(noMatch).not.toHaveBeenCalled();
+      await processMessage(message, config);
+      expect(km1).toHaveBeenCalled();
+      expect(em).not.toHaveBeenCalled();
+      expect(lm).not.toHaveBeenCalled();
+    });
   });
 
   describe('process prefix matches', () => {
