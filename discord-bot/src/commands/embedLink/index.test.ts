@@ -1,4 +1,4 @@
-import { Collection, Webhook } from 'discord.js';
+import { Collection, GuildChannel, Webhook } from 'discord.js';
 import faker from 'faker';
 import embedLink from '.';
 import { fetchMessageObjectById } from '../../utils/messageFetcher';
@@ -30,11 +30,13 @@ describe('Embed link test', () => {
     };
     mockedMessageFetch.mockReturnValue(mockedFetchedMsg);
     const mockedChannel: any = {
-      id: 345,
+      id: '345',
       messages: {
         fetch: mockedMessageFetch,
       },
     };
+    const guildChannels = new Collection<string, GuildChannel>();
+    guildChannels.set('345', mockedChannel);
     const mockMsg: any = {
       content: 'https://discord.com/channels/836907335263060028/345/678',
       author: {
@@ -47,9 +49,7 @@ describe('Embed link test', () => {
       },
       guild: {
         channels: {
-          cache: {
-            find: () => mockedChannel,
-          },
+          cache: guildChannels,
         },
       },
       delete: msgDeleteMock,
@@ -109,6 +109,7 @@ describe('Embed link test', () => {
         createWebhook: createHookMock,
       },
       delete: msgDeleteMock,
+      guild: {},
     };
 
     await embedLink(mockMsg);
