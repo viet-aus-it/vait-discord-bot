@@ -9,7 +9,6 @@ describe('Test webhook processor', () => {
     };
     const webhooks = new Collection<string, Webhook>();
     webhooks.set('0', mockedWebhook);
-    webhooks.find = jest.fn(() => mockedWebhook);
     const mockedFetch = jest.fn(async () => webhooks);
     const mockedChannel: any = {
       id: 123456,
