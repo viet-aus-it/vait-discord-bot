@@ -4,17 +4,21 @@ import { getPrismaClient } from '../../clients/prisma';
 
 export const thankUser = async (msg: Message) => {
   const prisma = getPrismaClient();
-
-  if (msg.author.bot) return; // return if author is a Discord bot
-  const hasExactlyOneUser = msg.mentions.users.size === 1;
+  const { author, channel, mentions } = msg;
+  if (author.bot) return; // return if author is a Discord bot
+  const hasExactlyOneUser = mentions.users.size === 1;
   if (!hasExactlyOneUser) return;
 
-  const discordUser = msg.mentions.users.first();
+  const discordUser = mentions.users.first();
   if (!discordUser) return;
   if (discordUser.bot) return; // return if mention bot
 
-  const isAuthor = discordUser.id === msg.author.id;
-  if (isAuthor) return;
+  const isAuthor = discordUser.id === author.id;
+
+  if (isAuthor) {
+    msg.reply('You cannot give rep to yourself');
+    return;
+  }
 
   const user = await getOrCreateUser(prisma, discordUser.id);
 
@@ -33,5 +37,7 @@ export const thankUser = async (msg: Message) => {
     logPromise,
   ]);
 
-  msg.reply(`${discordUser.username}: ${updatedUser.reputation} Rep`);
+  channel.send(
+    `${author.username} gave ${discordUser.username} 1 rep. \n${discordUser.username}'s current rep: ${updatedUser.reputation}`
+  );
 };
