@@ -2,7 +2,7 @@ import { Collection, Webhook } from 'discord.js';
 import { fetchWebhook, createWebhook } from './webhookProcessor';
 
 describe('Test webhook processor', () => {
-  it('It should return a valid webhook', async () => {
+  it('should return an existing webhook', async () => {
     const mockedWebhook: any = {
       name: 'VAIT-Hook',
       channelID: 123456,
@@ -20,7 +20,7 @@ describe('Test webhook processor', () => {
     expect(result).toEqual(mockedWebhook);
   });
 
-  it('It should return a new webhook', async () => {
+  it('should create a new webhook', async () => {
     const mockedWebhook: any = {
       name: 'VAIT-Hook',
       channelID: 123456,
