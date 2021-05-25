@@ -16,6 +16,7 @@ Developers should add to the **Unreleased** section once they feel their branch 
 - Added ask 8ball (-8ball) and quote of the day (-qotd) feature
 - Added animated emoji for non Nitro user
 - Added embed message function when user paste in a URL of another message
+- Added poll function when user want to create a simple poll
 
 ### Changed
 
