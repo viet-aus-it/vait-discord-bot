@@ -7,6 +7,7 @@ import { thankUser, checkReputation } from './commands/thanks';
 import getQuoteOfTheDay from './commands/quoteOfTheDay';
 import animatedEmoji from './commands/animatedEmoji';
 import embedLink from './commands/embedLink';
+import createPoll from './commands/poll';
 
 export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   prefixedCommands: {
@@ -20,6 +21,7 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
         fn: (message) => danhSomeone(message, botUser.id),
       },
       { matcher: 'qotd', fn: getQuoteOfTheDay },
+      { matcher: 'poll', fn: createPoll },
     ],
   },
   keywordMatchCommands: [
