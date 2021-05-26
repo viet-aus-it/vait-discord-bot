@@ -1,5 +1,5 @@
 import { Message, TextChannel, MessageEmbed } from 'discord.js';
-import { fetchWebhook, createWebhook } from '../../utils/webhookProcessor';
+import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
 
 const createPoll = async (msg: Message) => {
   const { author, channel, content } = msg;
@@ -27,10 +27,10 @@ const createPoll = async (msg: Message) => {
     '\u0038\u20E3',
     '\u0039\u20E3',
   ];
+
   const firstSpaceIndex = content.trimEnd().indexOf(' ');
   const message = content.slice(firstSpaceIndex);
   const hasQuestion = message.match(/".+"/);
-
   if (!hasQuestion) {
     // return a message with correct syntax
     msg.reply(
@@ -38,6 +38,7 @@ const createPoll = async (msg: Message) => {
     );
     return;
   }
+
   const question = hasQuestion[0];
   const pollOptions = message.replace(question, '').trim().split(' ');
 
@@ -52,14 +53,11 @@ const createPoll = async (msg: Message) => {
   }
 
   const currentTextChannel = channel as TextChannel;
-
-  let webhook = await fetchWebhook(currentTextChannel);
-
-  if (!webhook) {
-    webhook = await createWebhook(currentTextChannel); // create webhook if not found
-  }
-
-  if (!webhook) return; // return if can't find or create webhook
+  const webhook = await fetchOrCreateWebhook(
+    currentTextChannel,
+    'VAIT-Poll-Hook'
+  );
+  if (!webhook) return;
 
   const embed = createEmbeddedMessage(question, numberAsString, pollOptions);
 
