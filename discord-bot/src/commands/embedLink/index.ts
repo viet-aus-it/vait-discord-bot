@@ -8,13 +8,18 @@ const createEmbeddedMessage = (
   firstUrl: string
 ) => {
   const { username, avatarURL } = author;
-  const embed = new MessageEmbed()
-    .setColor('#0072a8')
-    .setAuthor(username, avatarURL() ?? undefined, firstUrl)
-    .setDescription(content)
-    .addFields({ name: 'Jump', value: `[Go to message](${firstUrl})` })
-    .setTimestamp(createdTimestamp)
-    .setFooter(`#${channelName}`);
+  const embed = new MessageEmbed({
+    color: '#0072a8',
+    author: {
+      name: username,
+      iconURL: avatarURL() || '',
+      url: firstUrl,
+    },
+    description: content,
+    timestamp: createdTimestamp,
+    footer: { text: `#${channelName}` },
+    fields: [{ name: 'Jump', value: `[Go to message](${firstUrl})` }],
+  });
 
   return embed;
 };

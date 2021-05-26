@@ -1,6 +1,26 @@
 import { Message, TextChannel, MessageEmbed } from 'discord.js';
 import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
 
+const createEmbeddedMessage = (
+  question: string,
+  numberAsString: string[],
+  pollOptions: string[]
+) => {
+  const message = pollOptions.reduce((accumulator, option, index) => {
+    return `${accumulator}:${numberAsString[index]}: ${option}\n\n`;
+  }, '');
+
+  const embed = new MessageEmbed({
+    color: '#0072a8',
+    title: question.replace(/"/gim, ''),
+    footer: { text: 'Poll created' },
+    fields: [{ name: message, value: `\u200B` }],
+    timestamp: Date.now(),
+  });
+
+  return embed;
+};
+
 const createPoll = async (msg: Message) => {
   const { author, channel, content } = msg;
   if (author.bot) return; // return if author is bot
@@ -68,30 +88,13 @@ const createPoll = async (msg: Message) => {
       avatarURL: author.avatarURL() ?? undefined,
     });
     await msg.delete();
-    const promises = pollOptions.map((_valuer, index) =>
+    const promises = pollOptions.map((_value, index) =>
       pollMsg.react(reactionNumbers[index])
     );
     await Promise.all(promises);
   } catch (error) {
     console.error(error);
   }
-};
-
-const createEmbeddedMessage = (
-  question: string,
-  numberAsString: string[],
-  pollOptions: string[]
-) => {
-  const message = pollOptions.reduce((accumulator, option, index) => {
-    return `${accumulator}:${numberAsString[index]}: ${option}\n\n`;
-  }, '');
-  const embed = new MessageEmbed()
-    .setColor('#0072a8')
-    .setTitle(question.replace(/"/gim, ''))
-    .setFooter('Poll created')
-    .setTimestamp()
-    .addFields({ name: message, value: `\u200B` });
-  return embed;
 };
 
 export default createPoll;
