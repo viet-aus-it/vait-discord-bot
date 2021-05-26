@@ -1,6 +1,6 @@
 import { Message, TextChannel, MessageEmbed } from 'discord.js';
 import { fetchMessageObjectById } from '../../utils/messageFetcher';
-import { fetchWebhook, createWebhook } from '../../utils/webhookProcessor';
+import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
 
 const createEmbeddedMessage = (
   { author, createdTimestamp, content }: Message,
@@ -30,11 +30,11 @@ const embedLink = async (msg: Message) => {
   if (author.bot) return; // return if bot sends the message
 
   const currentTextChannel = channel as TextChannel;
-  let webhook = await fetchWebhook(currentTextChannel);
-  if (!webhook) {
-    webhook = await createWebhook(currentTextChannel); // create webhook if not found
-  }
-  if (!webhook) return; // return if can't find or create webhook
+  const webhook = await fetchOrCreateWebhook(
+    currentTextChannel,
+    'VAIT-EmbedLink-Hook'
+  );
+  if (!webhook) return;
 
   const messageURLRegex = /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+/gim;
   const hasDiscordUrl = content.match(messageURLRegex);

@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { fetchWebhook, createWebhook } from '../../utils/webhookProcessor';
+import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
 
 const animatedEmoji = async (originalMessage: Message) => {
   const { author, content, guild, channel } = originalMessage;
@@ -13,12 +13,13 @@ const animatedEmoji = async (originalMessage: Message) => {
   const emojiRegex = new RegExp('(:.+:)+', 'gi');
   const hasEmoji = content.match(emojiRegex);
   if (!hasEmoji) return; // return if no emoji found
-  const textChannel = channel as TextChannel;
-  let webhook = await fetchWebhook(textChannel);
-  if (!webhook) {
-    webhook = await createWebhook(textChannel); // create webhook if not found
-  }
-  if (!webhook) return; // return if can't find or create webhook
+
+  const currentTextChannel = channel as TextChannel;
+  const webhook = await fetchOrCreateWebhook(
+    currentTextChannel,
+    'VAIT-AnimatedEmoji-Hook'
+  );
+  if (!webhook) return;
 
   let newMessage = content;
   const emojis = content.split(':').filter((e) => e !== '');
