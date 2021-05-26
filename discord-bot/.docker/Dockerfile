@@ -32,8 +32,8 @@ CMD ["/usr/local/bin/discord-bot-entrypoint.sh", "yarn", "start"]
 #####################
 FROM development as build
 ENV NODE_ENV=production
-RUN yarn install --production --non-interactive
 RUN yarn build && \
+    yarn install --production --non-interactive && \
     yarn cache clean
 
 ####################
