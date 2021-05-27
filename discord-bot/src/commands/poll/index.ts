@@ -87,12 +87,15 @@ const createEmbeddedMessage = (
   const message = pollOptions.reduce((accumulator, option, index) => {
     return `${accumulator}:${numberAsString[index]}: ${option}\n\n`;
   }, '');
-  const embed = new MessageEmbed()
-    .setColor('#0072a8')
-    .setTitle(question.replace(/"/gim, ''))
-    .setFooter('Poll created')
-    .setTimestamp()
-    .addFields({ name: message, value: `\u200B` });
+  const embed = new MessageEmbed({
+    color: 0x0072a8,
+    title: question.replace(/"/gim, ''),
+    timestamp: new Date(),
+    footer: {
+      text: 'Poll created',
+    },
+    fields: [{ name: message, value: `\u200B` }],
+  });
   return embed;
 };
 
