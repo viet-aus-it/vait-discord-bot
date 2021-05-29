@@ -8,6 +8,7 @@ import getQuoteOfTheDay from './commands/quoteOfTheDay';
 import animatedEmoji from './commands/animatedEmoji';
 import embedLink from './commands/embedLink';
 import createPoll from './commands/poll';
+import cowsay from './commands/cowsay';
 
 export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   prefixedCommands: {
@@ -22,6 +23,7 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
       },
       { matcher: 'qotd', fn: getQuoteOfTheDay },
       { matcher: 'poll', fn: createPoll },
+      { matcher: 'cowsay', fn: cowsay },
     ],
   },
   keywordMatchCommands: [
