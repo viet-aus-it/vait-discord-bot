@@ -4,6 +4,14 @@ import { fetchMessageById } from '../../utils/messageFetcher';
 
 const isBlank = (content: string) => content.trim() === '';
 
+// Remove backtick in message in case of nesting cowsay
+const removeBacktick = (message: string) => {
+  if (message.indexOf('```') !== -1) {
+    return message.slice(3, -3);
+  }
+  return message;
+};
+
 const generateCowsayText = (message: string) => {
   const config = {
     text: message,
@@ -17,21 +25,29 @@ const cowsay = async ({ content, reference, channel, author }: Message) => {
 
   let chatContent =
     content.trimEnd().indexOf(' ') !== -1
-      ? content.slice(content.trimEnd().indexOf(' '))
+      ? content.slice(content.trimEnd().indexOf(' ')).trimStart()
       : '';
 
-  // if there is no chat content
-  if (isBlank(chatContent) && reference && reference.channelID !== null) {
-    chatContent = await fetchMessageById(
-      channel as TextChannel,
-      reference.messageID as string
-    );
-  } else {
-    return;
+  // If there is no chat content, then assign any reference as chat content
+  if (isBlank(chatContent)) {
+    if (reference && reference.channelID !== null) {
+      chatContent = await fetchMessageById(
+        channel as TextChannel,
+        reference.messageID as string
+      );
+    } else {
+      return;
+    }
   }
 
-  const reply = '```' + generateCowsayText(chatContent) + '```';
-  channel.send(reply);
+  chatContent = removeBacktick(chatContent);
+  const reply = `\`\`\`${generateCowsayText(chatContent)}\`\`\``;
+
+  try {
+    await channel.send(reply);
+  } catch (error) {
+    console.error('CANNOT SEND MESSAGE', error);
+  }
 };
 
 export default cowsay;
