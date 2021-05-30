@@ -14,17 +14,6 @@ describe('cowsay test', () => {
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
-  it('It should eliminate BackTicks of the message (discord codeblock)', async () => {
-    const mockMsg: any = {
-      content: '-cowsay ```lorem ipsum```',
-      channel: { send: replyMock },
-      author: { bot: false },
-    };
-
-    await cowsay(mockMsg);
-    expect(replyMock).toBe('lorem ipsum');
-  });
-
   it('Should not reply if there is no content and reference', async () => {
     const mockMsg: any = {
       content: '-cowsay ',
