@@ -1,28 +1,36 @@
-import cowsay from '.';
+import faker from 'faker';
+import cowsay, { removeBacktick } from '.';
 
 const replyMock = jest.fn(() => {});
 
+describe('Remove backtick test', () => {
+  it("Should ignore when there's no backticks", () => {
+    const input = faker.lorem.text(25);
+    const output = removeBacktick(input);
+    expect(output).toEqual(input);
+  });
+
+  it('Should remove backtick if it exists', () => {
+    const input = '```aaaaa```';
+    const output = removeBacktick(input);
+    expect(output).toEqual('aaaaa');
+  });
+});
+
 describe('cowsay test', () => {
+  beforeEach(() => {
+    replyMock.mockClear();
+  });
+
   it('It should reply for any text from non-bot user', async () => {
     const mockMsg: any = {
-      content: '-cowsay lorem ipsum',
+      content: `-cowsay ${faker.lorem.words(25)}`,
       channel: { send: replyMock },
       author: { bot: false },
     };
 
     await cowsay(mockMsg);
     expect(replyMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('Should not reply if there is no content and reference', async () => {
-    const mockMsg: any = {
-      content: '-cowsay ',
-      channel: { send: replyMock },
-      author: { bot: false },
-    };
-
-    await cowsay(mockMsg);
-    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('Should not reply if the sender is a bot', async () => {
@@ -34,5 +42,80 @@ describe('cowsay test', () => {
 
     await cowsay(mockMsg);
     expect(replyMock).not.toHaveBeenCalled();
+  });
+
+  it('Should be able to eliminate all backticks', async () => {
+    const mockMsg: any = {
+      content: '-cowsay ```There is a lot of backticks```',
+      channel: { send: replyMock },
+      author: { bot: false },
+    };
+
+    await cowsay(mockMsg);
+    expect(replyMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('For cowsay with no content', () => {
+    const getMockMsg = (fetchCallBack: Function) => ({
+      content: `-mock`,
+      channel: {
+        send: replyMock,
+        messages: { fetch: fetchCallBack },
+      },
+      author: { bot: false },
+    });
+
+    // const getBotMockMsg = (fetchCallBack: Function) => ({
+    //   content: `-mock`,
+    //   channel: {
+    //     send: replyMock,
+    //     messages: { fetch: fetchCallBack },
+    //   },
+    //   author: { bot: true },
+    // });
+
+    const getMockMsgWithReference = (
+      fetchCallBack: Function,
+      reference: undefined | { messageID: string }
+    ) => ({
+      ...getMockMsg(fetchCallBack),
+      reference,
+    });
+
+    describe('Fetch the previous message', () => {
+      it('Should throw error if previous message cannot be retrieved', async () => {
+        const fetchMock = jest.fn(async () => ({
+          first: () => undefined,
+        }));
+        const mockMsg: any = getMockMsg(fetchMock);
+
+        await cowsay(mockMsg);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
+
+      it('It should refer to previous message', async () => {
+        const mockPreviousMessage = { content: faker.lorem.word(10) };
+        const fetchMock = jest.fn(async () => ({
+          first: () => mockPreviousMessage,
+        }));
+        const mockMsg: any = getMockMsg(fetchMock);
+
+        await cowsay(mockMsg);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('Fetch referred message', () => {
+      it('Should cowsay the refered message', async () => {
+        const messageWithContent = { content: faker.lorem.word(10) };
+        const fetchMock = jest.fn(async () => messageWithContent);
+        const mockMsg: any = getMockMsgWithReference(fetchMock, {
+          messageID: '1',
+        });
+
+        await cowsay(mockMsg);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 });
