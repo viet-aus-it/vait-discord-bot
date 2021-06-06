@@ -53,7 +53,7 @@ onboarding script. This script will create a local dev environment file, install
 dependencies, build the docker containers and set up a pre-commit git hook.
 
 ```shell
-./onboarding.sh
+./onboarding_script.sh
 ```
 
 Please ensure that you have all of the required programs/executable are
