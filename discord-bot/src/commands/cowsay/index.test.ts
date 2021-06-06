@@ -65,15 +65,6 @@ describe('cowsay test', () => {
       author: { bot: false },
     });
 
-    // const getBotMockMsg = (fetchCallBack: Function) => ({
-    //   content: `-mock`,
-    //   channel: {
-    //     send: replyMock,
-    //     messages: { fetch: fetchCallBack },
-    //   },
-    //   author: { bot: true },
-    // });
-
     const getMockMsgWithReference = (
       fetchCallBack: Function,
       reference: undefined | { messageID: string }
