@@ -48,16 +48,15 @@ const wrapText = (input: string, width: number) => {
 };
 
 const generateCowsayText = (message: string) => {
-  const config = {
-    text: message,
-  };
+  let chatContent = removeBacktick(message);
+  chatContent = wrapText(chatContent, WRAP_TEXT_LIMIT);
+
+  const config = { text: chatContent };
   return say(config);
 };
 
 // Send Cowsay text
-const sendCowsay = async (string: string, channel: any) => {
-  let chatContent = removeBacktick(string);
-  chatContent = wrapText(chatContent, WRAP_TEXT_LIMIT);
+const sendCowsay = async (chatContent: string, channel: TextChannel) => {
   const reply = `\`\`\`${generateCowsayText(chatContent)}\`\`\``;
 
   try {
@@ -71,15 +70,17 @@ const cowsay = async ({ content, reference, channel, id, author }: Message) => {
   // Return if sender is bot
   if (author.bot) return;
 
+  const textChannel = channel as TextChannel;
+
+  const firstSpaceChar = content.trimEnd().indexOf(' ');
+
   let chatContent = removeBacktick(
-    content.trimEnd().indexOf(' ') !== -1
-      ? content.slice(content.trimEnd().indexOf(' ')).trimStart()
-      : ''
+    firstSpaceChar !== -1 ? content.slice(firstSpaceChar).trimStart() : ''
   );
 
   // If cowsay is called with chat content
   if (!isBlank(chatContent)) {
-    sendCowsay(chatContent, channel);
+    sendCowsay(chatContent, textChannel);
     return;
   }
 
@@ -87,12 +88,12 @@ const cowsay = async ({ content, reference, channel, id, author }: Message) => {
   if (reference && reference.channelID !== null) {
     // And there is a reference to another message, fetch that message
     chatContent = await fetchMessageById(
-      channel as TextChannel,
+      textChannel,
       reference.messageID as string
     );
   } else {
     // Or just fetch the latest message
-    chatContent = await fetchLastMessageBeforeId(channel as TextChannel, id);
+    chatContent = await fetchLastMessageBeforeId(textChannel, id);
   }
 
   // if the content stil blank at this point, exit
@@ -100,7 +101,7 @@ const cowsay = async ({ content, reference, channel, id, author }: Message) => {
     return;
   }
 
-  sendCowsay(chatContent, channel);
+  sendCowsay(chatContent, textChannel);
 };
 
 export default cowsay;
