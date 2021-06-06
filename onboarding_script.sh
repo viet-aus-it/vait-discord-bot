@@ -32,7 +32,7 @@ echo "Going back to root directory"
 cd ..
 
 echo "Onboarding script finished."
-if [ -z "$BOT_TOKEN"]; then
+if [ -z "$BOT_TOKEN" ]; then
   echo "Remember to create your discord bot app and bot, and fill in the TOKEN field in the .env.docker file for the discord bot service to run."
   echo "After that, you should be able to run the bot service using docker-compose up."
 else
