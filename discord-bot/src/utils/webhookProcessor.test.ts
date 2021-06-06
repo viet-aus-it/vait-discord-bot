@@ -15,7 +15,7 @@ describe('Test webhook processor', () => {
       fetchWebhooks: mockedFetch,
     };
 
-    const result = await fetchWebhook(mockedChannel);
+    const result = await fetchWebhook(mockedChannel, 'VAIT-Hook');
     expect(mockedFetch).toHaveBeenCalled();
     expect(result).toEqual(mockedWebhook);
   });
@@ -31,7 +31,7 @@ describe('Test webhook processor', () => {
       createWebhook: mockCreate,
     };
 
-    const result = await createWebhook(mockedChannel);
+    const result = await createWebhook(mockedChannel, 'VAIT-Hook');
     expect(mockCreate).toHaveBeenCalled();
     expect(result).toEqual(mockedWebhook);
   });
