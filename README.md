@@ -2,17 +2,24 @@
 
 ## Table of contents
 
-- [Requirements](#requirements)
-- [Contributions](#contributions)
-- [Onboarding](#onboarding)
-  - [Creating your discord app and bot](#creating-your-discord-app-and-bot)
-  - [Creating the config files](#creating-the-config-files)
-  - [Install node dependencies](#install-node-dependencies)
-  - [Build and run docker container](#build-and-run-docker-container)
-- [Notes on working with the repo](#notes-on-working-with-the-repo)
-  - [How to run commands inside the container](#how-to-run-commands-inside-the-container)
-- [Docker related commands](#docker-related-commands)
-  - [For the bot service container](#for-the-bot-service-container)
+- [VAIT Discord Bot Project](#vait-discord-bot-project)
+  - [Table of contents](#table-of-contents)
+  - [Requirements](#requirements)
+  - [Contributions](#contributions)
+  - [Onboarding](#onboarding)
+    - [Creating your discord app and bot](#creating-your-discord-app-and-bot)
+    - [Creating the config files](#creating-the-config-files)
+      - [Using the onboarding script](#using-the-onboarding-script)
+      - [Manually](#manually)
+    - [Install node dependency](#install-node-dependency)
+    - [Build and run docker container](#build-and-run-docker-container)
+    - [Setting up the pre-commit git hook](#setting-up-the-pre-commit-git-hook)
+  - [Notes on working with the repo](#notes-on-working-with-the-repo)
+    - [How to run commands inside the container](#how-to-run-commands-inside-the-container)
+  - [Docker related commands](#docker-related-commands)
+    - [For the bot service container](#for-the-bot-service-container)
+      - [DB migration](#db-migration)
+      - [Running tests](#running-tests)
 
 ---
 
