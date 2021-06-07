@@ -7,6 +7,7 @@ const config: Config.InitialOptions = {
   clearMocks: true,
   collectCoverage: true,
   modulePaths: ['<rootDir>/src/'],
+  setupFilesAfterEnv: ['jest-mock-console/dist/setupTestFramework.js'],
 };
 
 export default config;
