@@ -7,12 +7,11 @@ const createEmbeddedMessage = (
   { name: channelName }: TextChannel,
   firstUrl: string
 ) => {
-  const { username, avatarURL } = author;
   const embed = new MessageEmbed({
     color: '#0072a8',
     author: {
-      name: username,
-      iconURL: avatarURL() || '',
+      name: author.username,
+      iconURL: author.avatarURL() || '',
       url: firstUrl,
     },
     description: content,
@@ -44,8 +43,6 @@ const embedLink = async (msg: Message) => {
 
   const [firstUrl] = hasDiscordUrl;
   const idString = firstUrl.replace('https://discord.com/channels/', '');
-  if (idString.trim().length === 0 || idString.split('/').length < 3) return; // return if link is wrong
-
   const [, channelId, messageId] = idString.split('/');
   const sourceChannel = guild.channels.cache.find(({ id }) => id === channelId);
   if (!sourceChannel) return; // return if source channel doesn't exist anymore
@@ -67,7 +64,7 @@ const embedLink = async (msg: Message) => {
     await webhook.send(content.replace(firstUrl, ''), {
       embeds: [embed],
       username: author.username,
-      avatarURL: author.avatarURL() ?? undefined,
+      avatarURL: author.avatarURL() || undefined,
     });
     await msg.delete();
   } catch (error) {

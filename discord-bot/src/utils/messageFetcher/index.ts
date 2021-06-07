@@ -1,8 +1,8 @@
-import { Message, TextChannel } from 'discord.js';
+import { TextChannel } from 'discord.js';
 
 const handleFetchMessageError = (
   error: Error,
-  returnObject: any = undefined
+  returnObject: string | undefined = undefined
 ) => {
   console.error('CANNOT FETCH MESSAGES IN CHANNEL', error);
   return returnObject;
@@ -11,7 +11,7 @@ const handleFetchMessageError = (
 export const fetchMessageObjectById = async (
   channel: TextChannel,
   id: string
-): Promise<Message> => {
+) => {
   try {
     const message = await channel.messages.fetch(id);
     if (!message) {
@@ -19,7 +19,7 @@ export const fetchMessageObjectById = async (
     }
     return message;
   } catch (error) {
-    return handleFetchMessageError(error);
+    return handleFetchMessageError(error, undefined) as undefined;
   }
 };
 
@@ -31,7 +31,7 @@ export const fetchMessageById = async (channel: TextChannel, id: string) => {
     }
     return message.content;
   } catch (error) {
-    return handleFetchMessageError(error, '');
+    return handleFetchMessageError(error, '') as string;
   }
 };
 
@@ -47,6 +47,6 @@ export const fetchLastMessageBeforeId = async (
     }
     return messageRightBefore.content;
   } catch (error) {
-    return handleFetchMessageError(error, '');
+    return handleFetchMessageError(error, '') as string;
   }
 };

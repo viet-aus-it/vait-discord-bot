@@ -40,7 +40,7 @@ const animatedEmoji = async (originalMessage: Message) => {
   try {
     await webhook.send(newMessage, {
       username: author.username,
-      avatarURL: author.avatarURL() ?? undefined,
+      avatarURL: author.avatarURL() || undefined,
     });
     await originalMessage.delete();
   } catch (error) {
