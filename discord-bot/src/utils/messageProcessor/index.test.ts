@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { processMessage, CommandConfig } from './messageProcessor';
+import { processMessage, CommandConfig } from '.';
 
 describe('processMessage', () => {
   beforeEach(() => {
