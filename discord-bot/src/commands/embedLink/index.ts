@@ -35,10 +35,7 @@ const embedLink = async (msg: Message) => {
   if (author.bot) return; // return if bot sends the message
 
   const currentTextChannel = channel as TextChannel;
-  const webhook = await fetchOrCreateWebhook(
-    currentTextChannel,
-    'VAIT-EmbedLink-Hook'
-  );
+  const webhook = await fetchOrCreateWebhook(currentTextChannel, 'VAIT-Hook');
   if (!webhook) return;
 
   const messageURLRegex = /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+/gim;

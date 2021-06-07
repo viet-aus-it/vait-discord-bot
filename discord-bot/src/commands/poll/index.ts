@@ -73,10 +73,7 @@ const createPoll = async (msg: Message) => {
   }
 
   const currentTextChannel = channel as TextChannel;
-  const webhook = await fetchOrCreateWebhook(
-    currentTextChannel,
-    'VAIT-Poll-Hook'
-  );
+  const webhook = await fetchOrCreateWebhook(currentTextChannel, 'VAIT-Hook');
   if (!webhook) return;
 
   const embed = createEmbeddedMessage(question, numberAsString, pollOptions);
