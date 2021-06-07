@@ -23,10 +23,10 @@ const animatedEmoji = async (originalMessage: Message) => {
   let emojiCount = 0;
   emojis.forEach((emoji) => {
     const emoteName = emoji.replace(/:/gim, '');
-    const emote = guild?.emojis.cache.find(({ name }) => name === emoteName);
+    const emote = guild!.emojis.cache.find(
+      ({ name, animated }) => name === emoteName && animated
+    );
     if (!emote) return; // return if no matching emoji found on server
-    if (!emote.animated) return; // return if emoji is not animated
-    if (emote?.name !== emoteName) return; // return if doesn't match emoji's name
 
     newMessage = newMessage.replace(
       new RegExp(`:${emoji}:`, 'gi'),
