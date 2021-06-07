@@ -1,9 +1,5 @@
 import { Collection, Webhook } from 'discord.js';
-import {
-  fetchWebhook,
-  createWebhook,
-  fetchOrCreateWebhook,
-} from './webhookProcessor';
+import { fetchWebhook, createWebhook, fetchOrCreateWebhook } from '.';
 
 describe('Test webhook processor', () => {
   it('should return an existing webhook', async () => {
