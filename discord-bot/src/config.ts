@@ -10,6 +10,7 @@ import embedLink from './commands/embedLink';
 import createPoll from './commands/poll';
 import cowsay from './commands/cowsay';
 import weather from './commands/weather';
+import insult from './commands/insult';
 
 export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   prefixedCommands: {
@@ -26,6 +27,7 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
       { matcher: 'poll', fn: createPoll },
       { matcher: 'cowsay', fn: cowsay },
       { matcher: 'weather', fn: weather },
+      { matcher: 'insult', fn: insult },
     ],
   },
   keywordMatchCommands: [
