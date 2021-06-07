@@ -1,5 +1,6 @@
 import { Collection, Webhook } from 'discord.js';
-import createPoll from '.';
+import mockConsole from 'jest-mock-console';
+import createPoll, { replyWithErrorMessage } from '.';
 
 const webhookSendMock = jest.fn();
 const mockedReply = jest.fn();
@@ -12,30 +13,34 @@ const fakeHook: any = {
 const fakeWebhooks = new Collection<string, Webhook>();
 fakeWebhooks.set('0', fakeHook);
 
-describe('Poll test', () => {
-  it('Should return a poll as embeded message', async () => {
+describe('Reply with error message test', () => {
+  it('Should reply with an error message', async () => {
     const mockMsg: any = {
-      content: '-poll "question" 1 2 3',
+      content: 'Test message',
       author: {
         bot: false,
-        avatarURL: () => jest.fn(),
       },
-      channel: {
-        fetchWebhooks: async () => fakeWebhooks,
-        createWebhook: async () => fakeHook,
-      },
-      delete: msgDeleteMock,
+      reply: mockedReply,
     };
-    const mockedReact = jest.fn();
-    webhookSendMock.mockReturnValueOnce({
-      react: mockedReact,
-    });
-    await createPoll(mockMsg);
-    expect(webhookSendMock).toHaveBeenCalledTimes(1);
-    expect(msgDeleteMock).toHaveBeenCalledTimes(1);
-    expect(mockedReact).toHaveBeenCalledTimes(3);
+    await replyWithErrorMessage(mockMsg, 'Synthetic message');
+    expect(mockedReply).toHaveBeenCalledTimes(1);
   });
 
+  it('Should handle error with console if message cannot be sent', async () => {
+    const mockMsg: any = {
+      content: 'Test message',
+      author: {
+        bot: false,
+      },
+      reply: () => Promise.reject(new Error('Synthetic error')),
+    };
+    mockConsole();
+    await replyWithErrorMessage(mockMsg, 'Synthetic message');
+    expect(console.error).toHaveBeenCalled();
+  });
+});
+
+describe('Poll test', () => {
   it('Should return if author is a bot', async () => {
     const mockMsg: any = {
       author: {
@@ -61,7 +66,7 @@ describe('Poll test', () => {
     expect(msgDeleteMock).not.toHaveBeenCalled();
   });
 
-  it('Should return a message if it has less than 2 poll options', async () => {
+  it('Should send a message if it has less than 2 poll options', async () => {
     const mockMsg: any = {
       content: '-poll "question" option1',
       author: {
@@ -75,7 +80,7 @@ describe('Poll test', () => {
     expect(msgDeleteMock).not.toHaveBeenCalled();
   });
 
-  it('Should return a message if it has more than 9 poll options', async () => {
+  it('Should send a message if it has more than 9 poll options', async () => {
     const mockMsg: any = {
       content: '-poll "question" 1 2 3 4 5 6 7 8 9 10',
       author: {
@@ -103,5 +108,78 @@ describe('Poll test', () => {
 
     await createPoll(mockMsg);
     expect(createHookMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should send a poll as embeded message', async () => {
+    const mockMsg: any = {
+      content: '-poll "question" 1 2 3',
+      author: {
+        bot: false,
+        avatarURL: jest.fn(),
+      },
+      channel: {
+        fetchWebhooks: async () => fakeWebhooks,
+        createWebhook: async () => fakeHook,
+      },
+      delete: msgDeleteMock,
+    };
+    const mockedReact = jest.fn();
+    webhookSendMock.mockReturnValueOnce({
+      react: mockedReact,
+    });
+    await createPoll(mockMsg);
+    expect(webhookSendMock).toHaveBeenCalledTimes(1);
+    expect(msgDeleteMock).toHaveBeenCalledTimes(1);
+    expect(mockedReact).toHaveBeenCalledTimes(3);
+  });
+
+  it('Should send a poll as embeded message, even if author avatar is undefined', async () => {
+    const mockMsg: any = {
+      content: '-poll "question" 1 2 3',
+      author: {
+        bot: false,
+        avatarURL: () => undefined,
+      },
+      channel: {
+        fetchWebhooks: async () => fakeWebhooks,
+        createWebhook: async () => fakeHook,
+      },
+      delete: msgDeleteMock,
+    };
+    const mockedReact = jest.fn();
+    webhookSendMock.mockReturnValueOnce({
+      react: mockedReact,
+    });
+    await createPoll(mockMsg);
+    expect(webhookSendMock).toHaveBeenCalledTimes(1);
+    expect(msgDeleteMock).toHaveBeenCalledTimes(1);
+    expect(mockedReact).toHaveBeenCalledTimes(3);
+  });
+
+  it('Should handle error with console if message cannot be sent', async () => {
+    const mockMsg: any = {
+      content: '-poll "question" 1 2 3',
+      author: {
+        bot: false,
+        avatarURL: jest.fn(),
+      },
+      channel: {
+        fetchWebhooks: async () => fakeWebhooks,
+        createWebhook: async () => fakeHook,
+      },
+      delete: msgDeleteMock,
+    };
+    const mockedReact = jest.fn();
+    webhookSendMock.mockReturnValueOnce(
+      Promise.reject(new Error('Synthetic Error'))
+    );
+    mockConsole();
+
+    await createPoll(mockMsg);
+
+    expect(webhookSendMock).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(msgDeleteMock).not.toHaveBeenCalled();
+    expect(mockedReact).not.toHaveBeenCalled();
   });
 });

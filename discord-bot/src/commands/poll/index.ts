@@ -21,6 +21,15 @@ const createEmbeddedMessage = (
   return embed;
 };
 
+export const replyWithErrorMessage = async (msg: Message, content: string) => {
+  try {
+    await msg.reply(content);
+    return;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const createPoll = async (msg: Message) => {
   const { author, channel, content } = msg;
   if (author.bot) return; // return if author is bot
@@ -52,24 +61,20 @@ const createPoll = async (msg: Message) => {
   const message = content.slice(firstSpaceIndex);
   const hasQuestion = message.match(/".+"/);
   if (!hasQuestion) {
-    // return a message with correct syntax
-    msg.reply(
+    return replyWithErrorMessage(
+      msg,
       'Syntax to create a poll is:\n`-poll "Question" pollOption1 pollOption2...pollOption9`\nQuestion must be placed in "", poll options are space delimited'
     );
-    return;
   }
 
   const question = hasQuestion[0];
   const pollOptions = message.replace(question, '').trim().split(' ');
 
-  if (pollOptions.length < 2) {
-    msg.reply('You need at least 2 poll options for a valid poll');
-    return;
-  }
-
-  if (pollOptions.length > 9) {
-    msg.reply('Maximum 9 options are allowed');
-    return;
+  if (pollOptions.length < 2 || pollOptions.length > 9) {
+    return replyWithErrorMessage(
+      msg,
+      'You need at least 2 and at most 9 options for a valid poll'
+    );
   }
 
   const currentTextChannel = channel as TextChannel;
@@ -82,7 +87,7 @@ const createPoll = async (msg: Message) => {
     const pollMsg = await webhook.send({
       embeds: [embed],
       username: author.username,
-      avatarURL: author.avatarURL() ?? undefined,
+      avatarURL: author.avatarURL() || undefined,
     });
     await msg.delete();
     const promises = pollOptions.map((_value, index) =>
