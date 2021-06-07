@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+import mockConsole from 'jest-mock-console';
 import { processMessage, CommandConfig } from '.';
 
 describe('processMessage', () => {
@@ -246,5 +247,37 @@ describe('processMessage', () => {
       expect(km3).not.toHaveBeenCalled();
       expect(km4).not.toHaveBeenCalled();
     });
+  });
+
+  it('should handle message processing error with console error', async () => {
+    mockConsole();
+    const km1 = jest.fn(() => Promise.reject(new Error('Synthetic Error')));
+    const km3 = jest.fn();
+    const km4 = jest.fn();
+    const config: CommandConfig = {
+      keywordMatchCommands: [],
+      prefixedCommands: {
+        prefix: '-',
+        commands: [{ matcher: 'km1', fn: km1 }],
+      },
+      emojiMatchCommand: {
+        matcher: ':.+:',
+        fn: km3,
+      },
+      linkMatchCommand: {
+        fn: km4,
+      },
+    };
+
+    const message = {
+      content: '-km1 star this thing',
+    } as Message;
+
+    await processMessage(message, config);
+
+    expect(km1).toHaveBeenCalled();
+    expect(km3).not.toHaveBeenCalled();
+    expect(km4).not.toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalled();
   });
 });
