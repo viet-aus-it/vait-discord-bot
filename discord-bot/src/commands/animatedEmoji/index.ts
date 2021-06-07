@@ -15,10 +15,7 @@ const animatedEmoji = async (originalMessage: Message) => {
   if (!hasEmoji) return; // return if no emoji found
 
   const currentTextChannel = channel as TextChannel;
-  const webhook = await fetchOrCreateWebhook(
-    currentTextChannel,
-    'VAIT-AnimatedEmoji-Hook'
-  );
+  const webhook = await fetchOrCreateWebhook(currentTextChannel, 'VAIT-Hook');
   if (!webhook) return;
 
   let newMessage = content;
