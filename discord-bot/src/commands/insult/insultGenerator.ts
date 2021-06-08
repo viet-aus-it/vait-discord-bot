@@ -222,7 +222,7 @@ export const randomCreate = () => {
   const verb = verbs[randomIndex(verbs)];
   const adj = adjectives[randomIndex(adjectives)];
   const noun = nouns[randomIndex(nouns)];
-  return `thou ${verb} ${adj} ${noun}`;
+  return `Thou ${verb} ${adj} ${noun}.`;
 };
 
 export const randomSentences = () => {
