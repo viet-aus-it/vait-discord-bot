@@ -23,6 +23,20 @@ const fakeEmojiCache = new Collection<string, GuildEmoji>();
 fakeEmojiCache.set('0', fakeAnimatedEmoji);
 
 describe('animated emoji test', () => {
+  it('Should return if message is not sent in a guild', async () => {
+    const mockMsg: any = {
+      content: `:sadparrot:`,
+      author: { bot: false },
+      channel: {
+        fetchWebhooks: async () => fakeWebhooks,
+        createWebhook: async () => fakeHook,
+      },
+    };
+
+    await animatedEmoji(mockMsg);
+    expect(webhookSendMock).not.toHaveBeenCalled();
+  });
+
   it('Should return if author is a bot', async () => {
     const mockMsg: any = {
       content: `:sadparrot:`,
