@@ -4,6 +4,8 @@ import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
 const animatedEmoji = async (originalMessage: Message) => {
   const { author, content, guild, channel } = originalMessage;
 
+  if (!guild) return; // return if message is not sent from within a guild
+
   if (author.bot) return; // return if bot sends the message
 
   const nitroRegex = /<a?:.+:\d+>/gim;
@@ -23,7 +25,7 @@ const animatedEmoji = async (originalMessage: Message) => {
   let emojiCount = 0;
   emojis.forEach((emoji) => {
     const emoteName = emoji.replace(/:/gim, '');
-    const emote = guild!.emojis.cache.find(
+    const emote = guild.emojis.cache.find(
       ({ name, animated }) => name === emoteName && animated
     );
     if (!emote) return; // return if no matching emoji found on server
