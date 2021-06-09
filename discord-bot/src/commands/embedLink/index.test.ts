@@ -24,7 +24,7 @@ describe('Embed link test', () => {
       content:
         'https://discord.com/channels/836907335263060028/844572466517245954/844667107581100073',
       author: {
-        bot: true,
+        bot: false,
         avatarURL: jest.fn(() => {}),
       },
       channel: {
