@@ -3,7 +3,12 @@ import { CommandConfig } from './utils/messageProcessor';
 import ask8Ball from './commands/8ball';
 import danhSomeone from './commands/danhSomeone';
 import mockSomeone from './commands/mockSomeone';
-import { giveRep, checkReputation } from './commands/reputation';
+import {
+  giveReputation,
+  takeReputation,
+  setReputation,
+  checkReputation,
+} from './commands/reputation';
 import getQuoteOfTheDay from './commands/quoteOfTheDay';
 import animatedEmoji from './commands/animatedEmoji';
 import embedLink from './commands/embedLink';
@@ -17,8 +22,12 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
     prefix: '-',
     commands: [
       { matcher: 'rep', fn: checkReputation },
-      { matcher: 'giverep', fn: giveRep },
-      { matcher: 'gr', fn: giveRep },
+      { matcher: 'giverep', fn: giveReputation },
+      { matcher: 'gr', fn: giveReputation },
+      { matcher: 'takerep', fn: takeReputation },
+      { matcher: 'tr', fn: takeReputation },
+      { matcher: 'setrep', fn: setReputation },
+      { matcher: 'sr', fn: setReputation },
       { matcher: '8ball', fn: ask8Ball },
       { matcher: 'mock', fn: mockSomeone },
       {
@@ -35,7 +44,7 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   keywordMatchCommands: [
     {
       matchers: ['thank', 'thanks', 'cảm ơn', 'cám ơn'],
-      fn: giveRep,
+      fn: giveReputation,
     },
   ],
   emojiMatchCommand: {
