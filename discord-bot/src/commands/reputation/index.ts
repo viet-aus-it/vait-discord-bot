@@ -1,2 +1,4 @@
 export * from './checkReputation';
-export * from './giveRep';
+export * from './giveReputation';
+export * from './takeReputation';
+export * from './setReputation';

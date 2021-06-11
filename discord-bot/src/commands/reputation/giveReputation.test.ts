@@ -1,5 +1,5 @@
 import { Collection, User } from 'discord.js';
-import { giveRep } from './giveRep';
+import { giveReputation } from './giveReputation';
 import { getPrismaClient } from '../../clients/prisma';
 
 jest.mock('../../clients/prisma');
@@ -34,7 +34,7 @@ describe('giveRep', () => {
     const mockPrismaClient: any = {};
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await giveRep(mockMsg);
+    await giveReputation(mockMsg);
 
     expect(replyMock).not.toHaveBeenCalled();
   });
@@ -58,7 +58,7 @@ describe('giveRep', () => {
     const mockPrismaClient: any = {};
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await giveRep(mockMsg);
+    await giveReputation(mockMsg);
 
     expect(replyMock).toHaveBeenCalled();
   });
@@ -94,7 +94,7 @@ describe('giveRep', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await giveRep(mockMsg);
+    await giveReputation(mockMsg);
     expect(findUniqueMock).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
     expect(reputationCreateMock).not.toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe('giveRep', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await giveRep(mockMsg);
+    await giveReputation(mockMsg);
     expect(findUniqueMock).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
     expect(reputationCreateMock).not.toHaveBeenCalled();
@@ -164,7 +164,7 @@ describe('giveRep', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await giveRep(mockMsg);
+    await giveReputation(mockMsg);
     expect(findUniqueMock).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
     expect(reputationCreateMock).not.toHaveBeenCalled();
@@ -199,7 +199,7 @@ describe('giveRep', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await giveRep(mockMsg);
+    await giveReputation(mockMsg);
 
     expect(findUniqueMock).toHaveBeenCalledTimes(1);
     expect(updateUserMock).toHaveBeenCalledTimes(1);
