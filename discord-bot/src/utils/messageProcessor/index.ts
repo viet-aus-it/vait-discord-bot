@@ -46,9 +46,7 @@ const processPrefixedMatch = (
     const prefixCommand = `${config.prefix}${conf.matcher}`;
     const hasMatchingPrefix = message.content.startsWith(prefixCommand);
 
-    if (!hasMatchingPrefix) {
-      return;
-    }
+    if (!hasMatchingPrefix) return;
 
     return conf.fn(message);
   });
@@ -64,9 +62,7 @@ const processEmojiMatch = (
   config: EmojiMatchCommand
 ): CommandPromise => {
   const hasEmoji = message.content.match(config.matcher);
-  if (!hasEmoji) {
-    return;
-  }
+  if (!hasEmoji) return;
 
   return config.fn(message);
 };
@@ -82,9 +78,7 @@ const processLinkMatch = (
   const hasDiscordLink = message.content.match(
     /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+/gim
   );
-  if (!hasDiscordLink) {
-    return;
-  }
+  if (!hasDiscordLink) return;
 
   return config.fn(message);
 };
@@ -103,14 +97,13 @@ export const processMessage = async (
   message: Message,
   config: CommandConfig
 ) => {
-  const keywordPromises = processKeywordMatch(
-    message,
-    config.keywordMatchCommands
-  );
   const prefixPromises = processPrefixedMatch(message, config.prefixedCommands);
 
   // If message already has a prefix command, don't process these.
   const hasPrefixPromises = removeUndefinedPromises(prefixPromises).length > 0;
+  const keywordPromises = hasPrefixPromises
+    ? []
+    : processKeywordMatch(message, config.keywordMatchCommands);
   const emojiPromises = hasPrefixPromises
     ? undefined
     : processEmojiMatch(message, config.emojiMatchCommand);
@@ -119,8 +112,8 @@ export const processMessage = async (
     : processLinkMatch(message, config.linkMatchCommand);
 
   const promises = removeUndefinedPromises([
-    ...keywordPromises,
     ...prefixPromises,
+    ...keywordPromises,
     emojiPromises,
     linkPromises,
   ]);
