@@ -1,5 +1,5 @@
 import { Collection, User } from 'discord.js';
-import { thankUser } from './thankUser';
+import { giveRep } from './giveRep';
 import { getPrismaClient } from '../../clients/prisma';
 
 jest.mock('../../clients/prisma');
@@ -9,7 +9,7 @@ const mockGetPrismaClient = getPrismaClient as jest.MockedFunction<
 
 const replyMock = jest.fn(() => {});
 
-describe('thankUser', () => {
+describe('giveRep', () => {
   const findUniqueMock = jest.fn(() => ({ id: '0' }));
   const updateUserMock = jest.fn();
   const reputationCreateMock = jest.fn();
@@ -34,7 +34,7 @@ describe('thankUser', () => {
     const mockPrismaClient: any = {};
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await thankUser(mockMsg);
+    await giveRep(mockMsg);
 
     expect(replyMock).not.toHaveBeenCalled();
   });
@@ -58,7 +58,7 @@ describe('thankUser', () => {
     const mockPrismaClient: any = {};
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await thankUser(mockMsg);
+    await giveRep(mockMsg);
 
     expect(replyMock).toHaveBeenCalled();
   });
@@ -94,7 +94,7 @@ describe('thankUser', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await thankUser(mockMsg);
+    await giveRep(mockMsg);
     expect(findUniqueMock).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
     expect(reputationCreateMock).not.toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe('thankUser', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await thankUser(mockMsg);
+    await giveRep(mockMsg);
     expect(findUniqueMock).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
     expect(reputationCreateMock).not.toHaveBeenCalled();
@@ -164,7 +164,7 @@ describe('thankUser', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await thankUser(mockMsg);
+    await giveRep(mockMsg);
     expect(findUniqueMock).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
     expect(reputationCreateMock).not.toHaveBeenCalled();
@@ -199,7 +199,7 @@ describe('thankUser', () => {
     };
     mockGetPrismaClient.mockReturnValue(mockPrismaClient);
 
-    await thankUser(mockMsg);
+    await giveRep(mockMsg);
 
     expect(findUniqueMock).toHaveBeenCalledTimes(1);
     expect(updateUserMock).toHaveBeenCalledTimes(1);

@@ -1,2 +1,2 @@
 export * from './checkReputation';
-export * from './thankUser';
+export * from './giveRep';
