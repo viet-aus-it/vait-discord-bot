@@ -2,10 +2,11 @@ import { Message } from 'discord.js';
 import { getOrCreateUser } from './_helpers';
 import { getPrismaClient } from '../../clients/prisma';
 
-export const thankUser = async (msg: Message) => {
+export const giveRep = async (msg: Message) => {
   const prisma = getPrismaClient();
   const { author, channel, mentions } = msg;
   if (author.bot) return; // return if author is a Discord bot
+
   const hasExactlyOneUser = mentions.users.size === 1;
   if (!hasExactlyOneUser) return;
 
