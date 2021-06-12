@@ -1,3 +1,5 @@
+import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
+
 const verbs = [
   'artless',
   'bawdy',
@@ -157,7 +159,7 @@ const nouns = [
   'wagtail',
 ];
 
-export const sentences = [
+export const quotes = [
   'A most notable coward, an infinite and endless liar, an hourly promise breaker, the owner of no one good quality.',
   'Away, you starvelling, you elf-skin, you dried neat’s-tongue, bull’s-pizzle, you stock-fish!',
   'Away, you three-inch fool!',
@@ -215,26 +217,20 @@ export const sentences = [
   'You have such a February face, So full of frost, of storm, and cloudiness.',
 ];
 
-const randomIndex = (array: string[]) =>
-  Math.floor(Math.random() * array.length);
-
 export const randomCreate = () => {
-  const verb = verbs[randomIndex(verbs)];
-  const adj = adjectives[randomIndex(adjectives)];
-  const noun = nouns[randomIndex(nouns)];
+  const verb = verbs[getRandomIntInclusive(0, verbs.length)];
+  const adj = adjectives[getRandomIntInclusive(0, adjectives.length)];
+  const noun = nouns[getRandomIntInclusive(0, nouns.length)];
   return `Thou ${verb} ${adj} ${noun}.`;
 };
 
-export const randomSentences = () => {
-  return sentences[randomIndex(sentences)];
+export const randomQuote = () => {
+  return quotes[getRandomIntInclusive(0, quotes.length)];
 };
 
 export const randomInsultGenerator = () => {
-  // There are 2 sources of insult: random created and from Shakespeare himself
-  const source = Math.floor(Math.random() * 2);
+  const source = getRandomBoolean();
 
-  if (source === 0) {
-    return randomCreate();
-  }
-  return randomSentences();
+  // Randomly pick insult from 2 sources
+  return source === true ? randomCreate() : randomQuote();
 };

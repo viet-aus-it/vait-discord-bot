@@ -34,10 +34,11 @@ const insult = async ({ content, reference, channel, author }: Message) => {
   // If there is a reference to a msg
   if (reference && reference.messageID !== null) {
     // Then insult the author of the refered message
-    const referredMsg = await fetchMessageObjectById(
+    const referredMsg = (await fetchMessageObjectById(
       channel as TextChannel,
       reference.messageID
-    );
+    )) as Message;
+
     const referedAuthorId = referredMsg.author.id;
     chatContent = `<@!${referedAuthorId}>, ${insultText.toLowerCase()}`;
     sendInsult(chatContent, textChannel);
