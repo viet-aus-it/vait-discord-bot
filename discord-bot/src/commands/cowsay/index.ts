@@ -40,9 +40,7 @@ const wrapText = (input: string, width: number) => {
   });
 
   // Add any leftover line to next line.
-  if (line) {
-    resultArray.push(line);
-  }
+  resultArray.push(line);
 
   return resultArray.join('\n');
 };

@@ -46,13 +46,49 @@ describe('cowsay test', () => {
 
   it('Should be able to eliminate all backticks', async () => {
     const mockMsg: any = {
-      content: '-cowsay ```There is a lot of backticks```',
+      content: '-cowsay ```a lot of backticks```',
       channel: { send: replyMock },
       author: { bot: false },
     };
 
     await cowsay(mockMsg);
     expect(replyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should be able to handle short text', async () => {
+    const mockMsg: any = {
+      content: '-cowsay short',
+      channel: { send: replyMock },
+      author: { bot: false },
+    };
+
+    await cowsay(mockMsg);
+    expect(replyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should be able to handle long text', async () => {
+    const mockMsg: any = {
+      content: `-cowsay ${faker.lorem.text(30)}`,
+      channel: { send: replyMock },
+      author: { bot: false },
+    };
+
+    await cowsay(mockMsg);
+    expect(replyMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('Should throw errors when failed to send Cowsay text', async () => {
+    const mockError = jest.fn(async () => {
+      throw new Error('Something went wrong');
+    });
+    const mockMsg: any = {
+      content: '-cowsay say what?',
+      channel: { send: mockError },
+      author: { bot: false },
+    };
+
+    await cowsay(mockMsg);
+    expect(mockError).toHaveBeenCalledTimes(1);
   });
 
   describe('For cowsay with no content', () => {
