@@ -77,20 +77,6 @@ describe('cowsay test', () => {
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
-  it('Should throw errors when failed to send Cowsay text', async () => {
-    const mockError = jest.fn(async () => {
-      throw new Error('Something went wrong');
-    });
-    const mockMsg: any = {
-      content: '-cowsay say what?',
-      channel: { send: mockError },
-      author: { bot: false },
-    };
-
-    await cowsay(mockMsg);
-    expect(mockError).toHaveBeenCalledTimes(1);
-  });
-
   describe('For cowsay with no content', () => {
     const getMockMsg = (fetchCallBack: Function) => ({
       content: `-mock`,
@@ -107,6 +93,19 @@ describe('cowsay test', () => {
     ) => ({
       ...getMockMsg(fetchCallBack),
       reference,
+    });
+
+    describe('Fetch referred message', () => {
+      it('Should cowsay the refered message', async () => {
+        const messageWithContent = { content: faker.lorem.word(10) };
+        const fetchMock = jest.fn(async () => messageWithContent);
+        const mockMsg: any = getMockMsgWithReference(fetchMock, {
+          messageID: '1',
+        });
+
+        await cowsay(mockMsg);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe('Fetch the previous message', () => {
@@ -132,17 +131,19 @@ describe('cowsay test', () => {
       });
     });
 
-    describe('Fetch referred message', () => {
-      it('Should cowsay the refered message', async () => {
-        const messageWithContent = { content: faker.lorem.word(10) };
-        const fetchMock = jest.fn(async () => messageWithContent);
-        const mockMsg: any = getMockMsgWithReference(fetchMock, {
-          messageID: '1',
-        });
-
-        await cowsay(mockMsg);
-        expect(fetchMock).toHaveBeenCalledTimes(1);
+    it('Should throw errors when failed to send Cowsay text', async () => {
+      const mockError = jest.fn(async () => {
+        throw new Error('Something went wrong');
       });
+
+      const mockMsg: any = {
+        content: '-cowsay say what?',
+        channel: { send: mockError },
+        author: { bot: false },
+      };
+
+      await cowsay(mockMsg);
+      expect(mockError).toHaveBeenCalledTimes(1);
     });
   });
 });
