@@ -22,3 +22,11 @@ services:
     env_file: "discord-bot/.env.docker"
     volumes:
       - ./db/data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:4
+    container_name: discord_bot_adminer
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
