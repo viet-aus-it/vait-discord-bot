@@ -25,5 +25,6 @@ model ReputationLog {
   fromUserId String
   to         User     @relation(name: "ToUser", fields: [toUserId], references: [id])
   toUserId   String
+  operation Json     @default("{}")
   createdAt  DateTime @default(now())
 }
