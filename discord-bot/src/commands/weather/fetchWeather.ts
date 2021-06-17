@@ -14,7 +14,6 @@ const fetchWeather = async (where: string): Promise<Weather | undefined> => {
     const response = await fetch(WEATHER_URL + where + ARGUMENTS);
 
     const body = await response.text();
-    if (body.length === 0) throw new Error('Cannot fetch weather!');
 
     return {
       weather: body,
