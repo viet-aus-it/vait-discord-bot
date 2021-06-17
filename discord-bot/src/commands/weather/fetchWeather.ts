@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 
 const WEATHER_URL = 'http://wttr.in/';
 
-const ARGUMENTS = '?0pmMT';
+const ARGUMENTS = '?0mMT';
 
 export interface Weather {
   weather: string;
