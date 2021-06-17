@@ -1,13 +1,13 @@
 import { Message, TextChannel } from 'discord.js';
 import fetchWeather from './fetchWeather';
 
+const DEFAULT_LOCATION = 'Brisbane';
+
 const isBlank = (content: string) => content.trim() === '';
 
 const weather = async ({ content, channel, author }: Message) => {
   // Return if sender is bot
   if (author.bot) return;
-
-  const textChannel = channel as TextChannel;
 
   const firstSpaceChar = content.trimEnd().indexOf(' ');
 
@@ -15,13 +15,14 @@ const weather = async ({ content, channel, author }: Message) => {
     firstSpaceChar !== -1 ? content.slice(firstSpaceChar).trimStart() : '';
 
   if (isBlank(chatContent)) {
-    chatContent = 'Brisbane';
+    chatContent = DEFAULT_LOCATION;
   }
 
   const weatherData = await fetchWeather(chatContent);
   if (!weatherData) return;
 
-  textChannel.send(`\`\`\`\n${weatherData.weather}\n\`\`\``);
+  const textChannel = channel as TextChannel;
+  textChannel.send(`\`\`\`\n${weatherData}\n\`\`\``);
 };
 
 export default weather;

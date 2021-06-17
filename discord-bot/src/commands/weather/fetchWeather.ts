@@ -4,20 +4,14 @@ const WEATHER_URL = 'http://wttr.in/';
 
 const ARGUMENTS = '?0mMT';
 
-export interface Weather {
-  weather: string;
-}
-
-const fetchWeather = async (where: string): Promise<Weather | undefined> => {
+const fetchWeather = async (where: string): Promise<string | undefined> => {
   try {
     // Download weather info from the site
     const response = await fetch(WEATHER_URL + where + ARGUMENTS);
 
     const body = await response.text();
 
-    return {
-      weather: body,
-    };
+    return body;
   } catch (error) {
     console.error(error);
   }

@@ -22,8 +22,6 @@ describe('Fetch weather tests', () => {
     mockFetch.mockImplementationOnce(async () => mockedWeather);
     const output = await fetchWeather('');
 
-    expect(output).toEqual({
-      weather: fakeWeather,
-    });
+    expect(output).toEqual(fakeWeather);
   });
 });
