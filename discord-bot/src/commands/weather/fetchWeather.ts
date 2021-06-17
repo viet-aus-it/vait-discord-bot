@@ -10,7 +10,7 @@ export interface Weather {
 
 const fetchWeather = async (where: string): Promise<Weather | undefined> => {
   try {
-    // Download weather infor from the site
+    // Download weather info from the site
     const response = await fetch(WEATHER_URL + where + ARGUMENTS);
 
     const body = await response.text();
