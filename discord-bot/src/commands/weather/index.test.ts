@@ -27,7 +27,7 @@ describe('Weather test', () => {
     };
 
     const fakeWeather = faker.lorem.words(10);
-    mockFetch.mockImplementationOnce(async () => ({ weather: fakeWeather }));
+    mockFetch.mockImplementationOnce(async () => fakeWeather);
 
     await weather(mockMsg);
     expect(replyMock).toHaveBeenCalledTimes(1);
@@ -41,7 +41,7 @@ describe('Weather test', () => {
     };
 
     const fakeWeather = faker.lorem.words(10);
-    mockFetch.mockImplementationOnce(async () => ({ weather: fakeWeather }));
+    mockFetch.mockImplementationOnce(async () => fakeWeather);
 
     await weather(mockMsg);
     expect(replyMock).toHaveBeenCalledTimes(1);
