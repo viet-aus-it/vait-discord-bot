@@ -16,7 +16,6 @@ describe('Fetch weather tests', () => {
 
   it('Should return weather when available', async () => {
     const fakeWeather: any = faker.lorem.words(10);
-    // const sampleWeather = { weather: fakeWeather };
 
     const mockedWeather: any = { text: async () => fakeWeather };
 
