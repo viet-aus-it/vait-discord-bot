@@ -1,5 +1,5 @@
 import { Collection, User } from 'discord.js';
-import { danhSomeone } from './index';
+import { danhSomeone } from '.';
 
 const replyMock = jest.fn(() => {});
 describe('danhSomeone', () => {
