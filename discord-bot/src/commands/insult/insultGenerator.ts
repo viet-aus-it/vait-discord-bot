@@ -232,5 +232,5 @@ export const randomInsultGenerator = () => {
   const source = getRandomBoolean();
 
   // Randomly pick insult from 2 sources
-  return source === true ? randomCreate() : randomQuote();
+  return source ? randomCreate() : randomQuote();
 };
