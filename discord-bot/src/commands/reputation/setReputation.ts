@@ -1,9 +1,17 @@
 import { Message } from 'discord.js';
+import { isMessageSentFromAdmin } from '../../utils/isMessageSentFromAdmin';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 export const setReputation = async (msg: Message) => {
   const { author, channel, mentions } = msg;
   if (author.bot) return; // return if author is a Discord bot
+
+  const isAdmin = isMessageSentFromAdmin(msg);
+  if (!isAdmin) {
+    return channel.send(
+      "You don't have enough permission to run this command."
+    );
+  }
 
   const hasExactlyOneUser = mentions.users.size === 1;
   if (!hasExactlyOneUser) return;
