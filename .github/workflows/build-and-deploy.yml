@@ -3,7 +3,7 @@ name: Build and deploy Docker Image
 on:
   push:
     branches:
-      - master
+      - 60-deployment-pipeline
     paths:
       - discord-bot/**
       - .github/workflows/build-and-deploy.yml
@@ -15,6 +15,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Configure SSH client
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host *
+          ForwardAgent yes
+          StrictHostKeyChecking no
+          UserKnownHostsFile /dev/null
+          END
+        env:
+          SSH_USER: ${{ secrets.SSH_USER_EC2_CHATBOT }}
+          SSH_KEY: ${{ secrets.SSH_KEY_EC2_CHATBOT }}
+          SSH_HOST: ${{ secrets.SSH_HOST_EC2_CHATBOT }}
+
+      - name: SSH to VAIT server
+        run: date > ~/date.log
 
       # - name: Docker meta
       #   id: docker_meta
