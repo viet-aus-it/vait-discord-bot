@@ -19,21 +19,25 @@ jobs:
       - name: Configure SSH client
         run: |
           mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/staging.key
-          chmod 600 ~/.ssh/staging.key
-          cat >>~/.ssh/config <<END
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          cat >> ~/.ssh/config <<END
           Host *
           ForwardAgent yes
           StrictHostKeyChecking no
           UserKnownHostsFile /dev/null
           END
         env:
-          SSH_USER: ${{ secrets.SSH_USER_EC2_CHATBOT }}
           SSH_KEY: ${{ secrets.SSH_KEY_EC2_CHATBOT }}
-          SSH_HOST: ${{ secrets.SSH_HOST_EC2_CHATBOT }}
 
       - name: SSH to VAIT server
-        run: date > ~/date.log
+        run: ssh ${SSH_USER}@${SSH_HOST} 'date > ~/date.log'
+        env:
+          SSH_USER: ${{ secrets.SSH_USER_EC2_CHATBOT }}
+          SSH_HOST: ${{ secrets.SSH_HOST_EC2_CHATBOT }}
+
+      - name: Remove SSH Key
+        run: rm ~/.ssh/id_rsa
 
       # - name: Docker meta
       #   id: docker_meta
