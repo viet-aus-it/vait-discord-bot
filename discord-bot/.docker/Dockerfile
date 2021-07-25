@@ -1,18 +1,8 @@
-FROM node:14.17-alpine3.14 as base
-WORKDIR /src
-
 #############
 # Dev image #
 #############
-FROM base as development
-
-# Install OS dependencies
-RUN set -xe && \
-    apk update && \
-    apk add --no-cache git curl py-pip && \
-    apk add --no-cache -t build-dependencies make gcc g++ libtool autoconf automake && \
-    rm -rf /var/cache/apk/*
-RUN yarn global add node-gyp
+FROM node:14.17-buster as development
+WORKDIR /src
 
 ARG WAIT_FOR=2.1.2
 ARG WAIT_FOR_URL=https://github.com/eficode/wait-for/releases/download/v${WAIT_FOR}/wait-for
@@ -40,7 +30,7 @@ RUN yarn build && \
 ####################
 # Production image #
 ####################
-FROM base as production
+FROM gcr.io/distroless/nodejs:14 as production
 
 COPY --chown=node:node --from=build /src/build build
 COPY --chown=node:node --from=build /src/node_modules node_modules
