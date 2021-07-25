@@ -5,6 +5,8 @@ services:
     build:
       target: development
     container_name: discord_bot_dev
+    stdin_open: true
+    tty: true
     depends_on:
       - db
     env_file: "discord-bot/.env.docker"
