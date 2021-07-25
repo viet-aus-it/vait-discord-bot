@@ -1,11 +1,10 @@
 import { Collection, User } from 'discord.js';
+import { mocked } from 'ts-jest/utils';
 import { giveReputation } from './giveReputation';
 import { getPrismaClient } from '../../clients/prisma';
 
 jest.mock('../../clients/prisma');
-const mockGetPrismaClient = getPrismaClient as jest.MockedFunction<
-  typeof getPrismaClient
->;
+const mockGetPrismaClient = mocked(getPrismaClient);
 
 const replyMock = jest.fn(() => {});
 
