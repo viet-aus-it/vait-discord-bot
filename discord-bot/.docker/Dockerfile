@@ -1,5 +1,10 @@
-FROM node:14.16-alpine3.13 as base
+FROM node:14.17-alpine3.14 as base
 WORKDIR /src
+
+#############
+# Dev image #
+#############
+FROM base as development
 
 # Install OS dependencies
 RUN set -xe && \
@@ -10,13 +15,9 @@ RUN set -xe && \
 RUN yarn global add node-gyp
 
 ARG WAIT_FOR=2.1.2
-RUN curl -LkSso /usr/local/bin/wait-for https://github.com/eficode/wait-for/releases/download/v${WAIT_FOR}/wait-for && \
+ARG WAIT_FOR_URL=https://github.com/eficode/wait-for/releases/download/v${WAIT_FOR}/wait-for
+RUN curl -LkSso /usr/local/bin/wait-for ${WAIT_FOR_URL} && \
     chmod +x /usr/local/bin/wait-for
-
-#############
-# Dev image #
-#############
-FROM base as development
 
 # Install Node modules
 COPY package.json yarn.lock tsconfig.json ./
