@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  bot:
+    build:
+      target: production
+    container_name: discord_bot_staging
+    image: viet-aus-it/discord_bot:staging
+    restart: always
+    env_file: "discord_bot/.env.staging"
+
+  db:
+    container_name: dicord_bot_staging_db
+    env_file: "discord_bot/.env.staging"
+    ports:
+      - 5434:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    restart: always
