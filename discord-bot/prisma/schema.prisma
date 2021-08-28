@@ -8,7 +8,7 @@ datasource db {
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl"]
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 model User {
@@ -25,5 +25,6 @@ model ReputationLog {
   fromUserId String
   to         User     @relation(name: "ToUser", fields: [toUserId], references: [id])
   toUserId   String
+  operation Json     @default("{}")
   createdAt  DateTime @default(now())
 }
