@@ -8,3 +8,5 @@ services:
     image: viet-aus-it/discord_bot:production
     restart: always
 
+  db:
+    container_name: discord_bot_db_prod
