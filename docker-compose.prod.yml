@@ -7,6 +7,13 @@ services:
     container_name: discord_bot_prod
     image: viet-aus-it/discord_bot:production
     restart: always
+    env_file: "discord_bot/.env.production"
 
   db:
-    container_name: discord_bot_db_prod
+    container_name: dicord_bot_prod_db
+    env_file: "discord_bot/.env.production"
+    ports:
+      - 5433:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    restart: always
