@@ -35,6 +35,7 @@ jobs:
       - name: SSH to VAIT server
         run: |
           cmd="/usr/local/bin/deploy-chatbot ${SSH_USER} ${github.event.repository.name} ${GITHUB_REF##*/} /${github.event.repository.name}/discord-bot/.env.docker.${GITHUB_REF##*/},discord-bot,.env.docker /${github.event.repository.name}/discord-bot/.env.${GITHUB_REF##*/},discord-bot,.env"
+          echo ${cmd}
           ssh ${SSH_USER}@${SSH_HOST} "${cmd}"
         env:
           SSH_USER: ${{ secrets.SSH_USER_EC2_CHATBOT }}
