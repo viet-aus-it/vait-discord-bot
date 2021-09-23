@@ -3,6 +3,8 @@ name: Build and deploy Docker Image
 on:
   push:
     branches:
+      - master
+      - staging
       - 60-deployment-pipeline
     paths:
       - discord-bot/**
@@ -31,7 +33,9 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY_EC2_CHATBOT }}
 
       - name: SSH to VAIT server
-        run: ssh ${SSH_USER}@${SSH_HOST} 'date > ~/date.log'
+        run: |
+          cmd="/usr/local/bin/deploy-chatbot ${SSH_USER} ${github.event.repository.name} ${GITHUB_REF##*/} /${github.event.repository.name}/discord-bot/.env.docker.${GITHUB_REF##*/},discord-bot,.env.docker /${github.event.repository.name}/discord-bot/.env.${GITHUB_REF##*/},discord-bot,.env"
+          ssh ${SSH_USER}@${SSH_HOST} "${cmd}"
         env:
           SSH_USER: ${{ secrets.SSH_USER_EC2_CHATBOT }}
           SSH_HOST: ${{ secrets.SSH_HOST_EC2_CHATBOT }}
