@@ -18,7 +18,7 @@ export const fetchMessageObjectById = async (
       throw new Error('Cannot fetch message');
     }
     return message;
-  } catch (error) {
+  } catch (error: any) {
     return handleFetchMessageError(error, undefined) as undefined;
   }
 };
@@ -30,7 +30,7 @@ export const fetchMessageById = async (channel: TextChannel, id: string) => {
       throw new Error('Cannot fetch message');
     }
     return message.content;
-  } catch (error) {
+  } catch (error: any) {
     return handleFetchMessageError(error, '') as string;
   }
 };
@@ -46,7 +46,7 @@ export const fetchLastMessageBeforeId = async (
       throw new Error('Cannot fetch previous messages');
     }
     return messageRightBefore.content;
-  } catch (error) {
+  } catch (error: any) {
     return handleFetchMessageError(error, '') as string;
   }
 };

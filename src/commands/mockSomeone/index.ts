@@ -38,7 +38,7 @@ const mockSomeone = async ({
   // If -mock is detected and it has content
   if (!isBlank(chatContent)) {
     const mockText = generateMockText(chatContent);
-    channel.send(mockText);
+    await channel.send(mockText);
     return;
   }
 
@@ -60,7 +60,7 @@ const mockSomeone = async ({
   }
 
   const mockText = generateMockText(chatContent);
-  channel.send(mockText);
+  await channel.send(mockText);
 };
 
 export default mockSomeone;
