@@ -30,3 +30,6 @@ yarn-error.log*
 
 # Local db for testing
 db
+
+# ESLint Cache
+.eslintcache

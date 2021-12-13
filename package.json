@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/viet-aus-it/vait-discord-bot#readme",
   "scripts": {
+    "prepare": "husky install",
     "clean:all": "npm run prebuild && npm run pretest",
     "prebuild": "rimraf build",
     "build": "tsc",
@@ -61,8 +62,10 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-watch": "^7.0.0",
     "faker": "^5.1.0",
+    "husky": "^7.0.0",
     "jest": "^26.4.2",
     "jest-mock-console": "^1.1.0",
+    "lint-staged": "^12.1.2",
     "prettier": "^2.1.2",
     "prisma": "^2.21.2",
     "rimraf": "^3.0.2",
