@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - discord-bot/**
-      - .github/workflows/build-and-deploy.yml
 
 jobs:
   build-discord-bot:

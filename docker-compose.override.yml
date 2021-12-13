@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   bot:
     build:
@@ -9,11 +7,11 @@ services:
     tty: true
     depends_on:
       - db
-    env_file: "discord-bot/.env.docker"
+    env_file: ".env.docker"
     image: viet-aus-it/discord_bot:development
     restart: unless-stopped
     volumes:
-      - ./discord-bot:/src
+      - .:/src
 
   db:
     image: postgres:13-alpine
@@ -21,7 +19,7 @@ services:
     container_name: discord_bot_db
     ports:
       - 5432:5432
-    env_file: "discord-bot/.env.docker"
+    env_file: ".env.docker"
     volumes:
       - ./db/data:/var/lib/postgresql/data
 

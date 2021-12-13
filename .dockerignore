@@ -1,0 +1,17 @@
+node_modules
+coverage
+build
+Thumbs.db
+.DS_Store
+.env*
+*.log
+*.md
+*.MD
+
+docker-compose.*
+Dockerfile
+LICENSE
+onboarding_script.sh
+.github
+.idea
+db
