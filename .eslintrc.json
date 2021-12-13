@@ -1,4 +1,5 @@
 {
+  "root": true,
   "env": {
     "es6": true,
     "node": true,
@@ -6,29 +7,17 @@
   },
   "extends": [
     "airbnb-base",
+    "airbnb-typescript/base",
     "prettier"
   ],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2021,
-    "sourceType": "module"
+    "project": "./tsconfig.json"
   },
   "plugins": [
     "@typescript-eslint",
     "eslint-plugin-import",
     "prettier"
   ],
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [".js", ".ts"]
-      }
-    }
-  },
   "rules": {
     "prettier/prettier": "error",
     "import/extensions": ["error", "never"],

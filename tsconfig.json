@@ -16,6 +16,6 @@
     "outDir": "build",
     "declaration": false
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "build", "src/**/*.test.ts"]
+  "include": ["src/**/*", "jest.config.ts"],
+  "exclude": ["node_modules", "build"]
 }
