@@ -1,7 +1,7 @@
 #!/bin/sh
 
 wait-for $POSTGRES_HOST:$PORT -- echo "DB is ready now";
-yarn prisma:migrate;
-yarn prisma:gen;
+npm run prisma:migrate;
+npm run prisma:gen;
 
 exec "$@";

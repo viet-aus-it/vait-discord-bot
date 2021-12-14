@@ -27,7 +27,6 @@
 
 - [Node 16+](https://nodejs.org/en/)
 - NPM 8+ (comes bundled with Node installation)
-- [Yarn 1.22+](https://classic.yarnpkg.com/en/docs/install/)
 - Docker 20+, Docker Compose 1.28+
   - For macOS and Windows: The easiest way is to install [Docker Desktop](https://www.docker.com/products/docker-desktop "docker desktop").
     This will come with Docker and Docker Compose in a bundle.
@@ -92,7 +91,7 @@ cp .env.docker.dist .env.docker
 
 ```bash
 cd discord-bot/
-yarn install
+npm install
 ```
 
 ### Build and run docker container
@@ -117,7 +116,7 @@ On most UNIX-like systems (macOS, Linux and WSL), you can just use the `discord-
 ./container_scripts/container-exec.sh
 
 # or just run a specific command
-./container_scripts/container-exec.sh yarn test # run yarn test inside the container
+./container_scripts/container-exec.sh npm run test # run `npm run test` inside the container
 ```
 
 If you can't or don't want to use `./container-exec.sh` wrapper script then you can run it manually:
@@ -125,8 +124,8 @@ If you can't or don't want to use `./container-exec.sh` wrapper script then you 
 - `docker-compose <service-name> command`
 
 ```bash
-docker-compose exec discord_bot_dev yarn test
-# same as ./container-exec.sh yarn test
+docker-compose exec discord_bot_dev npm run test
+# same as ./container-exec.sh npm run test
 ```
 
 ```bash
@@ -150,13 +149,13 @@ docker exec -it discord_bot_dev bash
 
 ```bash
 # Run this inside the container
-yarn prisma:migrate
-yarn prisma:gen
+npm run prisma:migrate
+npm run prisma:gen
 ```
 
 #### Running tests
 
 ```bash
 # Run this inside the container
-yarn test
+npm run test
 ```

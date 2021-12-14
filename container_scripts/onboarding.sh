@@ -8,26 +8,22 @@ else
   echo "Token registered. This will be filled in your local env file."
 fi
 
-echo "Creating env files for discord-bot"
-cd discord-bot
+echo "Creating env files for discord bot"
 cp .env.docker.dist .env.docker
 
 sed -i'' -e "s/TOKEN=YOUR_BOT_TOKEN_HERE/TOKEN=${BOT_TOKEN}/g" .env.docker
 
 NODE_VER=$(node --version)
-YARN_VER=$(yarn --version)
-if [[ $NODE_VER != *"16"* ]] || [[ $YARN_VER != *"1"* ]]; then
-  echo "Please ensure you are using the correct version of Node (v16) or Yarn (v1) or else you cannot install the dependencies."
+NPM_VER=$(npm --version)
+if [[ $NODE_VER != *"16"* ]] || [[ $NPM_VER != *"8"* ]]; then
+  echo "Please ensure you are using the correct version of Node (v16) or NPM (v8) or else you cannot install the dependencies."
 else
   echo "Installing node dependencies"
-  yarn install
+  npm install
 fi
 
 echo "Building docker services"
 docker-compose build
-
-echo "Going back to root directory"
-cd ..
 
 echo "Onboarding script finished."
 if [ -z "$BOT_TOKEN" ]; then

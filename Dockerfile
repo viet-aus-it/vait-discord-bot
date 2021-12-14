@@ -10,22 +10,23 @@ RUN curl -LkSso /usr/local/bin/wait-for ${WAIT_FOR_URL} && \
     chmod +x /usr/local/bin/wait-for
 
 # Install Node modules
-COPY package.json yarn.lock tsconfig.json ./
-RUN yarn install --non-interactive
+COPY package.json package-lock.json tsconfig.json ./
+RUN npm install
 
 COPY . .
 RUN cp ./docker-entrypoint.sh /usr/local/bin/discord-bot-entrypoint.sh && \
-    chmod +x /usr/local/bin/discord-bot-entrypoint.sh
-CMD ["/usr/local/bin/discord-bot-entrypoint.sh", "yarn", "start"]
+    chmod +x /usr/local/bin/discord-bot-entrypoint.sh && \
+    npm run prisma:gen
+CMD ["/usr/local/bin/discord-bot-entrypoint.sh", "npm", "run", "start"]
 
 #####################
 # Production build #
 #####################
 FROM development as build
 ENV NODE_ENV=production
-RUN yarn build && \
-    yarn install --production --non-interactive && \
-    yarn cache clean
+RUN npm run build && \
+    npm ci --production --ignore-scripts && \
+    npm run prisma:gen
 
 ####################
 # Production image #
@@ -35,6 +36,5 @@ FROM gcr.io/distroless/nodejs:16 as production
 COPY --chown=node:node --from=build /src/build build
 COPY --chown=node:node --from=build /src/node_modules node_modules
 
-USER node
 ENV NODE_ENV=production
-CMD ["node", "build/index.js"]
+CMD ["build/index.js"]

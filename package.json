@@ -5,8 +5,7 @@
   "main": "build/index.js",
   "engines": {
     "node": "^16.0.0",
-    "npm": "^8.0.0",
-    "yarn": "^1.0.0"
+    "npm": "^8.0.0"
   },
   "repository": {
     "type": "git",
@@ -24,18 +23,19 @@
     "build": "tsc --project tsconfig.build.json",
     "build:watch": "tsc -w --project tsconfig.build.json",
     "lint": "esw src --ext .ts",
-    "lint:fix": "yarn lint --fix",
-    "lint:watch": "yarn lint --watch",
-    "format": "yarn lint:fix && prettier -w src/**/*",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:watch": "npm run lint -- --watch",
+    "prettier": "prettier -w src/**/*",
+    "format": "npm run lint:fix && npm run prettier",
     "pretest": "rimraf coverage",
     "test": "jest",
     "test:silent": "jest --silent",
-    "test:watch": "yarn test --watchAll",
+    "test:watch": "npm run test -- --watchAll",
     "start:script": "ts-node-dev --poll --transpile-only --no-notify ./src/index.ts",
-    "start": "concurrently \"yarn:start:script\" \"yarn:lint:watch\"",
+    "start": "concurrently npm:start:script npm:lint:watch",
     "serve": "node build/index.js",
-    "prisma:migrate": "npx prisma migrate dev",
-    "prisma:gen": "npx prisma generate"
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:gen": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^3.6.0",
