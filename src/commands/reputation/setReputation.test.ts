@@ -1,5 +1,5 @@
 import { Collection, User } from 'discord.js';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { setReputation } from './setReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
 import { isMessageSentFromAdmin } from '../../utils/isMessageSentFromAdmin';

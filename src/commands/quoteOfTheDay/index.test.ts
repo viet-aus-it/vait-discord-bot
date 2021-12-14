@@ -1,9 +1,10 @@
 import faker from 'faker';
+import { mocked } from 'jest-mock';
 import getQuoteOfTheDay from '.';
 import fetchQuote from './fetchQuote';
 
 jest.mock('./fetchQuote');
-const mockFetch = fetchQuote as jest.MockedFunction<typeof fetchQuote>;
+const mockFetch = mocked(fetchQuote);
 
 const replyMock = jest.fn(() => {});
 

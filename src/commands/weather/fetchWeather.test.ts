@@ -1,9 +1,10 @@
 import faker from 'faker';
 import fetch from 'node-fetch';
+import { mocked } from 'jest-mock';
 import fetchWeather from './fetchWeather';
 
 jest.mock('node-fetch');
-const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
+const mockFetch = mocked(fetch);
 
 describe('Fetch weather tests', () => {
   it('Should return undefined if cannot get weather', async () => {

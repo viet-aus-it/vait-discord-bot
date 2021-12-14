@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { checkReputation } from './checkReputation';
 import { getOrCreateUser } from './_helpers';
 

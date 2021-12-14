@@ -1,9 +1,10 @@
 import faker from 'faker';
+import { mocked } from 'jest-mock';
 import weather from '.';
 import fetchWeather from './fetchWeather';
 
 jest.mock('./fetchWeather');
-const mockFetch = fetchWeather as jest.MockedFunction<typeof fetchWeather>;
+const mockFetch = mocked(fetchWeather);
 
 const replyMock = jest.fn(() => {});
 
