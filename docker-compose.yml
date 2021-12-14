@@ -1,1 +1,11 @@
-version: "3.8"
+services:
+  bot:
+    build:
+      target: production
+    image: viet-aus-it/discord_bot:production
+    restart: always
+
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - ./db/data:/var/lib/postgresql/data

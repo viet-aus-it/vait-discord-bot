@@ -1,0 +1,8 @@
+services:
+  bot:
+    env_file: ".env.staging"
+    container_name: discord_bot_staging
+
+  db:
+    env_file: ".env.staging"
+    container_name: discord_bot_db_staging

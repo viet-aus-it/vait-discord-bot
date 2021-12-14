@@ -1,7 +1,8 @@
 services:
   bot:
-    build:
-      target: production
+    env_file: ".env.production"
     container_name: discord_bot_prod
-    image: viet-aus-it/discord_bot:production
-    restart: always
+
+  db:
+    env_file: ".env.production"
+    container_name: discord_bot_db_prod
