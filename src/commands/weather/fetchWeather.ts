@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 
-const WEATHER_URL = 'http://wttr.in/';
+const WEATHER_URL = 'https://wttr.in/';
 
 const ARGUMENTS = '?0mMT';
 
@@ -9,9 +9,7 @@ const fetchWeather = async (where: string): Promise<string | undefined> => {
     // Download weather info from the site
     const response = await fetch(WEATHER_URL + where + ARGUMENTS);
 
-    const body = await response.text();
-
-    return body;
+    return await response.text();
   } catch (error) {
     console.error(error);
   }

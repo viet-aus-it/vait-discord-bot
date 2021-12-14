@@ -1,10 +1,15 @@
 import fetch from 'node-fetch';
+import { z } from 'zod';
 
-interface ZenQuote {
-  q: string;
-  a: string;
-  h: string;
-}
+const ZenQuoteSchema = z.object({
+  q: z.string(),
+  a: z.string(),
+  h: z.string(),
+});
+
+const ZenQuoteResponse = z.array(ZenQuoteSchema);
+
+type ZenQuote = z.infer<typeof ZenQuoteSchema>;
 
 export interface Quote {
   quote: string;
@@ -18,8 +23,9 @@ const ZEN_QUOTES_URL =
 const fetchQuote = async (): Promise<Quote | undefined> => {
   try {
     const response = await fetch(ZEN_QUOTES_URL); // download quotes from this site
-    const body: ZenQuote[] = await response.json();
-    if (body.length === 0) throw new Error('No quote downloaded');
+    const body = await response.json();
+    const parsedBody: ZenQuote[] = ZenQuoteResponse.parse(body);
+    if (parsedBody.length === 0) throw new Error('No quote downloaded');
 
     const { q, a, h } = body[0];
     return {
