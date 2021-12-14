@@ -1,13 +1,12 @@
 import { Message, TextChannel, MessageEmbed } from 'discord.js';
-import { fetchMessageObjectById } from '../../utils/messageFetcher';
-import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
+import { fetchMessageObjectById, fetchOrCreateWebhook } from '../../utils';
 
 const createEmbeddedMessage = (
   { author, createdTimestamp, content }: Message,
   { name: channelName }: TextChannel,
   firstUrl: string
-) => {
-  const embed = new MessageEmbed({
+) =>
+  new MessageEmbed({
     color: '#0072a8',
     author: {
       name: author.username,
@@ -19,9 +18,6 @@ const createEmbeddedMessage = (
     footer: { text: `#${channelName}` },
     fields: [{ name: 'Jump', value: `[Go to message](${firstUrl})` }],
   });
-
-  return embed;
-};
 
 const embedLink = async (msg: Message) => {
   const { author, content, guild, channel } = msg;

@@ -1,8 +1,8 @@
 import { mocked } from 'jest-mock';
-import { getPrismaClient } from '../../clients/prisma';
+import { getPrismaClient } from '../../clients';
 import { getOrCreateUser, updateRep } from './_helpers';
 
-jest.mock('../../clients/prisma');
+jest.mock('../../clients');
 const mockGetPrismaClient = mocked(getPrismaClient);
 
 describe('getOrCreateUser', () => {

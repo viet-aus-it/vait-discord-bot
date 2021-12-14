@@ -3,7 +3,7 @@ import { mocked } from 'jest-mock';
 import mockConsole from 'jest-mock-console';
 import faker from 'faker';
 import embedLink from '.';
-import { fetchMessageObjectById } from '../../utils/messageFetcher';
+import { fetchMessageObjectById } from '../../utils';
 
 const webhookSendMock = jest.fn(() => {});
 const msgDeleteMock = jest.fn(() => {});

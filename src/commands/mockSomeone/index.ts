@@ -1,10 +1,10 @@
 import { Message, TextChannel } from 'discord.js';
-import { getRandomBoolean } from '../../utils/random';
 import {
   fetchMessageById,
   fetchLastMessageBeforeId,
-} from '../../utils/messageFetcher';
-import { isBlank } from '../../utils/isBlank';
+  getRandomBoolean,
+  isBlank,
+} from '../../utils';
 
 const generateMockText = (message: string) =>
   message

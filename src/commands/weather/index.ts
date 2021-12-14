@@ -1,6 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
 import fetchWeather from './fetchWeather';
-import { isBlank } from '../../utils/isBlank';
+import { isBlank } from '../../utils';
 
 const DEFAULT_LOCATION = 'Brisbane';
 

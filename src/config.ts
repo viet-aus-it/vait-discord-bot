@@ -1,5 +1,5 @@
 import { ClientUser } from 'discord.js';
-import { CommandConfig } from './utils/messageProcessor';
+import { CommandConfig } from './utils';
 import ask8Ball from './commands/8ball';
 import danhSomeone from './commands/danhSomeone';
 import mockSomeone from './commands/mockSomeone';

@@ -1,5 +1,5 @@
 import { Message, TextChannel, MessageEmbed } from 'discord.js';
-import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
+import { fetchOrCreateWebhook } from '../../utils';
 
 const createEmbeddedMessage = (
   question: string,

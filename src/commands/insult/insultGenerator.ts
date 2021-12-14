@@ -1,4 +1,4 @@
-import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
+import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
 
 const verbs = [
   'artless',

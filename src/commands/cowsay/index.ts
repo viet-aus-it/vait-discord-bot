@@ -3,8 +3,8 @@ import { say } from 'cowsay';
 import {
   fetchLastMessageBeforeId,
   fetchMessageById,
-} from '../../utils/messageFetcher';
-import { isBlank } from '../../utils/isBlank';
+  isBlank,
+} from '../../utils';
 
 // Only 35 characters per line due to limitation in phone screen width
 const WRAP_TEXT_LIMIT = 35;
@@ -29,7 +29,7 @@ const wrapText = (input: string, width: number) => {
   // Check each words
   words.forEach((word) => {
     if ((line + word).length <= width) {
-      // Add a word if line lenght is within limit
+      // Add a word if line length is within limit
       line += (line ? ' ' : '') + word;
     } else {
       // Register and skip to next line if too long

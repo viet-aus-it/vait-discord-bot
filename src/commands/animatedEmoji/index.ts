@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { fetchOrCreateWebhook } from '../../utils/webhookProcessor';
+import { fetchOrCreateWebhook } from '../../utils';
 
 const animatedEmoji = async (originalMessage: Message) => {
   const { author, content, guild, channel } = originalMessage;
@@ -12,7 +12,7 @@ const animatedEmoji = async (originalMessage: Message) => {
   const hasNitro = content.match(nitroRegex);
   if (hasNitro) return; // return if author has nitro
 
-  const emojiRegex = new RegExp('(:.+:)+', 'gi');
+  const emojiRegex = /(:.+:+)/gi;
   const hasEmoji = content.match(emojiRegex);
   if (!hasEmoji) return; // return if no emoji found
 

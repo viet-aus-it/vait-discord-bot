@@ -13,10 +13,7 @@ export const fetchWebhook = async (
 export const createWebhook = async (
   textChannel: TextChannel,
   hookName: string
-) => {
-  const webhook = await textChannel.createWebhook(hookName);
-  return webhook;
-};
+) => textChannel.createWebhook(hookName);
 
 export const fetchOrCreateWebhook = async (
   textChannel: TextChannel,
@@ -29,7 +26,7 @@ export const fetchOrCreateWebhook = async (
   }
 
   if (!webhook) {
-    // Return undefined if cannot be found or created
+    // Return undefined if webhook cannot be found or created
     return;
   }
 

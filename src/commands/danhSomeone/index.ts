@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { getRandomIntInclusive } from '../../utils/random';
+import { getRandomIntInclusive } from '../../utils';
 
 const danhSomeone = async (msg: Message, botId: string) => {
   if (msg.author.id === botId) return; // return if message is from this bot

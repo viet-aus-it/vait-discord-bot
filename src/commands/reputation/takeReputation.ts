@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { isMessageSentFromAdmin } from '../../utils/isMessageSentFromAdmin';
+import { isMessageSentFromAdmin } from '../../utils';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 export const takeReputation = async (msg: Message) => {

@@ -1,6 +1,6 @@
 import faker from 'faker';
 import { randomCreate, randomQuote } from './insultGenerator';
-import { fetchMessageObjectById } from '../../utils/messageFetcher';
+import { fetchMessageObjectById } from '../../utils';
 import insult from '.';
 
 jest.mock('../../utils/messageFetcher');
