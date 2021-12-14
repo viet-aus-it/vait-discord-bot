@@ -4,8 +4,7 @@ import {
   fetchMessageById,
   fetchLastMessageBeforeId,
 } from '../../utils/messageFetcher';
-
-const isBlank = (content: string) => content.trim() === '';
+import { isBlank } from '../../utils/isBlank';
 
 const generateMockText = (message: string) =>
   message

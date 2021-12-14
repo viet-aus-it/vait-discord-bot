@@ -1,8 +1,7 @@
 import { Message, TextChannel } from 'discord.js';
 import { fetchMessageObjectById } from '../../utils/messageFetcher';
+import { isBlank } from '../../utils/isBlank';
 import { randomInsultGenerator } from './insultGenerator';
-
-const isBlank = (content: string) => content.trim() === '';
 
 const sendInsult = async (insult: string, channel: TextChannel) => {
   try {

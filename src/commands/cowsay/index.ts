@@ -4,11 +4,10 @@ import {
   fetchLastMessageBeforeId,
   fetchMessageById,
 } from '../../utils/messageFetcher';
+import { isBlank } from '../../utils/isBlank';
 
 // Only 35 characters per line due to limitation in phone screen width
 const WRAP_TEXT_LIMIT = 35;
-
-const isBlank = (content: string) => content.trim() === '';
 
 const replaceAll = (string: string, from: string, to: string) =>
   string.split(from).join(to);

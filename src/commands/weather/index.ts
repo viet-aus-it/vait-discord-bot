@@ -1,9 +1,8 @@
 import { Message, TextChannel } from 'discord.js';
 import fetchWeather from './fetchWeather';
+import { isBlank } from '../../utils/isBlank';
 
 const DEFAULT_LOCATION = 'Brisbane';
-
-const isBlank = (content: string) => content.trim() === '';
 
 const weather = async ({ content, channel, author }: Message) => {
   // Return if sender is bot
