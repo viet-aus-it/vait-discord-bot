@@ -1,7 +1,7 @@
 #############
 # Dev image #
 #############
-FROM node:14.17-buster as development
+FROM node:16.13-bullseye as development
 WORKDIR /src
 
 ARG WAIT_FOR=2.1.2
@@ -30,7 +30,7 @@ RUN yarn build && \
 ####################
 # Production image #
 ####################
-FROM gcr.io/distroless/nodejs:14 as production
+FROM gcr.io/distroless/nodejs:16 as production
 
 COPY --chown=node:node --from=build /src/build build
 COPY --chown=node:node --from=build /src/node_modules node_modules
