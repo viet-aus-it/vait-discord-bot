@@ -25,8 +25,8 @@
 
 ## Requirements
 
-- [Node 14+](https://nodejs.org/en/)
-- NPM 6+ (comes bundled with Node installation)
+- [Node 16+](https://nodejs.org/en/)
+- NPM 8+ (comes bundled with Node installation)
 - [Yarn 1.22+](https://classic.yarnpkg.com/en/docs/install/)
 - Docker 20+, Docker Compose 1.28+
   - For macOS and Windows: The easiest way is to install [Docker Desktop](https://www.docker.com/products/docker-desktop "docker desktop").
@@ -60,7 +60,7 @@ onboarding script. This script will create a local dev environment file, install
 dependencies, build the docker containers and set up a pre-commit git hook.
 
 ```shell
-./onboarding_script.sh
+./container_scripts/onboarding.sh
 ```
 
 Please ensure that you have all of the required programs/executable are
@@ -104,12 +104,6 @@ docker-compose up
 docker composer up -d # to run the container in the background (detach mode)
 ```
 
-### Setting up the pre-commit git hook
-
-```bash
-git config core.hooksPath githooks
-```
-
 ---
 
 ## Notes on working with the repo
@@ -120,10 +114,10 @@ On most UNIX-like systems (macOS, Linux and WSL), you can just use the `discord-
 
 ```bash
 # multiline command - interactive mode - allow us to run multiple command
-./container-exec.sh
+./container_scripts/container-exec.sh
 
 # or just run a specific command
-./container-exec.sh yarn test # run yarn test inside the container
+./container_scripts/container-exec.sh yarn test # run yarn test inside the container
 ```
 
 If you can't or don't want to use `./container-exec.sh` wrapper script then you can run it manually:

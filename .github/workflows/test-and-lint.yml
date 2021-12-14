@@ -8,28 +8,25 @@ on:
 jobs:
   test-and-lint-discord-bot:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: discord-bot
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
         with:
           token: ${{ github.token }}
 
       - name: Set up Node 14
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '16.x'
 
       - name: Set up project
         run: |
-          npm -g install yarn
-          yarn install
-          yarn cache clean
+          npm ci
+          npm cache clean --force
 
       - name: Run linting
-        run: yarn lint
+        run: npm run lint
 
       - name: Run tests
-        run: yarn test:silent
+        run: npm run test:silent

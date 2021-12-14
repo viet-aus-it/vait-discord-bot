@@ -11,7 +11,7 @@ Thumbs.db
 docker-compose.*
 Dockerfile
 LICENSE
-onboarding_script.sh
+container_scripts
 .github
 .idea
 db

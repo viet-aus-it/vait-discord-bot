@@ -14,7 +14,7 @@ COPY package.json yarn.lock tsconfig.json ./
 RUN yarn install --non-interactive
 
 COPY . .
-RUN cp ./entrypoint.sh /usr/local/bin/discord-bot-entrypoint.sh && \
+RUN cp ./docker-entrypoint.sh /usr/local/bin/discord-bot-entrypoint.sh && \
     chmod +x /usr/local/bin/discord-bot-entrypoint.sh
 CMD ["/usr/local/bin/discord-bot-entrypoint.sh", "yarn", "start"]
 
