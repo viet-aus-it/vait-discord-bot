@@ -31,10 +31,11 @@ RUN npm run build && \
 ####################
 # Production image #
 ####################
-FROM gcr.io/distroless/nodejs:16 as production
+FROM node:16.13-bullseye-slim as production
 
 COPY --chown=node:node --from=build /src/build build
 COPY --chown=node:node --from=build /src/node_modules node_modules
 
+USER node
 ENV NODE_ENV=production
 CMD ["build/index.js"]
