@@ -4,6 +4,7 @@
     "lib": ["ESNext"],
     "types": ["jest", "node"],
     "allowJs": true,
+    "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -13,9 +14,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "outDir": "build",
-    "declaration": false
+    "outDir": "build"
   },
-  "include": ["src/**/*", "jest.config.ts"],
+  "include": ["src/**/*.ts", "*.config.ts"],
   "exclude": ["node_modules", "build"]
 }
