@@ -7,8 +7,26 @@ on:
       - production
 
 jobs:
-  build-discord-bot:
+  get-deploy-stage:
+    name: Get Deploy Stage
     runs-on: ubuntu-latest
+    outputs:
+      stage: ${{ steps.extract_deploy_stage.outputs.stage }}
+
+    steps:
+      - name: Extract branch name
+        id: extract_deploy_stage
+        shell: bash
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "::set-output name=stage::${BRANCH_NAME}"
+
+  build-discord-bot:
+    name: Build Discord Bot Docker Image
+    runs-on: ubuntu-latest
+    needs: get-deploy-stage
+    env:
+      STAGE: ${{ needs.get-deploy-stage.outputs.stage }}
 
     steps:
       - name: Checkout code
