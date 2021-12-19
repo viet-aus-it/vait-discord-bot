@@ -75,8 +75,7 @@ After creating your discord app and bot, create config file and fill in the valu
 cp .env.dist .env
 ```
 
-- The `.env` can be ignored for now.
-- The `.env.docker` file needs to be filled in with these values:
+- The `.env` file needs to be filled in with these values:
   - DB Values: We already fill in some defaults for this to work in a local environment.
     - `POSTGRES_HOST`: db
     - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: You can fill in whatever
