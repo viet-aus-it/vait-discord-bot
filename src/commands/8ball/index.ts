@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-const ask8Ball = async ({ content, channel, author }: Message) => {
+export const ask8Ball = async ({ content, channel, author }: Message) => {
   const replies = [
     'Yes',
     'No',
@@ -20,4 +20,3 @@ const ask8Ball = async ({ content, channel, author }: Message) => {
   if (content.split(' ').length <= 1) return; // return if no question ask
   await channel.send(replies[Math.floor(Math.random() * replies.length)]);
 };
-export default ask8Ball;

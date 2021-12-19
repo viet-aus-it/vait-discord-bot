@@ -1,7 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
-import fetchQuote from './fetchQuote';
+import { fetchQuote } from './fetchQuote';
 
-const getQuoteOfTheDay = async ({ channel, author }: Message) => {
+export const getQuoteOfTheDay = async ({ channel, author }: Message) => {
   if (author.bot) return; // return if bot sends the command
   const quote = await fetchQuote();
   if (!quote) return;
@@ -20,5 +20,3 @@ const getQuoteOfTheDay = async ({ channel, author }: Message) => {
 
   channel.send({ embed });
 };
-
-export default getQuoteOfTheDay;

@@ -4,7 +4,9 @@ const WEATHER_URL = 'https://wttr.in/';
 
 const ARGUMENTS = '?0mMT';
 
-const fetchWeather = async (where: string): Promise<string | undefined> => {
+export const fetchWeather = async (
+  where: string
+): Promise<string | undefined> => {
   try {
     // Download weather info from the site
     const response = await fetch(WEATHER_URL + where + ARGUMENTS);
@@ -14,5 +16,3 @@ const fetchWeather = async (where: string): Promise<string | undefined> => {
     console.error(error);
   }
 };
-
-export default fetchWeather;

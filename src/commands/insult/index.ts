@@ -1,6 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { fetchMessageObjectById } from '../../utils/messageFetcher';
-import { isBlank } from '../../utils/isBlank';
+import { fetchMessageObjectById, isBlank } from '../../utils';
 import { randomInsultGenerator } from './insultGenerator';
 
 const sendInsult = async (insult: string, channel: TextChannel) => {
@@ -11,7 +10,12 @@ const sendInsult = async (insult: string, channel: TextChannel) => {
   }
 };
 
-const insult = async ({ content, reference, channel, author }: Message) => {
+export const insult = async ({
+  content,
+  reference,
+  channel,
+  author,
+}: Message) => {
   if (author.bot) return;
 
   const textChannel = channel as TextChannel;
@@ -26,7 +30,7 @@ const insult = async ({ content, reference, channel, author }: Message) => {
   // If there is chat content
   if (!isBlank(chatContent)) {
     const replyText = `${chatContent}, ${insultText.toLowerCase()}`;
-    sendInsult(replyText, textChannel);
+    await sendInsult(replyText, textChannel);
     return;
   }
 
@@ -40,12 +44,10 @@ const insult = async ({ content, reference, channel, author }: Message) => {
 
     const referedAuthorId = referredMsg.author.id;
     chatContent = `<@!${referedAuthorId}>, ${insultText.toLowerCase()}`;
-    sendInsult(chatContent, textChannel);
+    await sendInsult(chatContent, textChannel);
     return;
   }
 
   // If there is no content or reference
-  sendInsult(insultText, textChannel);
+  await sendInsult(insultText, textChannel);
 };
-
-export default insult;

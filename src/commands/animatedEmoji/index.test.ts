@@ -1,6 +1,6 @@
 import { Collection, Webhook, GuildEmoji } from 'discord.js';
 import mockConsole from 'jest-mock-console';
-import animatedEmoji from '.';
+import { animatedEmoji } from '.';
 
 const webhookSendMock = jest.fn(() => {});
 const msgDeleteMock = jest.fn(() => {});

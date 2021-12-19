@@ -1,10 +1,10 @@
 import { Message, TextChannel } from 'discord.js';
-import fetchWeather from './fetchWeather';
+import { fetchWeather } from './fetchWeather';
 import { isBlank } from '../../utils';
 
 const DEFAULT_LOCATION = 'Brisbane';
 
-const weather = async ({ content, channel, author }: Message) => {
+export const weather = async ({ content, channel, author }: Message) => {
   // Return if sender is bot
   if (author.bot) return;
 
@@ -23,5 +23,3 @@ const weather = async ({ content, channel, author }: Message) => {
   const textChannel = channel as TextChannel;
   textChannel.send(`\`\`\`\n${weatherData}\n\`\`\``);
 };
-
-export default weather;

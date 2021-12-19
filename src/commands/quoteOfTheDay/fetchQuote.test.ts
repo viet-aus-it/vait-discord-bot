@@ -1,9 +1,10 @@
 import faker from 'faker';
 import fetch from 'node-fetch';
-import fetchQuote from './fetchQuote';
+import { mocked } from 'jest-mock';
+import { fetchQuote } from './fetchQuote';
 
 jest.mock('node-fetch');
-const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
+const mockFetch = mocked(fetch);
 
 describe('Fetching quotes', () => {
   it('Should return undefined if it cannot get a quote', async () => {

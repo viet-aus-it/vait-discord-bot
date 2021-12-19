@@ -2,7 +2,7 @@ import { Collection, GuildChannel, Webhook } from 'discord.js';
 import { mocked } from 'jest-mock';
 import mockConsole from 'jest-mock-console';
 import faker from 'faker';
-import embedLink from '.';
+import { embedLink } from '.';
 import { fetchMessageObjectById } from '../../utils';
 
 const webhookSendMock = jest.fn(() => {});

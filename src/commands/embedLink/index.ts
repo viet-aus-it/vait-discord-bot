@@ -19,7 +19,7 @@ const createEmbeddedMessage = (
     fields: [{ name: 'Jump', value: `[Go to message](${firstUrl})` }],
   });
 
-const embedLink = async (msg: Message) => {
+export const embedLink = async (msg: Message) => {
   const { author, content, guild, channel } = msg;
 
   // return if guild is invalid.
@@ -67,5 +67,3 @@ const embedLink = async (msg: Message) => {
     console.error(error);
   }
 };
-
-export default embedLink;

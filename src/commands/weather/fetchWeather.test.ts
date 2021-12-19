@@ -1,7 +1,7 @@
 import faker from 'faker';
 import fetch from 'node-fetch';
 import { mocked } from 'jest-mock';
-import fetchWeather from './fetchWeather';
+import { fetchWeather } from './fetchWeather';
 
 jest.mock('node-fetch');
 const mockFetch = mocked(fetch);

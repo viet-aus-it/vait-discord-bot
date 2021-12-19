@@ -63,7 +63,13 @@ const sendCowsay = async (chatContent: string, channel: TextChannel) => {
   }
 };
 
-const cowsay = async ({ content, reference, channel, id, author }: Message) => {
+export const cowsay = async ({
+  content,
+  reference,
+  channel,
+  id,
+  author,
+}: Message) => {
   // Return if sender is bot
   if (author.bot) return;
 
@@ -100,5 +106,3 @@ const cowsay = async ({ content, reference, channel, id, author }: Message) => {
 
   sendCowsay(chatContent, textChannel);
 };
-
-export default cowsay;

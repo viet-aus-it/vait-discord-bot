@@ -1,7 +1,7 @@
 import { Message, TextChannel } from 'discord.js';
 import { fetchOrCreateWebhook } from '../../utils';
 
-const animatedEmoji = async (originalMessage: Message) => {
+export const animatedEmoji = async (originalMessage: Message) => {
   const { author, content, guild, channel } = originalMessage;
 
   if (!guild) return; // return if message is not sent from within a guild
@@ -49,4 +49,3 @@ const animatedEmoji = async (originalMessage: Message) => {
     console.error(error);
   }
 };
-export default animatedEmoji;

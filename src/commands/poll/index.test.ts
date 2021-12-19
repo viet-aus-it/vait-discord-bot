@@ -1,6 +1,6 @@
 import { Collection, Webhook } from 'discord.js';
 import mockConsole from 'jest-mock-console';
-import createPoll, { replyWithErrorMessage } from '.';
+import { createPoll, replyWithErrorMessage } from '.';
 
 const webhookSendMock = jest.fn();
 const mockedReply = jest.fn();

@@ -1,21 +1,21 @@
 import { ClientUser } from 'discord.js';
 import { CommandConfig } from './utils';
-import ask8Ball from './commands/8ball';
-import danhSomeone from './commands/danhSomeone';
-import mockSomeone from './commands/mockSomeone';
 import {
+  ask8Ball,
+  danhSomeone,
+  mockSomeone,
   giveReputation,
   takeReputation,
   setReputation,
   checkReputation,
-} from './commands/reputation';
-import getQuoteOfTheDay from './commands/quoteOfTheDay';
-import animatedEmoji from './commands/animatedEmoji';
-import embedLink from './commands/embedLink';
-import createPoll from './commands/poll';
-import cowsay from './commands/cowsay';
-import weather from './commands/weather';
-import insult from './commands/insult';
+  getQuoteOfTheDay,
+  animatedEmoji,
+  embedLink,
+  createPoll,
+  cowsay,
+  weather,
+  insult,
+} from './commands';
 
 export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   prefixedCommands: {

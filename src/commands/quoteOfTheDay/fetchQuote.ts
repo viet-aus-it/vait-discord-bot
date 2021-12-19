@@ -20,7 +20,7 @@ export interface Quote {
 const ZEN_QUOTES_URL =
   'https://zenquotes.io/api/random/6a874c704a11dea9305fe58e145d51c218f9f143';
 
-const fetchQuote = async (): Promise<Quote | undefined> => {
+export const fetchQuote = async (): Promise<Quote | undefined> => {
   try {
     const response = await fetch(ZEN_QUOTES_URL); // download quotes from this site
     const body = await response.json();
@@ -37,5 +37,3 @@ const fetchQuote = async (): Promise<Quote | undefined> => {
     console.error('THERE IS AN ERROR DOWNLOADING QUOTES', error);
   }
 };
-
-export default fetchQuote;

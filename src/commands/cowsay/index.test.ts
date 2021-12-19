@@ -1,5 +1,5 @@
 import faker from 'faker';
-import cowsay, { removeBacktick } from '.';
+import { cowsay, removeBacktick } from '.';
 
 const replyMock = jest.fn(() => {});
 

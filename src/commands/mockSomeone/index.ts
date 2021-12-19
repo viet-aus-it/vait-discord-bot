@@ -20,7 +20,7 @@ const generateMockText = (message: string) =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
-const mockSomeone = async ({
+export const mockSomeone = async ({
   content,
   channel,
   id,
@@ -61,5 +61,3 @@ const mockSomeone = async ({
   const mockText = generateMockText(chatContent);
   await channel.send(mockText);
 };
-
-export default mockSomeone;

@@ -30,7 +30,7 @@ export const replyWithErrorMessage = async (msg: Message, content: string) => {
   }
 };
 
-const createPoll = async (msg: Message) => {
+export const createPoll = async (msg: Message) => {
   const { author, channel, content } = msg;
   if (author.bot) return; // return if author is bot
 
@@ -98,5 +98,3 @@ const createPoll = async (msg: Message) => {
     console.error(error);
   }
 };
-
-export default createPoll;

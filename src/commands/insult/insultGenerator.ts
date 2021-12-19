@@ -1,5 +1,8 @@
 import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
 
+const getRandomThing = (things: string[]) =>
+  things[getRandomIntInclusive(0, things.length)];
+
 const verbs = [
   'artless',
   'bawdy',
@@ -159,6 +162,13 @@ const nouns = [
   'wagtail',
 ];
 
+export const randomCreate = () => {
+  const verb = getRandomThing(verbs);
+  const adj = getRandomThing(adjectives);
+  const noun = getRandomThing(nouns);
+  return `Thou ${verb} ${adj} ${noun}.`;
+};
+
 export const quotes = [
   'A most notable coward, an infinite and endless liar, an hourly promise breaker, the owner of no one good quality.',
   'Away, you starvelling, you elf-skin, you dried neat’s-tongue, bull’s-pizzle, you stock-fish!',
@@ -217,20 +227,6 @@ export const quotes = [
   'You have such a February face, So full of frost, of storm, and cloudiness.',
 ];
 
-export const randomCreate = () => {
-  const verb = verbs[getRandomIntInclusive(0, verbs.length)];
-  const adj = adjectives[getRandomIntInclusive(0, adjectives.length)];
-  const noun = nouns[getRandomIntInclusive(0, nouns.length)];
-  return `Thou ${verb} ${adj} ${noun}.`;
-};
-
-export const randomQuote = () => {
-  return quotes[getRandomIntInclusive(0, quotes.length)];
-};
-
-export const randomInsultGenerator = () => {
-  const source = getRandomBoolean();
-
-  // Randomly pick insult from 2 sources
-  return source ? randomCreate() : randomQuote();
-};
+// Randomly pick insult from 2 sources
+export const randomInsultGenerator = () =>
+  getRandomBoolean() ? randomCreate() : getRandomThing(quotes);

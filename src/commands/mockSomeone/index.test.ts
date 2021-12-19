@@ -1,5 +1,5 @@
 import faker from 'faker';
-import mockSomeone from '.';
+import { mockSomeone } from '.';
 
 const replyMock = jest.fn(() => {});
 

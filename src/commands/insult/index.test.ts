@@ -1,12 +1,11 @@
 import faker from 'faker';
-import { randomCreate, randomQuote } from './insultGenerator';
+import { mocked } from 'jest-mock';
+import { randomCreate } from './insultGenerator';
 import { fetchMessageObjectById } from '../../utils';
-import insult from '.';
+import { insult } from '.';
 
 jest.mock('../../utils/messageFetcher');
-const mockFetchMsgObjByID = fetchMessageObjectById as jest.MockedFunction<
-  typeof fetchMessageObjectById
->;
+const mockFetchMsgObjByID = mocked(fetchMessageObjectById);
 
 const replyMock = jest.fn(() => {});
 
@@ -111,12 +110,7 @@ describe('Insult Library test', () => {
   beforeEach(() => replyMock.mockClear());
 
   it('Should be able to generate a random insult', () => {
-    const insultString: any = randomCreate();
-    expect(typeof insultString).toEqual('string');
-  });
-
-  it('Should be able to quote a random insult', () => {
-    const insultString: any = randomQuote();
+    const insultString = randomCreate();
     expect(typeof insultString).toEqual('string');
   });
 });
