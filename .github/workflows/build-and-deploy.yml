@@ -3,7 +3,8 @@ name: Build and deploy Docker Image
 on:
   push:
     branches:
-      - master
+      - staging
+      - production
 
 jobs:
   build-discord-bot:
