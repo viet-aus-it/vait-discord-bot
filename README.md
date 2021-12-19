@@ -100,7 +100,7 @@ npm install
 # On the root folder of the project RUN
 docker-compose up
 # OR
-docker composer up -d # to run the container in the background (detach mode)
+docker-compose up -d # to run the container in the background (detach mode)
 ```
 
 ---
