@@ -7,7 +7,7 @@ services:
     tty: true
     depends_on:
       - db
-    env_file: ".env.docker"
+    env_file: ".env"
     image: viet-aus-it/discord_bot:development
     restart: unless-stopped
     volumes:
@@ -19,7 +19,7 @@ services:
     container_name: discord_bot_db
     ports:
       - 5432:5432
-    env_file: ".env.docker"
+    env_file: ".env"
     volumes:
       - ./db/data:/var/lib/postgresql/data
 

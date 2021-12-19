@@ -72,8 +72,7 @@ Discord, and you might need to follow through the manual process.
 After creating your discord app and bot, create config file and fill in the values you get from the previous step
 
 ```bash
-cp .env.dist .env
-cp .env.docker.dist .env.docker
+cp .env .env
 ```
 
 - The `.env` can be ignored for now.
