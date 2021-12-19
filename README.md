@@ -72,7 +72,6 @@ Discord, and you might need to follow through the manual process.
 After creating your discord app and bot, create config file and fill in the values you get from the previous step
 
 ```bash
-cd discord-bot/
 cp .env.dist .env
 cp .env.docker.dist .env.docker
 ```
@@ -90,7 +89,6 @@ cp .env.docker.dist .env.docker
 ### Install node dependency
 
 ```bash
-cd discord-bot/
 npm install
 ```
 
@@ -109,7 +107,7 @@ docker-compose up -d # to run the container in the background (detach mode)
 
 ### How to run commands inside the container
 
-On most UNIX-like systems (macOS, Linux and WSL), you can just use the `discord-bot/container-exec.sh` bash script:
+On most UNIX-like systems (macOS, Linux and WSL), you can just use the `container-exec.sh` bash script:
 
 ```bash
 # multiline command - interactive mode - allow us to run multiple command
