@@ -15,7 +15,7 @@ describe('ask 8Ball test', () => {
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return if no question asked', async () => {
+  it('Should reply with error if no question asked', async () => {
     const mockMsg: any = {
       content: `-8ball`,
       channel: { send: replyMock },
@@ -23,7 +23,7 @@ describe('ask 8Ball test', () => {
     };
 
     await ask8Ball(mockMsg);
-    expect(replyMock).not.toHaveBeenCalled();
+    expect(replyMock).toHaveBeenCalled();
   });
 
   it('Should return if author is a bot', async () => {
