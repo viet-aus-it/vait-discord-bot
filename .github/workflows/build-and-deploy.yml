@@ -5,6 +5,7 @@ on:
     branches:
       - staging
       - production
+      - deploy-pipeline
 
 jobs:
   get-deploy-stage:
