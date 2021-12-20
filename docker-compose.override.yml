@@ -23,6 +23,10 @@ services:
     volumes:
       - ./db/data:/var/lib/postgresql/data
 
+  db-migrate:
+    env_file: ".env"
+    container_name: discord_bot_db_migrate_dev
+
   adminer:
     image: adminer:4
     container_name: discord_bot_adminer

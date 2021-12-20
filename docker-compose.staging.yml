@@ -6,3 +6,7 @@ services:
   db:
     env_file: ".env.staging"
     container_name: discord_bot_db_staging
+
+  db-migrate:
+    env_file: ".env.staging"
+    container_name: discord_bot_db_migrate_staging

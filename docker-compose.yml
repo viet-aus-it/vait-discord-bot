@@ -9,3 +9,11 @@ services:
     image: postgres:13-alpine
     volumes:
       - ./db/data:/var/lib/postgresql/data
+
+  db-migrate:
+    depends_on:
+      - db
+    image: ghcr.io/viet-aus-it/prisma-migrate-service
+    restart: "no"
+    volumes:
+      - ./prisma:/src/prisma

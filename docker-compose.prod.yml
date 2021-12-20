@@ -6,3 +6,7 @@ services:
   db:
     env_file: ".env.production"
     container_name: discord_bot_db_prod
+
+  db-migrate:
+    env_file: ".env.production"
+    container_name: discord_bot_db_migrate_prod
