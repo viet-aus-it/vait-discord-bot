@@ -1,6 +1,7 @@
 services:
   bot:
     env_file: ".env.production"
+    image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: discord_bot_prod
 
   db:

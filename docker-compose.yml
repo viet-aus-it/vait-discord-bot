@@ -2,7 +2,6 @@ services:
   bot:
     build:
       target: production
-    image: ghcr.io/viet-aus-it/discord-bot:production
     restart: always
 
   db:
