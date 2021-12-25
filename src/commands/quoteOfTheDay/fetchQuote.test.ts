@@ -1,22 +1,25 @@
 import faker from 'faker';
-import fetch from 'node-fetch';
-import { mocked } from 'jest-mock';
-import { fetchQuote } from './fetchQuote';
-
-jest.mock('node-fetch');
-const mockFetch = mocked(fetch);
+import { rest } from 'msw';
+import { server } from '../../mocks/server';
+import { fetchQuote, ZEN_QUOTES_URL } from './fetchQuote';
 
 describe('Fetching quotes', () => {
   it('Should return undefined if it cannot get a quote', async () => {
-    const mockedQuote: any = undefined;
-    mockFetch.mockImplementationOnce(async () => mockedQuote);
+    const endpoint = rest.get(ZEN_QUOTES_URL, (_, res, ctx) => {
+      return res(ctx.status(200), ctx.json(undefined));
+    });
+    server.use(endpoint);
+
     const output = await fetchQuote();
     expect(output).toEqual(undefined);
   });
 
   it('Should return undefined if it downloaded a blank array', async () => {
-    const mockedQuote: any = { json: async () => [] };
-    mockFetch.mockImplementationOnce(async () => mockedQuote);
+    const endpoint = rest.get(ZEN_QUOTES_URL, (_, res, ctx) => {
+      return res(ctx.status(200), ctx.json([]));
+    });
+    server.use(endpoint);
+
     const output = await fetchQuote();
     expect(output).toEqual(undefined);
   });
@@ -28,8 +31,11 @@ describe('Fetching quotes', () => {
       a: 'Author',
       h: `<h1>${fakeQuote}</h1>`,
     };
-    const mockedQuote: any = { json: async () => [sampleQuote] };
-    mockFetch.mockImplementationOnce(async () => mockedQuote);
+    const endpoint = rest.get(ZEN_QUOTES_URL, (_, res, ctx) => {
+      return res(ctx.status(200), ctx.json([sampleQuote]));
+    });
+    server.use(endpoint);
+
     const output = await fetchQuote();
     expect(output).toEqual({
       quote: sampleQuote.q,

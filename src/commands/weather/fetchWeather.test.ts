@@ -1,28 +1,30 @@
 import faker from 'faker';
-import fetch from 'node-fetch';
-import { mocked } from 'jest-mock';
-import { fetchWeather } from './fetchWeather';
-
-jest.mock('node-fetch');
-const mockFetch = mocked(fetch);
+import { rest } from 'msw';
+import { server } from '../../mocks/server';
+import { fetchWeather, getWeatherURL } from './fetchWeather';
 
 describe('Fetch weather tests', () => {
-  it('Should return undefined if cannot get weather', async () => {
-    const mockedWeather: any = undefined;
-    mockFetch.mockImplementationOnce(async () => mockedWeather);
+  const mockWeatherMessage = faker.lorem.words(10);
 
-    const output = await fetchWeather('Melbourne');
-    expect(output).toEqual(undefined);
+  beforeEach(() => {
+    const url = getWeatherURL(':location');
+    const endpoint = rest.get(url, (req, res, ctx) => {
+      if (req.url.pathname === '/ErrorLocation') {
+        return res(ctx.status(500, 'Simulated Error'));
+      }
+
+      return res(ctx.status(200), ctx.text(mockWeatherMessage));
+    });
+    server.use(endpoint);
+  });
+
+  it('Should return undefined if cannot get weather', async () => {
+    const output = await fetchWeather('ErrorLocation');
+    expect(output).toBeUndefined();
   });
 
   it('Should return weather when available', async () => {
-    const fakeWeather: any = faker.lorem.words(10);
-
-    const mockedWeather: any = { text: async () => fakeWeather };
-
-    mockFetch.mockImplementationOnce(async () => mockedWeather);
-    const output = await fetchWeather('');
-
-    expect(output).toEqual(fakeWeather);
+    const output = await fetchWeather('Brisbane');
+    expect(output).toEqual(mockWeatherMessage);
   });
 });
