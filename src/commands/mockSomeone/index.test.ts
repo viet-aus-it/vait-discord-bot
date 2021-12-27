@@ -59,7 +59,7 @@ describe('mockSomeone test', () => {
 
     const getMockMessageWithReference = (
       fetchCallback: Function,
-      reference: undefined | { messageID: string }
+      reference: undefined | { messageId: string }
     ) => ({
       ...getMockMsg(fetchCallback),
       reference,
@@ -127,7 +127,7 @@ describe('mockSomeone test', () => {
       it('Should throw error if referred message cannot be fetched by id', async () => {
         const fetchMock = jest.fn(async () => undefined);
         const mockMsg: any = getMockMessageWithReference(fetchMock, {
-          messageID: '1234',
+          messageId: '1234',
         });
 
         await mockSomeone(mockMsg);
@@ -139,7 +139,7 @@ describe('mockSomeone test', () => {
         const blankMessage = { content: '' };
         const fetchMock = jest.fn(async () => blankMessage);
         const mockMsg: any = getMockMessageWithReference(fetchMock, {
-          messageID: '1234',
+          messageId: '1234',
         });
 
         await mockSomeone(mockMsg);
@@ -151,7 +151,7 @@ describe('mockSomeone test', () => {
         const messageWithContent = { content: faker.lorem.words(25) };
         const fetchMock = jest.fn(async () => messageWithContent);
         const mockMsg: any = getMockMessageWithReference(fetchMock, {
-          messageID: '1234',
+          messageId: '1234',
         });
 
         await mockSomeone(mockMsg);

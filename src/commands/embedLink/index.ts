@@ -57,7 +57,7 @@ export const embedLink = async (msg: Message) => {
   );
 
   try {
-    await webhook.send(content.replace(firstUrl, ''), {
+    await webhook.send({
       embeds: [embed],
       username: author.username,
       avatarURL: author.avatarURL() || undefined,

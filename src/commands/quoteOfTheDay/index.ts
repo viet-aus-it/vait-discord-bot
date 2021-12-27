@@ -18,5 +18,5 @@ export const getQuoteOfTheDay = async ({ channel, author }: Message) => {
     },
   });
 
-  channel.send({ embed });
+  channel.send({ embeds: [embed] });
 };

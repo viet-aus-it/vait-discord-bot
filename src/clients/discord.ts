@@ -8,7 +8,11 @@ export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
 
   return new Promise((resolve, reject) => {
     const client = new Client({
-      intents: [Intents.FLAGS.GUILDS],
+      intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+      ],
     });
     client
       .on('ready', () => resolve(client))

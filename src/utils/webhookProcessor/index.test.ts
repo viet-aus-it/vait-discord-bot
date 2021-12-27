@@ -5,7 +5,8 @@ describe('Test webhook processor', () => {
   it('should return an existing webhook', async () => {
     const mockedWebhook: any = {
       name: 'VAIT-Hook',
-      channelID: 123456,
+      channelId: 123456,
+      token: process.env.TOKEN,
     };
     const webhooks = new Collection<string, Webhook>();
     webhooks.set('0', mockedWebhook);
@@ -23,7 +24,7 @@ describe('Test webhook processor', () => {
   it('should create a new webhook', async () => {
     const mockedWebhook: any = {
       name: 'VAIT-Hook',
-      channelID: 123456,
+      channelId: 123456,
     };
     const mockCreate = jest.fn(async () => mockedWebhook);
     const mockedChannel: any = {
@@ -41,7 +42,7 @@ describe('Test webhook processor', () => {
     const mockedFetch = jest.fn(async () => webhooks);
     const mockedWebhook: any = {
       name: 'VAIT-Hook',
-      channelID: 123456,
+      channelId: 123456,
     };
     const mockCreate = jest.fn(async () => mockedWebhook);
     const mockedChannel: any = {

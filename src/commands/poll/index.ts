@@ -10,15 +10,13 @@ const createEmbeddedMessage = (
     return `${accumulator}:${numberAsString[index]}: ${option}\n\n`;
   }, '');
 
-  const embed = new MessageEmbed({
+  return new MessageEmbed({
     color: '#0072a8',
     title: question.replace(/"/gim, ''),
     footer: { text: 'Poll created' },
     fields: [{ name: message, value: `\u200B` }],
     timestamp: Date.now(),
   });
-
-  return embed;
 };
 
 export const replyWithErrorMessage = async (msg: Message, content: string) => {
@@ -84,11 +82,11 @@ export const createPoll = async (msg: Message) => {
   const embed = createEmbeddedMessage(question, numberAsString, pollOptions);
 
   try {
-    const pollMsg = await webhook.send({
+    const pollMsg = (await webhook.send({
       embeds: [embed],
       username: author.username,
       avatarURL: author.avatarURL() || undefined,
-    });
+    })) as Message;
     await msg.delete();
     const promises = pollOptions.map((_value, index) =>
       pollMsg.react(reactionNumbers[index])

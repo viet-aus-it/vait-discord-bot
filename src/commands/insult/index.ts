@@ -22,7 +22,7 @@ export const insult = async ({
 
   const firstSpaceChar = content.trimEnd().indexOf(' ');
 
-  const insultText = randomInsultGenerator() as string;
+  const insultText = randomInsultGenerator();
 
   let chatContent =
     firstSpaceChar !== -1 ? content.slice(firstSpaceChar).trimStart() : '';
@@ -35,15 +35,15 @@ export const insult = async ({
   }
 
   // If there is a reference to a msg
-  if (reference && reference.messageID !== null) {
+  if (reference && reference.messageId) {
     // Then insult the author of the refered message
     const referredMsg = (await fetchMessageObjectById(
       channel as TextChannel,
-      reference.messageID
+      reference.messageId
     )) as Message;
 
-    const referedAuthorId = referredMsg.author.id;
-    chatContent = `<@!${referedAuthorId}>, ${insultText.toLowerCase()}`;
+    const referredAuthorId = referredMsg.author.id;
+    chatContent = `<@!${referredAuthorId}>, ${insultText.toLowerCase()}`;
     await sendInsult(chatContent, textChannel);
     return;
   }

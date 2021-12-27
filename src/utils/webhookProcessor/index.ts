@@ -6,7 +6,10 @@ export const fetchWebhook = async (
 ) => {
   const webHooks = await textChannel.fetchWebhooks();
   return webHooks.find(
-    ({ name, channelID }) => name === hookName && channelID === textChannel.id
+    ({ name, channelId, token }) =>
+      name === hookName &&
+      channelId === textChannel.id &&
+      token === process.env.TOKEN
   );
 };
 

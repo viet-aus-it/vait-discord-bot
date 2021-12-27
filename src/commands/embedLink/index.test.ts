@@ -9,7 +9,7 @@ const webhookSendMock = jest.fn(() => {});
 const msgDeleteMock = jest.fn(() => {});
 const fakeHook: any = {
   name: 'VAIT-Hook',
-  channelID: '123',
+  channelId: '123',
   send: webhookSendMock,
 };
 const fakeWebhooks = new Collection<string, Webhook>();

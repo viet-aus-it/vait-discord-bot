@@ -83,26 +83,26 @@ export const cowsay = async ({
 
   // If cowsay is called with chat content
   if (!isBlank(chatContent)) {
-    sendCowsay(chatContent, textChannel);
+    await sendCowsay(chatContent, textChannel);
     return;
   }
 
   // If there is no chat content...
-  if (reference && reference.channelID !== null) {
+  if (reference && reference.channelId !== null) {
     // And there is a reference to another message, fetch that message
     chatContent = await fetchMessageById(
       textChannel,
-      reference.messageID as string
+      reference.messageId as string
     );
   } else {
     // Or just fetch the latest message
     chatContent = await fetchLastMessageBeforeId(textChannel, id);
   }
 
-  // if the content stil blank at this point, exit
+  // if the content still blank at this point, exit
   if (isBlank(chatContent)) {
     return;
   }
 
-  sendCowsay(chatContent, textChannel);
+  await sendCowsay(chatContent, textChannel);
 };

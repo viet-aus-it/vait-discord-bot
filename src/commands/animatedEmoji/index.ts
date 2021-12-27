@@ -26,7 +26,7 @@ export const animatedEmoji = async (originalMessage: Message) => {
   emojis.forEach((emoji) => {
     const emoteName = emoji.replace(/:/gim, '');
     const emote = guild.emojis.cache.find(
-      ({ name, animated }) => name === emoteName && animated
+      ({ name, animated }) => name === emoteName && !!animated
     );
     if (!emote) return; // return if no matching emoji found on server
 
@@ -40,7 +40,8 @@ export const animatedEmoji = async (originalMessage: Message) => {
   if (emojiCount === 0) return; // return if no emoji found
 
   try {
-    await webhook.send(newMessage, {
+    await webhook.send({
+      content: newMessage,
       username: author.username,
       avatarURL: author.avatarURL() || undefined,
     });

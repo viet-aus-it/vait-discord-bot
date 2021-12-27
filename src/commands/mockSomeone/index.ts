@@ -42,11 +42,11 @@ export const mockSomeone = async ({
   }
 
   // If -mock is detected but content is blank...
-  if (reference && reference.messageID !== null) {
+  if (reference && reference.messageId) {
     // and it's referring to another message, fetch that message
     chatContent = await fetchMessageById(
       channel as TextChannel,
-      reference.messageID
+      reference.messageId
     );
   } else {
     // fetch the previous message in the channel

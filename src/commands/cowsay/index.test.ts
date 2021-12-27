@@ -89,7 +89,7 @@ describe('cowsay test', () => {
 
     const getMockMsgWithReference = (
       fetchCallBack: Function,
-      reference: undefined | { messageID: string }
+      reference: undefined | { messageId: string }
     ) => ({
       ...getMockMsg(fetchCallBack),
       reference,
@@ -100,7 +100,7 @@ describe('cowsay test', () => {
         const messageWithContent = { content: faker.lorem.word(10) };
         const fetchMock = jest.fn(async () => messageWithContent);
         const mockMsg: any = getMockMsgWithReference(fetchMock, {
-          messageID: '1',
+          messageId: '1',
         });
 
         await cowsay(mockMsg);

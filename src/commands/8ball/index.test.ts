@@ -18,8 +18,8 @@ describe('ask 8Ball test', () => {
   it('Should reply with error if no question asked', async () => {
     const mockMsg: any = {
       content: `-8ball`,
-      channel: { send: replyMock },
       author: { bot: false },
+      reply: replyMock,
     };
 
     await ask8Ball(mockMsg);
