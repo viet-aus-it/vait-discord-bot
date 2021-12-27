@@ -10,6 +10,8 @@ import {
   checkReputation,
   getQuoteOfTheDay,
   animatedEmoji,
+  embedLink,
+  createPoll,
   cowsay,
   weather,
   insult,
@@ -33,6 +35,7 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
         fn: (message) => danhSomeone(message, botUser.id),
       },
       { matcher: 'qotd', fn: getQuoteOfTheDay },
+      { matcher: 'poll', fn: createPoll },
       { matcher: 'cowsay', fn: cowsay },
       { matcher: 'weather', fn: weather },
       { matcher: 'insult', fn: insult },
@@ -47,5 +50,8 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => ({
   emojiMatchCommand: {
     matcher: ':.+:',
     fn: animatedEmoji,
+  },
+  linkMatchCommand: {
+    fn: embedLink,
   },
 });

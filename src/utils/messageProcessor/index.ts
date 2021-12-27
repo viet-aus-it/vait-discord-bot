@@ -67,6 +67,22 @@ const processEmojiMatch = (
   return config.fn(message);
 };
 
+interface LinkMatchCommand {
+  fn: (message: Message) => Promise<any>;
+}
+
+const processLinkMatch = (
+  message: Message,
+  config: LinkMatchCommand
+): CommandPromise => {
+  const hasDiscordLink = message.content.match(
+    /https:\/\/discord\.com\/channels\/\d+\/\d+\/\d+/gim
+  );
+  if (!hasDiscordLink) return;
+
+  return config.fn(message);
+};
+
 const removeUndefinedPromises = (promises: CommandPromises) =>
   promises.filter((p) => p !== undefined);
 
@@ -74,6 +90,7 @@ export interface CommandConfig {
   prefixedCommands: PrefixedCommands;
   keywordMatchCommands: KeywordMatchCommands;
   emojiMatchCommand: EmojiMatchCommand;
+  linkMatchCommand: LinkMatchCommand;
 }
 
 export const processMessage = async (
@@ -90,11 +107,15 @@ export const processMessage = async (
   const emojiPromises = hasPrefixPromises
     ? undefined
     : processEmojiMatch(message, config.emojiMatchCommand);
+  const linkPromises = hasPrefixPromises
+    ? undefined
+    : processLinkMatch(message, config.linkMatchCommand);
 
   const promises = removeUndefinedPromises([
     ...prefixPromises,
     ...keywordPromises,
     emojiPromises,
+    linkPromises,
   ]);
 
   try {
