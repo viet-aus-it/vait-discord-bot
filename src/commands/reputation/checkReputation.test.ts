@@ -1,9 +1,8 @@
-import { mocked } from 'jest-mock';
 import { checkReputation } from './checkReputation';
 import { getOrCreateUser } from './_helpers';
 
 jest.mock('./_helpers');
-const mockGetOrCreateUser = mocked(getOrCreateUser);
+const mockGetOrCreateUser = jest.mocked(getOrCreateUser);
 
 describe('checkReputation', () => {
   it('should send reply if message is "-rep"', async () => {

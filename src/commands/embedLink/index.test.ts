@@ -1,5 +1,4 @@
 import { Collection, GuildChannel, Webhook } from 'discord.js';
-import { mocked } from 'jest-mock';
 import mockConsole from 'jest-mock-console';
 import faker from 'faker';
 import { embedLink } from '.';
@@ -15,7 +14,7 @@ const fakeHook: any = {
 const fakeWebhooks = new Collection<string, Webhook>();
 fakeWebhooks.set('0', fakeHook);
 jest.mock('../../utils/messageFetcher');
-const mockedMessageFetch = mocked(fetchMessageObjectById);
+const mockedMessageFetch = jest.mocked(fetchMessageObjectById);
 
 describe('Embed link test', () => {
   it("Should return if guild isn't found", async () => {

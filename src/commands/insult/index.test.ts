@@ -1,11 +1,10 @@
 import faker from 'faker';
-import { mocked } from 'jest-mock';
 import { randomCreate } from './insultGenerator';
 import { fetchMessageObjectById } from '../../utils';
 import { insult } from '.';
 
 jest.mock('../../utils/messageFetcher');
-const mockFetchMsgObjByID = mocked(fetchMessageObjectById);
+const mockFetchMsgObjByID = jest.mocked(fetchMessageObjectById);
 
 const replyMock = jest.fn(() => {});
 
