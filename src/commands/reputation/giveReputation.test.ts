@@ -1,11 +1,10 @@
 import { Collection, User } from 'discord.js';
-import { mocked } from 'jest-mock';
 import { giveReputation } from './giveReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 jest.mock('./_helpers');
-const mockCreateUpdateUser = mocked(getOrCreateUser);
-const mockUpdateRep = mocked(updateRep);
+const mockCreateUpdateUser = jest.mocked(getOrCreateUser);
+const mockUpdateRep = jest.mocked(updateRep);
 
 const replyMock = jest.fn(() => {});
 

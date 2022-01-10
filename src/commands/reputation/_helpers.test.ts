@@ -1,9 +1,8 @@
-import { mocked } from 'jest-mock';
 import { getPrismaClient } from '../../clients';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 jest.mock('../../clients');
-const mockGetPrismaClient = mocked(getPrismaClient);
+const mockGetPrismaClient = jest.mocked(getPrismaClient);
 
 describe('getOrCreateUser', () => {
   it('should return user if user is existed', async () => {
