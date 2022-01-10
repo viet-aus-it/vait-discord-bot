@@ -29,4 +29,12 @@ jobs:
         run: npm run lint
 
       - name: Run tests
-        run: npm run test:silent
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST: db
+          POSTGRES_DB: discordbot
+          PORT: 5432
+        run: |
+          export DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${PORT}/${POSTGRES_DB}?schema=public"
+          npm run test:silent
