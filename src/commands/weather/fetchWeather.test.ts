@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { rest } from 'msw';
 import { server } from '../../mocks/server';
 import { fetchWeather, getWeatherURL } from './fetchWeather';
