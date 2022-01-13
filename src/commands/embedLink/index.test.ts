@@ -1,6 +1,6 @@
 import { Collection, GuildChannel, Webhook } from 'discord.js';
 import mockConsole from 'jest-mock-console';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { embedLink } from '.';
 import { fetchMessageObjectById } from '../../utils';
 

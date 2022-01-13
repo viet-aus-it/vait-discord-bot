@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { randomCreate } from './insultGenerator';
 import { fetchMessageObjectById } from '../../utils';
 import { insult } from '.';
