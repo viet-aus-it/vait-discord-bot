@@ -1,4 +1,5 @@
 import { Config } from '@jest/types';
+import { defaults as tsjPreset } from 'ts-jest/presets';
 
 const config: Config.InitialOptions = {
   preset: 'ts-jest',
@@ -12,6 +13,16 @@ const config: Config.InitialOptions = {
     '<rootDir>/src/jest.setup.ts',
   ],
   modulePathIgnorePatterns: ['<rootDir>/build'],
+  transform: {
+    ...tsjPreset.transform,
+    '^.+\\.tsx?$': [
+      'esbuild-jest',
+      {
+        sourcemap: true,
+        platform: 'node',
+      },
+    ],
+  },
 };
 
 export default config;
