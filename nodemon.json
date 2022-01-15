@@ -7,5 +7,5 @@
     "node_modules/**/node_modules"
   ],
   "watch": ["build/**/*.js"],
-  "exec": "node build/index.js"
+  "exec": "node build/server/index.js"
 }
