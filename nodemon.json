@@ -1,0 +1,11 @@
+{
+  "verbose": true,
+  "ext": "js",
+  "delay": 1000,
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules"
+  ],
+  "watch": ["build/**/*.js"],
+  "exec": "node build/index.js"
+}
