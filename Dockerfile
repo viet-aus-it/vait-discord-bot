@@ -24,9 +24,8 @@ CMD ["/usr/local/bin/discord-bot-entrypoint.sh", "npm", "run", "start"]
 #####################
 FROM development as build
 ENV NODE_ENV=production
-RUN npm run build && \
-    npm ci --production --ignore-scripts && \
-    npm run prisma:gen
+RUN npm run prisma:gen && \
+    npm run build
 
 ####################
 # Production image #
@@ -34,8 +33,7 @@ RUN npm run build && \
 FROM node:16.13-bullseye-slim as production
 
 COPY --chown=node:node --from=build /src/build build
-COPY --chown=node:node --from=build /src/node_modules node_modules
 
 USER node
 ENV NODE_ENV=production
-CMD ["build/index.js"]
+CMD ["build/server/index.js"]
