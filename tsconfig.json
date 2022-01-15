@@ -14,7 +14,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
-    "outDir": "build"
+    "outDir": "build",
+    "noEmit": true
   },
   "include": ["src/**/*.ts", "*.config.ts"],
   "exclude": ["node_modules", "build"]

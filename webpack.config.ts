@@ -1,6 +1,8 @@
+/* eslint-disable global-require, import/no-dynamic-require */
 import path from 'path';
 import { Configuration } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
+import { ESBuildMinifyPlugin } from 'esbuild-loader';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
@@ -26,9 +28,11 @@ const config: Configuration = {
     rules: [
       {
         test: /\.ts$/,
-        loader: 'ts-loader',
+        loader: 'esbuild-loader',
         options: {
-          configFile: tsconfigFile,
+          loader: 'ts',
+          target: 'node14',
+          tsconfigRaw: require(path.resolve(__dirname, tsconfigFile)),
         },
       },
     ],
@@ -83,6 +87,13 @@ const config: Configuration = {
   output: {
     path: outputPath,
     filename: 'server/index.js',
+  },
+  optimization: {
+    minimizer: [
+      new ESBuildMinifyPlugin({
+        target: 'es2020',
+      }),
+    ],
   },
 };
 
