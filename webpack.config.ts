@@ -59,7 +59,7 @@ const config: Configuration = {
             'client',
             'libquery_engine-debian-openssl-1.1.x.so.node'
           ),
-          to: outputPath,
+          to: path.resolve(outputPath, 'server'),
         },
         {
           from: path.resolve(
@@ -69,7 +69,7 @@ const config: Configuration = {
             'client',
             'schema.prisma'
           ),
-          to: outputPath,
+          to: path.resolve(outputPath, 'server'),
         },
         {
           from: path.resolve(
