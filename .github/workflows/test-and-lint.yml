@@ -21,9 +21,7 @@ jobs:
           node-version: '16.x'
 
       - name: Set up project
-        run: |
-          npm ci
-          npm cache clean --force
+        run: npm ci
 
       - name: Run linting
         run: npm run lint
