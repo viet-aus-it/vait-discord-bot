@@ -94,9 +94,9 @@ npm install
 
 ```bash
 # On the root folder of the project RUN
-docker-compose up
+docker-compose up bot
 # OR
-docker-compose up -d # to run the container in the background (detach mode)
+docker-compose up -d bot # to run the container in the background (detach mode)
 ```
 
 ---
