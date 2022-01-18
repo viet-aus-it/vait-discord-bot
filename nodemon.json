@@ -4,7 +4,9 @@
   "delay": 1000,
   "ignore": [
     ".git",
-    "node_modules/**/node_modules"
+    "node_modules",
+    "coverage",
+    "db"
   ],
   "watch": ["build/**/*.js"],
   "exec": "node build/server/index.js"
