@@ -4,13 +4,22 @@
 FROM node:16.13-bullseye as development
 WORKDIR /src
 
-ARG WAIT_FOR=2.1.2
+# Install Wait-For and netcat
+ARG WAIT_FOR=2.2.1
 ARG WAIT_FOR_URL=https://github.com/eficode/wait-for/releases/download/v${WAIT_FOR}/wait-for
-RUN curl -LkSso /usr/local/bin/wait-for ${WAIT_FOR_URL} && \
+RUN apt-get update && \
+    apt-get install -y netcat && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl -LkSso /usr/local/bin/wait-for ${WAIT_FOR_URL} && \
     chmod +x /usr/local/bin/wait-for
 
+# Install global node modules: ts-node
+RUN npm install -g ts-node
+
 # Install Node modules
-COPY package.json package-lock.json tsconfig.json ./
+COPY package.json package-lock.json ./
 RUN npm install
 
 COPY . .
