@@ -8,6 +8,6 @@
     "coverage",
     "db"
   ],
-  "watch": ["build/**/*.js"],
+  "watch": ["build/**/*.js", "./config.json"],
   "exec": "node --enable-source-maps build/server/index.js"
 }

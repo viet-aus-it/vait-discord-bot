@@ -62,7 +62,7 @@ dependencies, build the docker containers and set up a pre-commit git hook.
 ./container_scripts/onboarding.sh
 ```
 
-Please ensure that you have all of the required programs/executable are
+Please ensure that you have all the required programs/executable are
 installed on your machine before running the script. If somehow the script
 does not work for you, please let us know via the Issue tab or ping us on
 Discord, and you might need to follow through the manual process.
@@ -73,6 +73,7 @@ After creating your discord app and bot, create config file and fill in the valu
 
 ```bash
 cp .env.dist .env
+cp config.dist.json config.json
 ```
 
 - The `.env` file needs to be filled in with these values:
@@ -83,6 +84,8 @@ cp .env.dist .env
       your local dev environment. But please keep it consistent since if you lose it,
       you will lose access to your local database and will need to re-create it.
   - `TOKEN`: Your bot token created in previous step
+- The `config.json` needs to be filled in with the config needed to run the commands:
+  - `prefix` is needed for the bot to trigger a command.
 
 ### Install node dependency
 
