@@ -9,5 +9,5 @@
     "db"
   ],
   "watch": ["build/**/*.js"],
-  "exec": "node build/server/index.js"
+  "exec": "node --enable-source-maps build/server/index.js"
 }
