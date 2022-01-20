@@ -124,3 +124,5 @@ export const processMessage = async (
     console.error('ERROR PROCESSING MESSAGE', error);
   }
 };
+
+export * from './parseConfigFile';
