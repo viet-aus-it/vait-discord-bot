@@ -15,3 +15,5 @@ container_scripts
 .github
 .idea
 db
+*.dist*
+config.json

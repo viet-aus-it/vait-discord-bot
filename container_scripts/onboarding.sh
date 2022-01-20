@@ -9,7 +9,10 @@ else
 fi
 
 echo "Creating env files for discord bot"
-cp .env.docker.dist .env.docker
+cp .env.dist .env
+
+echo "Creating config file for discord bot"
+cp config.dist.json config.json
 
 sed -i'' -e "s/TOKEN=YOUR_BOT_TOKEN_HERE/TOKEN=${BOT_TOKEN}/g" .env.docker
 
