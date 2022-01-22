@@ -11,7 +11,7 @@ services:
     image: ghcr.io/viet-aus-it/discord-bot:development
     restart: unless-stopped
     volumes:
-      - .:/src
+      - .:/app
 
   db:
     image: postgres:13-alpine

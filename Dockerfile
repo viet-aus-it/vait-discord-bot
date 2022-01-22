@@ -2,7 +2,7 @@
 # Dev image #
 #############
 FROM node:16.13-bullseye as development
-WORKDIR /src
+WORKDIR /app
 
 # Install Wait-For and netcat
 ARG WAIT_FOR=2.2.1
@@ -40,8 +40,9 @@ RUN npm run prisma:gen && \
 # Production image #
 ####################
 FROM node:16.13-bullseye-slim as production
+WORKDIR /app
 
-COPY --chown=node:node --from=build /src/build build
+COPY --chown=node:node --from=build /app/build build
 
 USER node
 ENV NODE_ENV=production

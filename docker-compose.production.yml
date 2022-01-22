@@ -4,7 +4,7 @@ services:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: discord_bot_prod
     volumes:
-      - ./config.json:/src/config.json
+      - ./config.json:/app/config.json
 
   db:
     env_file: ".env.production"
