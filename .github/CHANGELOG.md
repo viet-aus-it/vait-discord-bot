@@ -68,6 +68,11 @@ release because Discord API has changed by the time this was released.
   - The package will now be bundled using webpack and esbuild, making it fast
   and also reducing the size of our deployment package.
 
+## 1.2.1
+
+- Add a config file to configure our commands without needing to rebuild the
+  service.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
