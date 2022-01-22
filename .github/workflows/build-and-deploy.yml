@@ -84,4 +84,5 @@ jobs:
               ${SSH_USER} \
               ${REPO} \
               ${STAGE} \
-              /${REPO}/.env.${STAGE},.env
+              /${REPO}/.env.${STAGE},.env \
+              /${REPO}/config.${STAGE}.json,config.json
