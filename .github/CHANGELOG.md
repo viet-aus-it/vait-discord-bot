@@ -73,6 +73,12 @@ release because Discord API has changed by the time this was released.
 - Add a config file to configure our commands without needing to rebuild the
   service.
 
+## 1.3.0
+
+- Remove the `animatedEmoji` and `embedLink` functionalities from the bot.
+  This should be handled by the NQN bot, which does these 2 jobs already and
+  way more.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
