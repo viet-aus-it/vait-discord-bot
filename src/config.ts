@@ -9,8 +9,6 @@ import {
   setReputation,
   checkReputation,
   getQuoteOfTheDay,
-  animatedEmoji,
-  embedLink,
   createPoll,
   cowsay,
   weather,
@@ -50,12 +48,5 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => {
         fn: giveReputation,
       },
     ],
-    emojiMatchCommand: {
-      matcher: ':.+:',
-      fn: animatedEmoji,
-    },
-    linkMatchCommand: {
-      fn: embedLink,
-    },
   };
 };
