@@ -88,13 +88,6 @@ describe('processMessage', () => {
             { matcher: 'km2', fn: km2 },
           ],
         },
-        emojiMatchCommand: {
-          matcher: ':.+:',
-          fn: km3,
-        },
-        linkMatchCommand: {
-          fn: km4,
-        },
       };
 
       const message = {
@@ -120,13 +113,6 @@ describe('processMessage', () => {
       prefixedCommands: {
         prefix: '-',
         commands: [{ matcher: 'km1', fn: km1 }],
-      },
-      emojiMatchCommand: {
-        matcher: ':.+:',
-        fn: km3,
-      },
-      linkMatchCommand: {
-        fn: km4,
       },
     };
 
