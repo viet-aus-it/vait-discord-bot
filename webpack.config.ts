@@ -2,6 +2,7 @@
 import path from 'path';
 import { Configuration } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
+import NodemonPlugin from 'nodemon-webpack-plugin';
 import { ESBuildMinifyPlugin } from 'esbuild-loader';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
@@ -82,6 +83,18 @@ const config: Configuration = {
           to: path.resolve(outputPath, './cows'),
         },
       ],
+    }),
+    new NodemonPlugin({
+      script: path.resolve(__dirname, 'build', 'server', 'index.js'),
+      nodeArgs: ['--enable-source-maps'],
+      watch: [
+        path.resolve(__dirname, 'build'),
+        path.resolve(__dirname, 'config.json'),
+      ],
+      ext: 'js',
+      ignore: ['.git', 'node_modules', 'coverage', 'db'],
+      verbose: true,
+      delay: 1000,
     }),
   ],
   output: {
