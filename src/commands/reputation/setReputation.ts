@@ -20,7 +20,9 @@ export const setReputation = async (msg: Message) => {
   if (!discordUser) return; // return if user not found
   if (discordUser.bot) return; // return if mention bot
 
-  const splittedMessage = msg.content.split(' ');
+  const splittedMessage = msg.content
+    .split(' ')
+    .filter((word) => word.length > 0);
   if (splittedMessage.length !== 3) {
     return channel.send(
       'Wrong format. The correct format is `setRep @username repNumber`'
