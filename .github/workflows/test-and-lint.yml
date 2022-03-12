@@ -11,17 +11,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          token: ${{ github.token }}
+        uses: actions/checkout@v3
 
-      - name: Set up Node 14
-        uses: actions/setup-node@v1
+      - name: Set up Node 16
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '16'
+          cache: 'npm'
 
       - name: Set up project
-        run: npm ci
+        run: npm install
 
       - name: Run linting
         run: npm run lint
