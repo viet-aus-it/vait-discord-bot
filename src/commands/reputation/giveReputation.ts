@@ -5,27 +5,27 @@ export const giveReputation = async (msg: Message) => {
   const { author, channel, mentions } = msg;
   if (author.bot) return; // return if author is a Discord bot
 
-  const hasExactlyOneUser = mentions.users.size === 1;
-  if (!hasExactlyOneUser) return;
+  // Filter out bot users
+  const mentionedUsers = mentions.users.filter((user) => !user.bot);
+  if (mentionedUsers.size < 1) return;
 
-  const discordUser = mentions.users.first();
-  if (!discordUser) return;
-  if (discordUser.bot) return; // return if mention bot
+  const promises = mentionedUsers.map(async (discordUser) => {
+    const isAuthor = discordUser.id === author.id;
+    if (isAuthor) {
+      return msg.reply('You cannot give rep to yourself');
+    }
 
-  const isAuthor = discordUser.id === author.id;
-  if (isAuthor) {
-    msg.reply('You cannot give rep to yourself');
-    return;
-  }
+    const user = await getOrCreateUser(discordUser.id);
+    const updatedUser = await updateRep({
+      fromUserId: author.id,
+      toUserId: user.id,
+      adjustment: { reputation: { increment: 1 } },
+    });
 
-  const user = await getOrCreateUser(discordUser.id);
-  const updatedUser = await updateRep({
-    fromUserId: discordUser.id,
-    toUserId: user.id,
-    adjustment: { reputation: { increment: 1 } },
+    return channel.send(
+      `${author.username} gave ${discordUser.username} 1 rep. \n${discordUser.username}'s current rep: ${updatedUser.reputation}`
+    );
   });
 
-  channel.send(
-    `${author.username} gave ${discordUser.username} 1 rep. \n${discordUser.username}'s current rep: ${updatedUser.reputation}`
-  );
+  return Promise.allSettled(promises);
 };
