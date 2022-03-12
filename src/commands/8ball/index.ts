@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+import { getRandomIntInclusive } from '../../utils';
 
 const REPLIES = [
   'Yes',
@@ -14,7 +15,7 @@ const REPLIES = [
   'Are you even trying?',
   'Keep it up',
 ] as const;
-const get8BallReply = () => REPLIES[Math.floor(Math.random() * REPLIES.length)];
+const get8BallReply = () => REPLIES[getRandomIntInclusive(0, REPLIES.length)];
 
 export const ask8Ball = async (msg: Message) => {
   const { content, channel, author } = msg;
