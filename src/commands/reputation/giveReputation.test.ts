@@ -9,24 +9,35 @@ const mockUpdateRep = jest.mocked(updateRep);
 const replyMock = jest.fn(() => {});
 const sendMock = jest.fn(() => {});
 
+const getMockMsg: any = (mockUsers: Collection<string, User>) => ({
+  content: 'thank',
+  reply: replyMock,
+  mentions: {
+    users: mockUsers,
+  },
+  author: {
+    id: '0',
+    bot: false,
+  },
+  channel: {
+    send: sendMock,
+  },
+});
+
 describe('giveRep', () => {
   it('should do nothing if bot is saying the keywords', async () => {
     const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '2' } as User);
-
-    const mockMsg: any = {
-      content: 'thank',
-      reply: replyMock,
-      mentions: {
-        users: mockUsers,
-      },
+    mockUsers.set('0', { id: '1' } as User);
+    const mockMsg = getMockMsg(mockUsers);
+    const botMsg = {
+      ...mockMsg,
       author: {
-        id: '0',
+        ...mockMsg.author,
         bot: true,
       },
     };
 
-    await giveReputation(mockMsg);
+    await giveReputation(botMsg);
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
@@ -34,18 +45,7 @@ describe('giveRep', () => {
 
   it('should do nothing if user mention no one', async () => {
     const mockUsers = new Collection<string, User>();
-
-    const mockMsg: any = {
-      content: 'thank',
-      reply: replyMock,
-      mentions: {
-        users: mockUsers,
-      },
-      author: {
-        id: '5',
-        bot: false,
-      },
-    };
+    const mockMsg = getMockMsg(mockUsers);
 
     await giveReputation(mockMsg);
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
@@ -56,18 +56,7 @@ describe('giveRep', () => {
   it('should do nothing if only bot is mentioned', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1', bot: true } as User);
-
-    const mockMsg: any = {
-      content: 'thank',
-      reply: replyMock,
-      mentions: {
-        users: mockUsers,
-      },
-      author: {
-        id: '5',
-        bot: false,
-      },
-    };
+    const mockMsg = getMockMsg(mockUsers);
 
     await giveReputation(mockMsg);
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
@@ -75,21 +64,11 @@ describe('giveRep', () => {
     expect(replyMock).not.toHaveBeenCalled();
   });
 
-  it('should send reject message if user mention themselves', async () => {
+  it('should send reject message if user mention themself', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '0' } as User);
+    const mockMsg = getMockMsg(mockUsers);
 
-    const mockMsg: any = {
-      content: 'thank',
-      reply: replyMock,
-      mentions: {
-        users: mockUsers,
-      },
-      channel: { send: sendMock },
-      author: {
-        id: '0',
-      },
-    };
     await giveReputation(mockMsg);
 
     expect(replyMock).toHaveBeenCalled();
@@ -97,21 +76,11 @@ describe('giveRep', () => {
 
   it('should call reply and add rep if user mention another user', async () => {
     const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '0' } as User);
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '0', reputation: 0 });
-    mockUpdateRep.mockResolvedValueOnce({ id: '0', reputation: 1 });
+    mockUsers.set('0', { id: '1' } as User);
+    mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 0 });
+    mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
 
-    const mockMsg: any = {
-      content: 'thank',
-      reply: replyMock,
-      mentions: {
-        users: mockUsers,
-      },
-      channel: { send: sendMock },
-      author: {
-        id: '1',
-      },
-    };
+    const mockMsg = getMockMsg(mockUsers);
     await giveReputation(mockMsg);
 
     expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
@@ -132,20 +101,7 @@ describe('giveRep', () => {
     mockUpdateRep
       .mockResolvedValueOnce({ id: '2', reputation: 0 })
       .mockResolvedValueOnce({ id: '3', reputation: 0 });
-
-    const mockMsg: any = {
-      content: 'thank',
-      mentions: {
-        users: mockUsers,
-      },
-      author: {
-        id: '0',
-        bot: false,
-      },
-      channel: {
-        send: sendMock,
-      },
-    };
+    const mockMsg = getMockMsg(mockUsers);
 
     await giveReputation(mockMsg);
 
