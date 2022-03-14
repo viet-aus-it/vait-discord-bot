@@ -70,14 +70,28 @@ release because Discord API has changed by the time this was released.
 
 ## 1.2.1
 
+### Changed
+
 - Add a config file to configure our commands without needing to rebuild the
   service.
 
 ## 1.3.0
 
+### Changed
+
 - Remove the `animatedEmoji` and `embedLink` functionalities from the bot.
   This should be handled by the NQN bot, which does these 2 jobs already and
   way more.
+
+## 1.4.0
+
+### Fixed
+
+- `-setrep` error with spacing between the parameters. (See [#82](https://github.com/viet-aus-it/vait-discord-bot/issues/82) and [#85](https://github.com/viet-aus-it/vait-discord-bot/pull/85))
+
+### Added
+
+- Allow thanking (or `-giverep`) to multiple users at the same time. (See [#86](https://github.com/viet-aus-it/vait-discord-bot/issues/86) and [#87](https://github.com/viet-aus-it/vait-discord-bot/pull/87))
 
 ## \[Unreleased\]
 
