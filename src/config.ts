@@ -13,6 +13,7 @@ import {
   cowsay,
   weather,
   insult,
+  allCapExpandText,
 } from './commands';
 
 export const getConfigs = (botUser: ClientUser): CommandConfig => {
@@ -40,6 +41,7 @@ export const getConfigs = (botUser: ClientUser): CommandConfig => {
         { matcher: 'cowsay', fn: cowsay },
         { matcher: 'weather', fn: weather },
         { matcher: 'insult', fn: insult },
+        { matcher: 'allcap', fn: allCapExpandText },
       ],
     },
     keywordMatchCommands: [

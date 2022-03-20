@@ -1,10 +1,9 @@
 import { Message, TextChannel } from 'discord.js';
 import {
+  isBlank,
   fetchMessageById,
   fetchLastMessageBeforeId,
-} from '../../utils/messageFetcher';
-
-const isBlank = (content: string) => content.trim() === '';
+} from '../../utils';
 
 const generateAllCapText = (message: string) =>
   message
@@ -15,7 +14,7 @@ const generateAllCapText = (message: string) =>
       return `${outputText + character} `;
     }, '');
 
-const allCapExpandText = async ({
+export const allCapExpandText = async ({
   content,
   channel,
   id,
@@ -36,11 +35,11 @@ const allCapExpandText = async ({
   }
 
   // If -allcap is detected but content is blank...
-  if (reference && reference.messageID !== null) {
+  if (reference && reference.messageId !== null) {
     // and it's referring to another message, fetch that message
     chatContent = await fetchMessageById(
       channel as TextChannel,
-      reference.messageID
+      reference.messageId!
     );
   } else {
     // fetch the previous message in the channel
@@ -55,5 +54,3 @@ const allCapExpandText = async ({
   const allCapText = generateAllCapText(chatContent);
   channel.send(allCapText);
 };
-
-export default allCapExpandText;
