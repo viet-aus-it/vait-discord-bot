@@ -24,7 +24,6 @@ describe('All caps test', () => {
 
     await allCapExpandText(mockMsg);
     expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith('A B C D E F G');
   });
 
   describe('All cap with no content', () => {
@@ -56,7 +55,6 @@ describe('All caps test', () => {
 
       await allCapExpandText(mockMsg);
       expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(replyMock).toHaveBeenCalledWith('A A A');
     });
 
     describe('Fetch the previous message', () => {
@@ -69,7 +67,6 @@ describe('All caps test', () => {
 
         await allCapExpandText(mockMsg);
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(replyMock).toHaveBeenCalledWith('A A A');
       });
 
       it('Should return nothing if there is no previous message', async () => {
@@ -80,7 +77,6 @@ describe('All caps test', () => {
 
         await allCapExpandText(mockMsg);
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(replyMock).toHaveBeenCalledWith('');
       });
     });
   });
