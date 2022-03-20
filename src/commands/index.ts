@@ -7,3 +7,4 @@ export * from './poll';
 export * from './quoteOfTheDay';
 export * from './reputation';
 export * from './weather';
+export * from './allCap';
