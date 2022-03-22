@@ -97,7 +97,7 @@ release because Discord API has changed by the time this was released.
 
 ### Added
 
-- `-allcap` function: `M A K E  Y O U R  T E X T  L O O K S  L I K E  T H I S.`
+- `-allcap` function: `M A K E  Y O U R  T E X T  L O O K S  L I K E  T H I S`. (See [#50](https://github.com/viet-aus-it/vait-discord-bot/issues/50) and [#93](https://github.com/viet-aus-it/vait-discord-bot/pull/93))
 
 [//]: # (Template:)
 
