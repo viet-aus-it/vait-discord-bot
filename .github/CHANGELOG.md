@@ -95,6 +95,10 @@ release because Discord API has changed by the time this was released.
 
 ## \[Unreleased\]
 
+### Added
+
+- `-allcap` function: `M A K E  Y O U R  T E X T  L O O K S  L I K E  T H I S.`
+
 [//]: # (Template:)
 
 [//]: # (Version number)
