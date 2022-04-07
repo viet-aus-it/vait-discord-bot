@@ -93,11 +93,13 @@ release because Discord API has changed by the time this was released.
 
 - Allow thanking (or `-giverep`) to multiple users at the same time. (See [#86](https://github.com/viet-aus-it/vait-discord-bot/issues/86) and [#87](https://github.com/viet-aus-it/vait-discord-bot/pull/87))
 
-## \[Unreleased\]
+## 1.4.1
 
 ### Added
 
 - `-allcap` function: `M A K E  Y O U R  T E X T  L O O K S  L I K E  T H I S`. (See [#50](https://github.com/viet-aus-it/vait-discord-bot/issues/50) and [#93](https://github.com/viet-aus-it/vait-discord-bot/pull/93))
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
