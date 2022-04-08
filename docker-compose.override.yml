@@ -1,18 +1,4 @@
 services:
-  bot:
-    build:
-      target: development
-    container_name: discord_bot_dev
-    stdin_open: true
-    tty: true
-    depends_on:
-      - db
-    env_file: ".env"
-    image: ghcr.io/viet-aus-it/discord-bot:development
-    restart: unless-stopped
-    volumes:
-      - .:/app
-
   db:
     image: postgres:13-alpine
     restart: unless-stopped
