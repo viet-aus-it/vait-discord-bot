@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "engines": {
     "node": "^16.0.0",
-    "npm": "^8.0.0"
+    "pnpm": "^6.0.0"
   },
   "repository": {
     "type": "git",
@@ -18,25 +18,22 @@
   "homepage": "https://github.com/viet-aus-it/vait-discord-bot#readme",
   "scripts": {
     "prepare": "husky install",
-    "clean:all": "npm run prebuild && npm run pretest",
-    "prebuild": "rimraf build",
+    "clean:all": "pnpm prebuild && pnpm pretest",
     "typecheck": "tsc --noEmit",
-    "build": "webpack",
-    "build:typecheck": "npm run typecheck && npm run build",
+    "build": "rimraf build && webpack",
+    "build:typecheck": "pnpm typecheck && pnpm build",
     "lint": "esw src --ext .ts",
-    "lint:fix": "npm run lint -- --fix",
-    "lint:watch": "npm run lint -- --watch",
+    "lint:fix": "pnpm lint -- --fix",
+    "lint:watch": "pnpm lint -- --watch",
     "prettier": "prettier -w src/**/*",
-    "format": "npm run lint:fix && npm run prettier",
-    "pretest": "rimraf coverage",
+    "format": "pnpm lint:fix && pnpm prettier",
     "test": "jest",
     "test:silent": "jest --silent",
-    "test:typecheck": "concurrently npm:test:silent npm:typecheck",
-    "test:watch": "npm run test -- --watchAll",
-    "prestart": "npm run prisma:migrate && npm run prisma:gen",
-    "start": "npm run build -- --watch",
+    "test:typecheck": "concurrently pnpm:test:silent pnpm:typecheck",
+    "test:watch": "pnpm test -- --watchAll",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:gen": "prisma generate"
+    "prisma:gen": "prisma generate",
+    "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm build -- --watch"
   },
   "dependencies": {
     "@prisma/client": "^3.6.0",
