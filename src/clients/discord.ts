@@ -12,6 +12,7 @@ export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MESSAGES,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        Intents.FLAGS.GUILD_WEBHOOKS,
       ],
     });
     client
