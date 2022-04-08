@@ -11,15 +11,11 @@
     - [Creating the config files](#creating-the-config-files)
       - [Using the onboarding script](#using-the-onboarding-script)
       - [Manually](#manually)
-    - [Install node dependency](#install-node-dependency)
-    - [Build and run docker container](#build-and-run-docker-container)
-    - [Setting up the pre-commit git hook](#setting-up-the-pre-commit-git-hook)
-  - [Notes on working with the repo](#notes-on-working-with-the-repo)
-    - [How to run commands inside the container](#how-to-run-commands-inside-the-container)
-  - [Docker related commands](#docker-related-commands)
-    - [For the bot service container](#for-the-bot-service-container)
-      - [DB migration](#db-migration)
-      - [Running tests](#running-tests)
+    - [Build and run the service locally](#build-and-run-the-service-locally)
+  - [Useful commands](#useful-commands)
+    - [DB migration](#db-migration)
+    - [Running tests](#running-tests)
+    - [Testing staging/production build](#testing-stagingproduction-build)
 
 ---
 
@@ -28,12 +24,6 @@
 - [Node 16+](https://nodejs.org/en/)
 - NPM 8+ (comes bundled with Node installation)
 - Docker 20+, Docker Compose 1.28+
-  - For macOS and Windows: The easiest way is to install [Docker Desktop](https://www.docker.com/products/docker-desktop "docker desktop").
-    This will come with Docker and Docker Compose in a bundle.
-  - For Linux Users: You would need to:
-    - Install [Docker Engine](https://docs.docker.com/engine/install/#server "docker engine")
-    - Follow the [Linux post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/ "Linux post-installation steps").
-    - Install [Docker Compose](https://docs.docker.com/compose/install/ "docker compose")
 
 ## Contributions
 
@@ -59,7 +49,7 @@ onboarding script. This script will create a local dev environment file, install
 dependencies, build the docker containers and set up a pre-commit git hook.
 
 ```shell
-./container_scripts/onboarding.sh
+./scripts/onboarding.sh
 ```
 
 Please ensure that you have all the required programs/executable are
@@ -78,7 +68,7 @@ cp config.dist.json config.json
 
 - The `.env` file needs to be filled in with these values:
   - DB Values: We already fill in some defaults for this to work in a local environment.
-    - `POSTGRES_HOST`: db
+    - `POSTGRES_HOST`: localhost
     - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: You can fill in whatever
       you like with these or just leave it with default value, since it only affects
       your local dev environment. But please keep it consistent since if you lose it,
@@ -87,64 +77,22 @@ cp config.dist.json config.json
 - The `config.json` needs to be filled in with the config needed to run the commands:
   - `prefix` is needed for the bot to trigger a command.
 
-### Install node dependency
+### Build and run the service locally
+
+Run these commands at the root of the project
 
 ```bash
+docker compose u -d db
+
 npm install
-```
-
-### Build and run docker container
-
-```bash
-# On the root folder of the project RUN
-docker-compose up bot
-# OR
-docker-compose up -d bot # to run the container in the background (detach mode)
+npm run start
 ```
 
 ---
 
-## Notes on working with the repo
+## Useful commands
 
-### How to run commands inside the container
-
-On most UNIX-like systems (macOS, Linux and WSL), you can just use the `container-exec.sh` bash script:
-
-```bash
-# multiline command - interactive mode - allow us to run multiple command
-./container_scripts/container-exec.sh
-
-# or just run a specific command
-./container_scripts/container-exec.sh npm run test # run `npm run test` inside the container
-```
-
-If you can't or don't want to use `./container-exec.sh` wrapper script then you can run it manually:
-
-- `docker-compose <service-name> command`
-
-```bash
-docker-compose exec discord_bot_dev npm run test
-# same as ./container-exec.sh npm run test
-```
-
-```bash
-# Run interactive mode, multiple command
-docker exec -it discord_bot_dev bash
-# same as ./container-exec.sh
-```
-
-- To run a command intereractively with a command prompt inside the
-  container, run this comand: `docker-compose <service-name> bash`
-
-- The service name is defined within the [docker-compose.yml](/docker-compose.yml) file.
-
----
-
-## Docker related commands
-
-### For the bot service container
-
-#### DB migration
+### DB migration
 
 ```bash
 # Run this inside the container
@@ -152,9 +100,23 @@ npm run prisma:migrate
 npm run prisma:gen
 ```
 
-#### Running tests
+### Running tests
 
 ```bash
 # Run this inside the container
 npm run test
+```
+
+### Testing staging/production build
+
+- Copy out an env file for the stage you're testing. Use `.env.staging` for staging, and `.env.production` for production.
+- Build the staging/production stage image.
+- Start the service to test.
+- For the `.env.[stage]` file, instead of `localhost`, put in `db` as the `POSTGRES_HOST`.
+
+```bash
+# Substitute the `[stage]` with either `production` or `staging`
+cp .env.dist .env.[stage]
+docker compose -f docker-compose.yml -f docker-compose.[stage].yml build bot
+docker compose -f docker-compose.yml -f docker-compose.[stage].yml up db bot
 ```
