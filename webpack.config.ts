@@ -44,13 +44,7 @@ const config: Configuration = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve(
-            __dirname,
-            'node_modules',
-            '.prisma',
-            'client',
-            'libquery_engine-debian-openssl-1.1.x.so.node'
-          ),
+          from: path.resolve(__dirname, 'node_modules', '.prisma', 'client'),
           to: path.resolve(outputPath, 'server'),
         },
         {
