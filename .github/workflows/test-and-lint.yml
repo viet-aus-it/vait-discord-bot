@@ -13,17 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: ^6.0.0
+
       - name: Set up Node 16
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Set up project
-        run: npm install
+        run: pnpm install
 
       - name: Run linting
-        run: npm run lint
+        run: pnpm lint
 
       - name: Run tests
         env:
@@ -34,4 +39,4 @@ jobs:
           PORT: 5432
         run: |
           export DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${PORT}/${POSTGRES_DB}?schema=public"
-          npm run test:silent
+          pnpm test:silent

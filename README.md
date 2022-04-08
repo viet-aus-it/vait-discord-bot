@@ -22,7 +22,7 @@
 ## Requirements
 
 - [Node 16+](https://nodejs.org/en/)
-- NPM 8+ (comes bundled with Node installation)
+- [PNPM 6+](https://pnpm.io/)
 - Docker 20+, Docker Compose 1.28+
 
 ## Contributions
