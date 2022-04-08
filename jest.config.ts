@@ -15,13 +15,7 @@ const config: Config.InitialOptions = {
   modulePathIgnorePatterns: ['<rootDir>/build'],
   transform: {
     ...tsjPreset.transform,
-    '^.+\\.tsx?$': [
-      'esbuild-jest',
-      {
-        sourcemap: true,
-        platform: 'node',
-      },
-    ],
+    '^.+\\.tsx?$': '@swc/jest',
   },
 };
 
