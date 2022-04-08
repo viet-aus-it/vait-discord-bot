@@ -3,13 +3,8 @@ import path from 'path';
 import { Configuration } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import NodemonPlugin from 'nodemon-webpack-plugin';
-import { ESBuildMinifyPlugin } from 'esbuild-loader';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
-
-const tsconfigFile = isProductionBuild()
-  ? 'tsconfig.json'
-  : 'tsconfig.build.json';
 
 const outputPath = path.resolve(__dirname, 'build');
 
@@ -29,12 +24,8 @@ const config: Configuration = {
     rules: [
       {
         test: /\.ts$/,
-        loader: 'esbuild-loader',
-        options: {
-          loader: 'ts',
-          target: 'node14',
-          tsconfigRaw: require(path.resolve(__dirname, tsconfigFile)),
-        },
+        exclude: /\.(test|config)\.ts$/,
+        loader: 'swc-loader',
       },
     ],
   },
@@ -100,13 +91,6 @@ const config: Configuration = {
   output: {
     path: outputPath,
     filename: 'server/index.js',
-  },
-  optimization: {
-    minimizer: [
-      new ESBuildMinifyPlugin({
-        target: 'es2020',
-      }),
-    ],
   },
 };
 
