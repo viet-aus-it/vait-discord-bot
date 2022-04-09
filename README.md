@@ -84,8 +84,8 @@ Run these commands at the root of the project
 ```bash
 docker compose u -d db
 
-npm install
-npm run start
+pnpm install
+pnpm start
 ```
 
 ---
@@ -96,15 +96,15 @@ npm run start
 
 ```bash
 # Run this inside the container
-npm run prisma:migrate
-npm run prisma:gen
+pnpm prisma:migrate
+pnpm prisma:gen
 ```
 
 ### Running tests
 
 ```bash
 # Run this inside the container
-npm run test
+pnpm test
 ```
 
 ### Testing staging/production build
