@@ -21,7 +21,7 @@ if [[ $NODE_VER != *"16"* ]] || [[ $PNPM_VER != *"6"* ]]; then
   echo "Please ensure you are using the correct version of Node (v16) and/or PNPM (v6) or else you cannot install the dependencies."
 else
   echo "Installing node dependencies"
-  npm install
+  pnpm install
 fi
 
 echo "Pulling docker images"
