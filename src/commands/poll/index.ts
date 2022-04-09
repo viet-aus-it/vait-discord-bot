@@ -1,5 +1,28 @@
-import { Message, TextChannel, MessageEmbed } from 'discord.js';
-import { fetchOrCreateWebhook } from '../../utils';
+import { Message, MessageEmbed } from 'discord.js';
+
+const NUMBER_AS_STRING = [
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+];
+
+const REACTION_NUMBERS = [
+  '\u0031\u20E3',
+  '\u0032\u20E3',
+  '\u0033\u20E3',
+  '\u0034\u20E3',
+  '\u0035\u20E3',
+  '\u0036\u20E3',
+  '\u0037\u20E3',
+  '\u0038\u20E3',
+  '\u0039\u20E3',
+];
 
 const createEmbeddedMessage = (
   question: string,
@@ -32,29 +55,6 @@ export const createPoll = async (msg: Message) => {
   const { author, channel, content } = msg;
   if (author.bot) return; // return if author is bot
 
-  const numberAsString = [
-    'one',
-    'two',
-    'three',
-    'four',
-    'five',
-    'six',
-    'seven',
-    'eight',
-    'nine',
-  ];
-  const reactionNumbers = [
-    '\u0031\u20E3',
-    '\u0032\u20E3',
-    '\u0033\u20E3',
-    '\u0034\u20E3',
-    '\u0035\u20E3',
-    '\u0036\u20E3',
-    '\u0037\u20E3',
-    '\u0038\u20E3',
-    '\u0039\u20E3',
-  ];
-
   const firstSpaceIndex = content.trimEnd().indexOf(' ');
   const message = content.slice(firstSpaceIndex);
   const hasQuestion = message.match(/".+"/);
@@ -75,21 +75,15 @@ export const createPoll = async (msg: Message) => {
     );
   }
 
-  const currentTextChannel = channel as TextChannel;
-  const webhook = await fetchOrCreateWebhook(currentTextChannel, 'VAIT-Hook');
-  if (!webhook) return;
-
-  const embed = createEmbeddedMessage(question, numberAsString, pollOptions);
+  const embed = createEmbeddedMessage(question, NUMBER_AS_STRING, pollOptions);
 
   try {
-    const pollMsg = (await webhook.send({
+    const pollMsg = await channel.send({
       embeds: [embed],
-      username: author.username,
-      avatarURL: author.avatarURL() || undefined,
-    })) as Message;
+    });
     await msg.delete();
     const promises = pollOptions.map((_value, index) =>
-      pollMsg.react(reactionNumbers[index])
+      pollMsg.react(REACTION_NUMBERS[index])
     );
     await Promise.all(promises);
   } catch (error) {
