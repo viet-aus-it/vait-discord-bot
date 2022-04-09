@@ -8,6 +8,14 @@ const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
 const outputPath = path.resolve(__dirname, 'build');
 
+const prismaClientPath = path.resolve(
+  __dirname,
+  'node_modules',
+  '.pnpm/@prisma+client@3.12.0_prisma@3.12.0/node_modules',
+  '.prisma',
+  'client'
+);
+
 const config: Configuration = {
   mode: isProductionBuild() ? 'production' : 'development',
   target: 'node',
@@ -44,17 +52,11 @@ const config: Configuration = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve(__dirname, 'node_modules', '.prisma', 'client'),
+          from: prismaClientPath,
           to: path.resolve(outputPath, 'server'),
         },
         {
-          from: path.resolve(
-            __dirname,
-            'node_modules',
-            '.prisma',
-            'client',
-            'schema.prisma'
-          ),
+          from: path.resolve(prismaClientPath, 'schema.prisma'),
           to: path.resolve(outputPath, 'server'),
         },
         {
