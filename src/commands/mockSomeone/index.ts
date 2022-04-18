@@ -1,10 +1,18 @@
-import { Message, TextChannel } from 'discord.js';
+import { TextChannel, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import {
-  fetchMessageById,
   fetchLastMessageBeforeId,
   getRandomBoolean,
   isBlank,
 } from '../../utils';
+import { Command } from '../command';
+
+const data = new SlashCommandBuilder()
+  .setName('mock')
+  .setDescription('Mock a sentence. SpOnGeBoB sTyLe.')
+  .addStringOption((option) =>
+    option.setName('sentence').setDescription('The sentence to mock')
+  );
 
 const generateMockText = (message: string) =>
   message
@@ -20,44 +28,36 @@ const generateMockText = (message: string) =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
-export const mockSomeone = async ({
-  content,
-  channel,
-  id,
-  reference,
-  author,
-}: Message) => {
-  if (author.bot) return; // return if sender is bot
+export const mockSomeone = async (interaction: CommandInteraction) => {
+  let sentence = interaction.options.getString('sentence');
 
-  const indexOfMockPrefix = content.trimEnd().indexOf(' ');
-
-  let chatContent =
-    indexOfMockPrefix !== -1 ? content.slice(indexOfMockPrefix) : '';
-
-  // If -mock is detected and it has content
-  if (!isBlank(chatContent)) {
-    const mockText = generateMockText(chatContent);
-    await channel.send(mockText);
+  if (sentence && !isBlank(sentence)) {
+    const mockText = generateMockText(sentence);
+    await interaction.reply(mockText);
     return;
   }
 
-  // If -mock is detected but content is blank...
-  if (reference && reference.messageId) {
-    // and it's referring to another message, fetch that message
-    chatContent = await fetchMessageById(
-      channel as TextChannel,
-      reference.messageId
-    );
-  } else {
-    // fetch the previous message in the channel
-    chatContent = await fetchLastMessageBeforeId(channel as TextChannel, id);
-  }
+  // If /mock is detected but content is blank, fetch the latest message in channel
+  sentence = await fetchLastMessageBeforeId(
+    interaction.channel as TextChannel,
+    interaction.id
+  );
 
   // If it's still blank at this point, then exit
-  if (isBlank(chatContent)) {
+  if (!sentence || isBlank(sentence)) {
+    await interaction.reply(
+      'Cannot fetch latest message. Please try again later.'
+    );
     return;
   }
 
-  const mockText = generateMockText(chatContent);
-  await channel.send(mockText);
+  const mockText = generateMockText(sentence);
+  await interaction.reply(mockText);
 };
+
+const command: Command = {
+  data,
+  execute: mockSomeone,
+};
+
+export default command;

@@ -1,5 +1,17 @@
-import { Message } from 'discord.js';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { Command } from '../command';
 import { getRandomIntInclusive } from '../../utils';
+
+const data = new SlashCommandBuilder()
+  .setName('8ball')
+  .setDescription('Ask the magic 8ball a question')
+  .addStringOption((option) =>
+    option
+      .setName('question')
+      .setDescription('Question to ask the magic 8ball.')
+      .setRequired(true)
+  );
 
 const REPLIES = [
   'Yes',
@@ -15,17 +27,24 @@ const REPLIES = [
   'Are you even trying?',
   'Keep it up',
 ] as const;
-const get8BallReply = () => REPLIES[getRandomIntInclusive(0, REPLIES.length)];
+const get8BallReply = () =>
+  REPLIES[getRandomIntInclusive(0, REPLIES.length - 1)];
 
-export const ask8Ball = async (msg: Message) => {
-  const { content, channel, author } = msg;
+export const ask8Ball = async (interaction: CommandInteraction) => {
+  const question = interaction.options.getString('question', true);
 
-  if (author.bot) return; // return if sender is a bot
-  if (content.split(' ').length <= 1) {
-    await msg.reply(
-      'SYNTAX ERROR: Please provide a question after the `8ball` keyword'
-    );
-    return;
-  }
-  await channel.send(get8BallReply());
+  const embedMessage = new MessageEmbed({
+    author: {
+      name: question,
+    },
+    description: get8BallReply(),
+  });
+  await interaction.reply({ embeds: [embedMessage] });
 };
+
+const command: Command = {
+  data,
+  execute: ask8Ball,
+};
+
+export default command;

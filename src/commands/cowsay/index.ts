@@ -1,22 +1,25 @@
-import { Message, TextChannel } from 'discord.js';
+import { CommandInteraction, TextChannel } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { say } from 'cowsay';
-import {
-  fetchLastMessageBeforeId,
-  fetchMessageById,
-  isBlank,
-} from '../../utils';
+import { fetchLastMessageBeforeId, isBlank } from '../../utils';
+import { Command } from '../command';
 
 // Only 35 characters per line due to limitation in phone screen width
 const WRAP_TEXT_LIMIT = 35;
 
-const replaceAll = (string: string, from: string, to: string) =>
-  string.split(from).join(to);
+const data = new SlashCommandBuilder()
+  .setName('cowsay')
+  .setDescription('Make a cow say your chat message')
+  .addStringOption((option) =>
+    option.setName('sentence').setDescription('What you want the cow to say')
+  );
 
 // Remove backtick in message in case of nesting cowsay
 export const removeBacktick = (message: string) => {
   if (message.indexOf('`') !== -1) {
-    return replaceAll(message, '`', '');
+    return message.replaceAll('`', '');
   }
+
   return message;
 };
 
@@ -52,57 +55,44 @@ const generateCowsayText = (message: string) => {
   return say(config);
 };
 
-// Send Cowsay text
-const sendCowsay = async (chatContent: string, channel: TextChannel) => {
-  const reply = `\`\`\`${generateCowsayText(chatContent)}\`\`\``;
+const sendCowsay = async (content: string, interaction: CommandInteraction) => {
+  const reply = `\`\`\`${generateCowsayText(content)}\`\`\``;
 
   try {
-    await channel.send(reply);
+    await interaction.reply(reply);
   } catch (error) {
     console.error('CANNOT SEND MESSAGE', error);
   }
 };
 
-export const cowsay = async ({
-  content,
-  reference,
-  channel,
-  id,
-  author,
-}: Message) => {
-  // Return if sender is bot
-  if (author.bot) return;
+export const cowsay = async (interaction: CommandInteraction) => {
+  let content = interaction.options.getString('sentence');
 
-  const textChannel = channel as TextChannel;
+  if (content && !isBlank(content)) {
+    await sendCowsay(content, interaction);
+    return;
+  }
 
-  const firstSpaceChar = content.trimEnd().indexOf(' ');
-
-  let chatContent = removeBacktick(
-    firstSpaceChar !== -1 ? content.slice(firstSpaceChar).trimStart() : ''
+  // If /cowsay is detected but content is blank, fetch the latest message in channel
+  content = await fetchLastMessageBeforeId(
+    interaction.channel as TextChannel,
+    interaction.id
   );
 
-  // If cowsay is called with chat content
-  if (!isBlank(chatContent)) {
-    await sendCowsay(chatContent, textChannel);
-    return;
-  }
-
-  // If there is no chat content...
-  if (reference && reference.channelId !== null) {
-    // And there is a reference to another message, fetch that message
-    chatContent = await fetchMessageById(
-      textChannel,
-      reference.messageId as string
+  // If it's still blank at this point, then exit
+  if (!content) {
+    await interaction.reply(
+      'Cannot fetch latest message. Please try again later.'
     );
-  } else {
-    // Or just fetch the latest message
-    chatContent = await fetchLastMessageBeforeId(textChannel, id);
-  }
-
-  // if the content still blank at this point, exit
-  if (isBlank(chatContent)) {
     return;
   }
 
-  await sendCowsay(chatContent, textChannel);
+  await sendCowsay(content, interaction);
 };
+
+const command: Command = {
+  data,
+  execute: cowsay,
+};
+
+export default command;
