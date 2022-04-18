@@ -3,6 +3,7 @@ import 'dotenv-expand/config';
 import { processMessage } from './utils';
 import { getDiscordClient } from './clients';
 import { getConfigs } from './config';
+import { commandList } from './commands';
 
 const main = async () => {
   const token = process.env.TOKEN ?? '';
@@ -24,10 +25,8 @@ const main = async () => {
     if (!isCommand) return;
 
     const { commandName } = interaction;
-    console.log({ commandName });
-    if (commandName === 'ping') {
-      await interaction.reply('pong!');
-    }
+    const command = commandList.find((cmd) => cmd.data.name === commandName);
+    return command?.execute(interaction);
   });
 };
 
