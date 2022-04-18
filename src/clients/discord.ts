@@ -3,6 +3,7 @@ import { Client, Intents } from 'discord.js';
 export type ClientOptions = {
   token?: string;
 };
+
 export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
   if (!options.token) throw new Error('please setup bot token');
 
@@ -14,6 +15,7 @@ export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
         Intents.FLAGS.GUILD_WEBHOOKS,
       ],
+      partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
     });
     client
       .on('ready', () => resolve(client))
