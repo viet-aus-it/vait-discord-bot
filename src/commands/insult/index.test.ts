@@ -1,107 +1,46 @@
 import faker from '@faker-js/faker';
 import { randomCreate } from './insultGenerator';
-import { fetchMessageObjectById } from '../../utils';
 import { insult } from '.';
 
-jest.mock('../../utils/messageFetcher');
-const mockFetchMsgObjByID = jest.mocked(fetchMessageObjectById);
+const replyMock = jest.fn();
 
-const replyMock = jest.fn(() => {});
+const getStringMock = jest.fn();
 
-const getMockMsg = (fetchCallBack: Function) => ({
-  content: `-insult`,
-  channel: {
-    send: replyMock,
-    messages: { fetch: fetchCallBack },
+const getMockInteraction = (): any => ({
+  reply: replyMock,
+  options: {
+    getString: getStringMock,
   },
-  author: { bot: false },
-});
-
-const getMockMsgWithReference = (
-  fetchCallBack: Function,
-  reference:
-    | undefined
-    | {
-        messageId: string;
-      }
-) => ({
-  ...getMockMsg(fetchCallBack),
-  reference,
 });
 
 describe('Insult someone test', () => {
   beforeEach(() => replyMock.mockClear());
 
-  it('Should send an insult if there is -insult prefix', async () => {
-    const mockMsg: any = {
-      content: `-insult`,
-      channel: { send: replyMock },
-      author: { bot: false },
-    };
+  it('Should send an insult when the cmd is sent', async () => {
+    getStringMock.mockImplementationOnce(() => '');
+    const mockInteraction = getMockInteraction();
 
-    await insult(mockMsg);
+    await insult(mockInteraction);
     expect(replyMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('Should not insult if the author is a bot', async () => {
-    const mockMsg: any = {
-      content: `-insult`,
-      channel: { send: replyMock },
-      author: { bot: true },
-    };
-
-    await insult(mockMsg);
-    expect(replyMock).not.toHaveBeenCalled();
   });
 
   it('Should insult the chat content', async () => {
-    const mockMsg: any = {
-      content: `-insult Lorem Ipsum `,
-      channel: { send: replyMock },
-      author: { bot: false },
-    };
+    getStringMock.mockImplementationOnce(() => faker.lorem.words(2));
+    const mockInteraction = getMockInteraction();
 
-    await insult(mockMsg);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('Should be able to mock the referred message author', async () => {
-    const messageWithContent = { content: faker.lorem.word(10) };
-    const fetchMock = jest.fn(async () => messageWithContent);
-    const mockMsg: any = getMockMsgWithReference(fetchMock, {
-      messageId: '1',
-    });
-
-    const mockedFetchedMsg: any = {
-      author: {
-        id: '69420',
-        username: faker.lorem.words(5),
-        avatarURL: jest.fn(),
-      },
-      createdTimestamp: 1235123123,
-      content: faker.lorem.words(25),
-      id: 678,
-    };
-
-    mockFetchMsgObjByID.mockReturnValue(mockedFetchedMsg);
-
-    await insult(mockMsg);
+    await insult(mockInteraction);
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
   it('Should throw error if cannot send insult', async () => {
-    const mockError = jest.fn(async () => {
+    getStringMock.mockImplementationOnce(() => faker.lorem.words(2));
+    replyMock.mockImplementationOnce(async () => {
       throw new Error('Something went wrong');
     });
+    const mockInteraction = getMockInteraction();
 
-    const mockMsg: any = {
-      content: '-insult A',
-      channel: { send: mockError },
-      author: { bot: false },
-    };
-
-    await insult(mockMsg);
-    expect(mockError).toHaveBeenCalledTimes(1);
+    await insult(mockInteraction);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 });
 

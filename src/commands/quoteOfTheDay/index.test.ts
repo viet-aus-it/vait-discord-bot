@@ -5,43 +5,35 @@ import { fetchQuote } from './fetchQuote';
 jest.mock('./fetchQuote');
 const mockFetch = jest.mocked(fetchQuote);
 
-const replyMock = jest.fn(() => {});
+const deferReplyMock = jest.fn();
+const editReplyMock = jest.fn();
 
 describe('Get quote of the day test', () => {
-  it('Should return if chat author is a bot', async () => {
-    const mockMsg: any = {
-      content: `-qotd`,
-      channel: { send: replyMock },
-      author: { bot: true },
+  it('Should return a random quote when requested', async () => {
+    const mockInteraction: any = {
+      deferReply: deferReplyMock,
+      editReply: editReplyMock,
     };
-    await getQuoteOfTheDay(mockMsg);
-    expect(replyMock).not.toHaveBeenCalled();
-  });
 
-  it('Should return a random quote if somebody sends the prefix', async () => {
-    const mockMsg: any = {
-      content: `-qotd`,
-      channel: { send: replyMock },
-      author: { bot: false },
-    };
     const fakeQuote = faker.lorem.words(25);
     mockFetch.mockImplementationOnce(async () => ({
       quote: fakeQuote,
       author: 'Author',
       html: `<h1>${fakeQuote}</h1>`,
     }));
-    await getQuoteOfTheDay(mockMsg);
-    expect(replyMock).toHaveBeenCalledTimes(1);
+
+    await getQuoteOfTheDay(mockInteraction);
+    expect(editReplyMock).toHaveBeenCalledTimes(1);
   });
 
-  it('Should return if no quote can be downloaded', async () => {
-    const mockMsg: any = {
-      content: `-qotd`,
-      channel: { send: replyMock },
-      author: { bot: false },
+  it('Should reply with error message if no quote can be downloaded', async () => {
+    const mockInteraction: any = {
+      deferReply: deferReplyMock,
+      editReply: editReplyMock,
     };
     mockFetch.mockImplementationOnce(async () => undefined);
-    await getQuoteOfTheDay(mockMsg);
-    expect(replyMock).not.toHaveBeenCalled();
+    await getQuoteOfTheDay(mockInteraction);
+    expect(editReplyMock).toHaveBeenCalledTimes(1);
+    expect(editReplyMock).toHaveBeenCalledWith('Error getting quotes');
   });
 });

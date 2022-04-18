@@ -1,14 +1,14 @@
-import { Message, TextChannel } from 'discord.js';
-import {
-  fetchLastMessageBeforeId,
-  fetchMessageById,
-  isBlank,
-} from '../../utils';
+import { CommandInteraction, TextChannel } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { fetchLastMessageBeforeId, isBlank } from '../../utils';
+import { Command } from '../command';
 
-type GetChatContentPayload = Pick<
-  Message,
-  'content' | 'reference' | 'id' | 'channel'
->;
+const data = new SlashCommandBuilder()
+  .setName('allcap')
+  .setDescription('Make your text L O O K S  L I K E  T H I S')
+  .addStringOption((option) =>
+    option.setName('sentence').setDescription('Sentence to All cap')
+  );
 
 const generateAllCapText = (message: string) =>
   message
@@ -19,47 +19,47 @@ const generateAllCapText = (message: string) =>
       return `${outputText + character} `;
     }, '');
 
-const getChatContent = async ({
-  content,
-  channel,
-  reference,
-  id,
-}: GetChatContentPayload) => {
-  const cmdSpaceIndex = content.trimEnd().indexOf(' ');
-  const textChannel = channel as TextChannel;
+const sendAllCapText = async (
+  content: string,
+  interaction: CommandInteraction
+) => {
+  const reply = generateAllCapText(content);
 
-  if (cmdSpaceIndex !== -1) {
-    return content.slice(cmdSpaceIndex);
+  try {
+    await interaction.reply(reply);
+  } catch (error) {
+    console.error('CANNOT SEND MESSAGE', error);
   }
-
-  if (reference?.messageId) {
-    const chatContent = await fetchMessageById(
-      textChannel,
-      reference.messageId
-    );
-    return chatContent;
-  }
-
-  const chatContent = await fetchLastMessageBeforeId(textChannel, id);
-  return chatContent;
 };
 
-export const allCapExpandText = async ({
-  content,
-  channel,
-  id,
-  reference,
-  author,
-}: Message) => {
-  if (author.bot) return; // return if sender is bot
+export const allCapExpandText = async (interaction: CommandInteraction) => {
+  let content = interaction.options.getString('sentence');
 
-  const chatContent = await getChatContent({ content, channel, reference, id });
-
-  // If it's still blank at this point, then exit
-  if (isBlank(chatContent)) {
+  if (content && !isBlank(content)) {
+    await sendAllCapText(content, interaction);
     return;
   }
 
-  const allCapText = generateAllCapText(chatContent);
-  channel.send(allCapText);
+  // If /allcap is detected but content is blank, fetch the latest message in channel
+  content = await fetchLastMessageBeforeId(
+    interaction.channel as TextChannel,
+    interaction.id
+  );
+
+  // If it's still blank at this point, then exit
+  if (!content) {
+    await interaction.reply(
+      'Cannot fetch latest message. Please try again later.'
+    );
+    return;
+  }
+
+  await sendAllCapText(content, interaction);
 };
+
+const command: Command = {
+  data,
+  execute: allCapExpandText,
+};
+
+export default command;

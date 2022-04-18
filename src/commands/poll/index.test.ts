@@ -1,134 +1,65 @@
 import mockConsole from 'jest-mock-console';
-import { createPoll, replyWithErrorMessage } from '.';
+import { createPoll, NUMBER_AS_STRING } from '.';
 
-const mockedReply = jest.fn();
-const sendMock = jest.fn();
-const msgDeleteMock = jest.fn(() => {});
-
-describe('Reply with error message test', () => {
-  it('Should reply with an error message', async () => {
-    const mockMsg: any = {
-      content: 'Test message',
-      author: {
-        bot: false,
-      },
-      reply: mockedReply,
-    };
-    await replyWithErrorMessage(mockMsg, 'Synthetic message');
-    expect(mockedReply).toHaveBeenCalledTimes(1);
-  });
-
-  it('Should handle error with console if message cannot be sent', async () => {
-    const mockMsg: any = {
-      content: 'Test message',
-      author: {
-        bot: false,
-      },
-      reply: () => Promise.reject(new Error('Synthetic error')),
-    };
-    mockConsole();
-    await replyWithErrorMessage(mockMsg, 'Synthetic message');
-    expect(console.error).toHaveBeenCalled();
-  });
-});
+const replyMock = jest.fn();
+const getStringMock = jest.fn((option: string): string | undefined => option);
 
 describe('Poll test', () => {
-  it('Should return if author is a bot', async () => {
-    const mockMsg: any = {
-      author: {
-        bot: true,
-      },
-    };
-    await createPoll(mockMsg);
-    expect(mockedReply).not.toHaveBeenCalled();
-  });
-
-  it('Should return a message if question is not in quotes', async () => {
-    const mockMsg: any = {
-      content: '-poll question without quotes',
-      author: {
-        bot: false,
-      },
-      reply: mockedReply,
-    };
-    await createPoll(mockMsg);
-    expect(mockedReply).toHaveBeenCalled();
-    expect(sendMock).not.toHaveBeenCalled();
-    expect(msgDeleteMock).not.toHaveBeenCalled();
-  });
-
-  it('Should send a message if it has less than 2 poll options', async () => {
-    const mockMsg: any = {
-      content: '-poll "question" option1',
-      author: {
-        bot: false,
-      },
-      reply: mockedReply,
-    };
-    await createPoll(mockMsg);
-    expect(mockedReply).toHaveBeenCalled();
-    expect(sendMock).not.toHaveBeenCalled();
-    expect(msgDeleteMock).not.toHaveBeenCalled();
-  });
-
-  it('Should send a message if it has more than 9 poll options', async () => {
-    const mockMsg: any = {
-      content: '-poll "question" 1 2 3 4 5 6 7 8 9 10',
-      author: {
-        bot: false,
-      },
-      reply: mockedReply,
-    };
-    await createPoll(mockMsg);
-    expect(mockedReply).toHaveBeenCalled();
-    expect(sendMock).not.toHaveBeenCalled();
-    expect(msgDeleteMock).not.toHaveBeenCalled();
-  });
-
   it('Should send a poll as embeded message', async () => {
-    const mockMsg: any = {
-      content: '-poll "question" 1 2 3',
-      author: {
-        bot: false,
-        avatarURL: jest.fn(),
-      },
-      channel: {
-        send: sendMock,
-      },
-      delete: msgDeleteMock,
-    };
     const mockedReact = jest.fn();
-    sendMock.mockReturnValueOnce({
+    replyMock.mockReturnValueOnce({
       react: mockedReact,
     });
-    await createPoll(mockMsg);
-    expect(sendMock).toHaveBeenCalledTimes(1);
-    expect(msgDeleteMock).toHaveBeenCalledTimes(1);
-    expect(mockedReact).toHaveBeenCalledTimes(3);
+    const mockInteraction: any = {
+      reply: replyMock,
+      options: {
+        getString: getStringMock,
+      },
+    };
+    await createPoll(mockInteraction);
+    expect(mockedReact).toHaveBeenCalledTimes(NUMBER_AS_STRING.length);
+  });
+
+  it('Should send a poll with fewer than 9 options', async () => {
+    const mockedReact = jest.fn();
+    replyMock.mockReturnValueOnce({
+      react: mockedReact,
+    });
+    const maxOptions = 3;
+    getStringMock.mockImplementation((option: string) => {
+      if (option === 'question') return option;
+
+      const index = Number(option.substring(6));
+      return index <= maxOptions ? option : undefined;
+    });
+    const mockInteraction: any = {
+      reply: replyMock,
+      options: {
+        getString: getStringMock,
+      },
+    };
+    await createPoll(mockInteraction);
+
+    expect(replyMock).toHaveBeenCalled();
+    expect(mockedReact).toHaveBeenCalledTimes(maxOptions);
   });
 
   it('Should handle error with console if message cannot be sent', async () => {
-    const mockMsg: any = {
-      content: '-poll "question" 1 2 3',
-      author: {
-        bot: false,
-        avatarURL: jest.fn(),
-      },
-      channel: {
-        send: sendMock,
-      },
-      delete: msgDeleteMock,
-    };
     const mockedReact = jest.fn();
-    sendMock.mockReturnValueOnce(Promise.reject(new Error('Synthetic Error')));
+    replyMock.mockReturnValueOnce(Promise.reject(new Error('Synthetic Error')));
     mockConsole();
+    const mockInteraction: any = {
+      reply: replyMock,
+      options: {
+        getString: getStringMock,
+      },
+    };
 
     try {
-      await createPoll(mockMsg);
+      await createPoll(mockInteraction);
     } catch (error: any) {
-      expect(sendMock).toHaveBeenCalledTimes(1);
+      expect(replyMock).toHaveBeenCalledTimes(1);
       expect(console.error).toHaveBeenCalledTimes(1);
-      expect(msgDeleteMock).not.toHaveBeenCalled();
       expect(mockedReact).not.toHaveBeenCalled();
     }
   });

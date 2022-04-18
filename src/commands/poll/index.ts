@@ -1,6 +1,8 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { Command } from '../command';
 
-const NUMBER_AS_STRING = [
+export const NUMBER_AS_STRING = [
   'one',
   'two',
   'three',
@@ -24,13 +26,31 @@ const REACTION_NUMBERS = [
   '\u0039\u20E3',
 ];
 
-const createEmbeddedMessage = (
-  question: string,
-  numberAsString: string[],
-  pollOptions: string[]
-) => {
+const getData = () => {
+  const data = new SlashCommandBuilder()
+    .setName('poll')
+    .setDescription('Create a poll')
+    .addStringOption((option) =>
+      option
+        .setName('question')
+        .setDescription('The question to create a poll for')
+        .setRequired(true)
+    );
+  NUMBER_AS_STRING.forEach((value, index) => {
+    data.addStringOption((option) =>
+      option
+        .setName(`option${index + 1}`)
+        .setDescription(`option ${value}`)
+        .setRequired(index < 2)
+    );
+  });
+
+  return data;
+};
+
+const createEmbeddedMessage = (question: string, pollOptions: string[]) => {
   const message = pollOptions.reduce((accumulator, option, index) => {
-    return `${accumulator}:${numberAsString[index]}: ${option}\n\n`;
+    return `${accumulator}:${NUMBER_AS_STRING[index]}: ${option}\n\n`;
   }, '');
 
   return new MessageEmbed({
@@ -42,46 +62,31 @@ const createEmbeddedMessage = (
   });
 };
 
-export const replyWithErrorMessage = async (msg: Message, content: string) => {
-  try {
-    await msg.reply(content);
-    return;
-  } catch (error) {
-    console.error(error);
-  }
-};
+export const createPoll = async (interaction: CommandInteraction) => {
+  const question = interaction.options.getString('question', true);
+  const pollOptions = NUMBER_AS_STRING.reduce<string[]>(
+    (accum, _value, index) => {
+      const option: string | null = interaction.options.getString(
+        `option${index + 1}`,
+        index < 2
+      );
 
-export const createPoll = async (msg: Message) => {
-  const { author, channel, content } = msg;
-  if (author.bot) return; // return if author is bot
+      if (!option) {
+        return accum;
+      }
 
-  const firstSpaceIndex = content.trimEnd().indexOf(' ');
-  const message = content.slice(firstSpaceIndex);
-  const hasQuestion = message.match(/".+"/);
-  if (!hasQuestion) {
-    return replyWithErrorMessage(
-      msg,
-      'Syntax to create a poll is:\n`-poll "Question" pollOption1 pollOption2...pollOption9`\nQuestion must be placed in "", poll options are space delimited'
-    );
-  }
+      return [...accum, option];
+    },
+    []
+  );
 
-  const question = hasQuestion[0];
-  const pollOptions = message.replace(question, '').trim().split(' ');
-
-  if (pollOptions.length < 2 || pollOptions.length > 9) {
-    return replyWithErrorMessage(
-      msg,
-      'You need at least 2 and at most 9 options for a valid poll'
-    );
-  }
-
-  const embed = createEmbeddedMessage(question, NUMBER_AS_STRING, pollOptions);
+  const embed = createEmbeddedMessage(question, pollOptions);
 
   try {
-    const pollMsg = await channel.send({
+    const pollMsg = (await interaction.reply({
       embeds: [embed],
-    });
-    await msg.delete();
+      fetchReply: true,
+    })) as Message;
     const promises = pollOptions.map((_value, index) =>
       pollMsg.react(REACTION_NUMBERS[index])
     );
@@ -90,3 +95,10 @@ export const createPoll = async (msg: Message) => {
     console.error(error);
   }
 };
+
+const command: Command = {
+  data: getData(),
+  execute: createPoll,
+};
+
+export default command;

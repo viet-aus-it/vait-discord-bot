@@ -1,91 +1,95 @@
-import { Collection, User } from 'discord.js';
 import { danhSomeone } from '.';
 
-const replyMock = jest.fn(() => {});
-describe('danhSomeone', () => {
-  it('should hit all mentioned users with random damages except bot', () => {
-    const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '1' } as User);
-    mockUsers.set('1', { id: '3' } as User);
-    mockUsers.set('2', { id: '4' } as User);
-    mockUsers.set('3', { id: '0' } as User);
-    const mockMsg: any = {
-      content: '-hit',
-      reply: replyMock,
-      channel: { send: replyMock },
-      mentions: { users: mockUsers },
-      author: { id: '5' },
+const replyMock = jest.fn();
+const getUserMock = jest.fn(
+  (param: `target${number}`): { id: string } | undefined => {
+    return {
+      id: param.substring(6),
     };
-    const mockBotId = '0';
-    danhSomeone(mockMsg, mockBotId);
-    expect(replyMock).toHaveBeenCalledTimes(4);
+  }
+);
+
+describe('danhSomeone', () => {
+  beforeEach(() => {
+    replyMock.mockReset();
+    getUserMock.mockReset();
   });
 
-  it('it should not hit yourself', () => {
-    const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '1' } as User);
-
-    const mockMsg: any = {
-      content: '-hit',
+  it('should hit all mentioned users with random damages', () => {
+    const mockInteraction: any = {
       reply: replyMock,
-      channel: { send: replyMock },
-      mentions: { users: mockUsers },
-      author: { id: '1' },
+      options: {
+        getUser: getUserMock,
+      },
+      client: {
+        user: {
+          id: '1',
+        },
+      },
+      member: {
+        user: {
+          id: '2',
+        },
+      },
     };
-    const mockBotId = '0';
-    danhSomeone(mockMsg, mockBotId);
+
+    danhSomeone(mockInteraction);
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
-  it('it should return if mentioned users is undefined', () => {
-    const mockMsg: any = {
-      content: '-hit',
+  it('should not allow user to hit bot', () => {
+    getUserMock.mockImplementation((param: `target${number}`) => {
+      if (param === 'target1') return { id: '1' };
+    });
+    const mockInteraction: any = {
       reply: replyMock,
-      channel: { send: replyMock },
-      mentions: { users: undefined },
-      author: { id: '1' },
-    };
-    const mockBotId = '0';
-    danhSomeone(mockMsg, mockBotId);
-    expect(replyMock).not.toHaveBeenCalled();
-  });
-
-  it('it should return if no user is mentioned', () => {
-    const mockMsg: any = {
-      content: '-hit',
-      reply: replyMock,
-      channel: { send: replyMock },
-      mentions: {
-        users: { first: jest.fn(() => undefined) },
+      options: {
+        getUser: getUserMock,
       },
-      author: { id: '1' },
+      client: {
+        user: {
+          id: '1',
+        },
+      },
+      member: {
+        user: {
+          id: '2',
+        },
+      },
     };
-    const mockBotId = '0';
-    danhSomeone(mockMsg, mockBotId);
-    expect(replyMock).not.toHaveBeenCalled();
+
+    danhSomeone(mockInteraction);
+    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(replyMock).toHaveBeenCalledWith(
+      "<@2>, I'm your father, you can't hit me."
+    );
   });
 
-  it('should return if no user is mentioned', () => {
-    const mockMsg: any = {
-      content: '-hit',
-      channel: { send: replyMock },
+  it('should not allow user to hit themself', () => {
+    getUserMock.mockImplementation((param: `target${number}`) => {
+      if (param === 'target1') return { id: '2' };
+    });
+    const mockInteraction: any = {
       reply: replyMock,
-      author: { id: '1' },
+      options: {
+        getUser: getUserMock,
+      },
+      client: {
+        user: {
+          id: '1',
+        },
+      },
+      member: {
+        user: {
+          id: '2',
+        },
+      },
     };
-    const mockBotId = '0';
-    danhSomeone(mockMsg, mockBotId);
-    expect(replyMock).not.toHaveBeenCalled();
-  });
 
-  it('should do nothing if bot message has keywords', () => {
-    const mockMsg: any = {
-      content: '-hit',
-      channel: { send: replyMock },
-      reply: replyMock,
-      author: { id: '0' },
-    };
-    const mockBotId = '0';
-    danhSomeone(mockMsg, mockBotId);
-    expect(replyMock).not.toHaveBeenCalled();
+    danhSomeone(mockInteraction);
+    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(replyMock).toHaveBeenCalledWith(
+      'Stop hitting yourself <@2>, hit someone else.'
+    );
   });
 });

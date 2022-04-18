@@ -1,53 +1,43 @@
-import { Message, TextChannel } from 'discord.js';
-import { fetchMessageObjectById, isBlank } from '../../utils';
+import { CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { isBlank } from '../../utils';
+import { Command } from '../command';
 import { randomInsultGenerator } from './insultGenerator';
 
-const sendInsult = async (insult: string, channel: TextChannel) => {
+const data = new SlashCommandBuilder()
+  .setName('insult')
+  .setDescription(
+    'Generate an insult. If a target is provided, it will insult them directly.'
+  )
+  .addStringOption((option) =>
+    option.setName('target').setDescription('The name to insult')
+  );
+
+const sendInsult = async (insult: string, interaction: CommandInteraction) => {
   try {
-    await channel.send(insult);
+    await interaction.reply(insult);
   } catch (error) {
     console.error('CANNOT SEND MESSAGE', error);
   }
 };
 
-export const insult = async ({
-  content,
-  reference,
-  channel,
-  author,
-}: Message) => {
-  if (author.bot) return;
-
-  const textChannel = channel as TextChannel;
-
-  const firstSpaceChar = content.trimEnd().indexOf(' ');
+export const insult = async (interaction: CommandInteraction) => {
+  const target = interaction.options.getString('target');
 
   const insultText = randomInsultGenerator();
 
-  let chatContent =
-    firstSpaceChar !== -1 ? content.slice(firstSpaceChar).trimStart() : '';
-
-  // If there is chat content
-  if (!isBlank(chatContent)) {
-    const replyText = `${chatContent}, ${insultText.toLowerCase()}`;
-    await sendInsult(replyText, textChannel);
+  if (target && !isBlank(target)) {
+    const replyText = `${target}, ${insultText.toLowerCase()}`;
+    await sendInsult(replyText, interaction);
     return;
   }
 
-  // If there is a reference to a msg
-  if (reference && reference.messageId) {
-    // Then insult the author of the refered message
-    const referredMsg = (await fetchMessageObjectById(
-      channel as TextChannel,
-      reference.messageId
-    )) as Message;
-
-    const referredAuthorId = referredMsg.author.id;
-    chatContent = `<@!${referredAuthorId}>, ${insultText.toLowerCase()}`;
-    await sendInsult(chatContent, textChannel);
-    return;
-  }
-
-  // If there is no content or reference
-  await sendInsult(insultText, textChannel);
+  await sendInsult(insultText, interaction);
 };
+
+const command: Command = {
+  data,
+  execute: insult,
+};
+
+export default command;

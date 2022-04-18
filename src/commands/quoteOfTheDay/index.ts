@@ -1,10 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { Command } from '../command';
 import { fetchQuote } from './fetchQuote';
 
-export const getQuoteOfTheDay = async ({ channel, author }: Message) => {
-  if (author.bot) return; // return if bot sends the command
+const data = new SlashCommandBuilder()
+  .setName('qotd')
+  .setDescription('Get Quote of the Day');
+
+// export const getQuoteOfTheDay = async ({ channel, author }: Message) => {
+export const getQuoteOfTheDay = async (interaction: CommandInteraction) => {
+  await interaction.deferReply();
+
   const quote = await fetchQuote();
-  if (!quote) return;
+  if (!quote) {
+    await interaction.editReply('Error getting quotes');
+    return;
+  }
 
   const embed = new MessageEmbed({
     color: '#0072a8',
@@ -18,5 +29,12 @@ export const getQuoteOfTheDay = async ({ channel, author }: Message) => {
     },
   });
 
-  channel.send({ embeds: [embed] });
+  await interaction.editReply({ embeds: [embed] });
 };
+
+const command: Command = {
+  data,
+  execute: getQuoteOfTheDay,
+};
+
+export default command;

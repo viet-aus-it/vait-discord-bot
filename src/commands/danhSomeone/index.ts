@@ -1,28 +1,67 @@
-import { Message } from 'discord.js';
-import { getRandomIntInclusive } from '../../utils';
+import { CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
+import { Command } from '../command';
 
-export const danhSomeone = async (msg: Message, botId: string) => {
-  if (msg.author.id === botId) return; // return if message is from this bot
-  if (!msg.mentions) return;
-  if (!msg.mentions.users?.first()) return; // return if no user is mentioned
+const MAX_MENTIONS = 10;
 
-  const promises = msg.mentions.users.map((user) => {
-    if (user.id === botId) {
-      return msg.channel.send(
-        `${msg.author.username}, I'm your father, you can't hit me`
-      );
-    }
+const getData = () => {
+  const data = new SlashCommandBuilder()
+    .setName('hit')
+    .setDescription('Hit up to 10 people. At least 1 user must be provided.')
+    .addUserOption((option) =>
+      option
+        .setName('target1')
+        .setDescription('target 1 to hit')
+        .setRequired(true)
+    );
 
-    if (msg.author.id === user.id) {
-      return msg.reply(
-        `Stop hitting yourself ${user.username}, hit someone else`
-      );
-    }
-
-    return msg.channel.send(
-      `${user.username} takes ${getRandomIntInclusive(0, 100)} dmg`
+  [...Array(MAX_MENTIONS - 1).keys()].forEach((num) => {
+    data.addUserOption((option) =>
+      option
+        .setName(`target${num + 2}`)
+        .setDescription(`target ${num + 2} to hit`)
     );
   });
 
-  await Promise.all(promises);
+  return data;
 };
+
+export const danhSomeone = async (interaction: CommandInteraction) => {
+  const botId = interaction.client.user!.id;
+  const author = interaction.member!.user;
+
+  const messages = [...Array(MAX_MENTIONS).keys()]
+    .map((num) => {
+      const target = interaction.options.getUser(`target${num + 1}`, num === 0);
+      if (!target) {
+        return undefined;
+      }
+
+      if (target.id === botId) {
+        return `<@${author.id}>, I'm your father, you can't hit me.`;
+      }
+
+      if (target.id === author.id) {
+        return `Stop hitting yourself <@${author.id}>, hit someone else.`;
+      }
+
+      const dmg = getRandomIntInclusive(0, 100);
+      const dmgText = `<@${target.id}> takes ${dmg} dmg.`;
+      const critChance = getRandomBoolean();
+      const critText = critChance ? ' Critical Hit!' : '';
+
+      return `${dmgText}${critText}`;
+    })
+    .filter((msg) => msg)
+    .join('\n');
+
+  await interaction.reply(messages);
+};
+
+const command: Command = {
+  data: getData(),
+  execute: danhSomeone,
+};
+
+export default command;

@@ -1,25 +1,43 @@
-import { Message, TextChannel } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { fetchWeather } from './fetchWeather';
 import { isBlank } from '../../utils';
+import { Command } from '../command';
 
 const DEFAULT_LOCATION = 'Brisbane';
 
-export const weather = async ({ content, channel, author }: Message) => {
-  // Return if sender is bot
-  if (author.bot) return;
+const data = new SlashCommandBuilder()
+  .setName('weather')
+  .setDescription('Get current weather report at location')
+  .addStringOption((option) =>
+    option
+      .setName('location')
+      .setDescription(
+        'The location you want a weather report on. Default: Brisbane'
+      )
+  );
 
-  const firstSpaceChar = content.trimEnd().indexOf(' ');
+export const weather = async (interaction: CommandInteraction) => {
+  await interaction.deferReply();
 
-  let chatContent =
-    firstSpaceChar !== -1 ? content.slice(firstSpaceChar).trimStart() : '';
+  let location = interaction.options.getString('location');
 
-  if (isBlank(chatContent)) {
-    chatContent = DEFAULT_LOCATION;
+  if (!location || isBlank(location)) {
+    location = DEFAULT_LOCATION;
   }
 
-  const weatherData = await fetchWeather(chatContent);
-  if (!weatherData) return;
+  const weatherData = await fetchWeather(location);
+  if (!weatherData) {
+    await interaction.editReply('Error getting weather data for location.');
+    return;
+  }
 
-  const textChannel = channel as TextChannel;
-  textChannel.send(`\`\`\`\n${weatherData}\n\`\`\``);
+  await interaction.editReply(`\`\`\`\n${weatherData}\n\`\`\``);
 };
+
+const command: Command = {
+  data,
+  execute: weather,
+};
+
+export default command;
