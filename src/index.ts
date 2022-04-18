@@ -23,7 +23,7 @@ const main = async () => {
     });
   }
 
-  const configs = getConfigs(client.user);
+  const configs = getConfigs();
   client.on('messageCreate', (msg) => {
     if (msg.type === 'APPLICATION_COMMAND') return;
 
