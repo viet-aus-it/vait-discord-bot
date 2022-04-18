@@ -28,35 +28,10 @@ const processKeywordMatch = (
   });
 };
 
-interface PrefixedCommand {
-  matcher: string;
-  fn: (message: Message) => Promise<any>;
-}
-
-interface PrefixedCommands {
-  prefix: string;
-  commands: Array<PrefixedCommand>;
-}
-
-const processPrefixedMatch = (
-  message: Message,
-  config: PrefixedCommands
-): CommandPromises => {
-  return config.commands.map((conf) => {
-    const prefixCommand = `${config.prefix}${conf.matcher}`;
-    const hasMatchingPrefix = message.content.startsWith(prefixCommand);
-
-    if (!hasMatchingPrefix) return;
-
-    return conf.fn(message);
-  });
-};
-
 const removeUndefinedPromises = (promises: CommandPromises) =>
   promises.filter((p) => p !== undefined);
 
 export interface CommandConfig {
-  prefixedCommands: PrefixedCommands;
   keywordMatchCommands: KeywordMatchCommands;
 }
 
@@ -64,18 +39,12 @@ export const processMessage = async (
   message: Message,
   config: CommandConfig
 ) => {
-  const prefixPromises = processPrefixedMatch(message, config.prefixedCommands);
+  const keywordPromises = processKeywordMatch(
+    message,
+    config.keywordMatchCommands
+  );
 
-  // If message already has a prefix command, don't process these.
-  const hasPrefixPromises = removeUndefinedPromises(prefixPromises).length > 0;
-  const keywordPromises = hasPrefixPromises
-    ? []
-    : processKeywordMatch(message, config.keywordMatchCommands);
-
-  const promises = removeUndefinedPromises([
-    ...prefixPromises,
-    ...keywordPromises,
-  ]);
+  const promises = removeUndefinedPromises([...keywordPromises]);
 
   try {
     await Promise.all(promises);
@@ -83,5 +52,3 @@ export const processMessage = async (
     console.error('ERROR PROCESSING MESSAGE', error);
   }
 };
-
-export * from './parseConfigFile';

@@ -1,10 +1,6 @@
-export * from './8ball';
-export * from './cowsay';
-export * from './danhSomeone';
-export * from './insult';
-export * from './mockSomeone';
-export * from './poll';
-export * from './quoteOfTheDay';
+import { Command } from './command';
+import ask8ball from './8ball';
+
+export const commandList: Command[] = [ask8ball];
+
 export * from './reputation';
-export * from './weather';
-export * from './allCap';

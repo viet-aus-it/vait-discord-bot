@@ -12,9 +12,6 @@ echo "Creating env files for discord bot"
 cp .env.dist .env
 sed -i'' -e "s/TOKEN=YOUR_BOT_TOKEN_HERE/TOKEN=${BOT_TOKEN}/g" .env
 
-echo "Creating config file for discord bot"
-cp config.dist.json config.json
-
 NODE_VER=$(node --version)
 PNPM_VER=$(pnpm --version)
 if [[ $NODE_VER != *"16"* ]] || [[ $PNPM_VER != *"6"* ]]; then
