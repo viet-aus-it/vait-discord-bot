@@ -14,7 +14,7 @@
     - [Build and run the service locally](#build-and-run-the-service-locally)
   - [Useful commands](#useful-commands)
     - [DB migration](#db-migration)
-    - [Running tests](#running-tests)
+    - [Running tests](#running-lints-and-tests)
     - [Testing staging/production build](#testing-stagingproduction-build)
 
 ---
@@ -95,19 +95,20 @@ pnpm start
 ### DB migration
 
 ```bash
-# Run this inside the container
 pnpm prisma:migrate
 pnpm prisma:gen
 ```
 
-### Running tests
+### Running lints and tests
 
 ```bash
-# Run this inside the container
+pnpm format
 pnpm test
 ```
 
-### Testing staging/production build
+---
+
+## Testing staging/production build
 
 - Copy out an env file for the stage you're testing. Use `.env.staging` for staging, and `.env.production` for production.
 - Build the staging/production stage image.
@@ -115,7 +116,7 @@ pnpm test
 - For the `.env.[stage]` file, instead of `localhost`, put in `db` as the `POSTGRES_HOST`.
 
 ```bash
-# Substitute the `[stage]` with either `production` or `staging`
+# Replace the `[stage]` with either `production` or `staging`
 cp .env.dist .env.[stage]
 docker compose -f docker-compose.yml -f docker-compose.[stage].yml build bot
 docker compose -f docker-compose.yml -f docker-compose.[stage].yml up db bot
