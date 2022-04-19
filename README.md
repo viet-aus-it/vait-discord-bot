@@ -38,7 +38,8 @@ For Contributions, please have a look these document
 
 ### Creating your discord app and bot
 
-You will need to manually create a new discord application and a new bot. Please check out[this guide](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot) for more details
+You will need to manually create a new discord application and a new bot. Please check out [Create a Bot Application](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
+and [Adding a bot to your servers](https://discordjs.guide/preparations/adding-your-bot-to-servers.html) for more details.
 
 ### Creating the config files
 
@@ -63,19 +64,22 @@ After creating your discord app and bot, create config file and fill in the valu
 
 ```bash
 cp .env.dist .env
-cp config.dist.json config.json
 ```
 
 - The `.env` file needs to be filled in with these values:
+  - Discord configs:
+    - `TOKEN`: Your bot token created in previous step
+    - `GUILD_ID`: The guild ID that you want to use your bot with to test out commands
+    - `PUBLIC_KEY`: Your bot public key.
+    - `CLIENT_ID`: The client ID of your bot
   - DB Values: We already fill in some defaults for this to work in a local environment.
     - `POSTGRES_HOST`: localhost
     - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: You can fill in whatever
       you like with these or just leave it with default value, since it only affects
       your local dev environment. But please keep it consistent since if you lose it,
       you will lose access to your local database and will need to re-create it.
-  - `TOKEN`: Your bot token created in previous step
-- The `config.json` needs to be filled in with the config needed to run the commands:
-  - `prefix` is needed for the bot to trigger a command.
+
+**Note:** **DO NOT** commit the `.env` file to Git.
 
 ### Build and run the service locally
 
@@ -85,6 +89,7 @@ Run these commands at the root of the project
 docker compose u -d db
 
 pnpm install
+pnpm deploy:command
 pnpm start
 ```
 
@@ -98,6 +103,28 @@ pnpm start
 pnpm prisma:migrate
 pnpm prisma:gen
 ```
+
+### Deploying your commands to a test Discord Server
+
+- Please make sure you have filled out your `GUILD_ID`, `TOKEN` and `CLIENT_ID`
+  in the `.env` file.
+- Add your commands into the `src/command/index.ts` file like so.
+
+```typescript
+import yourCommand from './yourCommand';
+
+export const commandList: Command[] = [yourCommand];
+```
+- Run the `deploy:command` command.
+
+```bash
+pnpm deploy:command
+```
+
+- **IMPORTANT:** You should only deploy your commands **ONCE ONLY** after
+there is a change in command registration (adding a new command, editing
+options of an existing one). Running this too many times in a short period
+of time will cause Discord API to **lock your bot out**.
 
 ### Running lints and tests
 
