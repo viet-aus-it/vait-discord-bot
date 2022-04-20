@@ -1,5 +1,5 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import path from 'path';
+import path from 'node:path';
 import { Configuration } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import NodemonPlugin from 'nodemon-webpack-plugin';
