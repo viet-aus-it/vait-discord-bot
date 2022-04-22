@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import 'dotenv-expand/config';
 import { deployCommands } from './commands/command';
 import { commandList } from './commands';
 
