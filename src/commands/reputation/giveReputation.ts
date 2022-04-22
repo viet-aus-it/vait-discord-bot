@@ -1,7 +1,18 @@
-import { Message } from 'discord.js';
+import { CommandInteraction, Message } from 'discord.js';
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
 import { getOrCreateUser, updateRep } from './_helpers';
+import { Subcommand } from '../command';
 
-export const giveReputation = async (msg: Message) => {
+const plusRep = async (fromUserId: string, discordUserId: string) => {
+  const user = await getOrCreateUser(discordUserId);
+  return updateRep({
+    fromUserId,
+    toUserId: user.id,
+    adjustment: { reputation: { increment: 1 } },
+  });
+};
+
+export const thankUserInMessage = async (msg: Message) => {
   const { author, channel, mentions } = msg;
   if (author.bot) return; // return if author is a Discord bot
 
@@ -15,17 +26,43 @@ export const giveReputation = async (msg: Message) => {
       return msg.reply('You cannot give rep to yourself');
     }
 
-    const user = await getOrCreateUser(discordUser.id);
-    const updatedUser = await updateRep({
-      fromUserId: author.id,
-      toUserId: user.id,
-      adjustment: { reputation: { increment: 1 } },
-    });
+    const updatedUser = await plusRep(author.id, discordUser.id);
 
     return channel.send(
-      `${author.username} gave ${discordUser.username} 1 rep. \n${discordUser.username}'s current rep: ${updatedUser.reputation}`
+      `<@${author.id}> gave <@${discordUser.id}> 1 rep. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
     );
   });
 
   return Promise.allSettled(promises);
 };
+
+const data = new SlashCommandSubcommandBuilder()
+  .setName('give')
+  .setDescription('Give a rep to another user')
+  .addUserOption((option) =>
+    option
+      .setName('user')
+      .setDescription('A user to give rep to')
+      .setRequired(true)
+  );
+
+export const giveRepSlashCommand = async (interaction: CommandInteraction) => {
+  const author = interaction.member!.user;
+  const discordUser = interaction.options.getUser('user', true);
+  const isAuthor = author.id === discordUser.id;
+  if (isAuthor) {
+    return interaction.reply('You cannot give rep to yourself');
+  }
+
+  const updatedUser = await plusRep(author.id, discordUser.id);
+  await interaction.reply(
+    `<@${author.id}> gave <@${discordUser.id}> 1 rep. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
+  );
+};
+
+const subcommand: Subcommand = {
+  data,
+  execute: giveRepSlashCommand,
+};
+
+export default subcommand;

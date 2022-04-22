@@ -1,16 +1,28 @@
 import {
   SlashCommandBuilder,
+  SlashCommandSubcommandBuilder,
   SlashCommandSubcommandsOnlyBuilder,
 } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 
+type CommandHandler = (interaction: CommandInteraction) => Promise<void>;
+
 export interface Command {
   data:
     | Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>
     | SlashCommandSubcommandsOnlyBuilder;
-  execute: (interaction: CommandInteraction) => Promise<void>;
+  execute: CommandHandler;
+}
+
+export interface Subcommand {
+  data:
+    | SlashCommandSubcommandBuilder
+    | ((
+        subcommandGroup: SlashCommandSubcommandBuilder
+      ) => SlashCommandSubcommandBuilder);
+  execute: CommandHandler;
 }
 
 interface ConfigType {

@@ -1,37 +1,48 @@
-import { GuildMember, Message } from 'discord.js';
+import { CommandInteraction, GuildMember } from 'discord.js';
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
 import { isAdmin, isModerator } from '../../utils';
 import { getOrCreateUser, updateRep } from './_helpers';
+import { Subcommand } from '../command';
 
-export const takeReputation = async (msg: Message) => {
-  const { author, channel, mentions } = msg;
-  if (author.bot) return; // return if author is a Discord bot
+const data = new SlashCommandSubcommandBuilder()
+  .setName('take')
+  .setDescription('Take a rep from a user')
+  .addUserOption((option) =>
+    option
+      .setName('user')
+      .setDescription('A user to take rep from')
+      .setRequired(true)
+  );
 
-  const guildMember = msg.member as GuildMember;
+export const takeReputation = async (interaction: CommandInteraction) => {
+  const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
-    return channel.send(
+    return interaction.reply(
       "You don't have enough permission to run this command."
     );
   }
 
-  const hasExactlyOneUser = mentions.users.size === 1;
-  if (!hasExactlyOneUser) return;
-
-  const discordUser = mentions.users.first();
-  if (!discordUser) return;
-  if (discordUser.bot) return; // return if mention bot
-
+  const author = interaction.member!.user;
+  const discordUser = interaction.options.getUser('user', true);
   const user = await getOrCreateUser(discordUser.id);
   if (user.reputation === 0) {
-    return channel.send(`${discordUser.username} currently has 0 rep`);
+    return interaction.reply(`<@${discordUser.id}> currently has 0 rep`);
   }
 
   const updatedUser = await updateRep({
-    fromUserId: discordUser.id,
+    fromUserId: author.id,
     toUserId: user.id,
     adjustment: { reputation: { decrement: 1 } },
   });
 
-  channel.send(
-    `${author.username} took from ${discordUser.username} 1 rep. \n${discordUser.username}'s current rep: ${updatedUser.reputation}`
+  return interaction.reply(
+    `<@${author.id}> took from <@${discordUser.id}> 1 rep. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
   );
 };
+
+const command: Subcommand = {
+  data,
+  execute: takeReputation,
+};
+
+export default command;

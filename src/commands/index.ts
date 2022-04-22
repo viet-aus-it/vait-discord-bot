@@ -7,6 +7,7 @@ import insultCommand from './insult';
 import mockCommand from './mockSomeone';
 import poll from './poll';
 import quoteOfTheDay from './quoteOfTheDay';
+import reputation from './reputation';
 import weatherCommand from './weather';
 
 export const commandList: Command[] = [
@@ -18,6 +19,7 @@ export const commandList: Command[] = [
   mockCommand,
   poll,
   quoteOfTheDay,
+  reputation,
   weatherCommand,
 ];
 

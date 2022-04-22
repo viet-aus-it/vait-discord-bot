@@ -1,4 +1,35 @@
-export * from './checkReputation';
-export * from './giveReputation';
-export * from './takeReputation';
-export * from './setReputation';
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { CommandInteraction } from 'discord.js';
+import { Command } from '../command';
+import checkRep from './checkReputation';
+import giveRep from './giveReputation';
+import takeRep from './takeReputation';
+import setRep from './setReputation';
+
+const data = new SlashCommandBuilder()
+  .setName('rep')
+  .setDescription('Reputation module')
+  .addSubcommand(checkRep.data)
+  .addSubcommand(giveRep.data)
+  .addSubcommand(takeRep.data)
+  .addSubcommand(setRep.data);
+
+const subcommands = [checkRep, giveRep, takeRep, setRep];
+
+const execute = async (interaction: CommandInteraction) => {
+  const requestedSubcommand = interaction.options.getSubcommand(true);
+
+  const subcommand = subcommands.find(
+    (cmd) => cmd.data.name === requestedSubcommand
+  );
+  return subcommand?.execute(interaction);
+};
+
+const command: Command = {
+  data,
+  execute,
+};
+
+export default command;
+
+export { thankUserInMessage } from './giveReputation';

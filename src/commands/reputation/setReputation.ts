@@ -1,45 +1,49 @@
-import { GuildMember, Message } from 'discord.js';
+import { CommandInteraction, GuildMember } from 'discord.js';
+import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
 import { isAdmin, isModerator } from '../../utils';
 import { getOrCreateUser, updateRep } from './_helpers';
+import { Subcommand } from '../command';
 
-export const setReputation = async (msg: Message) => {
-  const { author, channel, mentions } = msg;
-  if (author.bot) return; // return if author is a Discord bot
+const data = new SlashCommandSubcommandBuilder()
+  .setName('set')
+  .setDescription('Set a rep number for a user')
+  .addUserOption((option) =>
+    option.setName('user').setDescription('A user to set rep').setRequired(true)
+  )
+  .addIntegerOption((option) =>
+    option
+      .setName('rep')
+      .setDescription('The rep number to set for the user')
+      .setRequired(true)
+      .setMinValue(0)
+  );
 
-  const guildMember = msg.member as GuildMember;
+export const setReputation = async (interaction: CommandInteraction) => {
+  const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
-    return channel.send(
+    return interaction.reply(
       "You don't have enough permission to run this command."
     );
   }
 
-  const hasExactlyOneUser = mentions.users.size === 1;
-  if (!hasExactlyOneUser) return;
-
-  const discordUser = mentions.users.first();
-  if (!discordUser) return; // return if user not found
-  if (discordUser.bot) return; // return if mention bot
-
-  const splittedMessage = msg.content.split(/\s+/);
-  if (splittedMessage.length !== 3) {
-    return channel.send(
-      'Wrong format. The correct format is `setRep @username repNumber`'
-    );
-  }
-
-  const repNumber = Number(splittedMessage[2]);
-  if (Number.isNaN(repNumber) || repNumber < 0) {
-    return channel.send("Invalid, cannot set the user's rep to this value");
-  }
-
+  const repNumber = interaction.options.getInteger('rep', true);
+  const author = interaction.member!.user;
+  const discordUser = interaction.options.getUser('user', true);
   const user = await getOrCreateUser(discordUser.id);
   const updatedUser = await updateRep({
-    fromUserId: discordUser.id,
+    fromUserId: author.id,
     toUserId: user.id,
     adjustment: { reputation: { set: repNumber } },
   });
 
-  channel.send(
-    `${author.username} just set ${discordUser.username}'s rep to ${repNumber}. \n${discordUser.username}'s current rep: ${updatedUser.reputation}`
+  return interaction.reply(
+    `<@${author.id}> just set <@${discordUser.id}>'s rep to ${repNumber}. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
   );
 };
+
+const command: Subcommand = {
+  data,
+  execute: setReputation,
+};
+
+export default command;
