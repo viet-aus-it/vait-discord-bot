@@ -3,6 +3,7 @@ import { getOrCreateUser } from './_helpers';
 
 jest.mock('./_helpers');
 const mockGetOrCreateUser = jest.mocked(getOrCreateUser);
+const replyMock = jest.fn();
 
 describe('checkReputation', () => {
   it('should send reply if message is "-rep"', async () => {
@@ -10,14 +11,16 @@ describe('checkReputation', () => {
       id: '1',
       reputation: 0,
     });
-    const replyMock = jest.fn(() => {});
-    const messageMock: any = {
-      content: '-rep',
-      author: { id: '1' },
+    const mockInteraction: any = {
       reply: replyMock,
+      member: {
+        user: {
+          id: '1',
+        },
+      },
     };
 
-    await checkReputation(messageMock);
+    await checkReputation(mockInteraction);
 
     expect(mockGetOrCreateUser).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledTimes(1);

@@ -1,5 +1,5 @@
 import { Collection, User } from 'discord.js';
-import { giveReputation } from './giveReputation';
+import { giveRepSlashCommand, thankUserInMessage } from './giveReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 jest.mock('./_helpers');
@@ -9,22 +9,22 @@ const mockUpdateRep = jest.mocked(updateRep);
 const replyMock = jest.fn(() => {});
 const sendMock = jest.fn(() => {});
 
-const getMockMsg: any = (mockUsers: Collection<string, User>) => ({
-  content: 'thank',
-  reply: replyMock,
-  mentions: {
-    users: mockUsers,
-  },
-  author: {
-    id: '0',
-    bot: false,
-  },
-  channel: {
-    send: sendMock,
-  },
-});
+describe('Thank user in a message', () => {
+  const getMockMsg = (mockUsers: Collection<string, User>): any => ({
+    content: 'thank',
+    reply: replyMock,
+    mentions: {
+      users: mockUsers,
+    },
+    author: {
+      id: '0',
+      bot: false,
+    },
+    channel: {
+      send: sendMock,
+    },
+  });
 
-describe('giveRep', () => {
   it('should do nothing if bot is saying the keywords', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1' } as User);
@@ -37,7 +37,7 @@ describe('giveRep', () => {
       },
     };
 
-    await giveReputation(botMsg);
+    await thankUserInMessage(botMsg);
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
@@ -47,7 +47,7 @@ describe('giveRep', () => {
     const mockUsers = new Collection<string, User>();
     const mockMsg = getMockMsg(mockUsers);
 
-    await giveReputation(mockMsg);
+    await thankUserInMessage(mockMsg);
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
@@ -58,7 +58,7 @@ describe('giveRep', () => {
     mockUsers.set('0', { id: '1', bot: true } as User);
     const mockMsg = getMockMsg(mockUsers);
 
-    await giveReputation(mockMsg);
+    await thankUserInMessage(mockMsg);
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(replyMock).not.toHaveBeenCalled();
@@ -69,7 +69,7 @@ describe('giveRep', () => {
     mockUsers.set('0', { id: '0' } as User);
     const mockMsg = getMockMsg(mockUsers);
 
-    await giveReputation(mockMsg);
+    await thankUserInMessage(mockMsg);
 
     expect(replyMock).toHaveBeenCalled();
   });
@@ -81,7 +81,7 @@ describe('giveRep', () => {
     mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
 
     const mockMsg = getMockMsg(mockUsers);
-    await giveReputation(mockMsg);
+    await thankUserInMessage(mockMsg);
 
     expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
     expect(mockUpdateRep).toHaveBeenCalledTimes(1);
@@ -103,8 +103,44 @@ describe('giveRep', () => {
       .mockResolvedValueOnce({ id: '3', reputation: 0 });
     const mockMsg = getMockMsg(mockUsers);
 
-    await giveReputation(mockMsg);
+    await thankUserInMessage(mockMsg);
 
     expect(sendMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('Give rep slash command', () => {
+  const getMockInteraction = (mockUser: User): any => ({
+    reply: replyMock,
+    member: {
+      user: {
+        id: '0',
+      },
+    },
+    options: {
+      getUser: jest.fn(() => mockUser),
+    },
+  });
+
+  it('should send reject message if user mention themself', async () => {
+    const mockInteraction = getMockInteraction({ id: '0' } as User);
+
+    await giveRepSlashCommand(mockInteraction);
+
+    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(replyMock).toHaveBeenCalledWith('You cannot give rep to yourself');
+  });
+
+  it('should call reply and add rep if user mention another user', async () => {
+    const mockUser = { id: '1' } as User;
+    mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 0 });
+    mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
+    const mockInteraction = getMockInteraction(mockUser);
+
+    await giveRepSlashCommand(mockInteraction);
+
+    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
+    expect(mockUpdateRep).toHaveBeenCalledTimes(1);
+    expect(replyMock).toHaveBeenCalledTimes(1);
   });
 });
