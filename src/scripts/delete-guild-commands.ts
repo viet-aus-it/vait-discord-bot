@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import 'dotenv-expand/config';
-import { deployCommands } from './commands/command';
-import { commandList } from './commands';
+import { deployGuildCommands } from '../commands/command';
 
 const deploy = async () => {
   const token = process.env.TOKEN ?? '';
@@ -9,9 +8,10 @@ const deploy = async () => {
   const guildId = process.env.GUILD_ID ?? '';
 
   try {
-    await deployCommands(commandList, { token, clientId, guildId });
+    await deployGuildCommands([], { token, clientId, guildId });
+    process.exit();
   } catch (error) {
-    console.error('Cannot deploy commands', error);
+    console.error('Cannot delete commands', error);
   }
 };
 
