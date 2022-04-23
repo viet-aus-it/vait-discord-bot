@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import 'dotenv-expand/config';
 import { processMessage } from './utils';
 import { getDiscordClient } from './clients';
 import { getConfigs } from './config';
