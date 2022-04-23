@@ -20,6 +20,7 @@ specifiers:
   cowsay: ^1.5.0
   discord.js: ^13.6.0
   dotenv: ^16.0.0
+  dotenv-expand: ^8.0.3
   eslint: ^8.12.0
   eslint-config-airbnb-base: ^15.0.0
   eslint-config-airbnb-typescript: ^17.0.0
@@ -55,6 +56,7 @@ dependencies:
   cowsay: 1.5.0
   discord.js: 13.6.0
   dotenv: 16.0.0
+  dotenv-expand: 8.0.3
   node-fetch: 2.6.7
   ramda: 0.28.0
   zod: 3.14.4
@@ -2359,6 +2361,11 @@ packages:
     dependencies:
       is-obj: 2.0.0
     dev: true
+
+  /dotenv-expand/8.0.3:
+    resolution: {integrity: sha512-SErOMvge0ZUyWd5B0NXMQlDkN+8r+HhVUsxgOO7IoPDOdDRD2JjExpN6y3KnFR66jsJMwSn1pqIivhU5rcJiNg==}
+    engines: {node: '>=12'}
+    dev: false
 
   /dotenv/16.0.0:
     resolution: {integrity: sha512-qD9WU0MPM4SWLPJy/r2Be+2WgQj8plChsyrCNQzW/0WjvcJQiKQJ9mH3ZgB3fxbUUxgc/11ZJ0Fi5KiimWGz2Q==}
