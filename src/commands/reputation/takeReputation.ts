@@ -1,13 +1,13 @@
-import { Message } from 'discord.js';
-import { isMessageSentFromAdmin } from '../../utils';
+import { GuildMember, Message } from 'discord.js';
+import { isAdmin, isModerator } from '../../utils';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 export const takeReputation = async (msg: Message) => {
   const { author, channel, mentions } = msg;
   if (author.bot) return; // return if author is a Discord bot
 
-  const isAdmin = isMessageSentFromAdmin(msg);
-  if (!isAdmin) {
+  const guildMember = msg.member as GuildMember;
+  if (!isAdmin(guildMember) && !isModerator(guildMember)) {
     return channel.send(
       "You don't have enough permission to run this command."
     );
