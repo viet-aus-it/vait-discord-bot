@@ -28,9 +28,6 @@ const processKeywordMatch = (
   });
 };
 
-const removeUndefinedPromises = (promises: CommandPromises) =>
-  promises.filter((p) => p !== undefined);
-
 export interface CommandConfig {
   keywordMatchCommands: KeywordMatchCommands;
 }
@@ -44,10 +41,8 @@ export const processMessage = async (
     config.keywordMatchCommands
   );
 
-  const promises = removeUndefinedPromises([...keywordPromises]);
-
   try {
-    await Promise.all(promises);
+    await Promise.all(keywordPromises);
   } catch (error) {
     console.error('ERROR PROCESSING MESSAGE', error);
   }
