@@ -1,14 +1,14 @@
 import { Collection, User } from 'discord.js';
 import { setReputation } from './setReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
-import { isMessageSentFromAdmin } from '../../utils';
+import { isAdmin } from '../../utils';
 
 jest.mock('./_helpers');
 const mockCreateUpdateUser = jest.mocked(getOrCreateUser);
 const mockUpdateRep = jest.mocked(updateRep);
 
-jest.mock('../../utils/isMessageSentFromAdmin');
-const mockIsMessageSentFromAdmin = jest.mocked(isMessageSentFromAdmin);
+jest.mock('../../utils/isSentFromAdmin');
+const mockIsMessageSentFromAdmin = jest.mocked(isAdmin);
 
 const sendMock = jest.fn(() => {});
 
