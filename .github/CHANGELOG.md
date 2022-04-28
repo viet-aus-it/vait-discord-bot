@@ -99,6 +99,33 @@ release because Discord API has changed by the time this was released.
 
 - `-allcap` function: `M A K E  Y O U R  T E X T  L O O K S  L I K E  T H I S`. (See [#50](https://github.com/viet-aus-it/vait-discord-bot/issues/50) and [#93](https://github.com/viet-aus-it/vait-discord-bot/pull/93))
 
+## 2.0.0
+
+### Changed
+
+- All commands are now changed to use slash commands instead of reading chat content. (See [#92](https://github.com/viet-aus-it/vait-discord-bot/issues/92) [#97](https://github.com/viet-aus-it/vait-discord-bot/pull/97))
+- Available commands:
+  - `/8ball [question]`
+  - `/allcap [sentence]`
+  - `/cowsay [sentence]`
+  - `/hit [@target1] [@target2] ... [@target10]` (`target2 - 10` are optional)
+  - `/insult [name/@target]`
+  - `/mock [sentence]`
+  - `/poll [question] [opt1] [opt2] ... [opt10]` (`opt3 - 10` are optional)
+  - `/qotd`
+  - `/rep` now has to be used with a subcommand.
+    - `/rep check`
+    - `/rep give`
+    - `/rep take`
+    - `/rep set`
+  - `/weather`
+- The `thanks` keyword can still be used with multiple option, but is now hard limited to 10 max. See below.
+- All commands that had dynamic multiple mentions is now hard limited, because Discord slash commands API doesn't allow
+  dynamic parameter registration. Affected commands:
+  - `/give rep` & `thanks` keyword is now hard limited to give rep to 10 people at a time.
+  - `/poll` now has a question parameter, and a min of 2 options, and max of 9 options.
+
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
