@@ -125,6 +125,10 @@ release because Discord API has changed by the time this was released.
   - `/give rep` & `thanks` keyword is now hard limited to give rep to 10 people at a time.
   - `/poll` now has a question parameter, and a min of 2 options, and max of 9 options.
 
+### Security
+
+- Update Node version in Docker and in `.nvmrc` to use version `16.15`.
+
 
 ## \[Unreleased\]
 
