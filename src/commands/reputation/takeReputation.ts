@@ -6,7 +6,7 @@ import { Subcommand } from '../command';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('take')
-  .setDescription('Take a rep from a user')
+  .setDescription('ADMIN COMMAND. Take a rep from a user')
   .addUserOption((option) =>
     option
       .setName('user')
