@@ -4,6 +4,7 @@
 
 - [VAIT Discord Bot Project](#vait-discord-bot-project)
   - [Table of contents](#table-of-contents)
+  - [Forewords](#forewords)
   - [Requirements](#requirements)
   - [Contributions](#contributions)
   - [Onboarding](#onboarding)
@@ -16,6 +17,12 @@
     - [DB migration](#db-migration)
     - [Running tests](#running-lints-and-tests)
     - [Testing staging/production build](#testing-stagingproduction-build)
+
+
+## Forewords
+
+This documentation below is for **contributing** to the bot. For bot commands and usage,
+please visit [our Wiki page](https://github.com/viet-aus-it/vait-discord-bot/wiki).
 
 ---
 
