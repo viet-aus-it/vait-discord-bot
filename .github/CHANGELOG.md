@@ -129,6 +129,12 @@ release because Discord API has changed by the time this was released.
 
 - Update Node version in Docker and in `.nvmrc` to use version `16.15`.
 
+## 2.0.1
+
+### Changed
+
+- Add a link in our README to our usage and supported commands in our wiki page.
+- Change the `/rep set` and `/rep take` command description to show it's an Admin command explicitly.
 
 ## \[Unreleased\]
 
