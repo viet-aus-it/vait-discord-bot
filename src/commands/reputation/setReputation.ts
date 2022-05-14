@@ -6,7 +6,7 @@ import { Subcommand } from '../command';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('set')
-  .setDescription('Set a rep number for a user')
+  .setDescription('ADMIN COMMAND. Set a rep number for a user')
   .addUserOption((option) =>
     option.setName('user').setDescription('A user to set rep').setRequired(true)
   )
