@@ -93,7 +93,7 @@ cp .env.dist .env
 Run these commands at the root of the project
 
 ```bash
-docker compose u -d db
+docker compose up -d db
 
 pnpm install
 pnpm deploy:command
@@ -132,6 +132,8 @@ pnpm deploy:command
 there is a change in command registration (adding a new command, editing
 options of an existing one). Running this too many times in a short period
 of time will cause Discord API to **lock your bot out**.
+
+- **NOTE:** When deploy slash commands, if you got `Error: Cannot deploy commands`, it's normally because of your bot doesn't have permission to do so. You need to authorize your bot with scope: `bot` and `applications.commands` using `https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scope=bot%20applications.commands`
 
 ### Running lints and tests
 
