@@ -3,17 +3,21 @@ import {
   SlashCommandSubcommandBuilder,
   SlashCommandSubcommandsOnlyBuilder,
 } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, CommandInteraction } from 'discord.js';
 import { REST, RequestData, RouteLike } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 
-type CommandHandler = (interaction: CommandInteraction) => Promise<void>;
+export type CommandHandler = (interaction: CommandInteraction) => Promise<void>;
+export type AutocompleteHandler = (
+  autocomplete: AutocompleteInteraction
+) => Promise<void>;
 
 export interface Command {
   data:
     | Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>
     | SlashCommandSubcommandsOnlyBuilder;
   execute: CommandHandler;
+  autocomplete?: AutocompleteHandler;
 }
 
 export interface Subcommand {

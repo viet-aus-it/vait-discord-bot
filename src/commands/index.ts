@@ -9,6 +9,7 @@ import poll from './poll';
 import quoteOfTheDay from './quoteOfTheDay';
 import reputation from './reputation';
 import weatherCommand from './weather';
+import referral from './referral';
 
 export const commandList: Command[] = [
   allCap,
@@ -21,6 +22,7 @@ export const commandList: Command[] = [
   quoteOfTheDay,
   reputation,
   weatherCommand,
+  referral,
 ];
 
 export * from './reputation';
