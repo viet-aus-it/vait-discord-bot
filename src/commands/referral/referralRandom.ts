@@ -68,8 +68,9 @@ export const execute: CommandHandler = async (interaction) => {
 
   const referral =
     filteredReferrals[getRandomIntInclusive(0, filteredReferrals.length - 1)];
-  if (!referral)
+  if (!referral) {
     return interaction.reply(`There is no code for ${service} service`);
+  }
 
   await interaction.reply(`Service ${service}: ${referral.code}`);
 };
