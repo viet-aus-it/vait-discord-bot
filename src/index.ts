@@ -31,12 +31,18 @@ const main = async () => {
 
   client.on('interactionCreate', async (interaction) => {
     const isCommand = interaction.isCommand();
+    if (isCommand) {
+      const { commandName } = interaction;
+      const command = commandList.find((cmd) => cmd.data.name === commandName);
+      return command?.execute(interaction);
+    }
 
-    if (!isCommand) return;
-
-    const { commandName } = interaction;
-    const command = commandList.find((cmd) => cmd.data.name === commandName);
-    return command?.execute(interaction);
+    const isAutocomplete = interaction.isAutocomplete();
+    if (isAutocomplete) {
+      const { commandName } = interaction;
+      const command = commandList.find((cmd) => cmd.data.name === commandName);
+      return command?.autocomplete?.(interaction);
+    }
   });
 };
 
