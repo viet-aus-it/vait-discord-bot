@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
 import { server } from '../../mocks/server';
 import { fetchQuote, ZEN_QUOTES_URL } from './fetchQuote';
