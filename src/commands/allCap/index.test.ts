@@ -1,4 +1,4 @@
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { allCapExpandText } from '.';
 
 const replyMock = jest.fn();
