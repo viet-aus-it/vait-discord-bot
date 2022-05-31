@@ -8,10 +8,11 @@ const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
 const outputPath = path.resolve(__dirname, 'build');
 
+const PRISMA_VERSION = '3.14.0';
 const prismaClientPath = path.resolve(
   __dirname,
   'node_modules',
-  '.pnpm/@prisma+client@3.12.0_prisma@3.12.0/node_modules',
+  `.pnpm/@prisma+client@${PRISMA_VERSION}_prisma@${PRISMA_VERSION}/node_modules`,
   '.prisma',
   'client'
 );
