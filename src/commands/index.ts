@@ -9,6 +9,7 @@ import poll from './poll';
 import quoteOfTheDay from './quoteOfTheDay';
 import reputation from './reputation';
 import weatherCommand from './weather';
+import getdisclaimer from './disclaimer';
 import referral from './referral';
 
 export const commandList: Command[] = [
@@ -22,6 +23,7 @@ export const commandList: Command[] = [
   quoteOfTheDay,
   reputation,
   weatherCommand,
+  getdisclaimer,
   referral,
 ];
 
