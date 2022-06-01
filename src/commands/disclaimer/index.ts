@@ -10,9 +10,9 @@ const data = new SlashCommandBuilder()
   );
 
 const DISCLAIMER_VI =
-  'Trong trường hợp nhóm này bị điều tra bởi các cơ quan trực thuộc bộ công an (hoặc các tổ chức chính trị tương tự), tôi khẳng định mình không liên quan tới nhóm hoặc những cá nhân khác trong nhóm này. Tôi không rõ tại sao mình lại có mặt ở đây vào thời điểm này, có lẽ tài khoản của tôi đã được thêm bởi một bên thứ ba. Tôi cũng xin khẳng định rằng mình không hề giúp sức cho những hành động của các thành viên trong nhóm này.' as const;
+  'Trong trường hợp nhóm này bị điều tra bởi các cơ quan trực thuộc bộ công an (hoặc các tổ chức chính trị tương tự), tôi khẳng định mình không liên quan tới nhóm hoặc những cá nhân khác trong nhóm này. Tôi không rõ tại sao mình lại có mặt ở đây, có lẽ tài khoản của tôi đã được thêm bởi một bên thứ ba. Tôi cũng xin khẳng định rằng mình không hề giúp sức cho những hành động của các thành viên trong nhóm này.' as const;
 const DISCLAIMER_EN =
-  'In case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it, I do not know how I am here, probably added by a third party, I do not support any actions by the member of this group.' as const;
+  'In case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it. I do not know how I am here, probably added by a third party, and I do not support any actions by the members of this group.' as const;
 
 export const getDisclaimer = async (interaction: CommandInteraction) => {
   const lang = interaction.options.getString('lang');
