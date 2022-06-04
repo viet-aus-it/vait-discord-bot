@@ -2,9 +2,9 @@ import { ReferralCode } from '@prisma/client';
 import { getPrismaClient } from '../../clients';
 import { parseDate } from './parseDate';
 
-export const cleanupExipredCode = async (
+export const cleanupExipredCode = (
   referrals: ReferralCode[]
-): Promise<ReferralCode[]> => {
+): ReferralCode[] => {
   const prisma = getPrismaClient();
 
   const [expiredIds, filteredReferrals] = referrals.reduce<
@@ -26,7 +26,8 @@ export const cleanupExipredCode = async (
   // SOMETIMES try to clean expired referral codes
   try {
     if (expiredIds.length > 10) {
-      await prisma.referralCode.deleteMany({
+      // dont await so dont wait for clean up
+      prisma.referralCode.deleteMany({
         where: { id: { in: expiredIds } },
       });
     }

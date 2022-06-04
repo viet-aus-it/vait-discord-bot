@@ -39,7 +39,7 @@ export const execute: CommandHandler = async (interaction) => {
     },
   });
 
-  const filteredReferrals = await cleanupExipredCode(referrals);
+  const filteredReferrals = cleanupExipredCode(referrals);
 
   const referral =
     filteredReferrals[getRandomIntInclusive(0, filteredReferrals.length - 1)];
