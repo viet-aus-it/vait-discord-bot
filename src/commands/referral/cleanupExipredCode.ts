@@ -1,0 +1,38 @@
+import { ReferralCode } from '@prisma/client';
+import { getPrismaClient } from '../../clients';
+import { parseDate } from './parseDate';
+
+export const cleanupExipredCode = async (
+  referrals: ReferralCode[]
+): Promise<ReferralCode[]> => {
+  const prisma = getPrismaClient();
+
+  const [expiredIds, filteredReferrals] = referrals.reduce<
+    [string[], ReferralCode[]]
+  >(
+    (total, referral) => {
+      const [parseDateCase] = parseDate(referral.expiry_date.toString());
+      if (parseDateCase !== 'SUCCESS') {
+        total[0].push(referral.id);
+      } else {
+        total[1].push(referral);
+      }
+
+      return total;
+    },
+    [[], []]
+  );
+
+  // SOMETIMES try to clean expired referral codes
+  try {
+    if (expiredIds.length > 10) {
+      await prisma.referralCode.deleteMany({
+        where: { id: { in: expiredIds } },
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return filteredReferrals;
+};

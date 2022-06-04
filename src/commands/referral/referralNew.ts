@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
 import { getPrismaClient } from '../../clients';
 import { AutocompleteHandler, CommandHandler } from '../command';
 import { parseDate } from './parseDate';
-import { searchServices } from './services';
+import { searchServices, services } from './services';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('new')
@@ -38,8 +38,16 @@ export const autocomplete: AutocompleteHandler = async (interaction) => {
 };
 
 export const execute: CommandHandler = async (interaction) => {
-  const service = interaction.options.getString('service', true);
   const code = interaction.options.getString('link_or_code', true);
+
+  const service = interaction.options.getString('service', true).toLowerCase();
+  const hasService = services.find(
+    (option) => option.toLowerCase() === service
+  );
+  if (!hasService)
+    return interaction.reply(
+      `No service named ${service}, ask the admin to add it`
+    );
 
   const expiredDate = interaction.options.getString('expiry_date', true);
   const [parseDateCase, parsedExpiryDate] = parseDate(expiredDate);
