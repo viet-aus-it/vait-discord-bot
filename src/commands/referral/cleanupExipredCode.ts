@@ -24,15 +24,15 @@ export const cleanupExipredCode = (
   );
 
   // SOMETIMES try to clean expired referral codes
-  try {
-    if (expiredIds.length > 10) {
+  if (expiredIds.length > 10) {
+    try {
       // dont await so dont wait for clean up
       prisma.referralCode.deleteMany({
         where: { id: { in: expiredIds } },
       });
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
   }
 
   return filteredReferrals;
