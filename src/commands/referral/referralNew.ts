@@ -44,10 +44,11 @@ export const execute: CommandHandler = async (interaction) => {
   const hasService = services.find(
     (option) => option.toLowerCase() === service
   );
-  if (!hasService)
+  if (!hasService) {
     return interaction.reply(
       `No service named ${service}, ask the admin to add it`
     );
+  }
 
   const expiredDate = interaction.options.getString('expiry_date', true);
   const [parseDateCase, parsedExpiryDate] = parseDate(expiredDate);
