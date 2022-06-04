@@ -6,71 +6,80 @@ const mockGetPrismaClient = jest.mocked(getPrismaClient);
 
 describe('autocomplete', () => {
   it('should return nothing if the search term shorter than 4', () => {
-    autocomplete({
-      options: {
-        getString: (name: string, required: true) => {
-          expect(name).toBe('service');
-          expect(required).toBe(true);
-          return 'so';
-        },
+    // mock input options
+    const options = {
+      getString: (name: string, required: true) => {
+        expect(name).toBe('service');
+        expect(required).toBe(true);
+        return 'so';
       },
-      respond: (options: any[]) => {
-        expect(options).toHaveLength(0);
-      },
-    } as any);
+    };
+
+    // expect response
+    const respond = (opts: any[]) => {
+      expect(opts).toHaveLength(0);
+    };
+
+    autocomplete({ options, respond } as any);
   });
 
   it('should return nothing if no options found', () => {
-    autocomplete({
-      options: {
-        getString: (name: string, required: true) => {
-          expect(name).toBe('service');
-          expect(required).toBe(true);
-          return 'some random search that not existed';
-        },
+    // mock input options
+    const options = {
+      getString: (name: string, required: true) => {
+        expect(name).toBe('service');
+        expect(required).toBe(true);
+        return 'some random search that not existed';
       },
-      respond: (options: any[]) => {
-        expect(options).toHaveLength(0);
-      },
-    } as any);
+    };
+
+    // expect response
+    const respond = (opts: any[]) => {
+      expect(opts).toHaveLength(0);
+    };
+
+    autocomplete({ options, respond } as any);
   });
 
   it('should return some options if search term longer than 4 and found', () => {
-    autocomplete({
-      options: {
-        getString: (name: string, required: true) => {
-          expect(name).toBe('service');
-          expect(required).toBe(true);
-          return 'heal';
-        },
+    // mock input options
+    const options = {
+      getString: (name: string, required: true) => {
+        expect(name).toBe('service');
+        expect(required).toBe(true);
+        return 'heal';
       },
-      respond: (options: any[]) => {
-        expect(options).toMatchInlineSnapshot(`
-  Array [
-    Object {
-      "name": "ahm health insurance",
-      "value": "ahm health insurance",
-    },
-    Object {
-      "name": "doctors' health fund",
-      "value": "doctors' health fund",
-    },
-    Object {
-      "name": "phoenix health fund",
-      "value": "phoenix health fund",
-    },
-    Object {
-      "name": "qantas insurance - health insurance",
-      "value": "qantas insurance - health insurance",
-    },
-    Object {
-      "name": "westfund health insurance",
-      "value": "westfund health insurance",
-    },
-  ]
-  `);
-      },
-    } as any);
+    };
+
+    // expect response
+    const respond = (opts: any[]) => {
+      expect(opts).toMatchInlineSnapshot(`
+        Array [
+          Object {
+            "name": "ahm health insurance",
+            "value": "ahm health insurance",
+          },
+          Object {
+            "name": "doctors' health fund",
+            "value": "doctors' health fund",
+          },
+          Object {
+            "name": "phoenix health fund",
+            "value": "phoenix health fund",
+          },
+          Object {
+            "name": "qantas insurance - health insurance",
+            "value": "qantas insurance - health insurance",
+          },
+          Object {
+            "name": "westfund health insurance",
+            "value": "westfund health insurance",
+          },
+        ]
+      `);
+    };
+
+    autocomplete({ options, respond } as any);
   });
 });
 
@@ -89,20 +98,21 @@ describe('execute', () => {
       },
     } as any);
 
-    execute({
-      options: {
-        getString: (name: string) => {
-          if (name === 'service') return messageIn.service;
-        },
+    // mock input options
+    const options = {
+      getString: (name: string) => {
+        if (name === 'service') return messageIn.service;
       },
-      reply: (message: string) => {
-        expect(message).toBe(
-          `There is no code for ${messageIn.service
-            .trim()
-            .toLowerCase()} service`
-        );
-      },
-    } as any);
+    };
+
+    // expect response
+    const reply = (message: string) => {
+      expect(message).toBe(
+        `There is no code for ${messageIn.service.trim().toLowerCase()} service`
+      );
+    };
+
+    execute({ options, reply } as any);
   });
 
   it('should return found no code message when code expired', () => {
@@ -125,20 +135,20 @@ describe('execute', () => {
       },
     } as any);
 
-    execute({
-      options: {
-        getString: (name: string) => {
-          if (name === 'service') return messageIn.service;
-        },
+    // mock input options
+    const options = {
+      getString: (name: string) => {
+        if (name === 'service') return messageIn.service;
       },
-      reply: (message: string) => {
-        expect(message).toBe(
-          `There is no code for ${messageIn.service
-            .trim()
-            .toLowerCase()} service`
-        );
-      },
-    } as any);
+    };
+
+    const reply = (message: string) => {
+      expect(message).toBe(
+        `There is no code for ${messageIn.service.trim().toLowerCase()} service`
+      );
+    };
+
+    execute({ options, reply } as any);
   });
 
   it('should return code if found', () => {
@@ -163,18 +173,21 @@ describe('execute', () => {
       },
     } as any);
 
-    execute({
-      options: {
-        getString: (name: string) => {
-          if (name === 'service') return messageIn.service;
-        },
+    // mock input options
+    const options = {
+      getString: (name: string) => {
+        if (name === 'service') return messageIn.service;
       },
-      reply: (message: string) => {
-        expect(message).toBe(
-          `Service ${messageIn.service.trim().toLowerCase()}: ${code}`
-        );
-      },
-    } as any);
+    };
+
+    // expect response
+    const reply = (message: string) => {
+      expect(message).toBe(
+        `Service ${messageIn.service.trim().toLowerCase()}: ${code}`
+      );
+    };
+
+    execute({ options, reply } as any);
   });
 });
 
