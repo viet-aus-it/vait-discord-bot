@@ -1,3 +1,5 @@
+// serivce data is scraped from
+// https://www.ozbargain.com.au/user/83105/edit/referrals
 export const services = [
   'chope.co - chope phuket',
   '1cover',
