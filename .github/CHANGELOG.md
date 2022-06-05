@@ -136,6 +136,12 @@ release because Discord API has changed by the time this was released.
 - Add a link in our README to our usage and supported commands in our wiki page.
 - Change the `/rep set` and `/rep take` command description to show it's an Admin command explicitly.
 
+## 2.1.0
+
+### Added
+
+- Add a `/referral` command to get and add a referral code for a service.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
