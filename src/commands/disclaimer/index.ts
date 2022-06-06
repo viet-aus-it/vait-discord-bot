@@ -5,8 +5,18 @@ import { Command } from '../command';
 const data = new SlashCommandBuilder()
   .setName('disclaimer')
   .setDescription('Get the VAIT disclaimer')
+
   .addStringOption((option) =>
-    option.setName('lang').setDescription('Use en for English version')
+    option
+      .setName('lang')
+      .setDescription(
+        'Choose a language for the disclaimer (Vietnamese / English)'
+      )
+      .setRequired(true)
+      .addChoices(
+        { name: 'English', value: 'en' },
+        { name: 'Vietnamese', value: 'vi' }
+      )
   );
 
 const DISCLAIMER_VI =
