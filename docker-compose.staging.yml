@@ -1,5 +1,8 @@
 services:
   bot:
+    build:
+      target: production
+    restart: always
     env_file: ".env.staging"
     image: ghcr.io/viet-aus-it/discord-bot:staging
     container_name: discord_bot_staging
@@ -11,5 +14,11 @@ services:
     container_name: discord_bot_db_staging
 
   db-migrate:
+    depends_on:
+      - db
+    image: ghcr.io/viet-aus-it/prisma-migrate-service
+    restart: "no"
+    volumes:
+      - ./prisma:/src/prisma
     env_file: ".env.staging"
     container_name: discord_bot_db_migrate_staging
