@@ -11,7 +11,9 @@ export const cleanupExpiredCode = (
     [string[], ReferralCode[]]
   >(
     (total, referral) => {
-      const [parseDateCase] = parseDate(referral.expiry_date.toString());
+      const [parseDateCase] = parseDate(
+        referral.expiry_date.toLocaleDateString()
+      );
       if (parseDateCase !== 'SUCCESS') {
         total[0].push(referral.id);
       } else {
