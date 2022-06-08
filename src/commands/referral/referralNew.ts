@@ -30,7 +30,6 @@ export const data = new SlashCommandSubcommandBuilder()
 
 export const autocomplete: AutocompleteHandler = async (interaction) => {
   const searchTerm = interaction.options.getString('service', true);
-  if (searchTerm.length < 4) return;
 
   const options = searchServices(searchTerm);
   interaction.respond(options);
