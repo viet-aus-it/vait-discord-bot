@@ -2,7 +2,7 @@ import { ReferralCode } from '@prisma/client';
 import { getPrismaClient } from '../../clients';
 import { parseDate } from './parseDate';
 
-export const cleanupExipredCode = (
+export const cleanupExpiredCode = (
   referrals: ReferralCode[]
 ): ReferralCode[] => {
   const prisma = getPrismaClient();
