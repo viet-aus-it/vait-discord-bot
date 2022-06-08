@@ -652,10 +652,12 @@ export const services = [
 
 const options = services.map((service) => ({ name: service, value: service }));
 
-export const searchServices = (term: string) => {
-  const cleanedTerm = term.trim().toLowerCase();
+export const searchServices = (term?: string) => {
+  const cleanedTerm = term?.trim().toLowerCase();
 
   return options
-    .filter((service) => service.name.includes(cleanedTerm))
+    .filter((service) =>
+      cleanedTerm ? service.name.includes(cleanedTerm) : true
+    )
     .slice(0, 25);
 };
