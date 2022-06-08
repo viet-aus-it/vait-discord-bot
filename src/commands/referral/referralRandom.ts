@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
 import { getPrismaClient } from '../../clients';
 import { getRandomIntInclusive } from '../../utils';
 import { AutocompleteHandler, CommandHandler } from '../command';
-import { cleanupExipredCode } from './cleanupExipredCode';
+import { cleanupExpiredCode } from './cleanupExpiredCode';
 import { searchServices } from './services';
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -39,7 +39,7 @@ export const execute: CommandHandler = async (interaction) => {
     },
   });
 
-  const filteredReferrals = cleanupExipredCode(referrals);
+  const filteredReferrals = cleanupExpiredCode(referrals);
 
   const referral =
     filteredReferrals[getRandomIntInclusive(0, filteredReferrals.length - 1)];
