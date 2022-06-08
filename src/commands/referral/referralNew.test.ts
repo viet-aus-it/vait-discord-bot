@@ -119,7 +119,7 @@ describe('execute', () => {
 
     // expect response
     const reply = (message: string) => {
-      expect(message).toBe('expiry_date is invalid date try format MM/DD/YYYY');
+      expect(message).toBe('expiry_date is invalid date try format DD/MM/YYYY');
     };
 
     execute({ options, reply } as any);
@@ -148,7 +148,7 @@ describe('execute', () => {
     const data = {
       service: services[0],
       code: 'SomeCodeHere',
-      expiry_date: `05/04/${new Date().getFullYear() + 1}`,
+      expiry_date: `04/04/${new Date().getFullYear() + 1}`,
     };
 
     const mockPrisma: any = {
@@ -182,7 +182,7 @@ describe('execute', () => {
     // expect response
     const reply = (message: string) => {
       expect(message).toContain(
-        'new SomeCodeHere in chope.co - chope phuket expired on Thu May 04'
+        'new SomeCodeHere in chope.co - chope phuket expired on Tue Apr 04 2023'
       );
     };
 

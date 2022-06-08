@@ -25,8 +25,7 @@ export const data = new SlashCommandSubcommandBuilder()
   .addStringOption((option) =>
     option
       .setName('expiry_date')
-      .setDescription('when the code/link expired (MM/DD/YYYY)')
-      .setRequired(true)
+      .setDescription('when the code/link expired (DD/MM//YYYY)')
   );
 
 export const autocomplete: AutocompleteHandler = async (interaction) => {
@@ -55,7 +54,7 @@ export const execute: CommandHandler = async (interaction) => {
 
   if (parseDateCase === 'INVALID_DATE') {
     return interaction.reply(
-      'expiry_date is invalid date try format MM/DD/YYYY'
+      'expiry_date is invalid date try format DD/MM/YYYY'
     );
   }
   if (parseDateCase === 'EXPIRED_DATE') {
