@@ -104,11 +104,17 @@ pnpm start
 
 ## Useful commands
 
-### DB migration
+### DB migration & Client Generation
 
 ```bash
 pnpm prisma:migrate
 pnpm prisma:gen
+```
+
+### DB GUI
+
+```bash
+pnpm prisma:studio
 ```
 
 ### Deploying your commands to a test Discord Server
