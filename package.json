@@ -33,6 +33,7 @@
     "test:watch": "pnpm test -- --watchAll",
     "prisma:migrate": "prisma migrate dev",
     "prisma:gen": "prisma generate",
+    "prisma:studio": "prisma studio",
     "deploy:command": "node -r @swc-node/register src/scripts/deploy-guild-commands.ts",
     "delete:command": "node -r @swc-node/register src/scripts/delete-guild-commands.ts",
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm build -- --watch"
