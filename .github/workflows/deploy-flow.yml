@@ -1,0 +1,19 @@
+name: "Deployment Action: Build and push Docker images"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test-and-lint:
+    uses: ./.github/workflows/test-and-lint.yml
+  deploy-staging:
+    needs: test-and-lint
+    uses: ./.github/workflows/build-and-deploy.yml
+    with:
+      stage: staging
+  deploy-prod:
+    needs: build-and-deploy-staging
+    uses: ./.github/workflows/build-and-deploy.yml
+    with:
+      stage: production

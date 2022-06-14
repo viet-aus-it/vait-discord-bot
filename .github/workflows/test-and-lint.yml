@@ -1,9 +1,7 @@
 name: Tests and Lints packages
 
 on:
-  pull_request:
-    branches:
-      - master
+  workflow_call:
 
 jobs:
   test-and-lint-discord-bot:
