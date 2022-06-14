@@ -142,6 +142,16 @@ release because Discord API has changed by the time this was released.
 
 - Add a `/referral` command to get and add a referral code for a service.
 
+## 2.2.0
+
+### Added
+
+- Add a `/disclaimer` command to get and add a (joke) disclaimer text.
+
+### Changed
+
+- The deployment process will now run more continuously, and involves less baby sitting.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
