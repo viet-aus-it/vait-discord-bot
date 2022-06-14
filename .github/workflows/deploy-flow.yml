@@ -13,7 +13,7 @@ jobs:
     with:
       stage: staging
   deploy-prod:
-    needs: build-and-deploy-staging
+    needs: deploy-staging
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       stage: production
