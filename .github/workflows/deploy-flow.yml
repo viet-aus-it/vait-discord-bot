@@ -12,8 +12,10 @@ jobs:
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       stage: staging
+    secrets: inherit
   deploy-prod:
     needs: deploy-staging
     uses: ./.github/workflows/build-and-deploy.yml
     with:
       stage: production
+    secrets: inherit
