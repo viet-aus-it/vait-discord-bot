@@ -11,13 +11,13 @@ describe('autocomplete', () => {
       getString: (name: string, required: true) => {
         expect(name).toBe('service');
         expect(required).toBe(true);
-        return 'so';
+        return 'solve';
       },
     };
 
     // expect response
     const respond = (opts: any[]) => {
-      expect(opts).toHaveLength(0);
+      expect(opts).toHaveLength(1);
     };
 
     autocomplete({ options, respond } as any);
