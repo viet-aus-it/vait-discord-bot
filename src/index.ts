@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import 'dotenv-expand/config';
+import { InteractionType } from 'discord-api-types/v10';
 import { processMessage } from './utils';
 import { getDiscordClient } from './clients';
 import { getConfigs } from './config';
@@ -24,20 +25,19 @@ const main = async () => {
 
   const configs = getConfigs();
   client.on('messageCreate', (msg) => {
-    if (msg.type === 'APPLICATION_COMMAND') return;
-
     return processMessage(msg, configs);
   });
 
   client.on('interactionCreate', async (interaction) => {
-    const isCommand = interaction.isCommand();
+    const isCommand = interaction.isChatInputCommand();
     if (isCommand) {
       const { commandName } = interaction;
       const command = commandList.find((cmd) => cmd.data.name === commandName);
       return command?.execute(interaction);
     }
 
-    const isAutocomplete = interaction.isAutocomplete();
+    const isAutocomplete =
+      interaction.type === InteractionType.ApplicationCommandAutocomplete;
     if (isAutocomplete) {
       const { commandName } = interaction;
       const command = commandList.find((cmd) => cmd.data.name === commandName);
