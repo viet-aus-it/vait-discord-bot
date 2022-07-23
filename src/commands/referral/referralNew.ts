@@ -1,4 +1,4 @@
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
+import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { getPrismaClient } from '../../clients';
 import { AutocompleteHandler, CommandHandler } from '../command';
 import { parseDate } from './parseDate';

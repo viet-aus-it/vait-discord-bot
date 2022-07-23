@@ -1,5 +1,4 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { Command } from '../command';
 import checkRep from './checkReputation';
 import giveRep from './giveReputation';
@@ -16,7 +15,7 @@ const data = new SlashCommandBuilder()
 
 const subcommands = [checkRep, giveRep, takeRep, setRep];
 
-const execute = async (interaction: CommandInteraction) => {
+const execute = async (interaction: ChatInputCommandInteraction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);
 
   const subcommand = subcommands.find(

@@ -1,5 +1,8 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from 'discord.js';
 import { Command } from '../command';
 import { getRandomIntInclusive } from '../../utils';
 
@@ -30,10 +33,10 @@ const REPLIES = [
 const get8BallReply = () =>
   REPLIES[getRandomIntInclusive(0, REPLIES.length - 1)];
 
-export const ask8Ball = async (interaction: CommandInteraction) => {
+export const ask8Ball = async (interaction: ChatInputCommandInteraction) => {
   const question = interaction.options.getString('question', true);
 
-  const embedMessage = new MessageEmbed({
+  const embedMessage = new EmbedBuilder({
     author: {
       name: question,
     },

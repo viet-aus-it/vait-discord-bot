@@ -1,5 +1,8 @@
-import { CommandInteraction, GuildMember } from 'discord.js';
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  GuildMember,
+  SlashCommandSubcommandBuilder,
+} from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
 import { getOrCreateUser, updateRep } from './_helpers';
 import { Subcommand } from '../command';
@@ -14,7 +17,9 @@ const data = new SlashCommandSubcommandBuilder()
       .setRequired(true)
   );
 
-export const takeReputation = async (interaction: CommandInteraction) => {
+export const takeReputation = async (
+  interaction: ChatInputCommandInteraction
+) => {
   const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
     return interaction.reply(

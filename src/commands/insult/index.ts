@@ -1,5 +1,4 @@
-import { CommandInteraction } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { isBlank } from '../../utils';
 import { Command } from '../command';
 import { randomInsultGenerator } from './insultGenerator';
@@ -13,7 +12,10 @@ const data = new SlashCommandBuilder()
     option.setName('target').setDescription('The name to insult')
   );
 
-const sendInsult = async (insult: string, interaction: CommandInteraction) => {
+const sendInsult = async (
+  insult: string,
+  interaction: ChatInputCommandInteraction
+) => {
   try {
     await interaction.reply(insult);
   } catch (error) {
@@ -21,7 +23,7 @@ const sendInsult = async (insult: string, interaction: CommandInteraction) => {
   }
 };
 
-export const insult = async (interaction: CommandInteraction) => {
+export const insult = async (interaction: ChatInputCommandInteraction) => {
   const target = interaction.options.getString('target');
 
   const insultText = randomInsultGenerator();

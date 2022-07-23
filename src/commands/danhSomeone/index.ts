@@ -1,5 +1,4 @@
-import { CommandInteraction } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
 import { Command } from '../command';
 
@@ -27,7 +26,7 @@ const getData = () => {
   return data;
 };
 
-export const danhSomeone = async (interaction: CommandInteraction) => {
+export const danhSomeone = async (interaction: ChatInputCommandInteraction) => {
   const botId = interaction.client.user!.id;
   const author = interaction.member!.user;
 

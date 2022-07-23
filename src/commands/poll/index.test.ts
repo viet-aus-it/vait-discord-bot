@@ -1,8 +1,8 @@
-import mockConsole from 'jest-mock-console';
 import { createPoll, NUMBER_AS_STRING } from '.';
 
 const replyMock = jest.fn();
 const getStringMock = jest.fn((option: string): string | undefined => option);
+const errorSpy = jest.spyOn(console, 'error');
 
 describe('Poll test', () => {
   it('Should send a poll as embeded message', async () => {
@@ -47,7 +47,6 @@ describe('Poll test', () => {
   it('Should handle error with console if message cannot be sent', async () => {
     const mockedReact = jest.fn();
     replyMock.mockReturnValueOnce(Promise.reject(new Error('Synthetic Error')));
-    mockConsole();
     const mockInteraction: any = {
       reply: replyMock,
       options: {
@@ -59,7 +58,7 @@ describe('Poll test', () => {
       await createPoll(mockInteraction);
     } catch (error: any) {
       expect(replyMock).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledTimes(1);
+      expect(errorSpy).toHaveBeenCalledTimes(1);
       expect(mockedReact).not.toHaveBeenCalled();
     }
   });
