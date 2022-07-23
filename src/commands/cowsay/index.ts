@@ -1,5 +1,8 @@
-import { CommandInteraction, TextChannel } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  TextChannel,
+  SlashCommandBuilder,
+} from 'discord.js';
 import { say } from 'cowsay';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
 import { Command } from '../command';
@@ -55,7 +58,10 @@ const generateCowsayText = (message: string) => {
   return say(config);
 };
 
-const sendCowsay = async (content: string, interaction: CommandInteraction) => {
+const sendCowsay = async (
+  content: string,
+  interaction: ChatInputCommandInteraction
+) => {
   const reply = `\`\`\`${generateCowsayText(content)}\`\`\``;
 
   try {
@@ -65,7 +71,7 @@ const sendCowsay = async (content: string, interaction: CommandInteraction) => {
   }
 };
 
-export const cowsay = async (interaction: CommandInteraction) => {
+export const cowsay = async (interaction: ChatInputCommandInteraction) => {
   let content = interaction.options.getString('sentence');
 
   if (content && !isBlank(content)) {

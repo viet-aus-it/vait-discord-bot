@@ -1,5 +1,8 @@
-import { TextChannel, CommandInteraction } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  TextChannel,
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
 import {
   fetchLastMessageBeforeId,
   getRandomBoolean,
@@ -28,7 +31,7 @@ const generateMockText = (message: string) =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
-export const mockSomeone = async (interaction: CommandInteraction) => {
+export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   let sentence = interaction.options.getString('sentence');
 
   if (sentence && !isBlank(sentence)) {

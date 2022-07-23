@@ -1,5 +1,8 @@
-import { CommandInteraction, Message } from 'discord.js';
-import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  Message,
+  SlashCommandSubcommandBuilder,
+} from 'discord.js';
 import { getOrCreateUser, updateRep } from './_helpers';
 import { Subcommand } from '../command';
 
@@ -46,7 +49,9 @@ const data = new SlashCommandSubcommandBuilder()
       .setRequired(true)
   );
 
-export const giveRepSlashCommand = async (interaction: CommandInteraction) => {
+export const giveRepSlashCommand = async (
+  interaction: ChatInputCommandInteraction
+) => {
   const author = interaction.member!.user;
   const discordUser = interaction.options.getUser('user', true);
   const isAuthor = author.id === discordUser.id;

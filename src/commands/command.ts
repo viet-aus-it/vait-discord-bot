@@ -2,12 +2,15 @@ import {
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
   SlashCommandSubcommandsOnlyBuilder,
-} from '@discordjs/builders';
-import { AutocompleteInteraction, CommandInteraction } from 'discord.js';
+  AutocompleteInteraction,
+  ChatInputCommandInteraction,
+} from 'discord.js';
 import { REST, RequestData, RouteLike } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 
-export type CommandHandler = (interaction: CommandInteraction) => Promise<void>;
+export type CommandHandler = (
+  interaction: ChatInputCommandInteraction
+) => Promise<void>;
 export type AutocompleteHandler = (
   autocomplete: AutocompleteInteraction
 ) => Promise<void>;

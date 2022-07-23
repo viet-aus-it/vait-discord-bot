@@ -1,5 +1,8 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from 'discord.js';
 import { Command } from '../command';
 import { fetchQuote } from './fetchQuote';
 
@@ -8,7 +11,9 @@ const data = new SlashCommandBuilder()
   .setDescription('Get Quote of the Day');
 
 // export const getQuoteOfTheDay = async ({ channel, author }: Message) => {
-export const getQuoteOfTheDay = async (interaction: CommandInteraction) => {
+export const getQuoteOfTheDay = async (
+  interaction: ChatInputCommandInteraction
+) => {
   await interaction.deferReply();
 
   const quote = await fetchQuote();
@@ -17,8 +22,8 @@ export const getQuoteOfTheDay = async (interaction: CommandInteraction) => {
     return;
   }
 
-  const embed = new MessageEmbed({
-    color: '#0072a8',
+  const embed = new EmbedBuilder({
+    color: 0x0072a8,
     title: quote.quote,
     description: `- ${quote.author} -`,
     author: {

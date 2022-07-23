@@ -1,5 +1,8 @@
-import { CommandInteraction, TextChannel } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  TextChannel,
+  SlashCommandBuilder,
+} from 'discord.js';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
 import { Command } from '../command';
 
@@ -21,7 +24,7 @@ const generateAllCapText = (message: string) =>
 
 const sendAllCapText = async (
   content: string,
-  interaction: CommandInteraction
+  interaction: ChatInputCommandInteraction
 ) => {
   const reply = generateAllCapText(content);
 
@@ -32,7 +35,9 @@ const sendAllCapText = async (
   }
 };
 
-export const allCapExpandText = async (interaction: CommandInteraction) => {
+export const allCapExpandText = async (
+  interaction: ChatInputCommandInteraction
+) => {
   let content = interaction.options.getString('sentence');
 
   if (content && !isBlank(content)) {

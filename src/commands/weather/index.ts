@@ -1,5 +1,4 @@
-import { CommandInteraction } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { fetchWeather } from './fetchWeather';
 import { isBlank } from '../../utils';
 import { Command } from '../command';
@@ -17,7 +16,7 @@ const data = new SlashCommandBuilder()
       )
   );
 
-export const weather = async (interaction: CommandInteraction) => {
+export const weather = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
 
   let location = interaction.options.getString('location');

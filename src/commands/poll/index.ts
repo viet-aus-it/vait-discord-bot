@@ -1,5 +1,9 @@
-import { Message, MessageEmbed, CommandInteraction } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  Message,
+  EmbedBuilder,
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
 import { Command } from '../command';
 
 export const NUMBER_AS_STRING = [
@@ -53,8 +57,8 @@ const createEmbeddedMessage = (question: string, pollOptions: string[]) => {
     return `${accumulator}:${NUMBER_AS_STRING[index]}: ${option}\n\n`;
   }, '');
 
-  return new MessageEmbed({
-    color: '#0072a8',
+  return new EmbedBuilder({
+    color: 0x0072a8,
     title: question.replace(/"/gim, ''),
     footer: { text: 'Poll created' },
     fields: [{ name: message, value: `\u200B` }],
@@ -62,7 +66,7 @@ const createEmbeddedMessage = (question: string, pollOptions: string[]) => {
   });
 };
 
-export const createPoll = async (interaction: CommandInteraction) => {
+export const createPoll = async (interaction: ChatInputCommandInteraction) => {
   const question = interaction.options.getString('question', true);
   const pollOptions = NUMBER_AS_STRING.reduce<string[]>(
     (accum, _value, index) => {

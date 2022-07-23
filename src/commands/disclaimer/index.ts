@@ -1,5 +1,8 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from 'discord.js';
 import { Command } from '../command';
 
 const data = new SlashCommandBuilder()
@@ -24,10 +27,12 @@ const DISCLAIMER_VI =
 const DISCLAIMER_EN =
   'In case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it. I do not know how I am here, probably added by a third party, and I do not support any actions by the members of this group.' as const;
 
-export const getDisclaimer = async (interaction: CommandInteraction) => {
+export const getDisclaimer = async (
+  interaction: ChatInputCommandInteraction
+) => {
   const lang = interaction.options.getString('lang');
   const content = lang?.toLowerCase() === 'en' ? DISCLAIMER_EN : DISCLAIMER_VI;
-  const embedMessage = new MessageEmbed({
+  const embedMessage = new EmbedBuilder({
     author: {
       name: 'VAIT',
     },
