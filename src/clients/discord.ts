@@ -1,4 +1,4 @@
-import { Client, Intents } from 'discord.js';
+import { Client, GatewayIntentBits, Partials } from 'discord.js';
 
 export type ClientOptions = {
   token?: string;
@@ -10,12 +10,12 @@ export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
   return new Promise((resolve, reject) => {
     const client = new Client({
       intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        Intents.FLAGS.GUILD_WEBHOOKS,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildWebhooks,
       ],
-      partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+      partials: [Partials.Channel, Partials.Message, Partials.Reaction],
     });
     client
       .on('ready', () => resolve(client))
