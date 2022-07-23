@@ -41,7 +41,7 @@
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
-    "@prisma/client": "3.14.0",
+    "@prisma/client": "4.1.0",
     "cowsay": "^1.5.0",
     "discord-api-types": "^0.33.3",
     "discord.js": "^13.7.0",
@@ -78,7 +78,7 @@
     "nodemon": "^2.0.19",
     "nodemon-webpack-plugin": "^4.8.1",
     "prettier": "^2.7.1",
-    "prisma": "3.14.0",
+    "prisma": "4.1.0",
     "rimraf": "^3.0.2",
     "swc-loader": "^0.2.3",
     "tree-kill": "^1.2.2",

@@ -6,7 +6,10 @@ const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
 const outputPath = path.resolve(__dirname, 'build');
 
-const PRISMA_VERSION = '3.14.0';
+// eslint-disable-next-line import/extensions
+const pkg = require('./package.json');
+
+const PRISMA_VERSION = pkg.dependencies['@prisma/client'];
 const prismaClientPath = path.resolve(
   __dirname,
   'node_modules',
