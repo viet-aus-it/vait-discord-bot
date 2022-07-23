@@ -1,7 +1,5 @@
-import { Config } from '@jest/types';
-
-const config: Config.InitialOptions = {
-  preset: 'ts-jest',
+/** @type import('@jest/types').Config.InitialOptions */
+const config = {
   testEnvironment: 'node',
   verbose: true,
   clearMocks: true,
@@ -11,13 +9,9 @@ const config: Config.InitialOptions = {
     '^.+\\.tsx?$': '@swc/jest',
   },
   modulePaths: ['<rootDir>/src/'],
-  setupFilesAfterEnv: [
-    'jest-mock-console/dist/setupTestFramework.js',
-    '<rootDir>/src/jest.setup.ts',
-  ],
+  setupFilesAfterEnv: ['<rootDir>/src/jest.setup.ts'],
   coveragePathIgnorePatterns: [
     '<rootDir>/src/*.setup.ts',
-    '<rootDir>/src/utils/mockDiscord/*',
     '<rootDir>/src/utils/random/*',
     '<rootDir>/src/mocks/*',
     '<rootDir>/src/clients/*',
@@ -25,4 +19,4 @@ const config: Config.InitialOptions = {
   modulePathIgnorePatterns: ['<rootDir>/build'],
 };
 
-export default config;
+module.exports = config;

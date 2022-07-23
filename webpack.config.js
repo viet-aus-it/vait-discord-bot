@@ -1,8 +1,6 @@
-/* eslint-disable global-require, import/no-dynamic-require */
-import path from 'node:path';
-import { Configuration } from 'webpack';
-import CopyPlugin from 'copy-webpack-plugin';
-import NodemonPlugin from 'nodemon-webpack-plugin';
+const path = require('node:path');
+const CopyPlugin = require('copy-webpack-plugin');
+const NodemonPlugin = require('nodemon-webpack-plugin');
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
@@ -17,7 +15,8 @@ const prismaClientPath = path.resolve(
   'client'
 );
 
-const config: Configuration = {
+/** @type import('webpack').Configuration */
+const config = {
   mode: isProductionBuild() ? 'production' : 'development',
   target: 'node',
   devtool: isProductionBuild() ? 'eval-source-map' : 'source-map',
@@ -91,4 +90,4 @@ const config: Configuration = {
   },
 };
 
-export default config;
+module.exports = config;
