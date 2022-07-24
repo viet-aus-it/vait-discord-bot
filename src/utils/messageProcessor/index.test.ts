@@ -1,15 +1,16 @@
+import { vi, it, describe, expect } from 'vitest';
 import { Message } from 'discord.js';
 import { processMessage, CommandConfig } from '.';
 
 describe('processMessage', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   it('process keyword matches', async () => {
-    const km1 = jest.fn();
-    const km2 = jest.fn();
-    const noMatch = jest.fn();
+    const km1 = vi.fn();
+    const km2 = vi.fn();
+    const noMatch = vi.fn();
 
     const config: CommandConfig = {
       keywordMatchCommands: [

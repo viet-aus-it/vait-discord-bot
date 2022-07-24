@@ -1,10 +1,11 @@
+import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { randomCreate } from './insultGenerator';
 import { insult } from '.';
 
-const replyMock = jest.fn();
+const replyMock = vi.fn();
 
-const getStringMock = jest.fn();
+const getStringMock = vi.fn();
 
 const getMockInteraction = (): any => ({
   reply: replyMock,

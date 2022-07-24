@@ -1,7 +1,8 @@
+import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { cowsay, removeBacktick } from '.';
 
-const replyMock = jest.fn();
+const replyMock = vi.fn();
 
 describe('Remove backtick test', () => {
   it("Should ignore when there's no backticks", () => {
@@ -26,7 +27,7 @@ describe('cowsay test', () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => faker.lorem.words(25)),
+        getString: vi.fn(() => faker.lorem.words(25)),
       },
     };
 
@@ -38,7 +39,7 @@ describe('cowsay test', () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => '```a lot of backticks```'),
+        getString: vi.fn(() => '```a lot of backticks```'),
       },
     };
 
@@ -50,7 +51,7 @@ describe('cowsay test', () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => 'short'),
+        getString: vi.fn(() => 'short'),
       },
     };
 
@@ -62,7 +63,7 @@ describe('cowsay test', () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => faker.lorem.slug(30)),
+        getString: vi.fn(() => faker.lorem.slug(30)),
       },
     };
 
@@ -74,7 +75,7 @@ describe('cowsay test', () => {
     const getMockInteraction = (fetchCallBack: Function): any => ({
       reply: replyMock,
       options: {
-        getString: jest.fn(() => ''),
+        getString: vi.fn(() => ''),
       },
       channel: {
         messages: {
@@ -85,7 +86,7 @@ describe('cowsay test', () => {
 
     describe('Fetch the previous message', () => {
       it('Should throw error if previous message cannot be retrieved', async () => {
-        const fetchMock = jest.fn(async () => ({
+        const fetchMock = vi.fn(async () => ({
           first: () => undefined,
         }));
         const mockInteraction = getMockInteraction(fetchMock);
@@ -96,7 +97,7 @@ describe('cowsay test', () => {
 
       it('It should refer to previous message', async () => {
         const mockPreviousMessage = { content: faker.lorem.word(10) };
-        const fetchMock = jest.fn(async () => ({
+        const fetchMock = vi.fn(async () => ({
           first: () => mockPreviousMessage,
         }));
         const mockInteraction = getMockInteraction(fetchMock);
@@ -107,13 +108,13 @@ describe('cowsay test', () => {
     });
 
     it('Should throw errors when failed to send Cowsay text', async () => {
-      const mockError = jest.fn(async () => {
+      const mockError = vi.fn(async () => {
         throw new Error('Something went wrong');
       });
       const mockInteraction: any = {
         reply: mockError,
         options: {
-          getString: jest.fn(() => 'say what?'),
+          getString: vi.fn(() => 'say what?'),
         },
       };
 

@@ -1,12 +1,13 @@
+import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { weather } from '.';
 import { fetchWeather } from './fetchWeather';
 
-jest.mock('./fetchWeather');
-const mockFetch = jest.mocked(fetchWeather);
+vi.mock('./fetchWeather');
+const mockFetch = vi.mocked(fetchWeather);
 
-const deferReplyMock = jest.fn();
-const editReplyMock = jest.fn();
+const deferReplyMock = vi.fn();
+const editReplyMock = vi.fn();
 
 describe('Weather test', () => {
   it('Should reply command with weather data', async () => {
@@ -14,7 +15,7 @@ describe('Weather test', () => {
       deferReply: deferReplyMock,
       editReply: editReplyMock,
       options: {
-        getString: jest.fn(() => 'Hanoi'),
+        getString: vi.fn(() => 'Hanoi'),
       },
     };
 
@@ -33,7 +34,7 @@ describe('Weather test', () => {
       deferReply: deferReplyMock,
       editReply: editReplyMock,
       options: {
-        getString: jest.fn(() => ''),
+        getString: vi.fn(() => ''),
       },
     };
 
@@ -52,7 +53,7 @@ describe('Weather test', () => {
       deferReply: deferReplyMock,
       editReply: editReplyMock,
       options: {
-        getString: jest.fn(() => ''),
+        getString: vi.fn(() => ''),
       },
     };
 

@@ -1,14 +1,15 @@
+import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { allCapExpandText } from '.';
 
-const replyMock = jest.fn();
+const replyMock = vi.fn();
 
 describe('All caps test', () => {
   it('Should return text app cap and expanded', async () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => faker.lorem.words(25)),
+        getString: vi.fn(() => faker.lorem.words(25)),
       },
     };
 
@@ -20,7 +21,7 @@ describe('All caps test', () => {
     const getMockInteraction = (fetchCallBack: Function): any => ({
       reply: replyMock,
       options: {
-        getString: jest.fn(() => ''),
+        getString: vi.fn(() => ''),
       },
       channel: {
         messages: {
@@ -32,7 +33,7 @@ describe('All caps test', () => {
     describe('Fetch the previous message', () => {
       it('Should refer to previous message', async () => {
         const mockPreviousMessage = { content: 'aaa' };
-        const fetchMock = jest.fn(async () => ({
+        const fetchMock = vi.fn(async () => ({
           first: () => mockPreviousMessage,
         }));
         const mockMsg = getMockInteraction(fetchMock);
@@ -42,7 +43,7 @@ describe('All caps test', () => {
       });
 
       it('Should return nothing if there is no previous message', async () => {
-        const fetchMock = jest.fn(async () => ({
+        const fetchMock = vi.fn(async () => ({
           first: () => null,
         }));
         const mockMsg = getMockInteraction(fetchMock);

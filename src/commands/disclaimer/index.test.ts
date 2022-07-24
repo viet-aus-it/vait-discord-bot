@@ -1,13 +1,14 @@
+import { vi, it, describe, expect } from 'vitest';
 import { getDisclaimer } from '.';
 
-const replyMock = jest.fn();
+const replyMock = vi.fn();
 
 describe('get disclaimer test', () => {
   it('Should return the disclaimer text', async () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => ''),
+        getString: vi.fn(() => ''),
       },
     };
 
@@ -18,7 +19,7 @@ describe('get disclaimer test', () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => 'en'),
+        getString: vi.fn(() => 'en'),
       },
     };
 

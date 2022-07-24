@@ -1,9 +1,10 @@
+import { vi, it, describe, expect } from 'vitest';
 import { checkReputation } from './checkReputation';
 import { getOrCreateUser } from './_helpers';
 
-jest.mock('./_helpers');
-const mockGetOrCreateUser = jest.mocked(getOrCreateUser);
-const replyMock = jest.fn();
+vi.mock('./_helpers');
+const mockGetOrCreateUser = vi.mocked(getOrCreateUser);
+const replyMock = vi.fn();
 
 describe('checkReputation', () => {
   it('should send reply if message is "-rep"', async () => {

@@ -1,12 +1,13 @@
+import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { getQuoteOfTheDay } from '.';
 import { fetchQuote } from './fetchQuote';
 
-jest.mock('./fetchQuote');
-const mockFetch = jest.mocked(fetchQuote);
+vi.mock('./fetchQuote');
+const mockFetch = vi.mocked(fetchQuote);
 
-const deferReplyMock = jest.fn();
-const editReplyMock = jest.fn();
+const deferReplyMock = vi.fn();
+const editReplyMock = vi.fn();
 
 describe('Get quote of the day test', () => {
   it('Should return a random quote when requested', async () => {
