@@ -164,6 +164,12 @@ release because Discord API has changed by the time this was released.
 
 - Migrate to DiscordJS v14 !!
 
+## 2.4.1
+
+### Removed
+
+- Remove the restart policy for the db-migrate service. Because "No" is already the default.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
