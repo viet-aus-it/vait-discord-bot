@@ -1,3 +1,4 @@
+import { it, describe, expect, jest } from '@jest/globals';
 import { createPoll, NUMBER_AS_STRING } from '.';
 
 const replyMock = jest.fn();

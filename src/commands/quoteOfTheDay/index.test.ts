@@ -1,3 +1,4 @@
+import { it, describe, expect, jest } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { getQuoteOfTheDay } from '.';
 import { fetchQuote } from './fetchQuote';

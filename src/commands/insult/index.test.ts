@@ -1,3 +1,4 @@
+import { it, describe, expect, beforeEach, jest } from '@jest/globals';
 import { faker } from '@faker-js/faker';
 import { randomCreate } from './insultGenerator';
 import { insult } from '.';
@@ -14,7 +15,9 @@ const getMockInteraction = (): any => ({
 });
 
 describe('Insult someone test', () => {
-  beforeEach(() => replyMock.mockClear());
+  beforeEach(() => {
+    replyMock.mockClear();
+  });
 
   it('Should send an insult when the cmd is sent', async () => {
     getStringMock.mockImplementationOnce(() => '');
@@ -45,7 +48,9 @@ describe('Insult someone test', () => {
 });
 
 describe('Insult Library test', () => {
-  beforeEach(() => replyMock.mockClear());
+  beforeEach(() => {
+    replyMock.mockClear();
+  });
 
   it('Should be able to generate a random insult', () => {
     const insultString = randomCreate();

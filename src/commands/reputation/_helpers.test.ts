@@ -1,3 +1,4 @@
+import { it, describe, expect, jest } from '@jest/globals';
 import { getPrismaClient } from '../../clients';
 import { getOrCreateUser, updateRep } from './_helpers';
 

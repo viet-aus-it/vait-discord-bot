@@ -1,3 +1,4 @@
+import { it, describe, expect, beforeEach, jest } from '@jest/globals';
 import { danhSomeone } from '.';
 
 const replyMock = jest.fn();

@@ -1,3 +1,4 @@
+import { it, expect } from '@jest/globals';
 import { searchServices } from './services';
 
 it('should return searched options', () => {

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "lib": ["ESNext"],
-    "types": ["jest", "node"],
+    "types": ["node"],
     "allowJs": true,
     "declaration": true,
     "skipLibCheck": true,

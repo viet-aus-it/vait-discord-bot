@@ -1,3 +1,4 @@
+import { it, describe, expect, beforeAll, jest } from '@jest/globals';
 import { User } from 'discord.js';
 import { takeReputation } from './takeReputation';
 import { getOrCreateUser, updateRep } from './_helpers';

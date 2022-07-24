@@ -1,3 +1,4 @@
+import { it, describe, expect, jest } from '@jest/globals';
 import { Collection, User } from 'discord.js';
 import { giveRepSlashCommand, thankUserInMessage } from './giveReputation';
 import { getOrCreateUser, updateRep } from './_helpers';

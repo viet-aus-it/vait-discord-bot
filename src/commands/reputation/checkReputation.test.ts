@@ -1,3 +1,4 @@
+import { it, describe, expect, jest } from '@jest/globals';
 import { checkReputation } from './checkReputation';
 import { getOrCreateUser } from './_helpers';
 
