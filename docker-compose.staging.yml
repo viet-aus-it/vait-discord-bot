@@ -19,7 +19,6 @@ services:
     depends_on:
       - db
     image: ghcr.io/viet-aus-it/prisma-migrate-service
-    restart: "no"
     volumes:
       - ./prisma:/src/prisma
     env_file: ".env.staging"
