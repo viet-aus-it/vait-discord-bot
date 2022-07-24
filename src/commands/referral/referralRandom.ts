@@ -22,7 +22,7 @@ export const autocomplete: AutocompleteHandler = async (interaction) => {
   const searchTerm = interaction.options.getString('service', true);
 
   const options = searchServices(searchTerm);
-  interaction.respond(options);
+  await interaction.respond(options);
 };
 
 export const execute: CommandHandler = async (interaction) => {
@@ -43,7 +43,8 @@ export const execute: CommandHandler = async (interaction) => {
   const referral =
     filteredReferrals[getRandomIntInclusive(0, filteredReferrals.length - 1)];
   if (!referral) {
-    return interaction.reply(`There is no code for ${service} service`);
+    await interaction.reply(`There is no code for ${service} service`);
+    return;
   }
 
   await interaction.reply(`Service ${service}: ${referral.code}`);

@@ -22,16 +22,18 @@ export const takeReputation = async (
 ) => {
   const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
-    return interaction.reply(
+    await interaction.reply(
       "You don't have enough permission to run this command."
     );
+    return;
   }
 
   const author = interaction.member!.user;
   const discordUser = interaction.options.getUser('user', true);
   const user = await getOrCreateUser(discordUser.id);
   if (user.reputation === 0) {
-    return interaction.reply(`<@${discordUser.id}> currently has 0 rep`);
+    await interaction.reply(`<@${discordUser.id}> currently has 0 rep`);
+    return;
   }
 
   const updatedUser = await updateRep({
@@ -40,7 +42,7 @@ export const takeReputation = async (
     adjustment: { reputation: { decrement: 1 } },
   });
 
-  return interaction.reply(
+  await interaction.reply(
     `<@${author.id}> took from <@${discordUser.id}> 1 rep. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
   );
 };

@@ -56,7 +56,8 @@ export const giveRepSlashCommand = async (
   const discordUser = interaction.options.getUser('user', true);
   const isAuthor = author.id === discordUser.id;
   if (isAuthor) {
-    return interaction.reply('You cannot give rep to yourself');
+    await interaction.reply('You cannot give rep to yourself');
+    return;
   }
 
   const updatedUser = await plusRep(author.id, discordUser.id);

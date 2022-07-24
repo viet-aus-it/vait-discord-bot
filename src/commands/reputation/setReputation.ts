@@ -26,9 +26,10 @@ export const setReputation = async (
 ) => {
   const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
-    return interaction.reply(
+    await interaction.reply(
       "You don't have enough permission to run this command."
     );
+    return;
   }
 
   const repNumber = interaction.options.getInteger('rep', true);
@@ -41,7 +42,7 @@ export const setReputation = async (
     adjustment: { reputation: { set: repNumber } },
   });
 
-  return interaction.reply(
+  await interaction.reply(
     `<@${author.id}> just set <@${discordUser.id}>'s rep to ${repNumber}. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
   );
 };

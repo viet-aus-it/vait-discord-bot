@@ -43,21 +43,24 @@ export const execute: CommandHandler = async (interaction) => {
     (option) => option.toLowerCase() === service
   );
   if (!hasService) {
-    return interaction.reply(
+    await interaction.reply(
       `No service named ${service}, ask the admin to add it`
     );
+    return;
   }
 
   const expiredDate = interaction.options.getString('expiry_date', true);
   const [parseDateCase, parsedExpiryDate] = parseDate(expiredDate);
 
   if (parseDateCase === 'INVALID_DATE') {
-    return interaction.reply(
+    await interaction.reply(
       'expiry_date is invalid date try format DD/MM/YYYY'
     );
+    return;
   }
   if (parseDateCase === 'EXPIRED_DATE') {
-    return interaction.reply('expiry_date has already expired');
+    await interaction.reply('expiry_date has already expired');
+    return;
   }
 
   const prisma = getPrismaClient();
