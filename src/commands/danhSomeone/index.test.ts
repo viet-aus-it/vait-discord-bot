@@ -1,7 +1,8 @@
+import { vi, it, describe, expect } from 'vitest';
 import { danhSomeone } from '.';
 
-const replyMock = jest.fn();
-const getUserMock = jest.fn(
+const replyMock = vi.fn();
+const getUserMock = vi.fn(
   (param: `target${number}`): { id: string } | undefined => {
     return {
       id: param.substring(6),

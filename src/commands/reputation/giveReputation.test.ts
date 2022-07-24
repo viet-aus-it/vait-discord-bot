@@ -1,13 +1,14 @@
+import { vi, it, describe, expect } from 'vitest';
 import { Collection, User } from 'discord.js';
 import { giveRepSlashCommand, thankUserInMessage } from './giveReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
 
-jest.mock('./_helpers');
-const mockCreateUpdateUser = jest.mocked(getOrCreateUser);
-const mockUpdateRep = jest.mocked(updateRep);
+vi.mock('./_helpers');
+const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
+const mockUpdateRep = vi.mocked(updateRep);
 
-const replyMock = jest.fn(() => {});
-const sendMock = jest.fn(() => {});
+const replyMock = vi.fn(() => {});
+const sendMock = vi.fn(() => {});
 
 describe('Thank user in a message', () => {
   const getMockMsg = (mockUsers: Collection<string, User>): any => ({
@@ -122,7 +123,7 @@ describe('Give rep slash command', () => {
       },
     },
     options: {
-      getUser: jest.fn(() => mockUser),
+      getUser: vi.fn(() => mockUser),
     },
   });
 

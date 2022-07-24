@@ -1,3 +1,4 @@
+import { it, describe, expect } from 'vitest';
 import { Collection, Role } from 'discord.js';
 import { isAdmin, isModerator } from '.';
 

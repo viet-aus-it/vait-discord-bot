@@ -1,8 +1,9 @@
+import { vi, it, describe, expect } from 'vitest';
 import { getPrismaClient } from '../../clients';
 import { autocomplete, execute } from './referralRandom';
 
-jest.mock('../../clients');
-const mockGetPrismaClient = jest.mocked(getPrismaClient);
+vi.mock('../../clients');
+const mockGetPrismaClient = vi.mocked(getPrismaClient);
 
 describe('autocomplete', () => {
   it('should return nothing if the search term shorter than 4', () => {
@@ -54,24 +55,24 @@ describe('autocomplete', () => {
     // expect response
     const respond = (opts: any[]) => {
       expect(opts).toMatchInlineSnapshot(`
-        Array [
-          Object {
+        [
+          {
             "name": "ahm health insurance",
             "value": "ahm health insurance",
           },
-          Object {
+          {
             "name": "doctors' health fund",
             "value": "doctors' health fund",
           },
-          Object {
+          {
             "name": "phoenix health fund",
             "value": "phoenix health fund",
           },
-          Object {
+          {
             "name": "qantas insurance - health insurance",
             "value": "qantas insurance - health insurance",
           },
-          Object {
+          {
             "name": "westfund health insurance",
             "value": "westfund health insurance",
           },

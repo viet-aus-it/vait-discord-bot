@@ -1,8 +1,9 @@
+import { vi, it, describe, expect } from 'vitest';
 import { getPrismaClient } from '../../clients';
 import { getOrCreateUser, updateRep } from './_helpers';
 
-jest.mock('../../clients');
-const mockGetPrismaClient = jest.mocked(getPrismaClient);
+vi.mock('../../clients');
+const mockGetPrismaClient = vi.mocked(getPrismaClient);
 
 describe('getOrCreateUser', () => {
   it('should return user if user is existed', async () => {

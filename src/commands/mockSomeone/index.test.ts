@@ -1,7 +1,8 @@
+import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { mockSomeone } from '.';
 
-const replyMock = jest.fn();
+const replyMock = vi.fn();
 
 describe('mockSomeone test', () => {
   beforeEach(() => {
@@ -12,7 +13,7 @@ describe('mockSomeone test', () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
-        getString: jest.fn(() => faker.lorem.words(25)),
+        getString: vi.fn(() => faker.lorem.words(25)),
       },
     };
 
@@ -24,7 +25,7 @@ describe('mockSomeone test', () => {
     const getMockInteraction = (fetchCallback: Function): any => ({
       reply: replyMock,
       options: {
-        getString: jest.fn(() => ''),
+        getString: vi.fn(() => ''),
       },
       channel: {
         messages: { fetch: fetchCallback },
@@ -33,7 +34,7 @@ describe('mockSomeone test', () => {
 
     describe('Fetching previous message', () => {
       it('Should throw error if previous message cannot be retrieved', async () => {
-        const fetchMock = jest.fn(async () => ({
+        const fetchMock = vi.fn(async () => ({
           first: () => undefined,
         }));
         const mockInteraction = getMockInteraction(fetchMock);
@@ -45,7 +46,7 @@ describe('mockSomeone test', () => {
 
       it('Should return blank if previous message is blank', async () => {
         const blankMessage = { content: '' };
-        const fetchMock = jest.fn(async () => ({
+        const fetchMock = vi.fn(async () => ({
           first: () => blankMessage,
         }));
         const mockInteraction = getMockInteraction(fetchMock);
@@ -57,7 +58,7 @@ describe('mockSomeone test', () => {
 
       it('Should mock the previous message', async () => {
         const messageWithContent = { content: faker.lorem.words(25) };
-        const fetchMock = jest.fn(async () => ({
+        const fetchMock = vi.fn(async () => ({
           first: () => messageWithContent,
         }));
         const mockInteraction = getMockInteraction(fetchMock);

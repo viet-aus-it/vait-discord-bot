@@ -1,16 +1,17 @@
+import { vi, it, describe, expect } from 'vitest';
 import { User } from 'discord.js';
 import { setReputation } from './setReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
 import { isAdmin } from '../../utils';
 
-jest.mock('./_helpers');
-const mockCreateUpdateUser = jest.mocked(getOrCreateUser);
-const mockUpdateRep = jest.mocked(updateRep);
+vi.mock('./_helpers');
+const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
+const mockUpdateRep = vi.mocked(updateRep);
 
-jest.mock('../../utils/isSentFromAdmin');
-const mockIsSentFromAdmin = jest.mocked(isAdmin);
+vi.mock('../../utils/isSentFromAdmin');
+const mockIsSentFromAdmin = vi.mocked(isAdmin);
 
-const replyMock = jest.fn(() => {});
+const replyMock = vi.fn(() => {});
 
 describe('setRep', () => {
   beforeAll(() => {
@@ -50,8 +51,8 @@ describe('setRep', () => {
         },
       },
       options: {
-        getUser: jest.fn(() => mockUser),
-        getInteger: jest.fn(() => 1234),
+        getUser: vi.fn(() => mockUser),
+        getInteger: vi.fn(() => 1234),
       },
     };
     await setReputation(mockInteraction);
