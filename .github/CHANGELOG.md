@@ -152,6 +152,18 @@ release because Discord API has changed by the time this was released.
 
 - The deployment process will now run more continuously, and involves less baby sitting.
 
+## 2.3.0
+
+### Changed
+
+- Improved referral features
+
+## 2.4.0
+
+### Changed
+
+- Migrate to DiscordJS v14 !!
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
