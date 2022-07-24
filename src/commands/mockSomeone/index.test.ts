@@ -8,7 +8,7 @@ describe('mockSomeone test', () => {
     replyMock.mockClear();
   });
 
-  it('Should mock text if it has -mock prefix', async () => {
+  it('Should mock text if it was called by /mock', async () => {
     const mockInteraction: any = {
       reply: replyMock,
       options: {
@@ -20,7 +20,7 @@ describe('mockSomeone test', () => {
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
 
-  describe('For -mock prefix with blank content', () => {
+  describe('For /mock call with blank content', () => {
     const getMockInteraction = (fetchCallback: Function): any => ({
       reply: replyMock,
       options: {
