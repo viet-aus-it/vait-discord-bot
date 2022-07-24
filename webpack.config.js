@@ -1,13 +1,12 @@
+/* eslint-disable import/extensions */
 const path = require('node:path');
 const CopyPlugin = require('copy-webpack-plugin');
-const NodemonPlugin = require('nodemon-webpack-plugin');
+const pkg = require('./package.json');
+const tsconfigFile = require('./tsconfig.json');
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
 const outputPath = path.resolve(__dirname, 'build');
-
-// eslint-disable-next-line import/extensions
-const pkg = require('./package.json');
 
 const PRISMA_VERSION = pkg.dependencies['@prisma/client'];
 const prismaClientPath = path.resolve(
@@ -36,7 +35,12 @@ const config = {
       {
         test: /\.ts$/,
         exclude: /\.(test|config)\.ts$/,
-        loader: 'swc-loader',
+        loader: 'esbuild-loader',
+        options: {
+          loader: 'ts',
+          target: 'node16',
+          tsconfigRaw: tsconfigFile,
+        },
       },
     ],
   },
@@ -73,18 +77,6 @@ const config = {
           to: path.resolve(outputPath, './cows'),
         },
       ],
-    }),
-    new NodemonPlugin({
-      script: path.resolve(__dirname, 'build', 'server', 'index.js'),
-      nodeArgs: ['--enable-source-maps'],
-      watch: [
-        path.resolve(__dirname, 'build'),
-        path.resolve(__dirname, 'config.json'),
-      ],
-      ext: 'js',
-      ignore: ['.git', 'node_modules', 'coverage', 'db'],
-      verbose: true,
-      delay: 1000,
     }),
   ],
   output: {
