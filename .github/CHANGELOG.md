@@ -166,9 +166,16 @@ release because Discord API has changed by the time this was released.
 
 ## 2.4.1
 
-### Removed
+### Changed
 
 - Remove the restart policy for the db-migrate service. Because "No" is already the default.
+
+## 2.4.2
+
+### Changed
+
+- Move the port config from `docker-compose.yml` into an override file, since it's only needed
+  in development, and was messing up deployments.
 
 ## \[Unreleased\]
 
