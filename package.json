@@ -20,7 +20,7 @@
     "prepare": "husky install",
     "clean:all": "pnpm prebuild && pnpm pretest",
     "typecheck": "tsc --noEmit",
-    "build": "rimraf build && webpack",
+    "build": "rimraf build && tsx esbuild.config.ts",
     "build:typecheck": "pnpm typecheck && pnpm build",
     "lint": "esw --cache src/**/*.ts",
     "lint:fix": "pnpm lint -- --fix",
@@ -57,13 +57,11 @@
     "@types/jest": "^28.1.6",
     "@types/node": "^18.0.6",
     "@types/node-fetch": "^2.6.2",
-    "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
     "@typescript-eslint/parser": "^5.30.7",
     "concurrently": "^7.3.0",
-    "copy-webpack-plugin": "^11.0.0",
     "esbuild": "^0.14.49",
-    "esbuild-loader": "^2.19.0",
+    "esbuild-plugin-copy": "^1.3.0",
     "eslint": "^8.20.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
@@ -79,8 +77,6 @@
     "rimraf": "^3.0.2",
     "tree-kill": "^1.2.2",
     "tsx": "^3.8.0",
-    "typescript": "^4.7.4",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.10.0"
+    "typescript": "^4.7.4"
   }
 }
