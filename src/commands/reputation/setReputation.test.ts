@@ -37,7 +37,9 @@ describe('setRep', () => {
 
   it('Should call reply when user mentions another user', async () => {
     const mockUser = { id: '0' } as User;
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '0', reputation: 1 });
+    mockCreateUpdateUser
+      .mockResolvedValueOnce({ id: '1', reputation: 1 })
+      .mockResolvedValueOnce({ id: '0', reputation: 1 });
     mockUpdateRep.mockResolvedValueOnce({ id: '0', reputation: 1234 });
 
     const mockInteraction: any = {
@@ -54,7 +56,7 @@ describe('setRep', () => {
     };
     await setReputation(mockInteraction);
 
-    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
+    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledWith(

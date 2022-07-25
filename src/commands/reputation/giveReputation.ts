@@ -6,10 +6,11 @@ import {
 import { getOrCreateUser, updateRep } from './_helpers';
 import { Subcommand } from '../command';
 
-const plusRep = async (fromUserId: string, discordUserId: string) => {
-  const user = await getOrCreateUser(discordUserId);
+const plusRep = async (fromUserId: string, toUserId: string) => {
+  const author = await getOrCreateUser(fromUserId);
+  const user = await getOrCreateUser(toUserId);
   return updateRep({
-    fromUserId,
+    fromUserId: author.id,
     toUserId: user.id,
     adjustment: { reputation: { increment: 1 } },
   });

@@ -29,6 +29,7 @@ export const takeReputation = async (
   }
 
   const author = interaction.member!.user;
+  const authorUser = await getOrCreateUser(author.id);
   const discordUser = interaction.options.getUser('user', true);
   const user = await getOrCreateUser(discordUser.id);
   if (user.reputation === 0) {
@@ -37,7 +38,7 @@ export const takeReputation = async (
   }
 
   const updatedUser = await updateRep({
-    fromUserId: author.id,
+    fromUserId: authorUser.id,
     toUserId: user.id,
     adjustment: { reputation: { decrement: 1 } },
   });

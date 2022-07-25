@@ -34,10 +34,11 @@ export const setReputation = async (
 
   const repNumber = interaction.options.getInteger('rep', true);
   const author = interaction.member!.user;
+  const authorUser = await getOrCreateUser(author.id);
   const discordUser = interaction.options.getUser('user', true);
   const user = await getOrCreateUser(discordUser.id);
   const updatedUser = await updateRep({
-    fromUserId: author.id,
+    fromUserId: authorUser.id,
     toUserId: user.id,
     adjustment: { reputation: { set: repNumber } },
   });

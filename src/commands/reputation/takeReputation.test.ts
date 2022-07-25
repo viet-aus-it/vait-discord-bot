@@ -38,7 +38,9 @@ describe('takeRep', () => {
 
   it('should send a message if the user has 0 rep', async () => {
     const mockUser = { id: '0' } as User;
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '0', reputation: 0 });
+    mockCreateUpdateUser
+      .mockResolvedValueOnce({ id: '1', reputation: 0 })
+      .mockResolvedValueOnce({ id: '0', reputation: 0 });
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -53,14 +55,16 @@ describe('takeRep', () => {
 
     await takeReputation(mockInteraction);
 
-    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
+    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(replyMock).toHaveBeenCalledWith('<@0> currently has 0 rep');
   });
 
   it('Should call reply when user mentions another user', async () => {
     const mockUser = { id: '0' } as User;
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '0', reputation: 10 });
+    mockCreateUpdateUser
+      .mockResolvedValueOnce({ id: '1', reputation: 10 })
+      .mockResolvedValueOnce({ id: '0', reputation: 10 });
     mockUpdateRep.mockResolvedValueOnce({ id: '0', reputation: 0 });
     const mockInteraction: any = {
       reply: replyMock,
@@ -76,7 +80,7 @@ describe('takeRep', () => {
 
     await takeReputation(mockInteraction);
 
-    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
+    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledWith(
