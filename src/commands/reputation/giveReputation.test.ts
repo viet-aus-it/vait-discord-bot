@@ -77,13 +77,15 @@ describe('Thank user in a message', () => {
   it('should call reply and add rep if user mention another user', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1' } as User);
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 0 });
+    mockCreateUpdateUser
+      .mockResolvedValueOnce({ id: '1', reputation: 0 })
+      .mockResolvedValueOnce({ id: '2', reputation: 0 });
     mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
 
     const mockMsg = getMockMsg(mockUsers);
     await thankUserInMessage(mockMsg);
 
-    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
+    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledTimes(0);
     expect(sendMock).toHaveBeenCalledTimes(1);
@@ -96,7 +98,9 @@ describe('Thank user in a message', () => {
     mockUsers.set('2', { id: '2', bot: false } as User);
     mockUsers.set('3', { id: '3', bot: false } as User);
     mockCreateUpdateUser
+      .mockResolvedValueOnce({ id: '0', reputation: 0 })
       .mockResolvedValueOnce({ id: '2', reputation: 0 })
+      .mockResolvedValueOnce({ id: '0', reputation: 0 })
       .mockResolvedValueOnce({ id: '3', reputation: 0 });
     mockUpdateRep
       .mockResolvedValueOnce({ id: '2', reputation: 0 })
@@ -133,13 +137,15 @@ describe('Give rep slash command', () => {
 
   it('should call reply and add rep if user mention another user', async () => {
     const mockUser = { id: '1' } as User;
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 0 });
+    mockCreateUpdateUser
+      .mockResolvedValueOnce({ id: '0', reputation: 0 })
+      .mockResolvedValueOnce({ id: '1', reputation: 0 });
     mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
     const mockInteraction = getMockInteraction(mockUser);
 
     await giveRepSlashCommand(mockInteraction);
 
-    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(1);
+    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
