@@ -177,6 +177,14 @@ release because Discord API has changed by the time this was released.
 - Move the port config from `docker-compose.yml` into an override file, since it's only needed
   in development, and was messing up deployments.
 
+## 2.4.3
+
+### Changed
+
+- Functionality: Now tries to create and/or get the author user before giving, taking or setting rep to the recipient.
+  This was causing an error where a newly joined member cannot give rep or thank someone in the server.
+- Pipeline: The `prisma generate` step is now put into the `setup repo` step, since it's not related to the tests.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
