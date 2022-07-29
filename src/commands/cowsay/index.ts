@@ -4,8 +4,8 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 import { say } from 'cowsay';
-import { fetchLastMessageBeforeId, isBlank } from '../../utils';
-import { Command } from '../command';
+import { fetchLastMessageBeforeId, isBlank } from '../../utils/index.js';
+import { Command } from '../command.js';
 
 // Only 35 characters per line due to limitation in phone screen width
 const WRAP_TEXT_LIMIT = 35;

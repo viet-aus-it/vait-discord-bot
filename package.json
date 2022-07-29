@@ -37,7 +37,7 @@
     "prisma:studio": "prisma studio",
     "deploy:command": "tsx src/scripts/deploy-guild-commands.ts",
     "delete:command": "tsx src/scripts/delete-guild-commands.ts",
-    "start": "pnpm prisma:migrate && pnpm prisma:gen && tsx watch ./src/index.ts"
+    "start": "pnpm prisma:migrate && pnpm prisma:gen && tsx watch --clear-screen=false ./src/index.ts"
   },
   "dependencies": {
     "@discordjs/rest": "1.0.0",

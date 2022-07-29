@@ -15,7 +15,7 @@ export const parseDate = (date?: string): ParseDatePayload => {
     date?.split('/') || thirtyDaysInFuture.toLocaleDateString('09/06/2022');
   const jsFormatDate = `${mm}/${dd}/${yyyy}`;
 
-  if (Number.isNaN(Date.parse(jsFormatDate)) === true) return ['INVALID_DATE'];
+  if (Number.isNaN(Date.parse(jsFormatDate))) return ['INVALID_DATE'];
 
   const parsedDate = new Date(jsFormatDate);
   if (parsedDate <= new Date()) return ['EXPIRED_DATE'];

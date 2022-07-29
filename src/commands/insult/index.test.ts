@@ -1,7 +1,7 @@
 import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
-import { randomCreate } from './insultGenerator';
-import { insult } from '.';
+import { randomCreate } from './insultGenerator.js';
+import { insult } from './index.js';
 
 const replyMock = vi.fn();
 

@@ -22,6 +22,7 @@ export const ZEN_QUOTES_URL =
 
 export const fetchQuote = async (): Promise<Quote | undefined> => {
   try {
+    // @ts-ignore
     const response = await fetch(ZEN_QUOTES_URL); // download quotes from this site
     const body = await response.json();
     const parsedBody: ZenQuote[] = ZenQuoteResponse.parse(body);
