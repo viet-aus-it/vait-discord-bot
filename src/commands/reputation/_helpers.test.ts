@@ -1,6 +1,6 @@
 import { vi, it, describe, expect } from 'vitest';
-import { getPrismaClient } from '../../clients';
-import { getOrCreateUser, updateRep } from './_helpers';
+import { getPrismaClient } from '../../clients/index.js';
+import { getOrCreateUser, updateRep } from './_helpers.js';
 
 vi.mock('../../clients');
 const mockGetPrismaClient = vi.mocked(getPrismaClient);

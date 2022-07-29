@@ -1,5 +1,5 @@
 import { vi, it, describe, expect } from 'vitest';
-import { getDisclaimer } from '.';
+import { getDisclaimer } from './index.js';
 
 const replyMock = vi.fn();
 

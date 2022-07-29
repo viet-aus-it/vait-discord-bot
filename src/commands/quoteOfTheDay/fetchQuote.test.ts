@@ -1,8 +1,8 @@
 import { it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
-import { server } from '../../mocks/server';
-import { fetchQuote, ZEN_QUOTES_URL } from './fetchQuote';
+import { server } from '../../mocks/server.js';
+import { fetchQuote, ZEN_QUOTES_URL } from './fetchQuote.js';
 
 describe('Fetching quotes', () => {
   it('Should return undefined if it cannot get a quote', async () => {

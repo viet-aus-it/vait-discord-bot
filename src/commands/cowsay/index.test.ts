@@ -1,6 +1,6 @@
 import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
-import { cowsay, removeBacktick } from '.';
+import { cowsay, removeBacktick } from './index.js';
 
 const replyMock = vi.fn();
 

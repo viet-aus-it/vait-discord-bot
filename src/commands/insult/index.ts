@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { isBlank } from '../../utils';
-import { Command } from '../command';
-import { randomInsultGenerator } from './insultGenerator';
+import { isBlank } from '../../utils/index.js';
+import { Command } from '../command.js';
+import { randomInsultGenerator } from './insultGenerator.js';
 
 const data = new SlashCommandBuilder()
   .setName('insult')

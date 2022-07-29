@@ -3,8 +3,8 @@ import {
   TextChannel,
   SlashCommandBuilder,
 } from 'discord.js';
-import { fetchLastMessageBeforeId, isBlank } from '../../utils';
-import { Command } from '../command';
+import { fetchLastMessageBeforeId, isBlank } from '../../utils/index.js';
+import { Command } from '../command.js';
 
 const data = new SlashCommandBuilder()
   .setName('allcap')
