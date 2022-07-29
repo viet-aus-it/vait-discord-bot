@@ -1,6 +1,6 @@
 {
   "name": "@viet-aus-it/discord-bot",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "description": "Chat bot for VAIT Discord Server",
   "main": "build/index.js",
   "engines": {

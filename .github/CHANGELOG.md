@@ -187,6 +187,13 @@ in development, and was messing up deployments.
   This was causing an error where a newly joined member cannot give rep or thank someone in the server.
 - Pipeline: The `prisma generate` step is now put into the `setup repo` step, since it's not related to the tests.
 
+## 2.4.4
+
+### Changed
+
+- Migrate our suite from `swc` back to using `esbuild` again since the tooling is more mature now,
+  guaranteeing fast builds and having the same output as our previous releases.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
