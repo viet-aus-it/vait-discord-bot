@@ -8,8 +8,6 @@ services:
     env_file: ".env.staging"
     image: ghcr.io/viet-aus-it/discord-bot:staging
     container_name: discord_bot_staging
-    volumes:
-      - ./config.json:/app/config.json
 
   db:
     env_file: ".env.staging"
