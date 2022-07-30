@@ -207,11 +207,15 @@ in development, and was messing up deployments.
 - Unpin prisma packages version because the build script now take its version directly from the package.json
   instead of hardcoding.
 
-## \[Unreleased\]
+## 2.4.6
 
 ### Changed
 
 - Change the config for test coverage ignore paths, now it's showing correctly.
+- Change the deployment workflow, now it correctly tags the production image.
+- Update ESBuild config to avoid the hat `^` when finding prisma assets.
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
