@@ -26,6 +26,7 @@ export const data = new SlashCommandSubcommandBuilder()
     option
       .setName('expiry_date')
       .setDescription('when the code/link expired (DD/MM//YYYY)')
+      .setRequired(true)
   );
 
 export const autocomplete: AutocompleteHandler = async (interaction) => {

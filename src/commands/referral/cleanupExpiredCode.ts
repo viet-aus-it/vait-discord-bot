@@ -11,9 +11,10 @@ export const cleanupExpiredCode = (
     [string[], ReferralCode[]]
   >(
     (total, referral) => {
-      const [parseDateCase] = parseDate(
-        new Date(referral.expiry_date).toLocaleDateString()
+      const expiryDate = new Date(referral.expiry_date).toLocaleDateString(
+        'en-AU'
       );
+      const [parseDateCase] = parseDate(expiryDate);
       if (parseDateCase !== 'SUCCESS') {
         total[0].push(referral.id);
       } else {
@@ -28,7 +29,6 @@ export const cleanupExpiredCode = (
   // SOMETIMES try to clean expired referral codes
   if (expiredIds.length > 10) {
     try {
-      // dont await so dont wait for clean up
       prisma.referralCode.deleteMany({
         where: { id: { in: expiredIds } },
       });
