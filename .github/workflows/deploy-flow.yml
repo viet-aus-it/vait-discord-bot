@@ -7,12 +7,6 @@ on:
 jobs:
   test-and-lint:
     uses: ./.github/workflows/test-and-lint.yml
-  deploy-staging:
-    needs: test-and-lint
-    uses: ./.github/workflows/build-and-deploy.yml
-    with:
-      stage: staging
-    secrets: inherit
   deploy-prod:
     needs: deploy-staging
     uses: ./.github/workflows/build-and-deploy.yml
