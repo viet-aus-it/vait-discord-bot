@@ -8,11 +8,14 @@ const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
 const outputPath = path.resolve(__dirname, 'build');
 
-const PRISMA_VERSION = pkg.dependencies['@prisma/client'];
+// Remove the '^' in '^a.b.c'
+const PRISMA_VERSION = pkg.dependencies['@prisma/client'].substring(1);
 const prismaClientPath = path.resolve(
   __dirname,
   'node_modules',
-  `.pnpm/@prisma+client@${PRISMA_VERSION}_prisma@${PRISMA_VERSION}/node_modules`,
+  '.pnpm',
+  `@prisma+client@${PRISMA_VERSION}_prisma@${PRISMA_VERSION}`,
+  'node_modules',
   '.prisma',
   'client'
 );
@@ -47,23 +50,24 @@ async function build() {
       ],
       plugins: [
         copy({
+          verbose: true,
           assets: [
             {
-              from: path.resolve(prismaClientPath, 'libquery_engine-*'),
-              to: '.',
-            },
-            {
-              from: path.resolve(prismaClientPath, 'schema.prisma'),
-              to: '.',
+              from: [
+                path.join(prismaClientPath, 'libquery_engine-*'),
+                path.join(prismaClientPath, 'schema.prisma'),
+              ],
+              to: ['.'],
             },
           ],
         }),
         copy({
           resolveFrom: 'cwd',
+          verbose: true,
           assets: [
             {
-              from: cowPath,
-              to: path.resolve(outputPath, 'cows'),
+              from: [cowPath],
+              to: [path.resolve(outputPath, 'cows')],
               keepStructure: true,
             },
           ],
