@@ -194,6 +194,19 @@ in development, and was messing up deployments.
 - Migrate our suite from `swc` back to using `esbuild` again since the tooling is more mature now,
   guaranteeing fast builds and having the same output as our previous releases.
 
+## 2.4.5
+
+### Fixed
+
+- Fixed a bug where referral date option in the command wasn't registered as required, and it was causing an
+  error in the app because it actually was required to resolve that.
+
+### Changed
+
+- Remove staging deployment step
+- Unpin prisma packages version because the build script now take its version directly from the package.json
+  instead of hardcoding.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
