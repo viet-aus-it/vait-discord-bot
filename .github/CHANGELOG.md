@@ -209,6 +209,10 @@ in development, and was messing up deployments.
 
 ## \[Unreleased\]
 
+### Changed
+
+- Change the config for test coverage ignore paths, now it's showing correctly.
+
 [//]: # (Template:)
 
 [//]: # (Version number)
