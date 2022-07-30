@@ -34,13 +34,16 @@ async function build() {
     console.log('Starting bundling by ESBuild...');
     const result = await esbuild.build({
       platform: 'node',
-      target: 'node16',
+      target: 'es2020',
       format: 'esm',
       bundle: true,
       minify: false,
       entryPoints: [path.resolve(dirname, 'src', 'index.ts')],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',
+      banner: {
+        js: "import { createRequire } from 'node:module';import url from 'node:url';const require = createRequire(import.meta.url);const __dirname = url.fileURLToPath(new URL('.', import.meta.url));const __filename = url.fileURLToPath(import.meta.url);",
+      },
       tsconfig: 'tsconfig.json',
       external: ['encoding', 'commonjs2 _http_common_'],
       plugins: [
