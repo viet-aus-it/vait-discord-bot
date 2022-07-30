@@ -10,14 +10,13 @@ export const fetchWeather = async (
 ): Promise<string | undefined> => {
   try {
     // Download weather info from the site
-    // @ts-ignore
     const response = await fetch(getWeatherURL(where));
     if (response.statusText !== 'OK') {
       throw new Error(
         `ERROR IN FETCHING WEATHER: ERROR ${response.status}: ${response.statusText}`
       );
     }
-    // eslint-disable-next-line @typescript-eslint/return-await
+
     return await response.text();
   } catch (error) {
     console.error(error);
