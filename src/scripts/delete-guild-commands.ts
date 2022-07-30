@@ -1,6 +1,9 @@
-import 'dotenv/config';
-import 'dotenv-expand/config';
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
 import { deployGuildCommands } from '../commands/command';
+
+const env = dotenv.config();
+dotenvExpand.expand(env);
 
 const deploy = async () => {
   const token = process.env.TOKEN ?? '';

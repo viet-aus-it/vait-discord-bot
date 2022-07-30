@@ -1,11 +1,14 @@
-import 'dotenv/config';
-import 'dotenv-expand/config';
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
 import { InteractionType } from 'discord-api-types/v10';
 import { processMessage } from './utils';
 import { getDiscordClient } from './clients';
 import { getConfigs } from './config';
 import { commandList } from './commands';
 import { deployGlobalCommands } from './commands/command';
+
+const env = dotenv.config();
+dotenvExpand.expand(env);
 
 const main = async () => {
   const token = process.env.TOKEN ?? '';
