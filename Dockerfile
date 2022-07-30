@@ -9,13 +9,14 @@ RUN npm install -g pnpm@7
 
 # Install Node modules
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY . .
 
 ENV NODE_ENV=production
 RUN pnpm prisma:gen && \
-    pnpm build
+    pnpm build && \
+    pnpm install --frozen-lockfile --ignore-scripts --production
 
 ####################
 # Production image #
@@ -24,6 +25,7 @@ FROM node:16.16-bullseye-slim as production
 WORKDIR /app
 
 COPY --chown=node:node --from=build /app/build build
+COPY --chown=node:node --from=build /app/node_modules node_modules
 
 USER node
 ENV NODE_ENV=production

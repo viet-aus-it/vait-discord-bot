@@ -214,6 +214,7 @@ in development, and was messing up deployments.
 - Change the config for test coverage ignore paths, now it's showing correctly.
 - Change the deployment workflow, now it correctly tags the production image.
 - Update ESBuild config to avoid the hat `^` when finding prisma assets.
+- Temporarily back off of bundling external dependencies for now to fix an issue with code bundling.
 
 ## \[Unreleased\]
 
