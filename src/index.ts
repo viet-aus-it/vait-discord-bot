@@ -29,19 +29,28 @@ const main = async () => {
   });
 
   client.on('interactionCreate', async (interaction) => {
-    const isCommand = interaction.isChatInputCommand();
-    if (isCommand) {
-      const { commandName } = interaction;
-      const command = commandList.find((cmd) => cmd.data.name === commandName);
-      return command?.execute(interaction);
-    }
+    try {
+      const isCommand = interaction.isChatInputCommand();
+      if (isCommand) {
+        const { commandName } = interaction;
+        const command = commandList.find(
+          (cmd) => cmd.data.name === commandName
+        );
+        return await command?.execute(interaction);
+      }
 
-    const isAutocomplete =
-      interaction.type === InteractionType.ApplicationCommandAutocomplete;
-    if (isAutocomplete) {
-      const { commandName } = interaction;
-      const command = commandList.find((cmd) => cmd.data.name === commandName);
-      return command?.autocomplete?.(interaction);
+      const isAutocomplete =
+        interaction.type === InteractionType.ApplicationCommandAutocomplete;
+      if (isAutocomplete) {
+        const { commandName } = interaction;
+        const command = commandList.find(
+          (cmd) => cmd.data.name === commandName
+        );
+        return await command?.autocomplete?.(interaction);
+      }
+    } catch (error) {
+      // TODO: More error handling here and/or forward this to a tracker service
+      console.error(error);
     }
   });
 };
