@@ -15,8 +15,7 @@ COPY . .
 
 ENV NODE_ENV=production
 RUN pnpm prisma:gen && \
-    pnpm build && \
-    pnpm install --frozen-lockfile --ignore-scripts --production
+    pnpm build
 
 ####################
 # Production image #
@@ -25,7 +24,6 @@ FROM node:16.16-bullseye-slim as production
 WORKDIR /app
 
 COPY --chown=node:node --from=build /app/build build
-COPY --chown=node:node --from=build /app/node_modules node_modules
 
 USER node
 ENV NODE_ENV=production

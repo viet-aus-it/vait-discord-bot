@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@discordjs/rest': ^1.0.1
+  '@discordjs/rest': 1.0.0
   '@faker-js/faker': ^7.3.0
   '@prisma/client': ^4.1.1
   '@types/node': ^18.6.2
@@ -16,7 +16,7 @@ specifiers:
   dotenv: ^16.0.1
   dotenv-expand: ^8.0.3
   esbuild: ^0.14.51
-  esbuild-plugin-node-externals: ^0.3.0
+  esbuild-plugin-copy: ^1.3.0
   eslint: ^8.20.0
   eslint-config-airbnb-base: ^15.0.0
   eslint-config-airbnb-typescript: ^17.0.0
@@ -37,7 +37,7 @@ specifiers:
   zod: ^3.17.10
 
 dependencies:
-  '@discordjs/rest': 1.0.1
+  '@discordjs/rest': 1.0.0
   '@prisma/client': 4.1.1_prisma@4.1.1
   cowsay: 1.5.0
   discord-api-types: 0.37.0
@@ -56,7 +56,7 @@ devDependencies:
   c8: 7.12.0
   concurrently: 7.3.0
   esbuild: 0.14.51
-  esbuild-plugin-node-externals: 0.3.0_esbuild@0.14.51
+  esbuild-plugin-copy: 1.3.0_esbuild@0.14.51
   eslint: 8.20.0
   eslint-config-airbnb-base: 15.0.0_afl3vkhn63baibzal45igheroq
   eslint-config-airbnb-typescript: 17.0.0_endw7x3nefh3kpkbzaw3wdao5q
@@ -94,6 +94,19 @@ packages:
   /@discordjs/collection/1.0.1:
     resolution: {integrity: sha512-5V/wswzR3r2RVYXLxxg4TvrAnBhVCNgHTXhC+OUtLoriJ072rPMHo+Iw1SS1vrCckp8Es40XM411+WkNRPaXFw==}
     engines: {node: '>=16.9.0'}
+    dev: false
+
+  /@discordjs/rest/1.0.0:
+    resolution: {integrity: sha512-uDAvnE0P2a8axMdD4C51EGjvCRQ2HZk2Yxf6vHWZgIqG87D8DGKMPwmquIxrrB07MjV+rwci2ObU+mGhGP+bJg==}
+    engines: {node: '>=16.9.0'}
+    dependencies:
+      '@discordjs/collection': 1.0.1
+      '@sapphire/async-queue': 1.3.2
+      '@sapphire/snowflake': 3.2.2
+      discord-api-types: 0.36.3
+      file-type: 17.1.4
+      tslib: 2.4.0
+      undici: 5.8.0
     dev: false
 
   /@discordjs/rest/1.0.1:
@@ -1204,14 +1217,15 @@ packages:
     dev: true
     optional: true
 
-  /esbuild-plugin-node-externals/0.3.0_esbuild@0.14.51:
-    resolution: {integrity: sha512-2F0OVeWr6q0Hwp+U1/+x7HUOgy4tey6pEBMKx7lA4s7N6U4Kb9+ubtAoGzPYP4mojTt4lTbOZUPfcuPBjGza4w==}
+  /esbuild-plugin-copy/1.3.0_esbuild@0.14.51:
+    resolution: {integrity: sha512-LOx1xJOlAaCFMRtokHjsJfEkrosy3RDRa8SUHmn7loo0gwrouBQQwLAmOyMECshf7gSR1cPSRtAHu3KF/kQsyw==}
     peerDependencies:
       esbuild: ^0.14.0
     dependencies:
+      chalk: 4.1.2
       esbuild: 0.14.51
-      find-up: 5.0.0
-      jsonfile: 6.1.0
+      fs-extra: 10.1.0
+      globby: 11.1.0
     dev: true
 
   /esbuild-sunos-64/0.14.51:
@@ -1698,6 +1712,15 @@ packages:
       mime-types: 2.1.35
     dev: true
 
+  /fs-extra/10.1.0:
+    resolution: {integrity: sha512-oRXApq54ETRj4eMiFzGnHWGy+zo5raudjuxN0b8H7s/RU2oW0Wvsx9O0ACRN/kRq9E8Vu/ReskGB5o3ji+FzHQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      graceful-fs: 4.2.10
+      jsonfile: 6.1.0
+      universalify: 2.0.0
+    dev: true
+
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
@@ -1818,7 +1841,6 @@ packages:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
     requiresBuild: true
     dev: true
-    optional: true
 
   /graphql/16.5.0:
     resolution: {integrity: sha512-qbHgh8Ix+j/qY+a/ZcJnFQ+j8ezakqPiHwPiZhV/3PgGlgf96QMBB5/f2rkiC9sgLoy/xvT6TSiaf2nTHJh5iA==}
@@ -1931,7 +1953,7 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       ansi-escapes: 4.3.2
-      chalk: 4.1.1
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-width: 3.0.0
       external-editor: 3.1.0
@@ -2309,7 +2331,7 @@ packages:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
     engines: {node: '>=10'}
     dependencies:
-      chalk: 4.1.1
+      chalk: 4.1.2
       is-unicode-supported: 0.1.0
     dev: true
 
@@ -2559,7 +2581,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       bl: 4.1.0
-      chalk: 4.1.1
+      chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-spinners: 2.7.0
       is-interactive: 1.0.0

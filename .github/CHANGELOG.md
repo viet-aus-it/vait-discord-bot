@@ -205,7 +205,7 @@ in development, and was messing up deployments.
 
 - Remove staging deployment step
 - Unpin prisma packages version because the build script now take its version directly from the package.json
-  instead of hardcoding.
+  instead of hard-coding.
 
 ## 2.4.6
 
@@ -215,6 +215,13 @@ in development, and was messing up deployments.
 - Change the deployment workflow, now it correctly tags the production image.
 - Update ESBuild config to avoid the hat `^` when finding prisma assets.
 - Temporarily back off of bundling external dependencies for now to fix an issue with code bundling.
+
+## 2.4.6a
+
+### Changed
+
+- Re-enabled bundling external dependencies, hard-locking `@discordjs/rest` package to 1.0.0 for now,
+  because 1.0.1 breaks bundling
 
 ## \[Unreleased\]
 
