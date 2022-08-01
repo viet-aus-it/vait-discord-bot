@@ -1,7 +1,7 @@
 import { it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
-import { server } from '../../mocks/server';
+import { server } from '../../testUtils/mocks/server';
 import { fetchQuote, ZEN_QUOTES_URL } from './fetchQuote';
 
 describe('Fetching quotes', () => {

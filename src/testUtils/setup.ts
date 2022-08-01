@@ -6,6 +6,6 @@ beforeAll(() => server.listen());
 
 afterEach(() => server.resetHandlers());
 
-afterAll(() => server.close());
+afterAll(async () => server.close());
 
 process.env.TOKEN = faker.finance.account(10);

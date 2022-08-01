@@ -1,7 +1,7 @@
 import { it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
-import { server } from '../../mocks/server';
+import { server } from '../../testUtils/mocks/server';
 import { fetchWeather, getWeatherURL } from './fetchWeather';
 
 describe('Fetch weather tests', () => {
