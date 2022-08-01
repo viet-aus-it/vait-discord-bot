@@ -14,6 +14,7 @@ export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.GuildMessageReactions,
         GatewayIntentBits.GuildWebhooks,
+        GatewayIntentBits.MessageContent,
       ],
       partials: [Partials.Channel, Partials.Message, Partials.Reaction],
     });
