@@ -16,6 +16,7 @@ export default defineConfig({
       ],
     },
     clearMocks: true,
+    globalSetup: ['./src/testUtils/globals-db.ts'],
     setupFiles: ['./src/testUtils/setup.ts'],
   },
 });
