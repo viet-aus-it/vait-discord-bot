@@ -1,10 +1,6 @@
-import { vi, it, describe, expect } from 'vitest';
+import { it, describe, expect } from 'vitest';
 import { autocomplete, execute } from './referralNew';
-import { getPrismaClient } from '../../clients';
 import { services } from './services';
-
-vi.mock('../../clients');
-const mockGetPrismaClient = vi.mocked(getPrismaClient);
 
 describe('autocomplete', () => {
   it('should return nothing if the search term shorter than 4', () => {
@@ -151,25 +147,6 @@ describe('execute', () => {
       code: 'SomeCodeHere',
       expiry_date: `04/04/${new Date().getFullYear() + 1}`,
     };
-
-    const mockPrisma: any = {
-      referralCode: {
-        create: (input: any) => {
-          expect(input.data.service).toBe(data.service);
-          expect(input.data.code).toBe(data.code);
-          expect(input.data.expiry_date.toISOString()).toBe(
-            new Date(data.expiry_date).toISOString()
-          );
-
-          return {
-            service: data.service,
-            code: data.code,
-            expiry_date: new Date(data.expiry_date),
-          };
-        },
-      },
-    };
-    mockGetPrismaClient.mockReturnValueOnce(mockPrisma);
 
     // mock input options
     const options = {
