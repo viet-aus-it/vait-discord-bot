@@ -223,6 +223,13 @@ in development, and was messing up deployments.
 - Re-enabled bundling external dependencies, hard-locking `@discordjs/rest` package to 1.0.0 for now,
   because 1.0.1 breaks bundling
 
+## 2.4.6b
+
+### Fixed
+
+- Fix an error where the bot was missing a MessageContent intent so it cannot read the `thank` keyword.
+  See [#122](https://github.com/viet-aus-it/vait-discord-bot/issues/122) and [#123](https://github.com/viet-aus-it/vait-discord-bot/pull/123)
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
