@@ -139,7 +139,16 @@ there is a change in command registration (adding a new command, editing
 options of an existing one). Running this too many times in a short period
 of time will cause Discord API to **lock your bot out**.
 
-- **NOTE:** When deploy slash commands, if you got `Error: Cannot deploy commands`, it's normally because of your bot doesn't have permission to do so. You need to authorize your bot with scope: `bot` and `applications.commands` using `https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scope=bot%20applications.commands`
+
+### Troubleshooting:
+
+- When deploy slash commands, if you got `Error: Cannot deploy commands`,
+it's normally because of your bot doesn't have permission to do so. You
+need to authorize your bot with scope: `bot` and `applications.commands`
+using `https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scope=bot%20applications.commands`
+
+- If a bot cannot read the messages content, check the [Discord Developer Portal => Bot Section](https://discord.com/developers/applications)
+and see under `Privileged Gateway Intents => Message Content Intent` feature is enabled. This should be enabled.
 
 ### Running lints and tests
 
