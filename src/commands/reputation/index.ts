@@ -1,9 +1,9 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { Command } from '../command';
-import checkRep from './checkReputation';
-import giveRep from './giveReputation';
-import takeRep from './takeReputation';
-import setRep from './setReputation';
+import { Command } from '../command.js';
+import checkRep from './checkReputation.js';
+import giveRep from './giveReputation.js';
+import takeRep from './takeReputation.js';
+import setRep from './setReputation.js';
 
 const data = new SlashCommandBuilder()
   .setName('rep')
@@ -31,4 +31,4 @@ const command: Command = {
 
 export default command;
 
-export { thankUserInMessage } from './giveReputation';
+export { thankUserInMessage } from './giveReputation.js';

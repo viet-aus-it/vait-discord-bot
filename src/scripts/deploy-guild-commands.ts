@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
-import { deployGuildCommands } from '../commands/command';
-import { commandList } from '../commands';
+import process from 'node:process';
+import { deployGuildCommands } from '../commands/command.js';
+import { commandList } from '../commands/index.js';
 
 const env = dotenv.config();
 dotenvExpand.expand(env);

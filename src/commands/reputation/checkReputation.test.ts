@@ -1,6 +1,6 @@
 import { vi, it, describe, expect } from 'vitest';
-import { checkReputation } from './checkReputation';
-import { getOrCreateUser } from './_helpers';
+import { checkReputation } from './checkReputation.js';
+import { getOrCreateUser } from './_helpers.js';
 
 vi.mock('./_helpers');
 const mockGetOrCreateUser = vi.mocked(getOrCreateUser);

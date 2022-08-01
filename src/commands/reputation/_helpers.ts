@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { getPrismaClient } from '../../clients';
+import { getPrismaClient } from '../../clients/index.js';
 
 export const getOrCreateUser = async (userId: string) => {
   const prisma = getPrismaClient();
