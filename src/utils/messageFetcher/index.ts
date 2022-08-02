@@ -10,9 +10,9 @@ export const fetchLastMessageBeforeId = async (
     if (!messageRightBefore) {
       throw new Error('Cannot fetch previous messages');
     }
-    return messageRightBefore.content;
+    return messageRightBefore;
   } catch (error: any) {
     console.error('CANNOT FETCH MESSAGES IN CHANNEL', error);
-    return '';
+    return undefined;
   }
 };
