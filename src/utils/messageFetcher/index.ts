@@ -16,3 +16,16 @@ export const fetchLastMessageBeforeId = async (
     return undefined;
   }
 };
+
+export const fetchMessageById = async (channel: TextChannel, id: string) => {
+  try {
+    const message = await channel.messages.fetch(id);
+    if (!message) {
+      throw new Error('Cannot fetch message');
+    }
+    return message;
+  } catch (error: any) {
+    console.error('CANNOT FETCH MESSAGE IN CHANNEL', error);
+    return undefined;
+  }
+};
