@@ -8,14 +8,13 @@ WORKDIR /app
 RUN npm install -g pnpm@7
 
 # Install Node modules
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts
+COPY package.json pnpm-lock.yaml prisma ./
+RUN pnpm install --frozen-lockfile --ignore-scripts && pnpm prisma:gen
 
 COPY . .
 
 ENV NODE_ENV=production
-RUN pnpm prisma:gen && \
-    pnpm build
+RUN pnpm build
 
 ####################
 # Production image #
