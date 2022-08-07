@@ -36,7 +36,8 @@
     "prisma:studio": "prisma studio",
     "deploy:command": "tsx src/scripts/deploy-guild-commands.ts",
     "delete:command": "tsx src/scripts/delete-guild-commands.ts",
-    "start": "pnpm prisma:migrate && pnpm prisma:gen && tsx watch ./src/index.ts"
+    "start:only": "tsx watch --clear-screen=false ./src/index.ts",
+    "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only"
   },
   "dependencies": {
     "@discordjs/rest": "1.0.0",
@@ -51,15 +52,15 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.3.0",
-    "@types/node": "^18.6.2",
+    "@types/node": "^18.6.4",
     "@types/node-fetch": "^2.6.2",
-    "@typescript-eslint/eslint-plugin": "^5.31.0",
-    "@typescript-eslint/parser": "^5.31.0",
+    "@typescript-eslint/eslint-plugin": "^5.32.0",
+    "@typescript-eslint/parser": "^5.32.0",
     "c8": "^7.12.0",
     "concurrently": "^7.3.0",
-    "esbuild": "^0.14.51",
+    "esbuild": "^0.14.53",
     "esbuild-plugin-copy": "^1.3.0",
-    "eslint": "^8.20.0",
+    "eslint": "^8.21.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.5.0",
@@ -74,6 +75,6 @@
     "tree-kill": "^1.2.2",
     "tsx": "^3.8.0",
     "typescript": "^4.7.4",
-    "vitest": "^0.19.1"
+    "vitest": "^0.21.0"
   }
 }
