@@ -230,6 +230,12 @@ in development, and was messing up deployments.
 - Fix an error where the bot was missing a MessageContent intent so it cannot read the `thank` keyword.
   See [#122](https://github.com/viet-aus-it/vait-discord-bot/issues/122) and [#123](https://github.com/viet-aus-it/vait-discord-bot/pull/123)
 
+## 2.5.0
+
+### Changed
+
+- Update our whole codebase to use ESModules instead of CommonJS.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
