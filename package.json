@@ -2,6 +2,7 @@
   "name": "@viet-aus-it/discord-bot",
   "version": "2.4.6b",
   "description": "Chat bot for VAIT Discord Server",
+  "type": "module",
   "main": "build/index.js",
   "engines": {
     "node": "^16.0.0",
@@ -40,20 +41,19 @@
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only"
   },
   "dependencies": {
-    "@discordjs/rest": "1.0.0",
+    "@discordjs/rest": "^1.0.1",
     "@prisma/client": "^4.1.1",
     "cowsay": "^1.5.0",
     "discord-api-types": "^0.37.0",
     "discord.js": "^14.1.1",
     "dotenv": "^16.0.1",
     "dotenv-expand": "^8.0.3",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.2.9",
     "zod": "^3.17.10"
   },
   "devDependencies": {
     "@faker-js/faker": "^7.3.0",
     "@types/node": "^18.6.4",
-    "@types/node-fetch": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
     "c8": "^7.12.0",

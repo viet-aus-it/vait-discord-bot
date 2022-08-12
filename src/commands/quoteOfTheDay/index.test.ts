@@ -1,7 +1,7 @@
 import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
-import { getQuoteOfTheDay } from '.';
-import { fetchQuote } from './fetchQuote';
+import { getQuoteOfTheDay } from './index.js';
+import { fetchQuote } from './fetchQuote.js';
 
 vi.mock('./fetchQuote');
 const mockFetch = vi.mocked(fetchQuote);

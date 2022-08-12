@@ -2,8 +2,8 @@ import {
   ChatInputCommandInteraction,
   SlashCommandSubcommandBuilder,
 } from 'discord.js';
-import { getOrCreateUser } from './_helpers';
-import { Subcommand } from '../command';
+import { getOrCreateUser } from './_helpers.js';
+import { Subcommand } from '../command.js';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('check')

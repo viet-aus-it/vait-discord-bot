@@ -1,6 +1,6 @@
 import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
-import { ask8Ball } from '.';
+import { ask8Ball } from './index.js';
 
 const replyMock = vi.fn();
 

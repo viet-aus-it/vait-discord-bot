@@ -1,5 +1,5 @@
 import { vi, it, describe, expect } from 'vitest';
-import { createPoll, NUMBER_AS_STRING } from '.';
+import { createPoll, NUMBER_AS_STRING } from './index.js';
 
 const replyMock = vi.fn();
 const getStringMock = vi.fn((option: string): string | undefined => option);

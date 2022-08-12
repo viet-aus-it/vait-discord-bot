@@ -1,5 +1,4 @@
-import type { GuildMember } from 'discord.js';
-import { PermissionsBitField } from 'discord.js';
+import { PermissionsBitField, GuildMember } from 'discord.js';
 
 export const isAdmin = (member: GuildMember | null) => {
   if (!member) return false;

@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { AutocompleteHandler, Command, CommandHandler } from '../command';
+import { AutocompleteHandler, Command, CommandHandler } from '../command.js';
 
-import * as referralNew from './referralNew';
-import * as referralRandom from './referralRandom';
+import * as referralNew from './referralNew.js';
+import * as referralRandom from './referralRandom.js';
 // referral new $SERVICE_NAME $LINK/CODE $EXPIRY_DATE(DD/MM/YYYY)
 // referral random $SERVICE_NAME
 
