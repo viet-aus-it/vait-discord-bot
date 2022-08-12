@@ -1,5 +1,5 @@
 import { vi, it, describe, expect } from 'vitest';
-import { danhSomeone } from './index.js';
+import { danhSomeone } from '.';
 
 const replyMock = vi.fn();
 const getUserMock = vi.fn(

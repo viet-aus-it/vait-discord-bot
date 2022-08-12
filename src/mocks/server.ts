@@ -1,5 +1,4 @@
-// @ts-ignore
 import { setupServer } from 'msw/node';
-import { handlers } from './handlers.js';
+import { handlers } from './handlers';
 
 export const server = setupServer(...handlers);

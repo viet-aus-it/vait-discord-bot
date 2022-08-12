@@ -16,7 +16,6 @@ export const fetchWeather = async (
         `ERROR IN FETCHING WEATHER: ERROR ${response.status}: ${response.statusText}`
       );
     }
-
     return await response.text();
   } catch (error) {
     console.error(error);

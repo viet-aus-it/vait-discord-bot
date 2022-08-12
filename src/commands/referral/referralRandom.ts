@@ -1,9 +1,9 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
-import { getPrismaClient } from '../../clients/index.js';
-import { getRandomIntInclusive } from '../../utils/index.js';
-import { AutocompleteHandler, CommandHandler } from '../command.js';
-import { cleanupExpiredCode } from './cleanupExpiredCode.js';
-import { searchServices } from './services.js';
+import { getPrismaClient } from '../../clients';
+import { getRandomIntInclusive } from '../../utils';
+import { AutocompleteHandler, CommandHandler } from '../command';
+import { cleanupExpiredCode } from './cleanupExpiredCode';
+import { searchServices } from './services';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('random')

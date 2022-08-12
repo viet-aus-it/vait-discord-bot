@@ -1,6 +1,6 @@
 import { ReferralCode } from '@prisma/client';
-import { getPrismaClient } from '../../clients/index.js';
-import { parseDate } from './parseDate.js';
+import { getPrismaClient } from '../../clients';
+import { parseDate } from './parseDate';
 
 export const cleanupExpiredCode = (
   referrals: ReferralCode[]

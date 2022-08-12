@@ -3,8 +3,8 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
-import { Command } from '../command.js';
-import { getRandomIntInclusive } from '../../utils/index.js';
+import { Command } from '../command';
+import { getRandomIntInclusive } from '../../utils';
 
 const data = new SlashCommandBuilder()
   .setName('8ball')

@@ -7,8 +7,8 @@ import {
   fetchLastMessageBeforeId,
   getRandomBoolean,
   isBlank,
-} from '../../utils/index.js';
-import { Command } from '../command.js';
+} from '../../utils';
+import { Command } from '../command';
 
 const data = new SlashCommandBuilder()
   .setName('mock')

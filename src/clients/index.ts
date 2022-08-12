@@ -1,2 +1,2 @@
-export * from './discord.js';
-export * from './prisma.js';
+export * from './discord';
+export * from './prisma';

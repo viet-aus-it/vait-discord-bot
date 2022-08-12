@@ -22,7 +22,6 @@ RUN pnpm build
 FROM node:16.16-bullseye-slim as production
 WORKDIR /app
 
-COPY --chown=node:node --from=build /app/package.json package.json
 COPY --chown=node:node --from=build /app/build build
 
 USER node

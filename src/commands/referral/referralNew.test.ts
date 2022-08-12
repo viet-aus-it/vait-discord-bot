@@ -1,7 +1,7 @@
 import { vi, it, describe, expect } from 'vitest';
-import { autocomplete, execute } from './referralNew.js';
-import { getPrismaClient } from '../../clients/index.js';
-import { services } from './services.js';
+import { autocomplete, execute } from './referralNew';
+import { getPrismaClient } from '../../clients';
+import { services } from './services';
 
 vi.mock('../../clients');
 const mockGetPrismaClient = vi.mocked(getPrismaClient);

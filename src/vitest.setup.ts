@@ -1,7 +1,6 @@
-import process from 'node:process';
 import { beforeAll, afterAll, afterEach } from 'vitest';
 import { faker } from '@faker-js/faker';
-import { server } from './mocks/server.js';
+import { server } from './mocks/server';
 
 beforeAll(() => server.listen());
 

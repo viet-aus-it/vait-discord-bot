@@ -1,12 +1,11 @@
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
-import process from 'node:process';
 import { InteractionType } from 'discord-api-types/v10';
-import { processMessage } from './utils/index.js';
-import { getDiscordClient } from './clients/index.js';
-import { getConfigs } from './config.js';
-import { commandList } from './commands/index.js';
-import { deployGlobalCommands } from './commands/command.js';
+import { processMessage } from './utils';
+import { getDiscordClient } from './clients';
+import { getConfigs } from './config';
+import { commandList } from './commands';
+import { deployGlobalCommands } from './commands/command';
 
 const env = dotenv.config();
 dotenvExpand.expand(env);
@@ -18,7 +17,6 @@ const main = async () => {
   if (!client.user) throw new Error('Something went wrong!');
   console.log(`Logged in as ${client.user.tag}!`);
 
-  console.log(`Current mode: ${process.env.NODE_ENV || 'development'}`);
   if (process.env.NODE_ENV === 'production') {
     // This should only be run once during the bot startup in production.
     // For development usage, please use `pnpm deploy:command`

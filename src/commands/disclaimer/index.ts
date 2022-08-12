@@ -3,7 +3,7 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
-import { Command } from '../command.js';
+import { Command } from '../command';
 
 const data = new SlashCommandBuilder()
   .setName('disclaimer')

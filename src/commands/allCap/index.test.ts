@@ -1,6 +1,6 @@
 import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
-import { allCapExpandText } from './index.js';
+import { allCapExpandText } from '.';
 
 const replyMock = vi.fn();
 

@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest';
-import { searchServices } from './services.js';
+import { searchServices } from './services';
 
 describe('Service search test', () => {
   it('should return searched options', () => {

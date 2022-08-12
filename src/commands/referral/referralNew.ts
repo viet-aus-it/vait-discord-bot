@@ -1,8 +1,8 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
-import { getPrismaClient } from '../../clients/index.js';
-import { AutocompleteHandler, CommandHandler } from '../command.js';
-import { parseDate } from './parseDate.js';
-import { searchServices, services } from './services.js';
+import { getPrismaClient } from '../../clients';
+import { AutocompleteHandler, CommandHandler } from '../command';
+import { parseDate } from './parseDate';
+import { searchServices, services } from './services';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('new')

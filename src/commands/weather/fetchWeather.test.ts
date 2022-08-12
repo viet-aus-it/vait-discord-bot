@@ -1,8 +1,8 @@
 import { it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { rest } from 'msw';
-import { server } from '../../mocks/server.js';
-import { fetchWeather, getWeatherURL } from './fetchWeather.js';
+import { server } from '../../mocks/server';
+import { fetchWeather, getWeatherURL } from './fetchWeather';
 
 describe('Fetch weather tests', () => {
   const mockWeatherMessage = faker.lorem.words(10);

@@ -3,9 +3,9 @@ import {
   GuildMember,
   SlashCommandSubcommandBuilder,
 } from 'discord.js';
-import { isAdmin, isModerator } from '../../utils/index.js';
-import { getOrCreateUser, updateRep } from './_helpers.js';
-import { Subcommand } from '../command.js';
+import { isAdmin, isModerator } from '../../utils';
+import { getOrCreateUser, updateRep } from './_helpers';
+import { Subcommand } from '../command';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('set')
