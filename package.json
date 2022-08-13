@@ -18,8 +18,7 @@
   "homepage": "https://github.com/viet-aus-it/vait-discord-bot#readme",
   "scripts": {
     "prepare": "husky install",
-    "clean:all": "pnpm prebuild && pnpm pretest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc",
     "build": "rimraf build && tsx esbuild.config.ts",
     "build:typecheck": "pnpm typecheck && pnpm build",
     "lint": "esw --cache src/**/*.ts",
@@ -30,7 +29,7 @@
     "test": "vitest --silent",
     "test:silent": "vitest run --silent",
     "test:typecheck": "concurrently pnpm:test:silent pnpm:typecheck",
-    "test:watch": "vitest",
+    "test:watch": "vitest watch",
     "prisma:migrate": "prisma migrate dev",
     "prisma:gen": "prisma generate",
     "prisma:studio": "prisma studio",
