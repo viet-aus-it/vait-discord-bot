@@ -11,6 +11,7 @@ import reputation from './reputation';
 import weatherCommand from './weather';
 import getdisclaimer from './disclaimer';
 import referral from './referral';
+import roles from './roles';
 
 export const commandList: Command[] = [
   allCap,
@@ -25,6 +26,7 @@ export const commandList: Command[] = [
   weatherCommand,
   getdisclaimer,
   referral,
+  roles,
 ];
 
 export * from './reputation';
