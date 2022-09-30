@@ -33,27 +33,6 @@ export const roles = [
   { name: 'DnD', value: '909601586450427974' },
   { name: 'UI/UX', value: '917267267266433026' },
   { name: 'Hội Thầy Thuốc Trẻ VAIT', value: '933213969563398244' },
-
-  // { name: '@everyone', value: '784198833815027742' },
-  // { name: 'Admin', value: '784198932799815703' },
-  // { name: 'NO FAIL ADMIN', value: '916320249379450900' },
-  // { name: 'Moderator', value: '854157458226282527' },
-  // { name: 'VAIT Music bot', value: '889660176028803113' },
-  // { name: 'Repo Finder', value: '900013527933267969' },
-  // { name: 'vAIt', value: '943122664485191804' },
-  // { name: 'BA/PM/PO', value: '970864651929796658' },
-  // { name: 'Avrae', value: '990235161591443549' },
-  // { name: 'Not Quite Nitro', value: '990991878277189664' },
-  // { name: 'Tupperbox', value: '991541855672094803' },
-  // { name: 'Jkiller Bot', value: '1025272909536690210' }
-  // { name: 'Partners', value: '803605245485121568' },
-  // { name: 'Meetup Speaker', value: '803605996701483038' },
-  // { name: 'CodingMentor Staff', value: '811812986062503956' },
-  // { name: 'Server Contributor', value: '811842015381028864' },
-  // { name: 'Server Donor', value: '824803830155313182' },
-  // { name: 'Muted', value: '826033443888562207' },
-  // { name: 'SKYNET', value: '784557299125059584' },
-  // { name: 'Server Booster', value: '784691951063924738' },
 ];
 
 export const searchRoles = (term?: string, searchRoleList = roles) => {
