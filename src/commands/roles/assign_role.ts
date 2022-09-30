@@ -25,9 +25,29 @@ export const autocomplete: AutocompleteHandler = async (interaction) => {
 
 export const execute: CommandHandler = async (interaction) => {
   const roleId = interaction.options.getString('role', true).toLowerCase();
-
-  (interaction.member?.roles as GuildMemberRoleManager).add(roleId);
-
   const roleName = roles.find((role) => role.value === roleId)?.name;
-  await interaction.reply(`Role ${roleName} has been assigned to you`);
+
+  if (!roleName) {
+    await interaction.reply('Please select a role from the provided list');
+    return;
+  }
+
+  (interaction.member?.roles as GuildMemberRoleManager)
+    .add(roleId)
+    .then(async () => {
+      await interaction.reply(`Role ${roleName} has been assigned to you`);
+    })
+    .catch(async (error) => {
+      if (error.rawError.code === 10011) {
+        return interaction.reply(`Role ${roleName} does not exist`);
+      }
+
+      await interaction.reply(
+        `${error.rawError.code}: ${error.rawError.message}`
+      );
+    });
 };
+
+// role does not exist
+// something wrong
+// ok
