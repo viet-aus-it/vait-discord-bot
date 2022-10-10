@@ -1,8 +1,4 @@
-import {
-  ChatInputCommandInteraction,
-  EmbedBuilder,
-  SlashCommandBuilder,
-} from 'discord.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { Command } from '../command';
 import { getRandomIntInclusive } from '../../utils';
 
@@ -30,19 +26,13 @@ const REPLIES = [
   'Are you even trying?',
   'Keep it up',
 ] as const;
+
 const get8BallReply = () =>
   REPLIES[getRandomIntInclusive(0, REPLIES.length - 1)];
 
 export const ask8Ball = async (interaction: ChatInputCommandInteraction) => {
   const question = interaction.options.getString('question', true);
-
-  const embedMessage = new EmbedBuilder({
-    author: {
-      name: question,
-    },
-    description: get8BallReply(),
-  });
-  await interaction.reply({ embeds: [embedMessage] });
+  await interaction.reply(`Q: ${question}\nA: ${get8BallReply()}`);
 };
 
 const command: Command = {
