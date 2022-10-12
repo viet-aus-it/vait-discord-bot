@@ -4,6 +4,18 @@ export const getRandomIntInclusive = (min: number, max: number) => {
   return Math.floor(Math.random() * (intMax - intMin + 1) + min);
 };
 
+export const getUniqueRandomIntInclusive = (
+  numbers: number[],
+  min: number,
+  max: number
+) => {
+  let number = getRandomIntInclusive(min, max);
+  while (numbers.includes(number)) {
+    number = getRandomIntInclusive(min, max);
+  }
+  return number;
+};
+
 export const getRandomBoolean = (): boolean => {
   const randomBinaryNumber = Math.floor(Math.random() * 2);
   return Boolean(randomBinaryNumber);

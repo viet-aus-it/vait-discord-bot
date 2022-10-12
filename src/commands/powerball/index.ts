@@ -1,6 +1,9 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { Command } from '../command';
-import { getRandomIntInclusive } from '../../utils';
+import {
+  getRandomIntInclusive,
+  getUniqueRandomIntInclusive,
+} from '../../utils';
 
 const data = new SlashCommandBuilder()
   .setName('powerball')
@@ -15,32 +18,29 @@ const data = new SlashCommandBuilder()
   );
 
 const getMainNumbers = () => {
-  let numbers = '';
-  let counter = 0;
-  while (counter < 7) {
-    const number = getRandomIntInclusive(1, 35);
-
-    if (!numbers.includes(number.toString())) {
-      numbers += `${number.toString().padStart(2, '0')} `;
-      counter += 1;
-      if (counter === 7) {
-        return numbers;
-      }
-    }
-  }
+  return Array(7)
+    .fill(undefined)
+    .map((_, __, array) => getUniqueRandomIntInclusive(array, 1, 35))
+    .map((number) => `${number.toString().padStart(2, '0')}`)
+    .join(' ');
 };
 
 const getPowerballNumber = () => {
   return getRandomIntInclusive(1, 20).toString().padStart(2, '0');
 };
 
+export const getPowerBallGame = (count: number): string => {
+  const games = Array(count)
+    .fill(undefined)
+    .map(() => `${getMainNumbers()} PB:${getPowerballNumber()}`)
+    .join('\n');
+  return `\`\`\`${games}\`\`\``;
+};
+
 export const powerball = async (interaction: ChatInputCommandInteraction) => {
   const gameCount = interaction.options.getInteger('count', true);
-  let games = '';
-  for (let i = 0; i < gameCount; i += 1) {
-    games += `${getMainNumbers()} PB:${getPowerballNumber()}\n`;
-  }
-  interaction.reply(`\`\`\`${games}\`\`\``);
+  const games = getPowerBallGame(gameCount);
+  interaction.reply(games);
 };
 
 const command: Command = {
