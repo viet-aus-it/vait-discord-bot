@@ -16,6 +16,9 @@ import referral from './referral';
 import reminder from './reminder';
 import reputation from './reputation';
 import roles from './roles';
+import playPowerball from './powerball';
+import xkcd from './xkcd';
+import pinMessageContextMenuCommand from './contextMenuCommands/pin';
 import serverSettings from './serverSettings';
 import weatherCommand from './weather';
 
@@ -36,6 +39,7 @@ export const commandList: Command[] = [
   referral,
   reminder,
   roles,
+  xkcd,
   serverSettings,
   removeUserByRole,
 ];
