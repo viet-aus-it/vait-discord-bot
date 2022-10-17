@@ -19,9 +19,14 @@ const data = new SlashCommandBuilder()
 
 const getMainNumbers = () => {
   return Array(7)
-    .fill(undefined)
-    .map((_, __, array) => getUniqueRandomIntInclusive(array, 1, 35))
+    .fill(0)
+    .reduce((array: number[]) => {
+      const number = getUniqueRandomIntInclusive(array, 1, 35);
+      array.push(number);
+      return array;
+    }, [])
     .map((number) => `${number.toString().padStart(2, '0')}`)
+    .sort()
     .join(' ');
 };
 
