@@ -12,6 +12,7 @@ import weatherCommand from './weather';
 import getdisclaimer from './disclaimer';
 import referral from './referral';
 import roles from './roles';
+import playPowerball from './powerball';
 
 export const commandList: Command[] = [
   allCap,
@@ -21,6 +22,7 @@ export const commandList: Command[] = [
   insultCommand,
   mockCommand,
   poll,
+  playPowerball,
   quoteOfTheDay,
   reputation,
   weatherCommand,
