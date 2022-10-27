@@ -26,7 +26,6 @@ const getMainNumbers = () => {
       return array;
     }, [])
     .map((number) => `${number.toString().padStart(2, '0')}`)
-    .sort()
     .join(' ');
 };
 
