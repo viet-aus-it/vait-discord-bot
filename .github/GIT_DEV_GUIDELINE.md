@@ -34,7 +34,7 @@
   #9 Remove debug statement from index.js
   ```
 
-- Rebase instead of merge to resolve conflicts. However, do not rebase or amend your branch/commit of your branch is already pulled down by someone else.
+- Rebase instead of merge to resolve conflicts. However, do not rebase or amend your branch/commit if your branch is already pulled down by someone else.
 
 ### PR / CHANGELOG
 
