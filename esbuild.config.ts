@@ -61,7 +61,6 @@ async function build() {
             {
               from: [cowPath],
               to: [path.resolve(outputPath, 'cows')],
-              keepStructure: true,
             },
           ],
         }),
