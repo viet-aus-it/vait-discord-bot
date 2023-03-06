@@ -35,6 +35,7 @@
     "prisma:studio": "prisma studio",
     "deploy:command": "tsx src/scripts/deploy-guild-commands.ts",
     "delete:command": "tsx src/scripts/delete-guild-commands.ts",
+    "delete:command-global": "tsx src/scripts/delete-global-commands.ts",
     "start:only": "tsx watch --clear-screen=false ./src/index.ts",
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only"
   },
