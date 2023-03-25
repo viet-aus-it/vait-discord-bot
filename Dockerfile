@@ -8,8 +8,12 @@ WORKDIR /app
 RUN npm install -g pnpm@7
 
 # Install Node modules
-COPY package.json pnpm-lock.yaml prisma ./
-RUN pnpm install --frozen-lockfile --ignore-scripts && pnpm prisma:gen
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --ignore-scripts
+
+# Generate Prisma schemas
+COPY prisma ./prisma
+RUN pnpm prisma:gen
 
 COPY . .
 
