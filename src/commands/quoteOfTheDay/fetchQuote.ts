@@ -27,7 +27,7 @@ export const fetchQuote = async (): Promise<Quote | undefined> => {
     const parsedBody: ZenQuote[] = ZenQuoteResponse.parse(body);
     if (parsedBody.length === 0) throw new Error('No quote downloaded');
 
-    const { q, a, h } = body[0];
+    const { q, a, h } = parsedBody[0];
     return {
       quote: q,
       author: a,
