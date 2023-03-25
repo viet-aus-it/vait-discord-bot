@@ -1,7 +1,7 @@
 ################
 # Build assets #
 ################
-FROM node:16.16-bullseye as build
+FROM node:18.15-bullseye as build
 WORKDIR /app
 
 # Install global node modules: pnpm
@@ -23,7 +23,7 @@ RUN pnpm build
 ####################
 # Production image #
 ####################
-FROM node:16.16-bullseye-slim as production
+FROM node:18.15-bullseye-slim as production
 WORKDIR /app
 
 COPY --chown=node:node --from=build /app/build build
