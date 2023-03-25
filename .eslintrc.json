@@ -12,10 +12,6 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": [
-    "@typescript-eslint",
-    "eslint-plugin-import"
-  ],
   "rules": {
     "import/extensions": ["error", "never"],
     "no-console": "off",
