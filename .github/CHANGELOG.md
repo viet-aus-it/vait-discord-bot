@@ -234,11 +234,44 @@ in development, and was messing up deployments.
 
 - Revert broken 2.5.0 build
 
-## \[Unreleased\]
+## 2.6.0
+
+### Added
+
+- Add basic role functionality. See [#125](https://github.com/viet-aus-it/vait-discord-bot/pull/125)
+
+## 2.6.1
 
 ### Changed
 
-- Update our whole codebase to use ESModules instead of CommonJS.
+- Fix tagged username in question for 8ball. See [#127](https://github.com/viet-aus-it/vait-discord-bot/pull/127)
+
+## 2.6.2
+
+### Added
+
+- Add Powerball functions. See [#128](https://github.com/viet-aus-it/vait-discord-bot/pull/128)
+
+## 2.7.0
+
+### Changed
+
+- Update dependencies and Node runtime to v18. This includes:
+  - introducing the latest version of DiscordJS, and TypeScript 5.0.
+  - Updating node-fetch to version 3 for ESM compatibility
+  - Fix a borken test with new referral
+  - Split up test and lint actions to run in parallel
+  - See [#132](https://github.com/viet-aus-it/vait-discord-bot/pull/132)
+
+### Added
+
+- Add a script to delete global commands if deployed by accident
+
+### Fixed
+
+- Fix some typo in the docs. See [#130](https://github.com/viet-aus-it/vait-discord-bot/pull/130)
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
