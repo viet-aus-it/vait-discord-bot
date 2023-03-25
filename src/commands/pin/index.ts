@@ -1,6 +1,5 @@
 import {
   ChatInputCommandInteraction,
-  Message,
   SlashCommandBuilder,
   TextChannel,
 } from 'discord.js';
@@ -23,46 +22,33 @@ const USER_MESSAGES_TYPE = Object.freeze([
   MessageType.Reply,
 ]);
 
-const processPinMessage = async (
-  interaction: ChatInputCommandInteraction,
-  message?: Message
-) => {
-  if (!message) {
+export const pinMessage = async (interaction: ChatInputCommandInteraction) => {
+  const messageId = interaction.options.getString('messageId');
+  const textChannel = interaction.channel as TextChannel;
+
+  const fetchedMessage = messageId
+    ? await fetchMessageById(textChannel, messageId!)
+    : await fetchLastMessageBeforeId(textChannel, interaction.id);
+
+  if (!fetchedMessage) {
     await interaction.reply(
       'Cannot retrieve message to pin. Please try again.'
     );
     return;
   }
 
-  if (!USER_MESSAGES_TYPE.includes(message.type)) {
+  if (!USER_MESSAGES_TYPE.includes(fetchedMessage.type)) {
     await interaction.reply('Cannot pin a system message. Skipping...');
     return;
   }
 
-  if (message.pinned) {
+  if (fetchedMessage.pinned) {
     await interaction.reply('Message is already pinned. Skipping...');
     return;
   }
 
-  await message.pin();
+  await fetchedMessage.pin();
   await interaction.reply('Message is now pinned!');
-};
-
-export const pinMessage = async (interaction: ChatInputCommandInteraction) => {
-  const messageId = interaction.options.getString('messageId');
-  const textChannel = interaction.channel as TextChannel;
-
-  if (messageId) {
-    const fetchedMessage = await fetchMessageById(textChannel, messageId!);
-    await processPinMessage(interaction, fetchedMessage);
-    return;
-  }
-
-  const fetchedMessage = await fetchLastMessageBeforeId(
-    textChannel,
-    interaction.id
-  );
-  await processPinMessage(interaction, fetchedMessage);
 };
 
 const command: Command = {
