@@ -6,5 +6,5 @@ on:
       - master
 
 jobs:
-  test-and-lint-discord-bot:
+  test-and-lint:
     uses: ./.github/workflows/test-and-lint.yml
