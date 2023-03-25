@@ -28,8 +28,8 @@ please visit [our Wiki page](https://github.com/viet-aus-it/vait-discord-bot/wik
 
 ## Requirements
 
-- [Node 16+](https://nodejs.org/en/)
-- [PNPM 6+](https://pnpm.io/)
+- [Node 18+](https://nodejs.org/en/)
+- [PNPM 7+](https://pnpm.io/)
 - Docker 20+, Docker Compose 1.28+
 
 ## Contributions

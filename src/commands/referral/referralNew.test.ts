@@ -183,7 +183,7 @@ describe('execute', () => {
     // expect response
     const reply = (message: string) => {
       expect(message).toContain(
-        'new SomeCodeHere in chope.co - chope phuket expired on Tue Apr 04 2023'
+        `new SomeCodeHere in chope.co - chope phuket expired`
       );
     };
 

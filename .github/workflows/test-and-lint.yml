@@ -3,8 +3,11 @@ name: Tests and Lints packages
 on:
   workflow_call:
 
+env:
+  DATABASE_URL: postgresql://test:test@test:5432/test?schema=public
+
 jobs:
-  test-and-lint-discord-bot:
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,30 +15,70 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2
         with:
           version: ^7.0.0
 
-      - name: Set up Node 16
+      - name: Set up Node 18
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'pnpm'
 
       - name: Set up project
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST: db
-          POSTGRES_DB: discordbot
-          PORT: 5432
         run: |
-          export DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${PORT}/${POSTGRES_DB}?schema=public"
           pnpm install
           pnpm prisma:gen
 
       - name: Run linting
         run: pnpm lint
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ^7.0.0
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Set up project
+        run: |
+          pnpm install
+          pnpm prisma:gen
+
       - name: Run tests
         run: pnpm test:silent
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ^7.0.0
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+
+      - name: Set up project
+        run: |
+          pnpm install
+          pnpm prisma:gen
+
+      - name: Run typecheck
+        run: pnpm typecheck
