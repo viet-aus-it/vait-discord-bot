@@ -10,9 +10,22 @@ export const fetchLastMessageBeforeId = async (
     if (!messageRightBefore) {
       throw new Error('Cannot fetch previous messages');
     }
-    return messageRightBefore.content;
+    return messageRightBefore;
   } catch (error: any) {
     console.error('CANNOT FETCH MESSAGES IN CHANNEL', error);
-    return '';
+    return undefined;
+  }
+};
+
+export const fetchMessageById = async (channel: TextChannel, id: string) => {
+  try {
+    const message = await channel.messages.fetch(id);
+    if (!message) {
+      throw new Error('Cannot fetch message');
+    }
+    return message;
+  } catch (error: any) {
+    console.error('CANNOT FETCH MESSAGE IN CHANNEL', error);
+    return undefined;
   }
 };

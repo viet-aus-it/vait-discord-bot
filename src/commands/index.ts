@@ -5,6 +5,7 @@ import cowsayCommand from './cowsay';
 import danhCommand from './danhSomeone';
 import insultCommand from './insult';
 import mockCommand from './mockSomeone';
+import pinMessageCommand from './pin';
 import poll from './poll';
 import quoteOfTheDay from './quoteOfTheDay';
 import reputation from './reputation';
@@ -21,6 +22,7 @@ export const commandList: Command[] = [
   danhCommand,
   insultCommand,
   mockCommand,
+  pinMessageCommand,
   poll,
   playPowerball,
   quoteOfTheDay,

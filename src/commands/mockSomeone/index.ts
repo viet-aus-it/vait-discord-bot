@@ -31,31 +31,43 @@ const generateMockText = (message: string) =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
+const sendMockText = async (
+  content: string,
+  interaction: ChatInputCommandInteraction
+) => {
+  const reply = generateMockText(content);
+
+  try {
+    await interaction.reply(reply);
+  } catch (error) {
+    console.error('CANNOT SEND MESSAGE', error);
+  }
+};
+
 export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   let sentence = interaction.options.getString('sentence');
 
   if (sentence && !isBlank(sentence)) {
-    const mockText = generateMockText(sentence);
-    await interaction.reply(mockText);
+    await sendMockText(sentence, interaction);
     return;
   }
 
   // If /mock is detected but content is blank, fetch the latest message in channel
-  sentence = await fetchLastMessageBeforeId(
+  const fetchedMessage = await fetchLastMessageBeforeId(
     interaction.channel as TextChannel,
     interaction.id
   );
 
   // If it's still blank at this point, then exit
-  if (!sentence || isBlank(sentence)) {
+  if (!fetchedMessage || isBlank(fetchedMessage.content)) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
-  const mockText = generateMockText(sentence);
-  await interaction.reply(mockText);
+  sentence = fetchedMessage.content;
+  await sendMockText(sentence, interaction);
 };
 
 const command: Command = {

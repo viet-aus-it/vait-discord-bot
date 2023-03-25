@@ -80,19 +80,20 @@ export const cowsay = async (interaction: ChatInputCommandInteraction) => {
   }
 
   // If /cowsay is detected but content is blank, fetch the latest message in channel
-  content = await fetchLastMessageBeforeId(
+  const fetchedMessage = await fetchLastMessageBeforeId(
     interaction.channel as TextChannel,
     interaction.id
   );
 
   // If it's still blank at this point, then exit
-  if (!content) {
+  if (!fetchedMessage || isBlank(fetchedMessage.content)) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
+  content = fetchedMessage.content;
   await sendCowsay(content, interaction);
 };
 
