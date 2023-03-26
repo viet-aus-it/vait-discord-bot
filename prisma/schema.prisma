@@ -35,3 +35,14 @@ model ReferralCode {
   code        String
   expiry_date DateTime
 }
+
+model Reminder {
+  id          String @id @default(cuid())
+  userId      String
+  onTimestamp Int // Unix Timestamp
+  message     String
+  guildId     String
+
+  @@index(id)
+  @@index(userId)
+}
