@@ -10,6 +10,9 @@ dependencies:
   cowsay:
     specifier: ^1.5.0
     version: 1.5.0
+  date-fns:
+    specifier: ^2.29.3
+    version: 2.29.3
   discord-api-types:
     specifier: ^0.37.38
     version: 0.37.38
@@ -1267,6 +1270,11 @@ packages:
   /data-uri-to-buffer@4.0.1:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
     engines: {node: '>= 12'}
+    dev: false
+
+  /date-fns@2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
     dev: false
 
   /date-time@3.1.0:
