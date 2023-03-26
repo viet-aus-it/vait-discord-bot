@@ -28,6 +28,9 @@ dependencies:
   node-fetch:
     specifier: ^3.3.1
     version: 3.3.1
+  parse-duration:
+    specifier: ^1.0.3
+    version: 1.0.3
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -3184,6 +3187,10 @@ packages:
     dependencies:
       callsites: 3.1.0
     dev: true
+
+  /parse-duration@1.0.3:
+    resolution: {integrity: sha512-o6NAh12na5VvR6nFejkU0gpQ8jmOY9Y9sTU2ke3L3G/d/3z8jqmbBbeyBGHU73P4JLXfc7tJARygIK3WGIkloA==}
+    dev: false
 
   /path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
