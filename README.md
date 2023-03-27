@@ -48,6 +48,18 @@ For Contributions, please have a look these document
 You will need to manually create a new discord application and a new bot. Please check out [Create a Bot Application](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
 and [Adding a bot to your servers](https://discordjs.guide/preparations/adding-your-bot-to-servers.html) for more details.
 
+While creating the bot, please note down the bot `TOKEN`
+
+On the application page, go to the General Information and note down the `PUBLIC KEY`
+
+Click Oauth2 from the left panel, and note down your `CLIENT ID`
+
+Once you have invited the bot to your server, open Discord, go to Settings > Advanced and enable developer mode.
+Then, right-click on the server title and select "Copy ID" to get the `GUILD ID`.
+
+Please make sure you have these information before proceeding to the next step.
+
+
 ### Creating the config files
 
 #### Using the onboarding script
@@ -146,6 +158,9 @@ of time will cause Discord API to **lock your bot out**.
 it's normally because of your bot doesn't have permission to do so. You
 need to authorize your bot with scope: `bot` and `applications.commands`
 using `https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scope=bot%20applications.commands`
+
+- Another reason might be because the bot authorisation failed. Please open the previously generated `.env` file
+and make sure your credentials are correct.
 
 - If a bot cannot read the messages content, check the [Discord Developer Portal => Bot Section](https://discord.com/developers/applications)
 and see under `Privileged Gateway Intents => Message Content Intent` feature is enabled. This should be enabled.
