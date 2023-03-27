@@ -1,0 +1,65 @@
+import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { CommandHandler, Subcommand } from '../command';
+import { updateReminder } from './reminder-utils';
+import { convertDateToEpoch } from '../../utils/dateUtils';
+
+export const data = new SlashCommandSubcommandBuilder()
+  .setName('update')
+  .setDescription('Update a reminder')
+  .addStringOption((option) =>
+    option
+      .setName('id')
+      .setDescription('Reminder ID. This must be provided.')
+      .setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName('date')
+      .setDescription(
+        'The date to get a reminder on. Follow this format: DD/MM/YYYY hh:mm'
+      )
+      .setRequired(false)
+  )
+  .addStringOption((option) =>
+    option
+      .setName('message')
+      .setDescription('The message to get reminded for')
+      .setRequired(false)
+  );
+
+export const execute: CommandHandler = async (interaction) => {
+  const { user } = interaction.member!;
+  const guildId = interaction.guildId!;
+  const reminderId = interaction.options.getString('id', true);
+  const message = interaction.options.getString('message');
+  const dateString = interaction.options.getString('date');
+  if (!message && !dateString) {
+    await interaction.reply('Nothing to update. Skipping...');
+    return;
+  }
+
+  const op = await updateReminder({
+    userId: user.id,
+    guildId,
+    reminderId,
+    message: message ?? undefined,
+    timestamp: dateString ? convertDateToEpoch(dateString) : undefined,
+  });
+  if (!op.success) {
+    await interaction.reply(
+      `Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`
+    );
+    return;
+  }
+
+  await interaction.reply(
+    `Reminder ${reminderId} has been updated to remind on <t:${op.data.onTimestamp}> with the message: "${message}".`
+  );
+};
+
+const command: Subcommand = {
+  data,
+  execute,
+};
+
+export default command;
