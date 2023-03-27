@@ -1,12 +1,6 @@
 #!/bin/bash
 
-echo "Please enter your discord bot token if you have one, or leave it blank:"
-read BOT_TOKEN
-if [ -z "$BOT_TOKEN" ]; then
-  echo "Remember to create your discord bot app and bot, and fill in the TOKEN field in the .env file later."
-else
-  echo "Token registered. This will be filled in your local env file."
-fi
+echo "Setting up your bot credentials"
 
 # Function to prompt user for input and set up environment variable
 function prompt_and_set {
@@ -20,6 +14,7 @@ function prompt_and_set {
 }
 
 # Ask user for bot token, client id, guild id and public key
+prompt_and_set "Please enter your bot token if you have one, or leave it blank:" BOT_TOKEN
 prompt_and_set "Please enter your client id if you have one, or leave it blank:" CLIENT_ID
 prompt_and_set "Please enter your bot public key if you have one, or leave it blank:" PUBLIC_KEY
 prompt_and_set "Please enter your guild id if you have one, or leave it blank:" GUILD_ID
