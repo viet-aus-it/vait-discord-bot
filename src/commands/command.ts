@@ -4,6 +4,8 @@ import {
   SlashCommandSubcommandsOnlyBuilder,
   AutocompleteInteraction,
   ChatInputCommandInteraction,
+  ContextMenuCommandBuilder,
+  ContextMenuCommandInteraction,
 } from 'discord.js';
 import { REST, RequestData, RouteLike } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
@@ -13,6 +15,9 @@ export type CommandHandler = (
 ) => Promise<void>;
 export type AutocompleteHandler = (
   autocomplete: AutocompleteInteraction
+) => Promise<void>;
+export type ContextMenuCommandInteractionHandler = (
+  interaction: ContextMenuCommandInteraction
 ) => Promise<void>;
 
 export interface Command {
@@ -30,6 +35,11 @@ export interface Subcommand {
         subcommandGroup: SlashCommandSubcommandBuilder
       ) => SlashCommandSubcommandBuilder);
   execute: CommandHandler;
+}
+
+export interface ContextMenuCommand {
+  data: ContextMenuCommandBuilder;
+  execute: ContextMenuCommandInteractionHandler;
 }
 
 interface DiscordRequestConfig {
@@ -60,11 +70,15 @@ const registerCommands = async ({
 
 export const deployGuildCommands = async (
   commandList: Command[],
+  contextMenuCommandList: ContextMenuCommand[],
   config: DiscordRequestConfig
 ) => {
   const { token, clientId, guildId } = config;
 
-  const commands = commandList.map((cmd) => cmd.data.toJSON());
+  const commands = [
+    ...commandList.map((cmd) => cmd.data.toJSON()),
+    ...contextMenuCommandList.map((cmd) => cmd.data.toJSON()),
+  ];
 
   const request = Routes.applicationGuildCommands(clientId, guildId);
   return registerCommands({ request, token, body: commands });
@@ -72,6 +86,7 @@ export const deployGuildCommands = async (
 
 export const deployGlobalCommands = async (
   commandList: Command[],
+  contextMenuCommandList: ContextMenuCommand[],
   config: Omit<DiscordRequestConfig, 'guildId'>
 ) => {
   const { token, clientId } = config;

@@ -4,7 +4,7 @@ import { InteractionType } from 'discord-api-types/v10';
 import { processMessage } from './utils';
 import { getDiscordClient } from './clients';
 import { getConfigs } from './config';
-import { commandList } from './commands';
+import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/command';
 
 const env = dotenv.config();
@@ -20,7 +20,7 @@ const main = async () => {
   if (process.env.NODE_ENV === 'production') {
     // This should only be run once during the bot startup in production.
     // For development usage, please use `pnpm deploy:command`
-    await deployGlobalCommands(commandList, {
+    await deployGlobalCommands(commandList, contextMenuCommandList, {
       token,
       clientId: client.user.id,
     });
@@ -34,9 +34,18 @@ const main = async () => {
   client.on('interactionCreate', async (interaction) => {
     try {
       const isCommand = interaction.isChatInputCommand();
+      const isContextMenuCommand = interaction.isContextMenuCommand();
       if (isCommand) {
         const { commandName } = interaction;
         const command = commandList.find(
+          (cmd) => cmd.data.name === commandName
+        );
+        return await command?.execute(interaction);
+      }
+
+      if (isContextMenuCommand) {
+        const { commandName } = interaction;
+        const command = contextMenuCommandList.find(
           (cmd) => cmd.data.name === commandName
         );
         return await command?.execute(interaction);
