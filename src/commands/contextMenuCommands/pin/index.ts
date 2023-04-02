@@ -3,7 +3,7 @@ import {
   ContextMenuCommandBuilder,
   ContextMenuCommandInteraction,
 } from 'discord.js';
-import { ContextMenuCommand } from '../../command';
+import { ContextMenuCommand } from '../../command.js';
 
 export const data = new ContextMenuCommandBuilder()
   .setName('Pin')
@@ -13,7 +13,9 @@ export const pinMessage = async (
   interaction: ContextMenuCommandInteraction
 ) => {
   if (!interaction.isMessageContextMenuCommand()) return;
+
   const message = interaction.targetMessage;
+
   if (message.pinned) {
     await interaction.reply('Message is already pinned. Skipping...');
     return;
