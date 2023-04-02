@@ -11,7 +11,7 @@ const deploy = async () => {
   const guildId = process.env.GUILD_ID ?? '';
 
   try {
-    await deployGuildCommands([], { token, clientId, guildId });
+    await deployGuildCommands([], [], { token, clientId, guildId });
     process.exit();
   } catch (error) {
     console.error('Cannot delete commands', error);
