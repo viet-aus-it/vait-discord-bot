@@ -75,10 +75,9 @@ export const deployGuildCommands = async (
 ) => {
   const { token, clientId, guildId } = config;
 
-  const commands = [
-    ...commandList.map((cmd) => cmd.data.toJSON()),
-    ...contextMenuCommandList.map((cmd) => cmd.data.toJSON()),
-  ];
+  const commands = [...commandList, ...contextMenuCommandList].map((cmd) =>
+    cmd.data.toJSON()
+  );
 
   const request = Routes.applicationGuildCommands(clientId, guildId);
   return registerCommands({ request, token, body: commands });
@@ -91,7 +90,9 @@ export const deployGlobalCommands = async (
 ) => {
   const { token, clientId } = config;
 
-  const commands = commandList.map((cmd) => cmd.data.toJSON());
+  const commands = [...commandList, ...contextMenuCommandList].map((cmd) =>
+    cmd.data.toJSON()
+  );
 
   const request = Routes.applicationCommands(clientId);
   return registerCommands({ request, token, body: commands });
