@@ -17,7 +17,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: ^7.0.0
+          version: ^8.1.0
 
       - name: Set up Node 18
         uses: actions/setup-node@v3
@@ -42,7 +42,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: ^7.0.0
+          version: ^8.1.0
 
       - name: Set up Node 18
         uses: actions/setup-node@v3
@@ -67,7 +67,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: ^7.0.0
+          version: ^8.1.0
 
       - name: Set up Node 18
         uses: actions/setup-node@v3
