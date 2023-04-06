@@ -271,6 +271,22 @@ in development, and was messing up deployments.
 
 - Fix some typo in the docs. See [#130](https://github.com/viet-aus-it/vait-discord-bot/pull/130)
 
+## 2.7.1
+
+### Added
+
+- Add the pin message feature. See [#133](https://github.com/viet-aus-it/vait-discord-bot/pull/133)
+
+## 2.8.0
+
+### Added
+
+- Add the pin command in Discord Menu Context. See [#138](https://github.com/viet-aus-it/vait-discord-bot/pull/138)
+
+### Changed
+
+- Update the base to use `pnpm` version 8. See [#141](https://github.com/viet-aus-it/vait-discord-bot/pull/141)
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
