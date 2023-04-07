@@ -11,6 +11,7 @@ export const getConfigs = (): CommandConfig => {
           'cảm ơn',
           'cám ơn',
           'happy birthday',
+          'hpbd',
           'chúc mừng sinh nhật',
         ],
         fn: thankUserInMessage,
