@@ -291,6 +291,7 @@ in development, and was messing up deployments.
 
 ### Added
 - Enable giving rep to the birthday person. See [#136](https://github.com/viet-aus-it/vait-discord-bot/issues/136)
+- Support giving thanks in more languages. See [#137](https://github.com/viet-aus-it/vait-discord-bot/issues/137)
 
 ## \[Unreleased\]
 
