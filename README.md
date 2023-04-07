@@ -46,7 +46,11 @@ For Contributions, please have a look these document
 ### Creating your discord app and bot
 
 You will need to manually create a new discord application and a new bot. Please check out [Create a Bot Application](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-and [Adding a bot to your servers](https://discordjs.guide/preparations/adding-your-bot-to-servers.html) for more details.
+and [Adding a bot to your servers](https://discordjs.guide/preparations/adding-your-bot-to-servers.html) for more details, with 2 notes:
+
+1. To ensure that the bot can read the messages content, check the [Discord Developer Portal => Bot Section](https://discord.com/developers/applications)
+and ensure that `Privileged Gateway Intents => Message Content Intent` feature is enabled
+2. When adding the bot to your server using OAuth2 URL generator, under `BOT PERMISSIONS => GENERAL PERMISSIONS`, ensure that "Administrator" is enabled.
 
 While creating the bot, please note down the bot `TOKEN`
 
@@ -108,6 +112,7 @@ Run these commands at the root of the project
 docker compose up -d db
 
 pnpm install
+pnpm prisma:gen
 pnpm deploy:command
 pnpm start
 ```
