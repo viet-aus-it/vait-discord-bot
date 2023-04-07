@@ -287,10 +287,12 @@ in development, and was messing up deployments.
 
 - Update the base to use `pnpm` version 8. See [#141](https://github.com/viet-aus-it/vait-discord-bot/pull/141)
 
-## \[Unreleased\]
+## 2.8.1
 
 ### Added
 - Enable giving rep to the birthday person. See [#136](https://github.com/viet-aus-it/vait-discord-bot/issues/136)
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
