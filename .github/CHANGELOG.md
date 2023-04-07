@@ -289,6 +289,9 @@ in development, and was messing up deployments.
 
 ## \[Unreleased\]
 
+### Added
+- Enable giving rep to the birthday person. See [#136](https://github.com/viet-aus-it/vait-discord-bot/issues/136)
+
 [//]: # (Template:)
 
 [//]: # (Version number)

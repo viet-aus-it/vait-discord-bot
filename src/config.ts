@@ -5,7 +5,14 @@ export const getConfigs = (): CommandConfig => {
   return {
     keywordMatchCommands: [
       {
-        matchers: ['thank', 'thanks', 'cảm ơn', 'cám ơn'],
+        matchers: [
+          'thank',
+          'thanks',
+          'cảm ơn',
+          'cám ơn',
+          'happy birthday',
+          'chúc mừng sinh nhật',
+        ],
         fn: thankUserInMessage,
       },
     ],
