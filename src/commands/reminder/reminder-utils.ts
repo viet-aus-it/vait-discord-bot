@@ -1,5 +1,5 @@
 import { Reminder } from '@prisma/client';
-import { isAfter, isEqual } from 'date-fns';
+import { getUnixTime, isAfter, isEqual } from 'date-fns';
 import { getPrismaClient } from '../../clients';
 import { OpResult } from '../../utils/opResult';
 
@@ -77,6 +77,35 @@ export const updateReminder = async ({
     return {
       success: true,
       data: reminder,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error,
+    };
+  }
+};
+
+export const getUserReminders = async (
+  userId: string,
+  guildId: string
+): OpResult<Reminder[]> => {
+  const prisma = getPrismaClient();
+  try {
+    const reminders = await prisma.reminder.findMany({
+      where: {
+        userId,
+        guildId,
+        onTimestamp: {
+          gte: getUnixTime(new Date()),
+        },
+      },
+    });
+
+    return {
+      success: true,
+      data: reminders,
     };
   } catch (error) {
     console.error(error);
