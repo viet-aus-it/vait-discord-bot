@@ -16,6 +16,7 @@ import reminder from './reminder';
 import roles from './roles';
 import playPowerball from './powerball';
 import pinMessageContextMenuCommand from './contextMenuCommands/pin';
+import serverSettings from './serverSettings';
 
 export const commandList: Command[] = [
   allCap,
@@ -34,6 +35,7 @@ export const commandList: Command[] = [
   referral,
   reminder,
   roles,
+  serverSettings,
 ];
 
 export const contextMenuCommandList: ContextMenuCommand[] = [

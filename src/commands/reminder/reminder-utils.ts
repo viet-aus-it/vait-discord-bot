@@ -148,3 +148,62 @@ export const removeReminder = async ({
     };
   }
 };
+
+export const formatReminderMessage = ({
+  userId,
+  message,
+  onTimestamp,
+}: Reminder) => {
+  return `Reminder for <@${userId}> on <t:${onTimestamp}> \nmessage: ${message}`;
+};
+
+export const getReminderByTime = async (
+  timestamp: number
+): OpResult<Reminder[]> => {
+  const prisma = getPrismaClient();
+  try {
+    const reminders = await prisma.reminder.findMany({
+      where: {
+        onTimestamp: {
+          lte: timestamp,
+        },
+      },
+    });
+
+    return {
+      success: true,
+      data: reminders,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error,
+    };
+  }
+};
+
+export const removeReminders = async (
+  reminders: Reminder[]
+): OpResult<undefined> => {
+  const prisma = getPrismaClient();
+  try {
+    await prisma.reminder.deleteMany({
+      where: {
+        id: {
+          in: reminders.map((r) => r.id),
+        },
+      },
+    });
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error,
+    };
+  }
+};

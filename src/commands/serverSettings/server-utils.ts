@@ -1,3 +1,4 @@
+import { ServerChannelsSettings } from '@prisma/client';
 import { getPrismaClient } from '../../clients';
 import { OpResult } from '../../utils/opResult';
 
@@ -23,6 +24,29 @@ export const setReminderChannel = async (
     return {
       success: true,
       data: settings.reminderChannel as string,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error,
+    };
+  }
+};
+
+export const getReminderChannel = async (
+  guildId: string
+): OpResult<ServerChannelsSettings['reminderChannel']> => {
+  const prisma = getPrismaClient();
+  try {
+    const serverSettings = await prisma.serverChannelsSettings.findFirstOrThrow(
+      {
+        where: { guildId },
+      }
+    );
+    return {
+      success: true,
+      data: serverSettings.reminderChannel,
     };
   } catch (error) {
     console.error(error);
