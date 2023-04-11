@@ -48,34 +48,32 @@ describe('updateRep', () => {
     },
   ];
 
-  testCases.forEach(({ description, adjustment }) => {
-    it(description, async () => {
-      const mockPrisma: any = {
-        user: {
-          update: async () => ({
-            id: '1',
-            reputation: 1,
-          }),
+  it.each(testCases)('$description', async ({ adjustment }) => {
+    const mockPrisma: any = {
+      user: {
+        update: async () => ({
+          id: '1',
+          reputation: 1,
+        }),
+      },
+      reputationLog: {
+        create: () => Promise.resolve(undefined),
+      },
+      $transaction: async () => [
+        {
+          id: '1',
+          reputation: 1,
         },
-        reputationLog: {
-          create: () => Promise.resolve(undefined),
-        },
-        $transaction: async () => [
-          {
-            id: '1',
-            reputation: 1,
-          },
-        ],
-      };
-      mockGetPrismaClient.mockReturnValueOnce(mockPrisma);
+      ],
+    };
+    mockGetPrismaClient.mockReturnValueOnce(mockPrisma);
 
-      const result = await updateRep({
-        fromUserId: '2',
-        toUserId: '1',
-        adjustment,
-      });
-
-      expect(result.reputation).toBe(1);
+    const result = await updateRep({
+      fromUserId: '2',
+      toUserId: '1',
+      adjustment,
     });
+
+    expect(result.reputation).toBe(1);
   });
 });
