@@ -4,6 +4,7 @@ import checkRep from './checkReputation';
 import giveRep from './giveReputation';
 import takeRep from './takeReputation';
 import setRep from './setReputation';
+import leaderboard from './leaderboard';
 
 const data = new SlashCommandBuilder()
   .setName('rep')
@@ -11,9 +12,10 @@ const data = new SlashCommandBuilder()
   .addSubcommand(checkRep.data)
   .addSubcommand(giveRep.data)
   .addSubcommand(takeRep.data)
-  .addSubcommand(setRep.data);
+  .addSubcommand(setRep.data)
+  .addSubcommand(leaderboard.data);
 
-const subcommands = [checkRep, giveRep, takeRep, setRep];
+const subcommands = [checkRep, giveRep, takeRep, setRep, leaderboard];
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);
