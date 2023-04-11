@@ -3,7 +3,9 @@ services:
     build:
       target: production
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./bot.dockerfile
+    depends_on:
+      - db
     restart: always
     env_file: ".env.production"
     image: ghcr.io/viet-aus-it/discord-bot:production

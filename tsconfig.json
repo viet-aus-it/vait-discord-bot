@@ -17,6 +17,6 @@
     "outDir": "build",
     "noEmit": true
   },
-  "include": ["src/**/*.ts", "*.config.*"],
+  "include": ["src/**/*.ts", "*.config.*", "scripts"],
   "exclude": ["node_modules", "build"]
 }

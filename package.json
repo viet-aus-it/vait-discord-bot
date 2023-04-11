@@ -19,7 +19,7 @@
   "scripts": {
     "prepare": "husky install",
     "typecheck": "tsc",
-    "build": "rimraf build && tsx esbuild.config.ts",
+    "build": "rimraf build && tsx scripts/build-bot.ts",
     "build:typecheck": "pnpm typecheck && pnpm build",
     "lint": "esw --cache src/**/*.ts",
     "lint:fix": "pnpm lint --fix",

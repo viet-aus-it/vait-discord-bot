@@ -9,11 +9,11 @@ Thumbs.db
 *.MD
 
 docker-compose.*
-Dockerfile
+*.dockerfile
 LICENSE
-container_scripts
+scripts
+!scripts/*.ts
 .github
 .idea
 db
 *.dist*
-config.json

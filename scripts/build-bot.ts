@@ -2,16 +2,17 @@ import esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
 import path from 'node:path';
 // eslint-disable-next-line import/extensions
-import pkg from './package.json';
+import pkg from '../package.json';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
+const rootPath = path.resolve(__dirname, '..');
 
-const outputPath = path.resolve(__dirname, 'build');
+const outputPath = path.resolve(rootPath, 'build');
 
 // Remove the '^' in '^a.b.c'
 const PRISMA_VERSION = pkg.dependencies['@prisma/client'].substring(1);
 const prismaClientPath = path.resolve(
-  __dirname,
+  rootPath,
   'node_modules',
   '.pnpm',
   `@prisma+client@${PRISMA_VERSION}_prisma@${PRISMA_VERSION}`,
@@ -21,7 +22,7 @@ const prismaClientPath = path.resolve(
 );
 
 const cowPath = path.resolve(
-  __dirname,
+  rootPath,
   'node_modules',
   'cowsay',
   'cows',
@@ -36,7 +37,7 @@ async function build() {
       target: 'node16',
       bundle: true,
       minify: false,
-      entryPoints: [path.resolve(__dirname, 'src', 'index.ts')],
+      entryPoints: [path.resolve(rootPath, 'src', 'index.ts')],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',
       tsconfig: 'tsconfig.json',
