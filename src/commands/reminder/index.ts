@@ -4,6 +4,7 @@ import remindOnDate from './remind-on-date';
 import remindDuration from './remind-duration';
 import update from './update';
 import list from './list';
+import removeReminder from './remove';
 
 const data = new SlashCommandBuilder()
   .setName('reminder')
@@ -11,9 +12,16 @@ const data = new SlashCommandBuilder()
   .addSubcommand(remindOnDate.data)
   .addSubcommand(remindDuration.data)
   .addSubcommand(update.data)
-  .addSubcommand(list.data);
+  .addSubcommand(list.data)
+  .addSubcommand(removeReminder.data);
 
-const subcommands = [remindOnDate, remindDuration, update, list];
+const subcommands = [
+  remindOnDate,
+  remindDuration,
+  update,
+  list,
+  removeReminder,
+];
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);

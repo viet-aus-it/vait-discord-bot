@@ -115,3 +115,36 @@ export const getUserReminders = async (
     };
   }
 };
+
+type RemoveReminderInput = {
+  userId: string;
+  guildId: string;
+  reminderId: string;
+};
+export const removeReminder = async ({
+  userId,
+  guildId,
+  reminderId,
+}: RemoveReminderInput): OpResult<undefined> => {
+  const prisma = getPrismaClient();
+  try {
+    await prisma.reminder.deleteMany({
+      where: {
+        id: reminderId,
+        userId,
+        guildId,
+      },
+    });
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error,
+    };
+  }
+};
