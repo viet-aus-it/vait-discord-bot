@@ -46,3 +46,10 @@ model Reminder {
   @@index(id)
   @@index(userId)
 }
+
+model ServerChannelsSettings {
+  guildId         String  @unique
+  reminderChannel String? @unique
+
+  @@index(guildId)
+}
