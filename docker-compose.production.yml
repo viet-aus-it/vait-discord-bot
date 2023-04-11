@@ -16,10 +16,13 @@ services:
     container_name: discord_bot_db_prod
 
   db-migrate:
+    build:
+      context: .
+      dockerfile: ./prisma-migrate.dockerfile
     depends_on:
       - db
     image: ghcr.io/viet-aus-it/prisma-migrate-service
     volumes:
-      - ./prisma:/src/prisma
+      - ./prisma:/app/prisma
     env_file: ".env.production"
     container_name: discord_bot_db_migrate_prod

@@ -31,6 +31,7 @@
     "test:typecheck": "concurrently pnpm:test:silent pnpm:typecheck",
     "test:watch": "vitest watch",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:gen": "prisma generate",
     "prisma:studio": "prisma studio",
     "deploy:command": "tsx src/scripts/deploy-guild-commands.ts",
