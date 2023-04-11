@@ -12,6 +12,7 @@ import reputation from './reputation';
 import weatherCommand from './weather';
 import getdisclaimer from './disclaimer';
 import referral from './referral';
+import reminder from './reminder';
 import roles from './roles';
 import playPowerball from './powerball';
 import pinMessageContextMenuCommand from './contextMenuCommands/pin';
@@ -31,6 +32,7 @@ export const commandList: Command[] = [
   weatherCommand,
   getdisclaimer,
   referral,
+  reminder,
   roles,
 ];
 
