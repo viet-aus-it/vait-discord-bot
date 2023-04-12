@@ -1,6 +1,8 @@
 import { Prisma } from '@prisma/client';
 import { getPrismaClient } from '../../clients';
 
+const MAX_LEADERBOARD = 10;
+
 export const getOrCreateUser = async (userId: string) => {
   const prisma = getPrismaClient();
 
@@ -58,4 +60,21 @@ export const updateRep = async ({
   ]);
 
   return updatedUser;
+};
+
+export const getTop10 = async () => {
+  const prisma = getPrismaClient();
+
+  return prisma.user.findMany({
+    orderBy: [
+      {
+        reputation: 'desc',
+      },
+    ],
+    select: {
+      id: true,
+      reputation: true,
+    },
+    take: MAX_LEADERBOARD,
+  });
 };
