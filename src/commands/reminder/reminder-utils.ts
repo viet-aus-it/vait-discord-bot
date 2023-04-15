@@ -16,7 +16,7 @@ export const saveReminder = async ({
   timestamp,
 }: SaveReminderInput): OpResult<Reminder> => {
   try {
-    const currentDate = new Date();
+    const currentDate = getUnixTime(new Date());
     if (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp)) {
       throw new Error('EXPIRED DATE');
     }
@@ -58,8 +58,16 @@ export const updateReminder = async ({
   message,
   timestamp,
 }: UpdateReminderInput): OpResult<Reminder> => {
-  const prisma = getPrismaClient();
   try {
+    const currentDate = getUnixTime(new Date());
+    if (
+      timestamp &&
+      (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp))
+    ) {
+      throw new Error('EXPIRED DATE');
+    }
+
+    const prisma = getPrismaClient();
     let reminder = await prisma.reminder.findFirstOrThrow({
       where: { id: reminderId, userId, guildId },
     });
@@ -91,8 +99,8 @@ export const getUserReminders = async (
   userId: string,
   guildId: string
 ): OpResult<Reminder[]> => {
-  const prisma = getPrismaClient();
   try {
+    const prisma = getPrismaClient();
     const reminders = await prisma.reminder.findMany({
       where: {
         userId,
@@ -126,8 +134,8 @@ export const removeReminder = async ({
   guildId,
   reminderId,
 }: RemoveReminderInput): OpResult<undefined> => {
-  const prisma = getPrismaClient();
   try {
+    const prisma = getPrismaClient();
     await prisma.reminder.deleteMany({
       where: {
         id: reminderId,
@@ -160,8 +168,8 @@ export const formatReminderMessage = ({
 export const getReminderByTime = async (
   timestamp: number
 ): OpResult<Reminder[]> => {
-  const prisma = getPrismaClient();
   try {
+    const prisma = getPrismaClient();
     const reminders = await prisma.reminder.findMany({
       where: {
         onTimestamp: {
@@ -186,8 +194,8 @@ export const getReminderByTime = async (
 export const removeReminders = async (
   reminders: Reminder[]
 ): OpResult<undefined> => {
-  const prisma = getPrismaClient();
   try {
+    const prisma = getPrismaClient();
     await prisma.reminder.deleteMany({
       where: {
         id: {
