@@ -293,6 +293,16 @@ in development, and was messing up deployments.
 - Enable giving rep to the birthday person. See [#136](https://github.com/viet-aus-it/vait-discord-bot/issues/136)
 - Support giving thanks in more languages. See [#137](https://github.com/viet-aus-it/vait-discord-bot/issues/137)
 
+## 2.9.0
+
+### Added
+- Rep Leaderboard subcommand. See [#129](https://github.com/viet-aus-it/vait-discord-bot/issues/129) & [#147](https://github.com/viet-aus-it/vait-discord-bot/issues/1147).
+- Reminder feature. See [#13](https://github.com/viet-aus-it/vait-discord-bot/issues/13) & [#146](https://github.com/viet-aus-it/vait-discord-bot/issues/146)
+
+### Changed
+- Updated and cleanup dependencies. See [#148](https://github.com/viet-aus-it/vait-discord-bot/issues/148)
+- Update build output to Node18. See [#149](https://github.com/viet-aus-it/vait-discord-bot/issues/149)
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
