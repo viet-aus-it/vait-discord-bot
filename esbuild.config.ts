@@ -33,7 +33,7 @@ async function build() {
     console.log('Starting bundling by ESBuild...');
     const result = await esbuild.build({
       platform: 'node',
-      target: 'node16',
+      target: 'node18',
       bundle: true,
       minify: false,
       entryPoints: [path.resolve(__dirname, 'src', 'index.ts')],
