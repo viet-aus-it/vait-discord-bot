@@ -4,8 +4,8 @@ import { saveReminder } from './reminder-utils';
 import { convertDateToEpoch } from '../../utils/dateUtils';
 
 export const data = new SlashCommandSubcommandBuilder()
-  .setName('on-date')
-  .setDescription('Remind on a certain date.')
+  .setName('on')
+  .setDescription('Set reminder on a specific date.')
   .addStringOption((option) =>
     option
       .setName('date')

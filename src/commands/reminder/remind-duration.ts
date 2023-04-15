@@ -5,8 +5,8 @@ import { CommandHandler, Subcommand } from '../command';
 import { saveReminder } from './reminder-utils';
 
 export const data = new SlashCommandSubcommandBuilder()
-  .setName('duration')
-  .setDescription('Remind at an X duration from now')
+  .setName('in')
+  .setDescription('Set reminder in ... minute/hours/days from now.')
   .addStringOption((option) =>
     option
       .setName('duration')
