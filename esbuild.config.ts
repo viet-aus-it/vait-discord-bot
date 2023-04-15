@@ -36,7 +36,10 @@ async function build() {
       target: 'node18',
       bundle: true,
       minify: false,
-      entryPoints: [path.resolve(__dirname, 'src', 'index.ts')],
+      entryPoints: [
+        path.resolve(__dirname, 'src', 'index.ts'),
+        path.resolve(__dirname, 'src', 'broadcast-reminder.ts'),
+      ],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',
       tsconfig: 'tsconfig.json',

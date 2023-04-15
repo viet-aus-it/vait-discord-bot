@@ -12,9 +12,11 @@ import reputation from './reputation';
 import weatherCommand from './weather';
 import getdisclaimer from './disclaimer';
 import referral from './referral';
+import reminder from './reminder';
 import roles from './roles';
 import playPowerball from './powerball';
 import pinMessageContextMenuCommand from './contextMenuCommands/pin';
+import serverSettings from './serverSettings';
 
 export const commandList: Command[] = [
   allCap,
@@ -31,7 +33,9 @@ export const commandList: Command[] = [
   weatherCommand,
   getdisclaimer,
   referral,
+  reminder,
   roles,
+  serverSettings,
 ];
 
 export const contextMenuCommandList: ContextMenuCommand[] = [

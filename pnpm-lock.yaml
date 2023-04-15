@@ -10,6 +10,9 @@ dependencies:
   cowsay:
     specifier: ^1.5.0
     version: 1.5.0
+  date-fns:
+    specifier: ^2.29.3
+    version: 2.29.3
   discord-api-types:
     specifier: ^0.37.38
     version: 0.37.38
@@ -25,6 +28,9 @@ dependencies:
   node-fetch:
     specifier: ^3.3.1
     version: 3.3.1
+  parse-duration:
+    specifier: ^1.0.3
+    version: 1.0.3
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -1267,6 +1273,11 @@ packages:
   /data-uri-to-buffer@4.0.1:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
     engines: {node: '>= 12'}
+    dev: false
+
+  /date-fns@2.29.3:
+    resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}
+    engines: {node: '>=0.11'}
     dev: false
 
   /date-time@3.1.0:
@@ -3176,6 +3187,10 @@ packages:
     dependencies:
       callsites: 3.1.0
     dev: true
+
+  /parse-duration@1.0.3:
+    resolution: {integrity: sha512-o6NAh12na5VvR6nFejkU0gpQ8jmOY9Y9sTU2ke3L3G/d/3z8jqmbBbeyBGHU73P4JLXfc7tJARygIK3WGIkloA==}
+    dev: false
 
   /path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}

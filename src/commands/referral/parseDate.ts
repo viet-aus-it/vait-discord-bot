@@ -1,3 +1,6 @@
+import { parse, isValid, isAfter, isEqual } from 'date-fns';
+import { DAY_MONTH_YEAR_FORMAT } from '../../utils/dateUtils';
+
 type ParseInvalidDateError = ['INVALID_DATE'];
 type ParseExpiredDateError = ['EXPIRED_DATE'];
 type ParseDateSuccess = ['SUCCESS', Date];
@@ -7,18 +10,14 @@ type ParseDatePayload =
   | ParseInvalidDateError
   | ParseExpiredDateError;
 
-export const parseDate = (date?: string): ParseDatePayload => {
-  const thirtyDaysInFuture = new Date();
-  thirtyDaysInFuture.setDate(thirtyDaysInFuture.getDate() + 30);
+export const parseDate = (date: string): ParseDatePayload => {
+  const parsedDate = parse(date, DAY_MONTH_YEAR_FORMAT, new Date());
 
-  const [dd, mm, yyyy] =
-    date?.split('/') || thirtyDaysInFuture.toLocaleDateString('09/06/2022');
-  const jsFormatDate = `${mm}/${dd}/${yyyy}`;
+  if (!isValid(parsedDate)) return ['INVALID_DATE'];
 
-  if (Number.isNaN(Date.parse(jsFormatDate)) === true) return ['INVALID_DATE'];
-
-  const parsedDate = new Date(jsFormatDate);
-  if (parsedDate <= new Date()) return ['EXPIRED_DATE'];
+  if (isAfter(new Date(), parsedDate) || isEqual(new Date(), parsedDate)) {
+    return ['EXPIRED_DATE'];
+  }
 
   return ['SUCCESS', parsedDate];
 };

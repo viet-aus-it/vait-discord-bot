@@ -64,6 +64,7 @@ const registerCommands = async ({
     await rest.put(request, { body });
     console.log('Successfully register slash commands');
   } catch (error: any) {
+    console.error(error);
     throw new Error('Cannot deploy commands', error.toString());
   }
 };
