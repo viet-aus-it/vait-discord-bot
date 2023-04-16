@@ -303,6 +303,11 @@ in development, and was messing up deployments.
 - Updated and cleanup dependencies. See [#148](https://github.com/viet-aus-it/vait-discord-bot/issues/148)
 - Update build output to Node18. See [#149](https://github.com/viet-aus-it/vait-discord-bot/issues/149)
 
+## 2.9.1
+
+### Fixed
+- Update the env variables in the deployment script so the env variables are picked up by Docker after deployment.
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
