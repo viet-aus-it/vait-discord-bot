@@ -18,7 +18,7 @@ export const execute: CommandHandler = async (interaction) => {
   const op = await setReminderChannel(guildId, channel.id);
   if (!op.success) {
     await interaction.reply(
-      `Cannot save this reminder channel for this server. Please try again.`
+      'Cannot save this reminder channel for this server. Please try again.'
     );
     return;
   }

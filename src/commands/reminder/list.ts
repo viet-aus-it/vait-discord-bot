@@ -9,12 +9,7 @@ export const data = new SlashCommandSubcommandBuilder()
 
 const formatReminders = (reminders: Reminder[]) => {
   const reminderList = reminders.reduce((accum, reminder) => {
-    return (
-      `${accum}\n` +
-      `id: ${reminder.id}\n` +
-      `message: ${reminder.message}\n` +
-      `on: <t:${reminder.onTimestamp}>\n`
-    );
+    return `${accum}\nid: ${reminder.id}\nmessage: ${reminder.message}\non: <t:${reminder.onTimestamp}>\n`;
   }, '');
   return `${reminderList}`;
 };

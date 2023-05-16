@@ -14,7 +14,7 @@ const userId = 'user_12345';
 const guildId = 'guild_12345';
 const reminderId = '1';
 
-const mockGetString = (param: string, required?: boolean) => {
+const mockGetString = (param: string, _required?: boolean) => {
   switch (param) {
     case 'id':
       return reminderId;
@@ -22,8 +22,6 @@ const mockGetString = (param: string, required?: boolean) => {
       return dateString;
     case 'message':
       return message;
-    default:
-      return required ? undefined : null;
   }
 };
 
@@ -52,7 +50,7 @@ describe('update reminder', () => {
 
     expect(mockUpdateReminder).toHaveBeenCalledTimes(0);
     expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(`Nothing to update. Skipping...`);
+    expect(replyMock).toHaveBeenCalledWith('Nothing to update. Skipping...');
   });
 
   it('Should send error reply if it cannot update reminder', async () => {

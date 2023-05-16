@@ -1,6 +1,6 @@
 {
   "*.{ts,js}": [
-    "eslint --cache --fix",
-    "prettier --cache --write"
+    "rome check",
+    "rome format --write"
   ]
 }

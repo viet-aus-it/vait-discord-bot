@@ -65,7 +65,7 @@ describe('remind on duration from now', () => {
     expect(mockSaveReminder).toHaveBeenCalledTimes(0);
     expect(replyMock).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledWith(
-      `Invalid duration. Please specify a duration to get reminded.`
+      'Invalid duration. Please specify a duration to get reminded.'
     );
   });
 

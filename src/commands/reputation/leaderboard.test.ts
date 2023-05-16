@@ -158,7 +158,6 @@ describe('leaderboard', () => {
                     return { nickname: null, displayName: 'sam2' };
 
                   case '3':
-                  default:
                     return undefined;
                 }
               },

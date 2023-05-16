@@ -21,7 +21,6 @@ const mockGetString = (param: string, required?: boolean) => {
     case 'message':
       return message;
     case 'timezone':
-    default:
       return required ? undefined : null;
   }
 };

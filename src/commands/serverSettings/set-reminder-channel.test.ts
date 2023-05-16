@@ -32,7 +32,7 @@ describe('Set reminder channel', () => {
     expect(mockSetReminderChannel).toHaveBeenCalledOnce();
     expect(mockReply).toHaveBeenCalledOnce();
     expect(mockReply).toHaveBeenCalledWith(
-      `Cannot save this reminder channel for this server. Please try again.`
+      'Cannot save this reminder channel for this server. Please try again.'
     );
   });
 
