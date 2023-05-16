@@ -27,10 +27,10 @@ export const getQuoteOfTheDay = async (
     title: quote.quote,
     description: `- ${quote.author} -`,
     author: {
-      name: `Quote of the day`,
+      name: 'Quote of the day',
     },
     footer: {
-      text: `Inspirational quotes provided by ZenQuotes API`,
+      text: 'Inspirational quotes provided by ZenQuotes API',
     },
   });
 

@@ -14,12 +14,8 @@ const userId = 'user_12345';
 const guildId = 'guild_12345';
 const reminderId = '1';
 
-const mockGetString = (param: string, required?: boolean) => {
-  switch (param) {
-    case 'timezone':
-    default:
-      return required ? undefined : null;
-  }
+const mockGetString = (_param: string, required?: boolean) => {
+  return required ? undefined : null;
 };
 
 describe('List reminders', () => {

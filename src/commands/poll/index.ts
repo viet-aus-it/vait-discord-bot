@@ -61,7 +61,7 @@ const createEmbeddedMessage = (question: string, pollOptions: string[]) => {
     color: 0x0072a8,
     title: question.replace(/"/gim, ''),
     footer: { text: 'Poll created' },
-    fields: [{ name: message, value: `\u200B` }],
+    fields: [{ name: message, value: '\u200B' }],
     timestamp: Date.now(),
   });
 };
