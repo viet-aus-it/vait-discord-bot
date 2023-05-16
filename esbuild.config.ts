@@ -1,7 +1,6 @@
 import esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
 import path from 'node:path';
-// eslint-disable-next-line import/extensions
 import pkg from './package.json';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
