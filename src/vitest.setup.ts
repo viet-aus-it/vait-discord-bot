@@ -8,4 +8,4 @@ afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
 
-process.env.TOKEN = faker.finance.account(10);
+process.env.TOKEN = faker.finance.accountNumber(10);
