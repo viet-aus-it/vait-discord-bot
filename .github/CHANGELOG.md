@@ -310,6 +310,11 @@ in development, and was messing up deployments.
 
 ## \[Unreleased\]
 
+### Changed
+
+- Silence error loggings while testing
+- Migrate our linting + formatting setup from ESLint + Prettier to Rome
+
 [//]: # (Template:)
 
 [//]: # (Version number)
