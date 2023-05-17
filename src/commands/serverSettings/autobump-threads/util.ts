@@ -65,7 +65,7 @@ export const removeAutobumpThread = async (
   }
 };
 
-export const listAutobumpThread = async (
+export const listThreadsByGuild = async (
   guildId: string
 ): OpResult<ServerChannelsSettings['autobumpThreads']> => {
   const prisma = getPrismaClient();

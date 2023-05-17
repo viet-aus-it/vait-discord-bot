@@ -2,13 +2,15 @@ import { GuildMember, SlashCommandBuilder } from 'discord.js';
 import { Command, CommandHandler } from '../builder';
 import { isAdmin, isModerator } from '../../utils';
 import setReminderChannel from './set-reminder-channel';
+import listThreads from './autobump-threads/list-threads';
 
 const data = new SlashCommandBuilder()
   .setName('server-settings')
   .setDescription('ADMIN ONLY COMMAND. Server Settings.')
-  .addSubcommand(setReminderChannel.data);
+  .addSubcommand(setReminderChannel.data)
+  .addSubcommand(listThreads.data);
 
-const subcommands = [setReminderChannel];
+const subcommands = [setReminderChannel, listThreads];
 
 const execute: CommandHandler = async (interaction) => {
   const member = interaction.member as GuildMember;
