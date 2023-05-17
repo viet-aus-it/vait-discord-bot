@@ -1,11 +1,21 @@
-import { beforeAll, afterAll, afterEach } from 'vitest';
+import { beforeAll, afterAll, afterEach, vi } from 'vitest';
 import { faker } from '@faker-js/faker';
 import { server } from './mocks/server';
 
-beforeAll(() => server.listen());
+const consoleErrorSpy = vi.spyOn(console, 'error');
 
-afterEach(() => server.resetHandlers());
+beforeAll(() => {
+  server.listen();
+  consoleErrorSpy.mockImplementation(() => {});
+});
 
-afterAll(() => server.close());
+afterEach(() => {
+  server.resetHandlers();
+});
+
+afterAll(() => {
+  server.close();
+  consoleErrorSpy.mockRestore();
+});
 
 process.env.TOKEN = faker.finance.accountNumber(10);
