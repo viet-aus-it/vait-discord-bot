@@ -314,6 +314,7 @@ in development, and was messing up deployments.
 
 - Silence error loggings while testing
 - Migrate our linting + formatting setup from ESLint + Prettier to Rome
+- Remove the `/pin` slash command now that the Context Menu Command is working way better.
 
 [//]: # (Template:)
 
