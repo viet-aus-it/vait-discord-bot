@@ -16,6 +16,7 @@ import roles from './roles';
 import playPowerball from './powerball';
 import pinMessageContextMenuCommand from './contextMenuCommands/pin';
 import serverSettings from './serverSettings';
+import removeUserByRole from './moderateUsers';
 
 export const commandList: Command[] = [
   allCap,
@@ -34,6 +35,7 @@ export const commandList: Command[] = [
   reminder,
   roles,
   serverSettings,
+  removeUserByRole,
 ];
 
 export const contextMenuCommandList: ContextMenuCommand[] = [
