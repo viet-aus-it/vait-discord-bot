@@ -20,9 +20,6 @@ const data = new SlashCommandBuilder()
 export const removeUserByRole = async (
   interaction: ChatInputCommandInteraction
 ) => {
-  const channel = interaction.channel as ThreadChannel;
-  if (!channel?.isThread) return;
-
   const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
     await interaction.reply(
@@ -30,6 +27,15 @@ export const removeUserByRole = async (
     );
     return;
   }
+
+  const channel = interaction.channel as ThreadChannel;
+  if (!channel?.isThread) {
+    await interaction.reply(
+      "You can't remove all users with role from entire channel. This command only works in a thread."
+    );
+    return;
+  }
+
   const role = interaction.options.getRole('name', true);
   const memberList = channel.members.cache.filter((user) =>
     user.guildMember?.roles.cache.some((r) => r.id === role.id)
