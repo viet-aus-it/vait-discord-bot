@@ -37,12 +37,18 @@ export const removeUserByRole = async (
   }
 
   const role = interaction.options.getRole('name', true);
-  const memberList = channel.members.cache.filter((user) =>
+
+  const members = await channel.members.fetch({ withMember: true });
+
+  const memberList = members.filter((user) =>
     user.guildMember?.roles.cache.some((r) => r.id === role.id)
   );
-  console.log(memberList.size);
-  memberList.map((user) => channel.members.remove(user.id));
-  interaction.reply('Done');
+
+  const removeMemberPromises = memberList.map((user) =>
+    channel.members.remove(user.id)
+  );
+  await Promise.all(removeMemberPromises);
+  await interaction.reply('Done');
 };
 
 const command: Command = {
