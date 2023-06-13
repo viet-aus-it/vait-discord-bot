@@ -3,7 +3,7 @@ import {
   SlashCommandSubcommandBuilder,
 } from 'discord.js';
 import { getOrCreateUser } from './_helpers';
-import { Subcommand } from '../command';
+import { Subcommand } from '../builder';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('check')

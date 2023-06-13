@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { Command } from '../command';
+import { Command } from '../builder';
 import remindOnDate from './remind-on-date';
 import remindDuration from './remind-duration';
 import update from './update';

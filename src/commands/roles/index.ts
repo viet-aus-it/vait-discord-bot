@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { AutocompleteHandler, Command, CommandHandler } from '../command';
+import { AutocompleteHandler, Command, CommandHandler } from '../builder';
 
 import * as roleAdd from './assign_role';
 import * as roleRemove from './remove_role';

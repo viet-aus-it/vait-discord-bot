@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { fetchWeather } from './fetchWeather';
 import { isBlank } from '../../utils';
-import { Command } from '../command';
+import { Command } from '../builder';
 
 const DEFAULT_LOCATION = 'Brisbane';
 

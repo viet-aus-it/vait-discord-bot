@@ -4,7 +4,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
-import { Command } from '../command';
+import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('allcap')

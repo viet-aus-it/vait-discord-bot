@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { Command } from '../command';
+import { Command } from '../builder';
 import { getRandomIntInclusive } from '../../utils';
 
 const data = new SlashCommandBuilder()

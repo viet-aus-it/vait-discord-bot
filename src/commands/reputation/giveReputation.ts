@@ -4,7 +4,7 @@ import {
   SlashCommandSubcommandBuilder,
 } from 'discord.js';
 import { getOrCreateUser, updateRep } from './_helpers';
-import { Subcommand } from '../command';
+import { Subcommand } from '../builder';
 
 const plusRep = async (fromUserId: string, toUserId: string) => {
   const author = await getOrCreateUser(fromUserId);

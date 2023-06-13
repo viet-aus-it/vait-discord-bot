@@ -1,7 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { addSeconds, getUnixTime } from 'date-fns';
 import parseDuration from 'parse-duration';
-import { CommandHandler, Subcommand } from '../command';
+import { CommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './reminder-utils';
 
 export const data = new SlashCommandSubcommandBuilder()
