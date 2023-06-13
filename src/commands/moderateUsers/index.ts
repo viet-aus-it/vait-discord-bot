@@ -35,7 +35,7 @@ export const removeUserByRole = async (
     );
     return;
   }
-
+  await interaction.deferReply({ ephemeral: true });
   const role = interaction.options.getRole('name', true);
 
   const members = await channel.members.fetch({ withMember: true });
@@ -48,7 +48,7 @@ export const removeUserByRole = async (
     channel.members.remove(user.id)
   );
   await Promise.all(removeMemberPromises);
-  await interaction.reply('Done');
+  await interaction.editReply('Done');
 };
 
 const command: Command = {
