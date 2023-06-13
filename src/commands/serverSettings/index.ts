@@ -3,14 +3,16 @@ import { Command, CommandHandler } from '../builder';
 import { isAdmin, isModerator } from '../../utils';
 import setReminderChannel from './set-reminder-channel';
 import listThreads from './autobump-threads/list-threads';
+import addThread from './autobump-threads/add-thread';
 
 const data = new SlashCommandBuilder()
   .setName('server-settings')
   .setDescription('ADMIN ONLY COMMAND. Server Settings.')
   .addSubcommand(setReminderChannel.data)
-  .addSubcommand(listThreads.data);
+  .addSubcommand(listThreads.data)
+  .addSubcommand(addThread.data);
 
-const subcommands = [setReminderChannel, listThreads];
+const subcommands = [setReminderChannel, listThreads, addThread];
 
 const execute: CommandHandler = async (interaction) => {
   const member = interaction.member as GuildMember;
