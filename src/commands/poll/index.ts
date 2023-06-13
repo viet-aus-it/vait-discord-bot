@@ -4,7 +4,7 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
-import { Command } from '../command';
+import { Command } from '../builder';
 
 export const NUMBER_AS_STRING = [
   'one',

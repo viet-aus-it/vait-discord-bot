@@ -2,7 +2,7 @@ import {
   GuildMemberRoleManager,
   SlashCommandSubcommandBuilder,
 } from 'discord.js';
-import { AutocompleteHandler, CommandHandler } from '../command';
+import { AutocompleteHandler, CommandHandler } from '../builder';
 import { roles, searchRoles } from './roles';
 
 export const data = new SlashCommandSubcommandBuilder()

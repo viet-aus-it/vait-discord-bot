@@ -8,7 +8,7 @@ import {
   getRandomBoolean,
   isBlank,
 } from '../../utils';
-import { Command } from '../command';
+import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('mock')

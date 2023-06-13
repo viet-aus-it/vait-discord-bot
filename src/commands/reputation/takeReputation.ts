@@ -5,7 +5,7 @@ import {
 } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
 import { getOrCreateUser, updateRep } from './_helpers';
-import { Subcommand } from '../command';
+import { Subcommand } from '../builder';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('take')

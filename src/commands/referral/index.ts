@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { AutocompleteHandler, Command, CommandHandler } from '../command';
+import { AutocompleteHandler, Command, CommandHandler } from '../builder';
 
 import * as referralNew from './referralNew';
 import * as referralRandom from './referralRandom';

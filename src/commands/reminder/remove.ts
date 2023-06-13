@@ -1,5 +1,5 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
-import { CommandHandler, Subcommand } from '../command';
+import { CommandHandler, Subcommand } from '../builder';
 import { removeReminder } from './reminder-utils';
 
 export const data = new SlashCommandSubcommandBuilder()

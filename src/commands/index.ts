@@ -1,4 +1,4 @@
-import { Command, ContextMenuCommand } from './command';
+import { Command, ContextMenuCommand } from './builder';
 import allCap from './allCap';
 import ask8ball from './8ball';
 import cowsayCommand from './cowsay';

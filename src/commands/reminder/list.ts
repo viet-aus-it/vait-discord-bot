@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Reminder } from '@prisma/client';
-import { CommandHandler, Subcommand } from '../command';
+import { CommandHandler, Subcommand } from '../builder';
 import { getUserReminders } from './reminder-utils';
 
 export const data = new SlashCommandSubcommandBuilder()

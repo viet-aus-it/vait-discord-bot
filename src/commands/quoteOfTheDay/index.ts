@@ -3,7 +3,7 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
-import { Command } from '../command';
+import { Command } from '../builder';
 import { fetchQuote } from './fetchQuote';
 
 const data = new SlashCommandBuilder()

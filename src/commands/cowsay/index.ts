@@ -5,7 +5,7 @@ import {
 } from 'discord.js';
 import { say } from 'cowsay';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
-import { Command } from '../command';
+import { Command } from '../builder';
 
 // Only 35 characters per line due to limitation in phone screen width
 const WRAP_TEXT_LIMIT = 35;
