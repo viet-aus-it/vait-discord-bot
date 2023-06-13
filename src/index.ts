@@ -5,7 +5,7 @@ import { processMessage } from './utils';
 import { getDiscordClient } from './clients';
 import { getConfigs } from './config';
 import { commandList, contextMenuCommandList } from './commands';
-import { deployGlobalCommands } from './commands/builder';
+import { deployGlobalCommands } from './commands/deploy-command';
 
 const env = dotenv.config();
 dotenvExpand.expand(env);
