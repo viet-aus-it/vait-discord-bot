@@ -1,10 +1,10 @@
 import { it, describe, expect } from 'vitest';
 import { removeUserByRole } from '.';
 import { isAdmin, isModerator } from '../../utils';
+import { Collection, Role, ThreadMember } from 'discord.js';
 
 vi.mock('../../utils/isSentFromAdmin');
 const mockIsSentFromAdmin = vi.mocked(isAdmin);
-vi.mock('../../utils/isSentFromModerator');
 const mockIsSentFromModerator = vi.mocked(isModerator);
 const replyMock = vi.fn(() => {});
 
@@ -42,56 +42,57 @@ describe('Remove users who have the role', () => {
   });
 
   it('should remove all users from the thread with the matching role', async () => {
+    const fakeRole: any = { id: 'role-id', name: 'name' };
+    const fakeRoles = new Collection<string, Role>();
+    fakeRoles.set('1', fakeRole);
+    const mockMembers = new Collection<string, ThreadMember>();
+    mockMembers.set('1', {
+      id: 'user1-id',
+      guildMember: {
+        roles: {
+          cache: fakeRoles,
+        },
+      },
+    } as ThreadMember);
+    mockMembers.set('2', {
+      id: 'user2-id',
+      guildMember: {
+        roles: {
+          cache: fakeRoles,
+        },
+      },
+    } as ThreadMember);
+    mockMembers.set('3', {
+      id: 'user3-id',
+      guildMember: {
+        roles: {
+          cache: fakeRoles,
+        },
+      },
+    } as ThreadMember);
     const interaction: any = {
       channel: {
         isThread: true,
+        members: {
+          fetch: () => {
+            return mockMembers;
+          },
+          remove: vi.fn(() => {}),
+        },
       },
-      members: [
-        {
-          id: 'user1-id',
-          guildMember: {
-            roles: {
-              cache: [
-                {
-                  id: 'role-id',
-                  name: 'name',
-                },
-              ],
-            },
-          },
-        },
-        {
-          id: 'user3-id',
-          guildMember: {
-            roles: {
-              cache: [
-                {
-                  id: 'role-id',
-                  name: 'name',
-                },
-              ],
-            },
-          },
-        },
-        {
-          id: 'user3-id',
-          guildMember: {
-            roles: {
-              cache: [
-                {
-                  id: 'role-id',
-                  name: 'name',
-                },
-              ],
-            },
-          },
-        },
-      ],
+      reply: replyMock,
+      deferReply: replyMock,
+      editReply: replyMock,
       options: {
-        getRole: vi.fn(() => 'name'),
+        getRole: () => {
+          return {
+            id: 'role-id',
+            name: 'name',
+          };
+        },
       },
     };
     await removeUserByRole(interaction);
-    expect(replyMock).toHaveBeenCalledOnce();
+    expect(replyMock).toHaveBeenCalled();
   });
 });

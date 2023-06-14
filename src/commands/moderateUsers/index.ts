@@ -4,7 +4,7 @@ import {
   GuildMember,
   ThreadChannel,
 } from 'discord.js';
-import { Command } from '../command';
+import { Command } from '../builder';
 import { isAdmin, isModerator } from '../../utils';
 
 const data = new SlashCommandBuilder()
@@ -37,16 +37,14 @@ export const removeUserByRole = async (
   }
   await interaction.deferReply({ ephemeral: true });
   const role = interaction.options.getRole('name', true);
-
   const members = await channel.members.fetch({ withMember: true });
-
   const memberList = members.filter((user) =>
     user.guildMember?.roles.cache.some((r) => r.id === role.id)
   );
-
   const removeMemberPromises = memberList.map((user) =>
     channel.members.remove(user.id)
   );
+
   await Promise.all(removeMemberPromises);
   await interaction.editReply('Done');
 };
