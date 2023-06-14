@@ -316,6 +316,7 @@ in development, and was messing up deployments.
 - Migrate our linting + formatting setup from ESLint + Prettier to Rome
 - Remove the `/pin` slash command now that the Context Menu Command is working way better.
 - Reformat the `command` module into `builder` and `deploy-command` module for clarity.
+- Add a new slash command `/removeuserbyrole`. See [#153](https://github.com/viet-aus-it/vait-discord-bot/issues/153)
 
 [//]: # (Template:)
 
