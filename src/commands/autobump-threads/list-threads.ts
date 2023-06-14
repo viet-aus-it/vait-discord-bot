@@ -1,10 +1,10 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { ServerChannelsSettings } from '@prisma/client';
-import { Subcommand, CommandHandler } from '../../builder';
+import { Subcommand, CommandHandler } from '../builder';
 import { listThreadsByGuild } from './util';
 
 const data = new SlashCommandSubcommandBuilder()
-  .setName('list-autobump-thread')
+  .setName('list')
   .setDescription('Show list of autobump threads');
 
 const buildThreadList = (

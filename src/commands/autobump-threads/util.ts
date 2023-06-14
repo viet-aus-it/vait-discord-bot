@@ -1,6 +1,6 @@
 import { ServerChannelsSettings } from '@prisma/client';
-import { getPrismaClient } from '../../../clients';
-import { OpResult } from '../../../utils/opResult';
+import { getPrismaClient } from '../../clients';
+import { OpResult } from '../../utils/opResult';
 
 export const addAutobumpThread = async (
   guildId: string,

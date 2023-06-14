@@ -1,9 +1,9 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
-import { Subcommand, CommandHandler } from '../../builder';
+import { Subcommand, CommandHandler } from '../builder';
 import { removeAutobumpThread } from './util';
 
 const data = new SlashCommandSubcommandBuilder()
-  .setName('remove-autobump-thread')
+  .setName('remove')
   .setDescription('Remove thread from autobump list')
   .addChannelOption((option) =>
     option

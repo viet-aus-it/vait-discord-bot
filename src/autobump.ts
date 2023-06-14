@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import { ThreadChannel } from 'discord.js';
 import { getDiscordClient } from './clients';
-import { listAllThreads } from './commands/serverSettings/autobump-threads/util';
+import { listAllThreads } from './commands/autobump-threads/util';
 
 const env = dotenv.config();
 dotenvExpand.expand(env);

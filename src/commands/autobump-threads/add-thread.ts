@@ -1,9 +1,9 @@
 import { ChannelType, SlashCommandSubcommandBuilder } from 'discord.js';
-import { Subcommand, CommandHandler } from '../../builder';
+import { Subcommand, CommandHandler } from '../builder';
 import { addAutobumpThread } from './util';
 
 const data = new SlashCommandSubcommandBuilder()
-  .setName('add-autobump-thread')
+  .setName('add')
   .setDescription('Add thread to autobump list')
   .addChannelOption((option) =>
     option
