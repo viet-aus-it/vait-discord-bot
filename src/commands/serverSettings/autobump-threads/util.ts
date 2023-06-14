@@ -85,3 +85,27 @@ export const listThreadsByGuild = async (
     };
   }
 };
+
+export const listAllThreads = async (): OpResult<
+  Array<Omit<ServerChannelsSettings, 'reminderChannel'>>
+> => {
+  const prisma = getPrismaClient();
+  try {
+    const settings = await prisma.serverChannelsSettings.findMany({
+      select: {
+        guildId: true,
+        autobumpThreads: true,
+      },
+    });
+    return {
+      success: true,
+      data: settings,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      error,
+    };
+  }
+};
