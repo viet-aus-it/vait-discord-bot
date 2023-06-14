@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
+import { getUnixTime } from 'date-fns';
 import { ThreadChannel } from 'discord.js';
 import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';
@@ -10,13 +11,21 @@ dotenvExpand.expand(env);
 const autobump = async () => {
   const settings = await listAllThreads();
   if (!settings.success) {
-    console.error('Cannot retrieve autobump thread lists.');
+    console.error(
+      `Cannot retrieve autobump thread lists. Timestamp: ${getUnixTime(
+        new Date()
+      )}`
+    );
     process.exit(1);
     return;
   }
 
   if (settings.data.length === 0) {
-    console.log('No autobump threads settings found.');
+    console.log(
+      `No autobump threads settings found. Timestamp: ${getUnixTime(
+        new Date()
+      )}`
+    );
     process.exit(0);
     return;
   }
@@ -44,7 +53,11 @@ const autobump = async () => {
     Promise.resolve([] as unknown[])
   );
 
-  console.log(`Thread autobump complete. Jobs: ${jobs.length}`);
+  console.log(
+    `Thread autobump complete. Jobs: ${jobs.length}. Timestamp: ${getUnixTime(
+      new Date()
+    )}`
+  );
   process.exit(0);
   return undefined;
 };
