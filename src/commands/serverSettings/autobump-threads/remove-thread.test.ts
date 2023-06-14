@@ -1,57 +1,46 @@
-import { vi, it, describe, expect } from 'vitest';
+import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { removeAutobumpThread } from './util';
 import { removeAutobumpThreadCommand } from './remove-thread';
 
 vi.mock('./util');
 const mockRemoveAutobumpThread = vi.mocked(removeAutobumpThread);
-const replyMock = vi.fn();
-const guildId = 'guild_1234';
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const threadId = 'thread_1234';
 
 describe('Add autobump thread', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+  });
+
   it('Should reply with error if it cannot be saved into the database', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      guildId,
-      options: {
-        getChannel() {
-          return {
-            id: threadId,
-          };
-        },
-      },
-    };
+    mockInteraction.options.getChannel.mockReturnValueOnce({
+      id: threadId,
+    } as unknown as TextChannel);
     mockRemoveAutobumpThread.mockResolvedValueOnce({
       success: false,
       error: new Error('Synthetic Error'),
     });
 
     await removeAutobumpThreadCommand(mockInteraction);
-    expect(replyMock).toBeCalledWith(
+    expect(mockInteraction.reply).toBeCalledWith(
       'ERROR: Cannot remove this thread from the bump list for this server. Please try again.'
     );
     expect(mockRemoveAutobumpThread).toBeCalled();
   });
 
   it('Should reply with success message if it can be saved into the database', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      guildId,
-      options: {
-        getChannel() {
-          return {
-            id: threadId,
-          };
-        },
-      },
-    };
+    mockInteraction.options.getChannel.mockReturnValueOnce({
+      id: threadId,
+    } as unknown as TextChannel);
     mockRemoveAutobumpThread.mockResolvedValueOnce({
       success: true,
       data: [threadId],
     });
 
     await removeAutobumpThreadCommand(mockInteraction);
-    expect(replyMock).toBeCalledWith(
+    expect(mockInteraction.reply).toBeCalledWith(
       `Successfully saved setting. Thread <#${threadId}> will not be bumped.`
     );
     expect(mockRemoveAutobumpThread).toBeCalled();

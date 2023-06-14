@@ -1,82 +1,66 @@
-import { vi, it, describe, expect } from 'vitest';
+import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import {
+  ChatInputCommandInteraction,
+  TextChannel,
+  ChannelType,
+} from 'discord.js';
 import { addAutobumpThread } from './util';
 import { addAutobumpThreadCommand } from './add-thread';
-import { ChannelType } from 'discord.js';
 
 vi.mock('./util');
 const mockAddAutobumpThread = vi.mocked(addAutobumpThread);
-const replyMock = vi.fn();
-const guildId = 'guild_1234';
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const channelId = 'channel_1234';
 const threadId = 'thread_1234';
 
 describe('Add autobump thread', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+  });
+
   it('Should reply with error if the given channel is not a thread', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      guildId,
-      options: {
-        getChannel() {
-          return {
-            id: channelId,
-            type: ChannelType.GuildText,
-          };
-        },
-      },
-    };
+    mockInteraction.options.getChannel.mockReturnValueOnce({
+      id: channelId,
+      type: ChannelType.GuildText,
+    } as unknown as TextChannel);
 
     await addAutobumpThreadCommand(mockInteraction);
-    expect(replyMock).toBeCalledWith(
+    expect(mockInteraction.reply).toBeCalledWith(
       'ERROR: The channel in the input is not a thread.'
     );
     expect(mockAddAutobumpThread).not.toBeCalled();
   });
 
   it('Should reply with error if it cannot be saved into the database', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      guildId,
-      options: {
-        getChannel() {
-          return {
-            id: threadId,
-            type: ChannelType.PublicThread,
-          };
-        },
-      },
-    };
+    mockInteraction.options.getChannel.mockReturnValueOnce({
+      id: threadId,
+      type: ChannelType.PublicThread,
+    } as unknown as TextChannel);
     mockAddAutobumpThread.mockResolvedValueOnce({
       success: false,
       error: new Error('Synthetic Error'),
     });
 
     await addAutobumpThreadCommand(mockInteraction);
-    expect(replyMock).toBeCalledWith(
+    expect(mockInteraction.reply).toBeCalledWith(
       'ERROR: Cannot save this thread to be autobumped for this server. Please try again.'
     );
     expect(mockAddAutobumpThread).toBeCalled();
   });
 
   it('Should reply with success message if it can be saved into the database', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      guildId,
-      options: {
-        getChannel() {
-          return {
-            id: threadId,
-            type: ChannelType.PublicThread,
-          };
-        },
-      },
-    };
+    mockInteraction.options.getChannel.mockReturnValueOnce({
+      id: threadId,
+      type: ChannelType.PublicThread,
+    } as unknown as TextChannel);
     mockAddAutobumpThread.mockResolvedValueOnce({
       success: true,
       data: [threadId],
     });
 
     await addAutobumpThreadCommand(mockInteraction);
-    expect(replyMock).toBeCalledWith(
+    expect(mockInteraction.reply).toBeCalledWith(
       `Successfully saved setting. Thread <#${threadId}> will be autobumped.`
     );
     expect(mockAddAutobumpThread).toBeCalled();
