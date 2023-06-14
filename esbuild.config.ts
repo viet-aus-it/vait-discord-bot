@@ -38,6 +38,7 @@ async function build() {
       entryPoints: [
         path.resolve(__dirname, 'src', 'index.ts'),
         path.resolve(__dirname, 'src', 'broadcast-reminder.ts'),
+        path.resolve(__dirname, 'src', 'autobump.ts'),
       ],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',

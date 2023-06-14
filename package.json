@@ -70,6 +70,7 @@
     "rome": "^12.1.0",
     "tsx": "^3.12.7",
     "typescript": "^5.0.4",
-    "vitest": "^0.31.0"
+    "vitest": "^0.31.0",
+    "vitest-mock-extended": "^1.1.3"
   }
 }

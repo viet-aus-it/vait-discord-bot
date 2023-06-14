@@ -1,6 +1,7 @@
 import { Command, ContextMenuCommand } from './builder';
 import allCap from './allCap';
 import ask8ball from './8ball';
+import autobumpThread from './autobump-threads';
 import cowsayCommand from './cowsay';
 import danhCommand from './danhSomeone';
 import insultCommand from './insult';
@@ -21,6 +22,7 @@ import removeUserByRole from './moderateUsers';
 export const commandList: Command[] = [
   allCap,
   ask8ball,
+  autobumpThread,
   cowsayCommand,
   danhCommand,
   insultCommand,

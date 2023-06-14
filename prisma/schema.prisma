@@ -48,8 +48,9 @@ model Reminder {
 }
 
 model ServerChannelsSettings {
-  guildId         String  @unique
-  reminderChannel String? @unique
+  guildId         String   @unique
+  reminderChannel String?  @unique
+  autobumpThreads String[] @default([])
 
   @@index(guildId)
 }
