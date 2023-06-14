@@ -308,7 +308,7 @@ in development, and was messing up deployments.
 ### Fixed
 - Update the env variables in the deployment script so the env variables are picked up by Docker after deployment.
 
-## \[Unreleased\]
+## 2.10.0
 
 ### Added
 - Add `autobump-threads` admin command to set a command to be autobumped. See [#89](https://github.com/viet-aus-it/vait-discord-bot/issues/89) & [#156](https://github.com/viet-aus-it/vait-discord-bot/issues/156)
@@ -320,6 +320,8 @@ in development, and was messing up deployments.
 - Remove the `/pin` slash command now that the Context Menu Command is working way better.
 - Reformat the `command` module into `builder` and `deploy-command` module for clarity.
 - Add a new slash command `/removeuserbyrole`. See [#153](https://github.com/viet-aus-it/vait-discord-bot/issues/153)
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
