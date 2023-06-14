@@ -296,7 +296,7 @@ in development, and was messing up deployments.
 ## 2.9.0
 
 ### Added
-- Rep Leaderboard subcommand. See [#129](https://github.com/viet-aus-it/vait-discord-bot/issues/129) & [#147](https://github.com/viet-aus-it/vait-discord-bot/issues/1147).
+- Rep Leaderboard subcommand. See [#129](https://github.com/viet-aus-it/vait-discord-bot/issues/129) & [#147](https://github.com/viet-aus-it/vait-discord-bot/issues/147).
 - Reminder feature. See [#13](https://github.com/viet-aus-it/vait-discord-bot/issues/13) & [#146](https://github.com/viet-aus-it/vait-discord-bot/issues/146)
 
 ### Changed
@@ -309,6 +309,9 @@ in development, and was messing up deployments.
 - Update the env variables in the deployment script so the env variables are picked up by Docker after deployment.
 
 ## \[Unreleased\]
+
+### Added
+- Add `autobump-threads` admin command to set a command to be autobumped. See [#89](https://github.com/viet-aus-it/vait-discord-bot/issues/89) & [#156](https://github.com/viet-aus-it/vait-discord-bot/issues/156)
 
 ### Changed
 
