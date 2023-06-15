@@ -182,9 +182,7 @@ describe('execute', () => {
 
     // expect response
     const reply = (message: string) => {
-      expect(message).toContain(
-        'new SomeCodeHere in chope.co - chope phuket expired'
-      );
+      expect(message).toContain('new SomeCodeHere in 3commas');
     };
 
     execute({ options, reply } as any);
