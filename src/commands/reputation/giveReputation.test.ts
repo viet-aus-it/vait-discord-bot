@@ -110,7 +110,7 @@ describe('Thank user in a message', () => {
 
     await thankUserInMessage(mockMsg);
 
-    expect(sendMock).toHaveBeenCalledTimes(2);
+    expect(sendMock).toHaveBeenCalledTimes(1);
   });
 });
 

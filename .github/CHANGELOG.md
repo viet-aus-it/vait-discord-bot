@@ -323,6 +323,8 @@ in development, and was messing up deployments.
 
 ## \[Unreleased\]
 
+- Update bot response message when thanking to be more concise
+
 [//]: # (Template:)
 
 [//]: # (Version number)
