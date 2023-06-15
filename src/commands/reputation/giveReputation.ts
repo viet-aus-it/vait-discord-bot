@@ -23,6 +23,7 @@ export const thankUserInMessage = async (msg: Message) => {
   // Filter out bot users
   const mentionedUsers = mentions.users.filter((user) => !user.bot);
   if (mentionedUsers.size < 1) return;
+
   const giver = msg.guild?.members.cache.get(author.id);
   const message = await mentionedUsers.reduce(
     async (accumulator, discordUser) => {
@@ -31,11 +32,12 @@ export const thankUserInMessage = async (msg: Message) => {
         await msg.reply('You cannot give rep to yourself');
         return accumulator;
       }
-      const accu = await accumulator;
+
+      const previous = await accumulator;
       const updatedUser = await plusRep(author.id, discordUser.id);
       const receiver = msg.guild?.members.cache.get(discordUser.id);
       const message = `${receiver?.displayName} → ${updatedUser.reputation} reps`;
-      return `${accu}\n${message}`;
+      return `${previous}\n${message}`;
     },
     Promise.resolve(`${giver?.displayName} gave 1 rep to the following users:`)
   );
