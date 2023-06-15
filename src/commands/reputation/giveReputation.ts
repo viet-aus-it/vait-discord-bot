@@ -60,6 +60,7 @@ export const giveRepSlashCommand = async (
 ) => {
   const author = interaction.member!.user;
   const discordUser = interaction.options.getUser('user', true);
+
   const isAuthor = author.id === discordUser.id;
   if (isAuthor) {
     await interaction.reply('You cannot give rep to yourself');
@@ -67,8 +68,10 @@ export const giveRepSlashCommand = async (
   }
 
   const updatedUser = await plusRep(author.id, discordUser.id);
+  const receiver = interaction.guild?.members.cache.get(discordUser.id);
+  const giver = interaction.guild?.members.cache.get(author.id);
   await interaction.reply(
-    `<@${author.id}> gave <@${discordUser.id}> 1 rep. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
+    `${giver?.displayName} gave 1 rep to ${receiver?.displayName}.\n${receiver?.displayName} → ${updatedUser.reputation} reps`
   );
 };
 
