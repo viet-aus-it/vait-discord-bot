@@ -321,12 +321,14 @@ in development, and was messing up deployments.
 - Reformat the `command` module into `builder` and `deploy-command` module for clarity.
 - Add a new slash command `/removeuserbyrole`. See [#153](https://github.com/viet-aus-it/vait-discord-bot/issues/153)
 
-## \[Unreleased\]
+## 2.10.1
 
 ### Changed
 
 - Update bot response message when thanking to be more concise
 - Update referral service list
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
