@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
@@ -290,27 +291,32 @@ in development, and was messing up deployments.
 ## 2.8.1
 
 ### Added
+
 - Enable giving rep to the birthday person. See [#136](https://github.com/viet-aus-it/vait-discord-bot/issues/136)
 - Support giving thanks in more languages. See [#137](https://github.com/viet-aus-it/vait-discord-bot/issues/137)
 
 ## 2.9.0
 
 ### Added
+
 - Rep Leaderboard subcommand. See [#129](https://github.com/viet-aus-it/vait-discord-bot/issues/129) & [#147](https://github.com/viet-aus-it/vait-discord-bot/issues/147).
 - Reminder feature. See [#13](https://github.com/viet-aus-it/vait-discord-bot/issues/13) & [#146](https://github.com/viet-aus-it/vait-discord-bot/issues/146)
 
 ### Changed
+
 - Updated and cleanup dependencies. See [#148](https://github.com/viet-aus-it/vait-discord-bot/issues/148)
 - Update build output to Node18. See [#149](https://github.com/viet-aus-it/vait-discord-bot/issues/149)
 
 ## 2.9.1
 
 ### Fixed
+
 - Update the env variables in the deployment script so the env variables are picked up by Docker after deployment.
 
 ## 2.10.0
 
 ### Added
+
 - Add `autobump-threads` admin command to set a command to be autobumped. See [#89](https://github.com/viet-aus-it/vait-discord-bot/issues/89) & [#156](https://github.com/viet-aus-it/vait-discord-bot/issues/156)
 
 ### Changed
