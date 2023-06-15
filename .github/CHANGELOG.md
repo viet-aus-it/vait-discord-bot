@@ -326,6 +326,7 @@ in development, and was messing up deployments.
 ### Changed
 
 - Update bot response message when thanking to be more concise
+- Update referral service list
 
 [//]: # (Template:)
 
