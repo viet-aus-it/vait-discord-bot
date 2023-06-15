@@ -336,6 +336,8 @@ in development, and was messing up deployments.
 
 ## \[Unreleased\]
 
+- Update giverep, takerep and setrep response message to be consistent
+
 [//]: # (Template:)
 
 [//]: # (Version number)

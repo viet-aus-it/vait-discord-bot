@@ -42,9 +42,11 @@ export const takeReputation = async (
     toUserId: user.id,
     adjustment: { reputation: { decrement: 1 } },
   });
+  const taken = interaction.guild?.members.cache.get(discordUser.id);
+  const taker = interaction.guild?.members.cache.get(author.id);
 
   await interaction.reply(
-    `<@${author.id}> took from <@${discordUser.id}> 1 rep. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
+    `${taker?.displayName} took 1 rep from ${taken?.displayName}.\n${taken?.displayName} → ${updatedUser.reputation} reps`
   );
 };
 

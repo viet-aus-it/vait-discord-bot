@@ -1,5 +1,5 @@
 import { vi, it, describe, expect } from 'vitest';
-import { User } from 'discord.js';
+import { Collection, GuildMember, User } from 'discord.js';
 import { takeReputation } from './takeReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
 import { isAdmin } from '../../utils';
@@ -67,6 +67,9 @@ describe('takeRep', () => {
       .mockResolvedValueOnce({ id: '1', reputation: 10 })
       .mockResolvedValueOnce({ id: '0', reputation: 10 });
     mockUpdateRep.mockResolvedValueOnce({ id: '0', reputation: 0 });
+    const mockUserCollection = new Collection<string, GuildMember>();
+    mockUserCollection.set('1', { displayName: 'test1' } as GuildMember);
+    mockUserCollection.set('0', { displayName: 'test0' } as GuildMember);
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -77,6 +80,11 @@ describe('takeRep', () => {
       options: {
         getUser: vi.fn(() => mockUser),
       },
+      guild: {
+        members: {
+          cache: mockUserCollection,
+        },
+      },
     };
 
     await takeReputation(mockInteraction);
@@ -85,7 +93,7 @@ describe('takeRep', () => {
     expect(mockUpdateRep).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledTimes(1);
     expect(replyMock).toHaveBeenCalledWith(
-      "<@1> took from <@0> 1 rep. \n<@0>'s current rep: 0"
+      'test1 took 1 rep from test0.\ntest0 → 0 reps'
     );
   });
 });

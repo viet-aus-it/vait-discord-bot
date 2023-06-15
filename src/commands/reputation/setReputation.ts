@@ -33,9 +33,10 @@ export const setReputation = async (
   }
 
   const repNumber = interaction.options.getInteger('rep', true);
+  const discordUser = interaction.options.getUser('user', true);
+
   const author = interaction.member!.user;
   const authorUser = await getOrCreateUser(author.id);
-  const discordUser = interaction.options.getUser('user', true);
   const user = await getOrCreateUser(discordUser.id);
   const updatedUser = await updateRep({
     fromUserId: authorUser.id,
@@ -43,8 +44,11 @@ export const setReputation = async (
     adjustment: { reputation: { set: repNumber } },
   });
 
+  const receiver = interaction.guild?.members.cache.get(discordUser.id);
+  const setter = interaction.guild?.members.cache.get(author.id);
+
   await interaction.reply(
-    `<@${author.id}> just set <@${discordUser.id}>'s rep to ${repNumber}. \n<@${discordUser.id}>'s current rep: ${updatedUser.reputation}`
+    `${setter?.displayName} just set ${receiver?.displayName}'s rep to ${repNumber}.\n${receiver?.displayName} → ${updatedUser.reputation} reps`
   );
 };
 
