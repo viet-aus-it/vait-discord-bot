@@ -334,9 +334,11 @@ in development, and was messing up deployments.
 - Update bot response message when thanking to be more concise
 - Update referral service list
 
-## \[Unreleased\]
+## 2.10.2
 
 - Update giverep, takerep and setrep response message to be consistent
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
