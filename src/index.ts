@@ -20,10 +20,15 @@ const main = async () => {
   if (process.env.NODE_ENV === 'production') {
     // This should only be run once during the bot startup in production.
     // For development usage, please use `pnpm deploy:command`
-    await deployGlobalCommands(commandList, contextMenuCommandList, {
+    const op = await deployGlobalCommands(commandList, contextMenuCommandList, {
       token,
       clientId: client.user.id,
     });
+    if (!op.success) {
+      console.error('Cannot deploy commands', op.error);
+      process.exit(1);
+      return;
+    }
   }
 
   const configs = getConfigs();

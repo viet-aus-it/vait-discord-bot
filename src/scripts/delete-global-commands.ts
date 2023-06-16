@@ -9,12 +9,16 @@ const deploy = async () => {
   const token = process.env.TOKEN ?? '';
   const clientId = process.env.CLIENT_ID ?? '';
 
-  try {
-    await deployGlobalCommands([], [], { token, clientId });
+  const op = await deployGlobalCommands([], [], {
+    token,
+    clientId,
+  });
+  if (op.success) {
     process.exit();
-  } catch (error) {
-    console.error('Cannot delete commands', error);
+    return;
   }
+
+  console.error('Cannot delete commands', op.error);
 };
 
 deploy();

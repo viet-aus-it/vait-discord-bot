@@ -1,6 +1,7 @@
 import { REST, RequestData, RouteLike } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { Command, ContextMenuCommand } from './builder';
+import { OpPromise } from '../utils/opResult';
 
 interface DiscordRequestConfig {
   token: string;
@@ -18,14 +19,18 @@ const registerCommands = async ({
   request,
   token,
   body,
-}: DiscordRequestPayload) => {
-  const rest = new REST({ version: '10' }).setToken(token);
+}: DiscordRequestPayload): OpPromise => {
   try {
-    await rest.put(request, { body });
-    console.log('Successfully register slash commands');
-  } catch (error: any) {
-    console.error(error);
-    throw new Error('Cannot deploy commands', error.toString());
+    const rest = new REST({ version: '10' }).setToken(token);
+    return {
+      success: true,
+      data: await rest.put(request, { body }),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error,
+    };
   }
 };
 
