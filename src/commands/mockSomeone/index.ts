@@ -31,24 +31,12 @@ const generateMockText = (message: string) =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
-const sendMockText = async (
-  content: string,
-  interaction: ChatInputCommandInteraction
-) => {
-  const reply = generateMockText(content);
-
-  try {
-    await interaction.reply(reply);
-  } catch (error) {
-    console.error('CANNOT SEND MESSAGE', error);
-  }
-};
-
 export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
-  let sentence = interaction.options.getString('sentence');
+  const sentence = interaction.options.getString('sentence');
 
   if (sentence && !isBlank(sentence)) {
-    await sendMockText(sentence, interaction);
+    const reply = generateMockText(sentence);
+    await interaction.reply(reply);
     return;
   }
 
@@ -59,15 +47,15 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   );
 
   // If it's still blank at this point, then exit
-  if (!fetchedMessage || isBlank(fetchedMessage.content)) {
+  if (!fetchedMessage.success || isBlank(fetchedMessage.data.content)) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
-  sentence = fetchedMessage.content;
-  await sendMockText(sentence, interaction);
+  const reply = generateMockText(fetchedMessage.data.content);
+  await interaction.reply(reply);
 };
 
 const command: Command = {

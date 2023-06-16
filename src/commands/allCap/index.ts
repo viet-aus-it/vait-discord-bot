@@ -22,26 +22,14 @@ const generateAllCapText = (message: string) =>
       return `${outputText + character} `;
     }, '');
 
-const sendAllCapText = async (
-  content: string,
-  interaction: ChatInputCommandInteraction
-) => {
-  const reply = generateAllCapText(content);
-
-  try {
-    await interaction.reply(reply);
-  } catch (error) {
-    console.error('CANNOT SEND MESSAGE', error);
-  }
-};
-
 export const allCapExpandText = async (
   interaction: ChatInputCommandInteraction
 ) => {
-  let content = interaction.options.getString('sentence');
+  const content = interaction.options.getString('sentence');
 
   if (content && !isBlank(content)) {
-    await sendAllCapText(content, interaction);
+    const reply = generateAllCapText(content);
+    await interaction.reply(reply);
     return;
   }
 
@@ -52,15 +40,15 @@ export const allCapExpandText = async (
   );
 
   // If it's still blank at this point, then exit
-  if (!fetchedMessage || isBlank(fetchedMessage.content)) {
+  if (!fetchedMessage.success || isBlank(fetchedMessage.data.content)) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
-  content = fetchedMessage.content;
-  await sendAllCapText(content, interaction);
+  const reply = generateAllCapText(fetchedMessage.data.content);
+  await interaction.reply(reply);
 };
 
 const command: Command = {

@@ -1,19 +1,25 @@
-import { TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
+import { OpPromise } from '../opResult';
 
 export const fetchLastMessageBeforeId = async (
   channel: TextChannel,
   id: string
-) => {
+): OpPromise<Message> => {
   try {
     const lastMessages = await channel.messages.fetch({ limit: 1, before: id });
     const messageRightBefore = lastMessages.first();
     if (!messageRightBefore) {
       throw new Error('Cannot fetch previous messages');
     }
-    return messageRightBefore;
-  } catch (error: any) {
-    console.error('CANNOT FETCH MESSAGES IN CHANNEL', error);
-    return undefined;
+    return {
+      success: true,
+      data: messageRightBefore,
+    };
+  } catch (error) {
+    return {
+      error,
+      success: false,
+    };
   }
 };
 

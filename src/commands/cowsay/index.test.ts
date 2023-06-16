@@ -106,20 +106,5 @@ describe('cowsay test', () => {
         expect(fetchMock).toHaveBeenCalledTimes(1);
       });
     });
-
-    it('Should throw errors when failed to send Cowsay text', async () => {
-      const mockError = vi.fn(async () => {
-        throw new Error('Something went wrong');
-      });
-      const mockInteraction: any = {
-        reply: mockError,
-        options: {
-          getString: vi.fn(() => 'say what?'),
-        },
-      };
-
-      await cowsay(mockInteraction);
-      expect(mockError).toHaveBeenCalledTimes(1);
-    });
   });
 });
