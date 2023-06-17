@@ -1,11 +1,11 @@
 import { ServerChannelsSettings } from '@prisma/client';
 import { getPrismaClient } from '../../clients';
-import { OpResult } from '../../utils/opResult';
+import { OpPromise } from '../../utils/opResult';
 
 export const addAutobumpThread = async (
   guildId: string,
   threadId: string
-): OpResult<ServerChannelsSettings['autobumpThreads']> => {
+): OpPromise<ServerChannelsSettings['autobumpThreads']> => {
   const prisma = getPrismaClient();
   try {
     const settings = await prisma.serverChannelsSettings.upsert({
@@ -37,7 +37,7 @@ export const addAutobumpThread = async (
 export const removeAutobumpThread = async (
   guildId: string,
   threadId: string
-): OpResult<ServerChannelsSettings['autobumpThreads']> => {
+): OpPromise<ServerChannelsSettings['autobumpThreads']> => {
   const prisma = getPrismaClient();
   try {
     const { autobumpThreads } =
@@ -67,7 +67,7 @@ export const removeAutobumpThread = async (
 
 export const listThreadsByGuild = async (
   guildId: string
-): OpResult<ServerChannelsSettings['autobumpThreads']> => {
+): OpPromise<ServerChannelsSettings['autobumpThreads']> => {
   const prisma = getPrismaClient();
   try {
     const settings = await prisma.serverChannelsSettings.findFirstOrThrow({
@@ -86,7 +86,7 @@ export const listThreadsByGuild = async (
   }
 };
 
-export const listAllThreads = async (): OpResult<
+export const listAllThreads = async (): OpPromise<
   Array<Omit<ServerChannelsSettings, 'reminderChannel'>>
 > => {
   const prisma = getPrismaClient();

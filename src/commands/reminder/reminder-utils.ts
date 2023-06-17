@@ -1,7 +1,7 @@
 import { Reminder } from '@prisma/client';
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
 import { getPrismaClient } from '../../clients';
-import { OpResult } from '../../utils/opResult';
+import { OpPromise } from '../../utils/opResult';
 
 type SaveReminderInput = {
   userId: string;
@@ -14,7 +14,7 @@ export const saveReminder = async ({
   guildId,
   message,
   timestamp,
-}: SaveReminderInput): OpResult<Reminder> => {
+}: SaveReminderInput): OpPromise<Reminder> => {
   try {
     const currentDate = getUnixTime(new Date());
     if (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp)) {
@@ -57,7 +57,7 @@ export const updateReminder = async ({
   reminderId,
   message,
   timestamp,
-}: UpdateReminderInput): OpResult<Reminder> => {
+}: UpdateReminderInput): OpPromise<Reminder> => {
   try {
     const currentDate = getUnixTime(new Date());
     if (
@@ -98,7 +98,7 @@ export const updateReminder = async ({
 export const getUserReminders = async (
   userId: string,
   guildId: string
-): OpResult<Reminder[]> => {
+): OpPromise<Reminder[]> => {
   try {
     const prisma = getPrismaClient();
     const reminders = await prisma.reminder.findMany({
@@ -133,7 +133,7 @@ export const removeReminder = async ({
   userId,
   guildId,
   reminderId,
-}: RemoveReminderInput): OpResult<undefined> => {
+}: RemoveReminderInput): OpPromise<undefined> => {
   try {
     const prisma = getPrismaClient();
     await prisma.reminder.deleteMany({
@@ -167,7 +167,7 @@ export const formatReminderMessage = ({
 
 export const getReminderByTime = async (
   timestamp: number
-): OpResult<Reminder[]> => {
+): OpPromise<Reminder[]> => {
   try {
     const prisma = getPrismaClient();
     const reminders = await prisma.reminder.findMany({
@@ -193,7 +193,7 @@ export const getReminderByTime = async (
 
 export const removeReminders = async (
   reminders: Reminder[]
-): OpResult<undefined> => {
+): OpPromise<undefined> => {
   try {
     const prisma = getPrismaClient();
     await prisma.reminder.deleteMany({
