@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { z } from 'zod';
+import { OpPromise } from '../../utils/opResult';
 
 const ZenQuoteSchema = z.object({
   q: z.string(),
@@ -20,7 +21,7 @@ export interface Quote {
 export const ZEN_QUOTES_URL =
   'https://zenquotes.io/api/random/6a874c704a11dea9305fe58e145d51c218f9f143';
 
-export const fetchQuote = async (): Promise<Quote | undefined> => {
+export const fetchQuote = async (): OpPromise<Quote> => {
   try {
     const response = await fetch(ZEN_QUOTES_URL); // download quotes from this site
     const body = await response.json();
@@ -29,11 +30,18 @@ export const fetchQuote = async (): Promise<Quote | undefined> => {
 
     const { q, a, h } = parsedBody[0];
     return {
-      quote: q,
-      author: a,
-      html: h,
+      success: true,
+      data: {
+        quote: q,
+        author: a,
+        html: h,
+      },
     };
   } catch (error) {
     console.error('THERE IS AN ERROR DOWNLOADING QUOTES', error);
+    return {
+      success: false,
+      error,
+    };
   }
 };

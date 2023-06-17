@@ -26,12 +26,12 @@ export const weather = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const weatherData = await fetchWeather(location);
-  if (!weatherData) {
+  if (!weatherData.success) {
     await interaction.editReply('Error getting weather data for location.');
     return;
   }
 
-  await interaction.editReply(`\`\`\`\n${weatherData}\n\`\`\``);
+  await interaction.editReply(`\`\`\`\n${weatherData.data}\n\`\`\``);
 };
 
 const command: Command = {

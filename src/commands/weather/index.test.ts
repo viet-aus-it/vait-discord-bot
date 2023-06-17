@@ -1,15 +1,26 @@
 import { vi, it, describe, expect } from 'vitest';
 import { faker } from '@faker-js/faker';
+import { rest } from 'msw';
 import { weather } from '.';
-import { fetchWeather } from './fetchWeather';
-
-vi.mock('./fetchWeather');
-const mockFetch = vi.mocked(fetchWeather);
+import { server } from '../../mocks/server';
+import { WEATHER_URL } from './fetchWeather';
 
 const deferReplyMock = vi.fn();
 const editReplyMock = vi.fn();
+const mockWeatherMessage = faker.lorem.words(10);
 
 describe('Weather test', () => {
+  beforeEach(() => {
+    const endpoint = rest.get(`${WEATHER_URL}:location`, (req, res, ctx) => {
+      if (req.url.pathname === '/ErrorLocation') {
+        return res(ctx.status(500, 'Simulated Error'));
+      }
+
+      return res(ctx.status(200), ctx.text(mockWeatherMessage));
+    });
+    server.use(endpoint);
+  });
+
   it('Should reply command with weather data', async () => {
     const mockInteraction: any = {
       deferReply: deferReplyMock,
@@ -19,17 +30,14 @@ describe('Weather test', () => {
       },
     };
 
-    const fakeWeather = faker.lorem.words(10);
-    mockFetch.mockImplementationOnce(async () => fakeWeather);
-
     await weather(mockInteraction);
     expect(editReplyMock).toHaveBeenCalledTimes(1);
     expect(editReplyMock).toHaveBeenCalledWith(
-      `\`\`\`\n${fakeWeather}\n\`\`\``
+      `\`\`\`\n${mockWeatherMessage}\n\`\`\``
     );
   });
 
-  it('Should run even if there is no content', async () => {
+  it('Should run with default input if no input is given', async () => {
     const mockInteraction: any = {
       deferReply: deferReplyMock,
       editReply: editReplyMock,
@@ -38,26 +46,41 @@ describe('Weather test', () => {
       },
     };
 
-    const fakeWeather = faker.lorem.words(10);
-    mockFetch.mockImplementationOnce(async () => fakeWeather);
-
     await weather(mockInteraction);
     expect(editReplyMock).toHaveBeenCalledTimes(1);
     expect(editReplyMock).toHaveBeenCalledWith(
-      `\`\`\`\n${fakeWeather}\n\`\`\``
+      `\`\`\`\n${mockWeatherMessage}\n\`\`\``
     );
   });
 
-  it('Should return if there is no weather downloaded', async () => {
+  it('Should reply with error if given an error location', async () => {
     const mockInteraction: any = {
       deferReply: deferReplyMock,
       editReply: editReplyMock,
       options: {
-        getString: vi.fn(() => ''),
+        getString: vi.fn(() => 'ErrorLocation'),
       },
     };
 
-    mockFetch.mockImplementationOnce(async () => undefined);
+    await weather(mockInteraction);
+    expect(editReplyMock).toHaveBeenCalledTimes(1);
+    expect(editReplyMock).toHaveBeenCalledWith(
+      'Error getting weather data for location.'
+    );
+  });
+
+  it('Should reply with error if input is valid but weather data cannot be downloaded', async () => {
+    const mockInteraction: any = {
+      deferReply: deferReplyMock,
+      editReply: editReplyMock,
+      options: {
+        getString: vi.fn(() => 'Brisbane'),
+      },
+    };
+    const endpoint = rest.get(`${WEATHER_URL}:location`, (_, res, ctx) => {
+      return res(ctx.status(500), ctx.json(undefined));
+    });
+    server.use(endpoint);
 
     await weather(mockInteraction);
     expect(editReplyMock).toHaveBeenCalledTimes(1);
