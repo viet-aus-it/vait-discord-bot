@@ -57,7 +57,7 @@ describe('Poll test', () => {
 
     try {
       await createPoll(mockInteraction);
-    } catch (error: any) {
+    } catch (error) {
       expect(replyMock).toHaveBeenCalledTimes(1);
       expect(errorSpy).toHaveBeenCalledTimes(1);
       expect(mockedReact).not.toHaveBeenCalled();
