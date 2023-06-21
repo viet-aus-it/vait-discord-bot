@@ -116,7 +116,7 @@ describe('execute', () => {
     execute({ options, reply } as any);
   });
 
-  it('should return found no code message when code expired', () => {
+  it('should return found no code message when no code is found', () => {
     const messageIn = { service: 'some service' };
 
     mockGetPrismaClient.mockReturnValueOnce({
@@ -125,13 +125,7 @@ describe('execute', () => {
           expect(where.service.contains).toBe(
             messageIn.service.trim().toLowerCase()
           );
-          return [
-            {
-              id: 1,
-              code: 'SomeCode',
-              expiry_date: '05/04/1994',
-            },
-          ];
+          return [];
         },
       },
     } as any);

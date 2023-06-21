@@ -336,9 +336,16 @@ in development, and was messing up deployments.
 
 ## 2.10.2
 
+### Changed
+
 - Update giverep, takerep and setrep response message to be consistent
 
 ## \[Unreleased\]
+
+### Changed
+
+- Create a dedicated Docker task for cleaning up expired referral codes.
+- Remove the side effect of cleaning up referral codes when requesting a random code.
 
 [//]: # (Template:)
 

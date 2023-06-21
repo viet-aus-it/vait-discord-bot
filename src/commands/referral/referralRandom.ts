@@ -2,7 +2,6 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { getPrismaClient } from '../../clients';
 import { getRandomIntInclusive } from '../../utils';
 import { AutocompleteHandler, CommandHandler } from '../builder';
-import { cleanupExpiredCode } from './cleanupExpiredCode';
 import { searchServices } from './services';
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -35,17 +34,17 @@ export const execute: CommandHandler = async (interaction) => {
       service: {
         contains: service,
       },
+      expiry_date: {
+        gte: new Date(),
+      },
     },
   });
 
-  const filteredReferrals = cleanupExpiredCode(referrals);
-
-  const referral =
-    filteredReferrals[getRandomIntInclusive(0, filteredReferrals.length - 1)];
-  if (!referral) {
+  if (referrals.length === 0) {
     await interaction.reply(`There is no code for ${service} service`);
     return;
   }
 
+  const referral = referrals[getRandomIntInclusive(0, referrals.length - 1)];
   await interaction.reply(`Service ${service}: ${referral.code}`);
 };

@@ -5,6 +5,8 @@ import pkg from './package.json';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
+const srcPath = path.resolve(__dirname, 'src');
+
 const outputPath = path.resolve(__dirname, 'build');
 
 // Remove the '^' in '^a.b.c'
@@ -36,9 +38,10 @@ async function build() {
       bundle: true,
       minify: false,
       entryPoints: [
-        path.resolve(__dirname, 'src', 'index.ts'),
-        path.resolve(__dirname, 'src', 'broadcast-reminder.ts'),
-        path.resolve(__dirname, 'src', 'autobump.ts'),
+        path.resolve(srcPath, 'index.ts'),
+        path.resolve(srcPath, 'broadcast-reminder.ts'),
+        path.resolve(srcPath, 'autobump.ts'),
+        path.resolve(srcPath, 'cleanup-expired-referrals.ts'),
       ],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',
