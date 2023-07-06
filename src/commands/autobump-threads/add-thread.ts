@@ -1,4 +1,5 @@
 import { ChannelType, SlashCommandSubcommandBuilder } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { Subcommand, CommandHandler } from '../builder';
 import { addAutobumpThread } from './util';
 
@@ -24,8 +25,8 @@ export const addAutobumpThreadCommand: CommandHandler = async (interaction) => {
     return;
   }
 
-  const op = await addAutobumpThread(guildId, thread.id);
-  if (!op.success) {
+  const op = await Result.safe(addAutobumpThread(guildId, thread.id));
+  if (op.isErr()) {
     await interaction.reply(
       'ERROR: Cannot save this thread to be autobumped for this server. Please try again.'
     );

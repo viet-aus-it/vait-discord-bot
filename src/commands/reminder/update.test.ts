@@ -54,10 +54,7 @@ describe('update reminder', () => {
   });
 
   it('Should send error reply if it cannot update reminder', async () => {
-    mockUpdateReminder.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic Error'),
-    });
+    mockUpdateReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -83,14 +80,11 @@ describe('update reminder', () => {
   it('Should send reply with default timezone if no timezone given', async () => {
     const unixTimestamp = convertDateToEpoch(dateString);
     mockUpdateReminder.mockResolvedValueOnce({
-      success: true,
-      data: {
-        id: reminderId,
-        userId,
-        guildId,
-        onTimestamp: unixTimestamp,
-        message,
-      },
+      id: reminderId,
+      userId,
+      guildId,
+      onTimestamp: unixTimestamp,
+      message,
     });
     const mockInteraction: any = {
       reply: replyMock,

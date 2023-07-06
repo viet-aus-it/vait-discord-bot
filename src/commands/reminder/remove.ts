@@ -1,4 +1,5 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { CommandHandler, Subcommand } from '../builder';
 import { removeReminder } from './reminder-utils';
 
@@ -17,12 +18,14 @@ export const execute: CommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const reminderId = interaction.options.getString('id', true);
 
-  const op = await removeReminder({
-    userId: user.id,
-    guildId,
-    reminderId,
-  });
-  if (!op.success) {
+  const op = await Result.safe(
+    removeReminder({
+      userId: user.id,
+      guildId,
+      reminderId,
+    })
+  );
+  if (op.isErr()) {
     await interaction.reply(
       `Cannot delete reminder id ${reminderId}. Please try again later.`
     );

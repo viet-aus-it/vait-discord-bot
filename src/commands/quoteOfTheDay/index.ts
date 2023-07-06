@@ -3,6 +3,7 @@ import {
   EmbedBuilder,
   SlashCommandBuilder,
 } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { Command } from '../builder';
 import { fetchQuote } from './fetchQuote';
 
@@ -15,13 +16,13 @@ export const getQuoteOfTheDay = async (
 ) => {
   await interaction.deferReply();
 
-  const quote = await fetchQuote();
-  if (!quote.success) {
+  const quote = await Result.safe(fetchQuote());
+  if (quote.isErr()) {
     await interaction.editReply('Error getting quotes');
     return;
   }
 
-  const { data } = quote;
+  const data = quote.unwrap();
   const embed = new EmbedBuilder({
     color: 0x0072a8,
     title: data.quote,

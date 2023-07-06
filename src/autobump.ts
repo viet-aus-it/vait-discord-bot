@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import { getUnixTime } from 'date-fns';
 import { ThreadChannel } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';
 
@@ -9,31 +10,30 @@ const env = dotenv.config();
 dotenvExpand.expand(env);
 
 const autobump = async () => {
-  const settings = await listAllThreads();
-  if (!settings.success) {
+  const settings = await Result.safe(listAllThreads());
+  if (settings.isErr()) {
     console.error(
       `Cannot retrieve autobump thread lists. Timestamp: ${getUnixTime(
         new Date()
       )}`
     );
     process.exit(1);
-    return;
   }
 
-  if (settings.data.length === 0) {
+  const data = settings.unwrap();
+  if (data.length === 0) {
     console.log(
       `No autobump threads settings found. Timestamp: ${getUnixTime(
         new Date()
       )}`
     );
     process.exit(0);
-    return;
   }
 
   const token = process.env.TOKEN ?? '';
   const client = await getDiscordClient({ token });
 
-  const jobs = await settings.data.reduce(
+  const jobs = await data.reduce(
     async (accumulator, { guildId, autobumpThreads }) => {
       const guild = client.guilds.cache.find(
         (g) => g.available && g.id === guildId
@@ -59,7 +59,6 @@ const autobump = async () => {
     )}`
   );
   process.exit(0);
-  return undefined;
 };
 
 autobump();

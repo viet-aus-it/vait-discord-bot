@@ -3,6 +3,7 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
+import { Result } from 'oxide.ts';
 import {
   fetchLastMessageBeforeId,
   getRandomBoolean,
@@ -41,20 +42,19 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   }
 
   // If /mock is detected but content is blank, fetch the latest message in channel
-  const fetchedMessage = await fetchLastMessageBeforeId(
-    interaction.channel as TextChannel,
-    interaction.id
+  const fetchedMessage = await Result.safe(
+    fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id)
   );
 
   // If it's still blank at this point, then exit
-  if (!fetchedMessage.success || isBlank(fetchedMessage.data.content)) {
+  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
-  const reply = generateMockText(fetchedMessage.data.content);
+  const reply = generateMockText(fetchedMessage.unwrap().content);
   await interaction.reply(reply);
 };
 

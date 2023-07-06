@@ -14,10 +14,7 @@ const mockGetString = () => reminderId;
 
 describe('Remove Reminder', () => {
   it('Should reply with error if reminders cannot be removed', async () => {
-    mockRemoveReminder.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic error'),
-    });
+    mockRemoveReminder.mockRejectedValueOnce(new Error('Synthetic error'));
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -41,10 +38,7 @@ describe('Remove Reminder', () => {
   });
 
   it('Should reply if reminder can be removed', async () => {
-    mockRemoveReminder.mockResolvedValueOnce({
-      success: true,
-      data: undefined,
-    });
+    mockRemoveReminder.mockResolvedValueOnce();
     const mockInteraction: any = {
       reply: replyMock,
       member: {

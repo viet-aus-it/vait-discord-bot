@@ -1,4 +1,5 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { CommandHandler, Subcommand } from '../builder';
 import { updateReminder } from './reminder-utils';
 import { convertDateToEpoch } from '../../utils/dateUtils';
@@ -38,14 +39,16 @@ export const execute: CommandHandler = async (interaction) => {
     return;
   }
 
-  const op = await updateReminder({
-    userId: user.id,
-    guildId,
-    reminderId,
-    message: message ?? undefined,
-    timestamp: dateString ? convertDateToEpoch(dateString) : undefined,
-  });
-  if (!op.success) {
+  const op = await Result.safe(
+    updateReminder({
+      userId: user.id,
+      guildId,
+      reminderId,
+      message: message ?? undefined,
+      timestamp: dateString ? convertDateToEpoch(dateString) : undefined,
+    })
+  );
+  if (op.isErr()) {
     await interaction.reply(
       `Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`
     );
@@ -53,7 +56,9 @@ export const execute: CommandHandler = async (interaction) => {
   }
 
   await interaction.reply(
-    `Reminder ${reminderId} has been updated to remind on <t:${op.data.onTimestamp}> with the message: "${message}".`
+    `Reminder ${reminderId} has been updated to remind on <t:${
+      op.unwrap().onTimestamp
+    }> with the message: "${message}".`
   );
 };
 

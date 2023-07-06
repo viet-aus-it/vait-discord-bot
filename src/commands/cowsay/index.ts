@@ -4,6 +4,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 import { say } from 'cowsay';
+import { Result } from 'oxide.ts';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
 import { Command } from '../builder';
 
@@ -68,20 +69,19 @@ export const cowsay = async (interaction: ChatInputCommandInteraction) => {
   }
 
   // If /cowsay is detected but content is blank, fetch the latest message in channel
-  const fetchedMessage = await fetchLastMessageBeforeId(
-    interaction.channel as TextChannel,
-    interaction.id
+  const fetchedMessage = await Result.safe(
+    fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id)
   );
 
   // If it's still blank at this point, then exit
-  if (!fetchedMessage.success || isBlank(fetchedMessage.data.content)) {
+  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
-  const cowText = generateCowsayText(fetchedMessage.data.content);
+  const cowText = generateCowsayText(fetchedMessage.unwrap().content);
   const reply = `\`\`\`${cowText}\`\`\``;
   await interaction.reply(reply);
 };

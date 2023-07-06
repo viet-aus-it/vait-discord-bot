@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { ServerChannelsSettings } from '@prisma/client';
+import { Result } from 'oxide.ts';
 import { Subcommand, CommandHandler } from '../builder';
 import { listThreadsByGuild } from './util';
 
@@ -20,23 +21,24 @@ export const listAutobumpThreadsCommand: CommandHandler = async (
   interaction
 ) => {
   const guildId = interaction.guildId!;
-  const threads = await listThreadsByGuild(guildId);
+  const threads = await Result.safe(listThreadsByGuild(guildId));
 
-  if (!threads.success) {
+  if (threads.isErr()) {
     await interaction.reply(
       "ERROR: Cannot get list of threads from the database, maybe the server threads aren't setup yet?"
     );
     return;
   }
 
-  if (threads.data.length === 0) {
+  const data = threads.unwrap();
+  if (data.length === 0) {
     await interaction.reply(
       'No threads have been setup for autobumping in this server'
     );
     return;
   }
 
-  const body = buildThreadList(threads.data);
+  const body = buildThreadList(data);
   await interaction.reply(body);
 };
 

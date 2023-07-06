@@ -27,10 +27,7 @@ const mockGetString = (param: string, required?: boolean) => {
 
 describe('remind on date', () => {
   it('should send error reply if it cannot save reminder', async () => {
-    mockSaveReminder.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic Error'),
-    });
+    mockSaveReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -56,14 +53,11 @@ describe('remind on date', () => {
   it('should send reply if it can save reminder', async () => {
     const unixTime = convertDateToEpoch(dateString);
     mockSaveReminder.mockResolvedValueOnce({
-      success: true,
-      data: {
-        id: reminderId,
-        userId,
-        guildId,
-        onTimestamp: unixTime,
-        message,
-      },
+      id: reminderId,
+      userId,
+      guildId,
+      onTimestamp: unixTime,
+      message,
     });
     const mockInteraction: any = {
       reply: replyMock,

@@ -1,7 +1,6 @@
 import { Reminder } from '@prisma/client';
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
 import { getPrismaClient } from '../../clients';
-import { OpPromise } from '../../utils/opResult';
 
 type SaveReminderInput = {
   userId: string;
@@ -14,34 +13,23 @@ export const saveReminder = async ({
   guildId,
   message,
   timestamp,
-}: SaveReminderInput): OpPromise<Reminder> => {
-  try {
-    const currentDate = getUnixTime(new Date());
-    if (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp)) {
-      throw new Error('EXPIRED DATE');
-    }
-
-    const prisma = getPrismaClient();
-    const reminder = await prisma.reminder.create({
-      data: {
-        userId,
-        guildId,
-        onTimestamp: timestamp,
-        message,
-      },
-    });
-
-    return {
-      success: true,
-      data: reminder,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      error,
-    };
+}: SaveReminderInput) => {
+  const currentDate = getUnixTime(new Date());
+  if (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp)) {
+    throw new Error('EXPIRED DATE');
   }
+
+  const prisma = getPrismaClient();
+  const reminder = await prisma.reminder.create({
+    data: {
+      userId,
+      guildId,
+      onTimestamp: timestamp,
+      message,
+    },
+  });
+
+  return reminder;
 };
 
 type UpdateReminderInput = {
@@ -57,71 +45,46 @@ export const updateReminder = async ({
   reminderId,
   message,
   timestamp,
-}: UpdateReminderInput): OpPromise<Reminder> => {
-  try {
-    const currentDate = getUnixTime(new Date());
-    if (
-      timestamp &&
-      (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp))
-    ) {
-      throw new Error('EXPIRED DATE');
-    }
-
-    const prisma = getPrismaClient();
-    let reminder = await prisma.reminder.findFirstOrThrow({
-      where: { id: reminderId, userId, guildId },
-    });
-
-    reminder = await prisma.reminder.update({
-      where: {
-        id: reminderId,
-      },
-      data: {
-        message: message ?? reminder.message,
-        onTimestamp: timestamp || reminder.onTimestamp,
-      },
-    });
-
-    return {
-      success: true,
-      data: reminder,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      error,
-    };
+}: UpdateReminderInput) => {
+  const currentDate = getUnixTime(new Date());
+  if (
+    timestamp &&
+    (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp))
+  ) {
+    throw new Error('EXPIRED DATE');
   }
+
+  const prisma = getPrismaClient();
+  let reminder = await prisma.reminder.findFirstOrThrow({
+    where: { id: reminderId, userId, guildId },
+  });
+
+  reminder = await prisma.reminder.update({
+    where: {
+      id: reminderId,
+    },
+    data: {
+      message: message ?? reminder.message,
+      onTimestamp: timestamp || reminder.onTimestamp,
+    },
+  });
+
+  return reminder;
 };
 
-export const getUserReminders = async (
-  userId: string,
-  guildId: string
-): OpPromise<Reminder[]> => {
-  try {
-    const prisma = getPrismaClient();
-    const reminders = await prisma.reminder.findMany({
-      where: {
-        userId,
-        guildId,
-        onTimestamp: {
-          gte: getUnixTime(new Date()),
-        },
+export const getUserReminders = async (userId: string, guildId: string) => {
+  const prisma = getPrismaClient();
+  const reminders = await prisma.reminder.findMany({
+    where: {
+      userId,
+      guildId,
+      onTimestamp: {
+        gte: getUnixTime(new Date()),
       },
-    });
+    },
+  });
 
-    return {
-      success: true,
-      data: reminders,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      error,
-    };
-  }
+  return reminders;
 };
 
 type RemoveReminderInput = {
@@ -133,28 +96,17 @@ export const removeReminder = async ({
   userId,
   guildId,
   reminderId,
-}: RemoveReminderInput): OpPromise<undefined> => {
-  try {
-    const prisma = getPrismaClient();
-    await prisma.reminder.deleteMany({
-      where: {
-        id: reminderId,
-        userId,
-        guildId,
-      },
-    });
+}: RemoveReminderInput) => {
+  const prisma = getPrismaClient();
+  await prisma.reminder.deleteMany({
+    where: {
+      id: reminderId,
+      userId,
+      guildId,
+    },
+  });
 
-    return {
-      success: true,
-      data: undefined,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      error,
-    };
-  }
+  return;
 };
 
 export const formatReminderMessage = ({
@@ -165,53 +117,28 @@ export const formatReminderMessage = ({
   return `Reminder for <@${userId}> on <t:${onTimestamp}> \nmessage: ${message}`;
 };
 
-export const getReminderByTime = async (
-  timestamp: number
-): OpPromise<Reminder[]> => {
-  try {
-    const prisma = getPrismaClient();
-    const reminders = await prisma.reminder.findMany({
-      where: {
-        onTimestamp: {
-          lte: timestamp,
-        },
+export const getReminderByTime = async (timestamp: number) => {
+  const prisma = getPrismaClient();
+  const reminders = await prisma.reminder.findMany({
+    where: {
+      onTimestamp: {
+        lte: timestamp,
       },
-    });
+    },
+  });
 
-    return {
-      success: true,
-      data: reminders,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      error,
-    };
-  }
+  return reminders;
 };
 
-export const removeReminders = async (
-  reminders: Reminder[]
-): OpPromise<undefined> => {
-  try {
-    const prisma = getPrismaClient();
-    await prisma.reminder.deleteMany({
-      where: {
-        id: {
-          in: reminders.map((r) => r.id),
-        },
+export const removeReminders = async (reminders: Reminder[]) => {
+  const prisma = getPrismaClient();
+  await prisma.reminder.deleteMany({
+    where: {
+      id: {
+        in: reminders.map((r) => r.id),
       },
-    });
-    return {
-      success: true,
-      data: undefined,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      error,
-    };
-  }
+    },
+  });
+
+  return;
 };

@@ -1,7 +1,6 @@
 import { REST, RequestData, RouteLike } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
 import { Command, ContextMenuCommand } from './builder';
-import { OpPromise } from '../utils/opResult';
 
 interface DiscordRequestConfig {
   token: string;
@@ -19,19 +18,9 @@ const registerCommands = async ({
   request,
   token,
   body,
-}: DiscordRequestPayload): OpPromise => {
-  try {
-    const rest = new REST({ version: '10' }).setToken(token);
-    return {
-      success: true,
-      data: await rest.put(request, { body }),
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error,
-    };
-  }
+}: DiscordRequestPayload) => {
+  const rest = new REST({ version: '10' }).setToken(token);
+  return rest.put(request, { body });
 };
 
 export const deployGuildCommands = async (

@@ -1,4 +1,5 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { CommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './reminder-utils';
 import { convertDateToEpoch } from '../../utils/dateUtils';
@@ -28,13 +29,15 @@ export const execute: CommandHandler = async (interaction) => {
   const dateString = interaction.options.getString('date', true);
   const unixTimestamp = convertDateToEpoch(dateString);
 
-  const op = await saveReminder({
-    userId: user.id,
-    guildId,
-    message,
-    timestamp: unixTimestamp,
-  });
-  if (!op.success) {
+  const op = await Result.safe(
+    saveReminder({
+      userId: user.id,
+      guildId,
+      message,
+      timestamp: unixTimestamp,
+    })
+  );
+  if (op.isErr()) {
     await interaction.reply(
       `Cannot save reminder for <@${user.id}>. Please try again later.`
     );
@@ -42,7 +45,9 @@ export const execute: CommandHandler = async (interaction) => {
   }
 
   await interaction.reply(
-    `New Reminder for <@${user.id}> set on <t:${op.data.onTimestamp}> with the message: "${message}".`
+    `New Reminder for <@${user.id}> set on <t:${
+      op.unwrap().onTimestamp
+    }> with the message: "${message}".`
   );
 };
 

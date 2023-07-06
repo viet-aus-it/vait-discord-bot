@@ -20,10 +20,7 @@ const mockGetString = (_param: string, required?: boolean) => {
 
 describe('List reminders', () => {
   it('Should reply with error if reminders cannot be retrieved', async () => {
-    mockGetReminders.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic error'),
-    });
+    mockGetReminders.mockRejectedValueOnce(new Error('Synthetic error'));
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -47,10 +44,7 @@ describe('List reminders', () => {
   });
 
   it('Should reply with empty message if there is no reminder set up', async () => {
-    mockGetReminders.mockResolvedValueOnce({
-      success: true,
-      data: [],
-    });
+    mockGetReminders.mockResolvedValueOnce([]);
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -74,18 +68,15 @@ describe('List reminders', () => {
 
   it('Should reply with list of reminders if exists', async () => {
     const unixTime = convertDateToEpoch(dateString);
-    mockGetReminders.mockResolvedValueOnce({
-      success: true,
-      data: [
-        {
-          id: reminderId,
-          userId,
-          guildId,
-          message,
-          onTimestamp: unixTime,
-        },
-      ],
-    });
+    mockGetReminders.mockResolvedValueOnce([
+      {
+        id: reminderId,
+        userId,
+        guildId,
+        message,
+        onTimestamp: unixTime,
+      },
+    ]);
     const mockInteraction: any = {
       reply: replyMock,
       member: {

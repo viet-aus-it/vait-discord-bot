@@ -10,11 +10,7 @@ const guildId = 'guild_12345';
 
 describe('Set reminder channel', () => {
   it('Should reply with error if it cannot set the channel', async () => {
-    const error = new Error('Synthetic Error');
-    mockSetReminderChannel.mockResolvedValueOnce({
-      success: false,
-      error,
-    });
+    mockSetReminderChannel.mockRejectedValueOnce(new Error('Synthetic Error'));
     const mockInteraction: any = {
       reply: mockReply,
       guildId,
@@ -37,10 +33,7 @@ describe('Set reminder channel', () => {
   });
 
   it('Should be able to set channel and reply', async () => {
-    mockSetReminderChannel.mockResolvedValueOnce({
-      success: true,
-      data: channelId,
-    });
+    mockSetReminderChannel.mockResolvedValueOnce(channelId);
     const mockInteraction: any = {
       reply: mockReply,
       guildId,
