@@ -1,19 +1,22 @@
-import { vi, it, describe, expect } from 'vitest';
+import { it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { faker } from '@faker-js/faker';
 import { ask8Ball } from '.';
 
-const replyMock = vi.fn();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 describe('ask 8Ball test', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+  });
+
   it('Should return yes or no randomly for any question', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: vi.fn(() => faker.lorem.words(25)),
-      },
-    };
+    mockInteraction.options.getString.mockReturnValueOnce(
+      faker.lorem.words(25)
+    );
 
     await ask8Ball(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
   });
 });
