@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { fetchWeather } from './fetchWeather';
 import { isBlank } from '../../utils';
 import { Command } from '../builder';
@@ -25,13 +26,13 @@ export const weather = async (interaction: ChatInputCommandInteraction) => {
     location = DEFAULT_LOCATION;
   }
 
-  const weatherData = await fetchWeather(location);
-  if (!weatherData) {
+  const weatherData = await Result.safe(fetchWeather(location));
+  if (weatherData.isErr()) {
     await interaction.editReply('Error getting weather data for location.');
     return;
   }
 
-  await interaction.editReply(`\`\`\`\n${weatherData}\n\`\`\``);
+  await interaction.editReply(`\`\`\`\n${weatherData.unwrap()}\n\`\`\``);
 };
 
 const command: Command = {

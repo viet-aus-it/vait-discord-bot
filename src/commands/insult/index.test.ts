@@ -32,17 +32,6 @@ describe('Insult someone test', () => {
     await insult(mockInteraction);
     expect(replyMock).toHaveBeenCalledTimes(1);
   });
-
-  it('Should throw error if cannot send insult', async () => {
-    getStringMock.mockImplementationOnce(() => faker.lorem.words(2));
-    replyMock.mockImplementationOnce(async () => {
-      throw new Error('Something went wrong');
-    });
-    const mockInteraction = getMockInteraction();
-
-    await insult(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-  });
 });
 
 describe('Insult Library test', () => {

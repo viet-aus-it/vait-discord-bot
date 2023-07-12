@@ -18,10 +18,9 @@ describe('Add autobump thread', () => {
     mockInteraction.options.getChannel.mockReturnValueOnce({
       id: threadId,
     } as unknown as TextChannel);
-    mockRemoveAutobumpThread.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic Error'),
-    });
+    mockRemoveAutobumpThread.mockRejectedValueOnce(
+      new Error('Synthetic Error')
+    );
 
     await removeAutobumpThreadCommand(mockInteraction);
     expect(mockInteraction.reply).toBeCalledWith(
@@ -34,10 +33,7 @@ describe('Add autobump thread', () => {
     mockInteraction.options.getChannel.mockReturnValueOnce({
       id: threadId,
     } as unknown as TextChannel);
-    mockRemoveAutobumpThread.mockResolvedValueOnce({
-      success: true,
-      data: [threadId],
-    });
+    mockRemoveAutobumpThread.mockResolvedValueOnce([threadId]);
 
     await removeAutobumpThreadCommand(mockInteraction);
     expect(mockInteraction.reply).toBeCalledWith(

@@ -44,23 +44,4 @@ describe('Poll test', () => {
     expect(replyMock).toHaveBeenCalled();
     expect(mockedReact).toHaveBeenCalledTimes(maxOptions);
   });
-
-  it('Should handle error with console if message cannot be sent', async () => {
-    const mockedReact = vi.fn();
-    replyMock.mockReturnValueOnce(Promise.reject(new Error('Synthetic Error')));
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: getStringMock,
-      },
-    };
-
-    try {
-      await createPoll(mockInteraction);
-    } catch (error: any) {
-      expect(replyMock).toHaveBeenCalledTimes(1);
-      expect(errorSpy).toHaveBeenCalledTimes(1);
-      expect(mockedReact).not.toHaveBeenCalled();
-    }
-  });
 });

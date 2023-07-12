@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 import { ChannelType } from 'discord.js';
 import { getUnixTime } from 'date-fns';
+import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import {
   formatReminderMessage,
@@ -15,23 +16,22 @@ dotenvExpand.expand(env);
 
 const broadcastReminder = async () => {
   const currentTime = getUnixTime(new Date());
-  const reminders = await getReminderByTime(currentTime);
-  if (!reminders.success) {
+  const reminders = await Result.safe(getReminderByTime(currentTime));
+  if (reminders.isErr()) {
     console.error('Cannot retrieve reminders.');
     process.exit(1);
-    return;
   }
 
-  if (reminders.data.length === 0) {
+  const remindersData = reminders.unwrap();
+  if (remindersData.length === 0) {
     console.log('No reminders to broadcast.');
     process.exit(0);
-    return;
   }
 
   const token = process.env.TOKEN ?? '';
   const client = await getDiscordClient({ token });
 
-  const jobs = await reminders.data.reduce(async (accumulator, reminder) => {
+  const jobs = await remindersData.reduce(async (accumulator, reminder) => {
     const guild = client.guilds.cache.find(
       (g) => g.available && g.id === reminder.guildId
     );
@@ -39,12 +39,16 @@ const broadcastReminder = async () => {
       return accumulator;
     }
 
-    const channelId = await getReminderChannel(guild.id);
-    if (!channelId.success || !channelId.data) {
+    const channelId = await Result.safe(getReminderChannel(guild.id));
+    if (channelId.isErr()) {
       return accumulator;
     }
 
-    const channel = client.channels.cache.get(channelId.data);
+    const data = channelId.unwrap();
+    if (!data) {
+      return accumulator;
+    }
+    const channel = client.channels.cache.get(data);
     if (!channel || channel.type !== ChannelType.GuildText) {
       return accumulator;
     }
@@ -56,11 +60,10 @@ const broadcastReminder = async () => {
     return [...prev, promise];
   }, Promise.resolve([] as unknown[]));
 
-  await removeReminders(reminders.data);
+  await removeReminders(remindersData);
 
   console.log(`Reminders fan out complete. Jobs: ${jobs.length}`);
   process.exit(0);
-  return undefined;
 };
 
 broadcastReminder();

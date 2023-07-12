@@ -15,10 +15,7 @@ describe('List autobump threads', () => {
   });
 
   it('Should reply with error if the server settings cannot be retrieved', async () => {
-    mockListAutobumpThread.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic Error'),
-    });
+    mockListAutobumpThread.mockRejectedValueOnce(new Error('Synthetic Error'));
 
     await listAutobumpThreadsCommand(mockInteraction);
 
@@ -30,10 +27,7 @@ describe('List autobump threads', () => {
   });
 
   it('Should reply with empty message if no autobump thread has been set', async () => {
-    mockListAutobumpThread.mockResolvedValueOnce({
-      success: true,
-      data: [],
-    });
+    mockListAutobumpThread.mockResolvedValueOnce([]);
 
     await listAutobumpThreadsCommand(mockInteraction);
 
@@ -45,10 +39,7 @@ describe('List autobump threads', () => {
   });
 
   it('Should reply with list of autobump thread if it has been set', async () => {
-    mockListAutobumpThread.mockResolvedValueOnce({
-      success: true,
-      data: [threadId],
-    });
+    mockListAutobumpThread.mockResolvedValueOnce([threadId]);
 
     await listAutobumpThreadsCommand(mockInteraction);
 

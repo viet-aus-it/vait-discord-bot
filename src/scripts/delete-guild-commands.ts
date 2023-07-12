@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
+import { Result } from 'oxide.ts';
 import { deployGuildCommands } from '../commands/deploy-command';
 
 const env = dotenv.config();
@@ -10,13 +11,19 @@ const deploy = async () => {
   const clientId = process.env.CLIENT_ID ?? '';
   const guildId = process.env.GUILD_ID ?? '';
 
-  try {
-    await deployGuildCommands([], [], { token, clientId, guildId });
-    process.exit();
-  } catch (error) {
-    console.error('Cannot delete commands', error);
+  const op = await Result.safe(
+    deployGuildCommands([], [], {
+      token,
+      clientId,
+      guildId,
+    })
+  );
+  if (op.isOk()) {
+    process.exit(0);
   }
+
+  console.error('Cannot delete commands', op.unwrapErr());
+  process.exit(1);
 };
 
 deploy();
-process.on('SIGTERM', () => process.exit());

@@ -3,6 +3,7 @@ import {
   ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
+import { Result } from 'oxide.ts';
 import {
   fetchLastMessageBeforeId,
   getRandomBoolean,
@@ -31,43 +32,30 @@ const generateMockText = (message: string) =>
       return `${outputText}${spongeCharacter}`;
     }, '');
 
-const sendMockText = async (
-  content: string,
-  interaction: ChatInputCommandInteraction
-) => {
-  const reply = generateMockText(content);
-
-  try {
-    await interaction.reply(reply);
-  } catch (error) {
-    console.error('CANNOT SEND MESSAGE', error);
-  }
-};
-
 export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
-  let sentence = interaction.options.getString('sentence');
+  const sentence = interaction.options.getString('sentence');
 
   if (sentence && !isBlank(sentence)) {
-    await sendMockText(sentence, interaction);
+    const reply = generateMockText(sentence);
+    await interaction.reply(reply);
     return;
   }
 
   // If /mock is detected but content is blank, fetch the latest message in channel
-  const fetchedMessage = await fetchLastMessageBeforeId(
-    interaction.channel as TextChannel,
-    interaction.id
+  const fetchedMessage = await Result.safe(
+    fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id)
   );
 
   // If it's still blank at this point, then exit
-  if (!fetchedMessage || isBlank(fetchedMessage.content)) {
+  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
-  sentence = fetchedMessage.content;
-  await sendMockText(sentence, interaction);
+  const reply = generateMockText(fetchedMessage.unwrap().content);
+  await interaction.reply(reply);
 };
 
 const command: Command = {

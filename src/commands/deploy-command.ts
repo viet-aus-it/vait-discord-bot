@@ -20,13 +20,7 @@ const registerCommands = async ({
   body,
 }: DiscordRequestPayload) => {
   const rest = new REST({ version: '10' }).setToken(token);
-  try {
-    await rest.put(request, { body });
-    console.log('Successfully register slash commands');
-  } catch (error: any) {
-    console.error(error);
-    throw new Error('Cannot deploy commands', error.toString());
-  }
+  return rest.put(request, { body });
 };
 
 export const deployGuildCommands = async (

@@ -70,10 +70,7 @@ describe('remind on duration from now', () => {
   });
 
   it('should send error reply if it cannot save reminder', async () => {
-    mockSaveReminder.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic Error'),
-    });
+    mockSaveReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
     const mockInteraction: any = {
       reply: replyMock,
       member: {
@@ -99,14 +96,11 @@ describe('remind on duration from now', () => {
   it('should send reply if all options are provided', async () => {
     const unixTime = getUnixTime(addSeconds(currentDate, 60));
     mockSaveReminder.mockResolvedValueOnce({
-      success: true,
-      data: {
-        id: reminderId,
-        guildId,
-        userId,
-        onTimestamp: unixTime,
-        message,
-      },
+      id: reminderId,
+      guildId,
+      userId,
+      onTimestamp: unixTime,
+      message,
     });
     const mockInteraction: any = {
       reply: replyMock,

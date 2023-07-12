@@ -37,10 +37,7 @@ describe('Add autobump thread', () => {
       id: threadId,
       type: ChannelType.PublicThread,
     } as unknown as TextChannel);
-    mockAddAutobumpThread.mockResolvedValueOnce({
-      success: false,
-      error: new Error('Synthetic Error'),
-    });
+    mockAddAutobumpThread.mockRejectedValueOnce(new Error('Synthetic Error'));
 
     await addAutobumpThreadCommand(mockInteraction);
     expect(mockInteraction.reply).toBeCalledWith(
@@ -54,10 +51,7 @@ describe('Add autobump thread', () => {
       id: threadId,
       type: ChannelType.PublicThread,
     } as unknown as TextChannel);
-    mockAddAutobumpThread.mockResolvedValueOnce({
-      success: true,
-      data: [threadId],
-    });
+    mockAddAutobumpThread.mockResolvedValueOnce([threadId]);
 
     await addAutobumpThreadCommand(mockInteraction);
     expect(mockInteraction.reply).toBeCalledWith(

@@ -12,17 +12,6 @@ const data = new SlashCommandBuilder()
     option.setName('target').setDescription('The name to insult')
   );
 
-const sendInsult = async (
-  insult: string,
-  interaction: ChatInputCommandInteraction
-) => {
-  try {
-    await interaction.reply(insult);
-  } catch (error) {
-    console.error('CANNOT SEND MESSAGE', error);
-  }
-};
-
 export const insult = async (interaction: ChatInputCommandInteraction) => {
   const target = interaction.options.getString('target');
 
@@ -30,11 +19,11 @@ export const insult = async (interaction: ChatInputCommandInteraction) => {
 
   if (target && !isBlank(target)) {
     const replyText = `${target}, ${insultText.toLowerCase()}`;
-    await sendInsult(replyText, interaction);
+    await interaction.reply(replyText);
     return;
   }
 
-  await sendInsult(insultText, interaction);
+  await interaction.reply(insultText);
 };
 
 const command: Command = {
