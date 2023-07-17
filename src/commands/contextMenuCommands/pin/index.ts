@@ -3,7 +3,7 @@ import {
   ContextMenuCommandBuilder,
   ContextMenuCommandInteraction,
 } from 'discord.js';
-import { ContextMenuCommand } from '../../builder.js';
+import { ContextMenuCommand } from '../../builder';
 
 export const data = new ContextMenuCommandBuilder()
   .setName('Pin')
