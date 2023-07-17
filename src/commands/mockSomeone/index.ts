@@ -47,14 +47,22 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   );
 
   // If it's still blank at this point, then exit
-  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
+  if (fetchedMessage.isErr()) {
     await interaction.reply(
       'Cannot fetch latest message. Please try again later.'
     );
     return;
   }
 
-  const reply = generateMockText(fetchedMessage.unwrap().content);
+  const { content } = fetchedMessage.unwrap();
+  if (isBlank(content)) {
+    await interaction.reply(
+      'Cannot fetch latest message. Please try again later.'
+    );
+    return;
+  }
+
+  const reply = generateMockText(content);
   await interaction.reply(reply);
 };
 
