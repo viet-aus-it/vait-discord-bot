@@ -1,8 +1,11 @@
-import { vi, it, describe, expect } from 'vitest';
+import { it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset, mock } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction, Message, Collection } from 'discord.js';
 import { faker } from '@faker-js/faker';
 import { cowsay, removeBacktick } from '.';
 
-const replyMock = vi.fn();
+const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
+const mockMessage = mock<Message<true>>();
 
 describe('Remove backtick test', () => {
   it("Should ignore when there's no backticks", () => {
@@ -20,90 +23,69 @@ describe('Remove backtick test', () => {
 
 describe('cowsay test', () => {
   beforeEach(() => {
-    replyMock.mockClear();
+    mockReset(mockInteraction);
   });
 
   it('It should reply for any text', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: vi.fn(() => faker.lorem.words(25)),
-      },
-    };
+    mockInteraction.options.getString.mockReturnValueOnce(
+      faker.lorem.words(25)
+    );
 
     await cowsay(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
   });
 
   it('Should be able to eliminate all backticks', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: vi.fn(() => '```a lot of backticks```'),
-      },
-    };
+    mockInteraction.options.getString.mockReturnValueOnce(
+      '```a lot of backticks```'
+    );
 
     await cowsay(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
   });
 
   it('Should be able to handle short text', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: vi.fn(() => 'short'),
-      },
-    };
+    mockInteraction.options.getString.mockReturnValueOnce('short');
 
     await cowsay(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
   });
 
   it('Should be able to handle long text', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: vi.fn(() => faker.lorem.slug(30)),
-      },
-    };
+    mockInteraction.options.getString.mockReturnValueOnce(faker.lorem.slug(30));
 
     await cowsay(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
   });
 
   describe('For cowsay with no content', () => {
-    const getMockInteraction = (fetchCallBack: Function): any => ({
-      reply: replyMock,
-      options: {
-        getString: vi.fn(() => ''),
-      },
-      channel: {
-        messages: {
-          fetch: fetchCallBack,
-        },
-      },
-    });
-
     describe('Fetch the previous message', () => {
-      it('Should throw error if previous message cannot be retrieved', async () => {
-        const fetchMock = vi.fn(async () => ({
-          first: () => undefined,
-        }));
-        const mockInteraction = getMockInteraction(fetchMock);
+      it('Should show error message if previous message cannot be retrieved', async () => {
+        const mockMessageCollection = new Collection<string, Message<true>>();
+        mockInteraction.options.getString.mockReturnValueOnce('');
+        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(
+          mockMessageCollection
+        );
 
         await cowsay(mockInteraction);
-        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();
+        expect(mockInteraction.reply).toBeCalledWith(
+          'Cannot fetch latest message. Please try again later.'
+        );
       });
 
       it('It should refer to previous message', async () => {
-        const mockPreviousMessage = { content: faker.lorem.word(10) };
-        const fetchMock = vi.fn(async () => ({
-          first: () => mockPreviousMessage,
-        }));
-        const mockInteraction = getMockInteraction(fetchMock);
+        mockMessage.content = faker.lorem.words(10);
+        const mockMessageCollection = new Collection<string, Message<true>>();
+        mockMessageCollection.set(faker.string.nanoid(), mockMessage);
+        mockInteraction.options.getString.mockReturnValueOnce('');
+        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(
+          mockMessageCollection
+        );
 
         await cowsay(mockInteraction);
-        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();
+        expect(mockInteraction.reply).toHaveBeenCalledOnce();
       });
     });
   });
