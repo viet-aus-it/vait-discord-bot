@@ -86,10 +86,11 @@ export const createPoll = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = createEmbeddedMessage(question, pollOptions);
 
-  const pollMsg = (await interaction.reply({
+  const pollMsg = await interaction.reply({
     embeds: [embed],
     fetchReply: true,
-  })) as Message;
+  });
+
   const promises = pollOptions.map((_value, index) =>
     pollMsg.react(REACTION_NUMBERS[index])
   );
