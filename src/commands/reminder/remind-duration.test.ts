@@ -1,4 +1,6 @@
 import { beforeEach, afterEach, vi, it, describe, expect } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { addSeconds, getUnixTime, parse } from 'date-fns';
 import { execute } from './remind-duration';
 import { saveReminder } from './reminder-utils';
@@ -6,7 +8,7 @@ import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/dateUtils';
 
 vi.mock('./reminder-utils');
 const mockSaveReminder = vi.mocked(saveReminder);
-const replyMock = vi.fn();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 const currentDate = parse(
   '11/04/2023 09:00',
@@ -27,7 +29,7 @@ const mockGetString = (param: string) => {
       return '1m';
 
     default:
-      return undefined;
+      return null;
   }
 };
 
@@ -35,6 +37,9 @@ describe('remind on duration from now', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(currentDate);
+    mockReset(mockInteraction);
+    mockInteraction.guildId = guildId;
+    mockInteraction.member!.user.id = userId;
   });
 
   afterEach(() => {
@@ -42,53 +47,33 @@ describe('remind on duration from now', () => {
   });
 
   it('should send error reply if duration is invalid', async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString(param: string) {
-          if (param === 'duration') {
-            return 'invalid duration';
-          }
-          return mockGetString(param);
-        },
-      },
-    };
+    mockInteraction.options.getString.mockImplementationOnce(
+      (param: string) => {
+        if (param === 'duration') {
+          return 'invalid duration';
+        }
+        return mockGetString(param);
+      }
+    );
 
     await execute(mockInteraction);
 
-    expect(mockSaveReminder).toHaveBeenCalledTimes(0);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockSaveReminder).not.toHaveBeenCalled();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       'Invalid duration. Please specify a duration to get reminded.'
     );
   });
 
   it('should send error reply if it cannot save reminder', async () => {
     mockSaveReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
+    mockInteraction.options.getString.mockImplementation(mockGetString);
 
     await execute(mockInteraction);
 
-    expect(mockSaveReminder).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockSaveReminder).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `Cannot save reminder for <@${userId}>. Please try again later.`
     );
   });
@@ -102,27 +87,13 @@ describe('remind on duration from now', () => {
       onTimestamp: unixTime,
       message,
     });
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-        getNumber() {
-          return 1;
-        },
-      },
-    };
+    mockInteraction.options.getString.mockImplementation(mockGetString);
 
     await execute(mockInteraction);
 
-    expect(mockSaveReminder).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockSaveReminder).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`
     );
   });

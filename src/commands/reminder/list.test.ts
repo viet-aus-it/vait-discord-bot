@@ -1,4 +1,6 @@
-import { vi, it, describe, expect } from 'vitest';
+import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { getYear } from 'date-fns';
 import { execute } from './list';
 import { getUserReminders } from './reminder-utils';
@@ -6,7 +8,7 @@ import { convertDateToEpoch } from '../../utils/dateUtils';
 
 vi.mock('./reminder-utils');
 const mockGetReminders = vi.mocked(getUserReminders);
-const replyMock = vi.fn();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 const dateString = `31/12/${getYear(new Date())} 00:00`;
 const message = 'blah';
@@ -14,54 +16,33 @@ const userId = 'user_12345';
 const guildId = 'guild_12345';
 const reminderId = '1';
 
-const mockGetString = (_param: string, required?: boolean) => {
-  return required ? undefined : null;
-};
-
 describe('List reminders', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+    mockInteraction.guildId = guildId;
+    mockInteraction.member!.user.id = userId;
+  });
+
   it('Should reply with error if reminders cannot be retrieved', async () => {
     mockGetReminders.mockRejectedValueOnce(new Error('Synthetic error'));
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
 
     await execute(mockInteraction);
 
-    expect(mockGetReminders).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockGetReminders).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       'There is some error retrieving your reminders. Please try again later.'
     );
   });
 
   it('Should reply with empty message if there is no reminder set up', async () => {
     mockGetReminders.mockResolvedValueOnce([]);
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
 
     await execute(mockInteraction);
-    expect(mockGetReminders).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+
+    expect(mockGetReminders).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       "You currently don't have any reminder set up."
     );
   });
@@ -77,23 +58,12 @@ describe('List reminders', () => {
         onTimestamp: unixTime,
       },
     ]);
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
 
     await execute(mockInteraction);
-    expect(mockGetReminders).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+
+    expect(mockGetReminders).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `Here are your reminders:
 
 id: ${reminderId}

@@ -1,4 +1,6 @@
-import { vi, it, describe, expect } from 'vitest';
+import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { getYear } from 'date-fns';
 import { execute } from './update';
 import { updateReminder } from './reminder-utils';
@@ -6,7 +8,7 @@ import { convertDateToEpoch } from '../../utils/dateUtils';
 
 vi.mock('./reminder-utils');
 const mockUpdateReminder = vi.mocked(updateReminder);
-const replyMock = vi.fn();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 const dateString = `31/12/${getYear(new Date())} 00:00`;
 const message = 'blah';
@@ -22,57 +24,42 @@ const mockGetString = (param: string, _required?: boolean) => {
       return dateString;
     case 'message':
       return message;
+
+    default:
+      return null;
   }
 };
 
 describe('update reminder', () => {
-  it("Should send error reply if there's nothing to update", async () => {
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: (param: string, required: boolean) => {
-          if (param === 'message' || param === 'date') {
-            return null;
-          }
+  beforeEach(() => {
+    mockReset(mockInteraction);
+    mockInteraction.guildId = guildId;
+    mockInteraction.member!.user.id = userId;
+  });
 
-          return mockGetString(param, required);
-        },
-      },
-    };
+  it("Should send error reply if there's nothing to update", async () => {
+    mockInteraction.options.getString.mockImplementation((param: string) => {
+      return param === 'id' ? reminderId : null;
+    });
 
     await execute(mockInteraction);
 
-    expect(mockUpdateReminder).toHaveBeenCalledTimes(0);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith('Nothing to update. Skipping...');
+    expect(mockUpdateReminder).not.toHaveBeenCalled();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
+      'Nothing to update. Skipping...'
+    );
   });
 
   it('Should send error reply if it cannot update reminder', async () => {
     mockUpdateReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
+    mockInteraction.options.getString.mockImplementation(mockGetString);
 
     await execute(mockInteraction);
 
-    expect(mockUpdateReminder).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockUpdateReminder).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `Cannot update reminder for <@${userId}> and reminder id ${reminderId}. Please try again later.`
     );
   });
@@ -86,24 +73,13 @@ describe('update reminder', () => {
       onTimestamp: unixTimestamp,
       message,
     });
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
+    mockInteraction.options.getString.mockImplementation(mockGetString);
 
     await execute(mockInteraction);
 
-    expect(mockUpdateReminder).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockUpdateReminder).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `Reminder ${reminderId} has been updated to remind on <t:${unixTimestamp}> with the message: "${message}".`
     );
   });
