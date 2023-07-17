@@ -1,23 +1,24 @@
 import { vi, it, describe, expect, beforeEach } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, PublicThreadChannel } from 'discord.js';
 import { removeAutobumpThread } from './util';
 import { removeAutobumpThreadCommand } from './remove-thread';
 
 vi.mock('./util');
 const mockRemoveAutobumpThread = vi.mocked(removeAutobumpThread);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
+const mockThread = mockDeep<PublicThreadChannel>();
 const threadId = 'thread_1234';
 
 describe('Add autobump thread', () => {
   beforeEach(() => {
     mockReset(mockInteraction);
+    mockReset(mockThread);
+    mockThread.id = threadId;
   });
 
   it('Should reply with error if it cannot be saved into the database', async () => {
-    mockInteraction.options.getChannel.mockReturnValueOnce({
-      id: threadId,
-    } as unknown as TextChannel);
+    mockInteraction.options.getChannel.mockReturnValueOnce(mockThread);
     mockRemoveAutobumpThread.mockRejectedValueOnce(
       new Error('Synthetic Error')
     );
@@ -30,9 +31,7 @@ describe('Add autobump thread', () => {
   });
 
   it('Should reply with success message if it can be saved into the database', async () => {
-    mockInteraction.options.getChannel.mockReturnValueOnce({
-      id: threadId,
-    } as unknown as TextChannel);
+    mockInteraction.options.getChannel.mockReturnValueOnce(mockThread);
     mockRemoveAutobumpThread.mockResolvedValueOnce([threadId]);
 
     await removeAutobumpThreadCommand(mockInteraction);
