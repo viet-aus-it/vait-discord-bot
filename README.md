@@ -14,7 +14,6 @@
       - [Manually](#manually)
     - [Build and run the service locally](#build-and-run-the-service-locally)
   - [Useful commands](#useful-commands)
-    - [DB migration](#db-migration)
     - [Running tests](#running-lints-and-tests)
     - [Testing staging/production build](#testing-stagingproduction-build)
 
@@ -95,6 +94,7 @@ cp .env.dist .env
     - `GUILD_ID`: The guild ID that you want to use your bot with to test out commands
     - `PUBLIC_KEY`: Your bot public key.
     - `CLIENT_ID`: The client ID of your bot
+  - Axiom configs: Ignore this section because this will be production only.
   - DB Values: We already fill in some defaults for this to work in a local environment.
     - `POSTGRES_HOST`: localhost
     - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`: You can fill in whatever

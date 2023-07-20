@@ -355,6 +355,11 @@ in development, and was messing up deployments.
 - Migrated to Prisma 5.
 - Add a sample `.env.ci` file for testing in CI/CD environments.
 
+## Added
+
+- Installed `winston` for logging, and integrate with [`Axiom`](https://axiom.co) for log
+ingestions and queries.
+
 [//]: # (Template:)
 
 [//]: # (Version number)
