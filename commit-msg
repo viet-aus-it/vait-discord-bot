@@ -1,6 +1,0 @@
-feat: refactor tests with vitest-mock-extended
-
-- Replace manual any test mocks with Interaction and Message object
-proxy
-- Replace toHaveBeenCalledTimes(1) with toHaveBeenCalledOnce
-- Replace toHaveBeenCalledTimes(0) with not.toHaveBeenCalled
