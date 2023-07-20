@@ -17,27 +17,41 @@ const data = new SlashCommandBuilder()
       .setMaxValue(10)
   );
 
+const MIN_POWER_BALL_NUMBER = 1;
+const MAX_POWER_BALL_NUMBER = 35;
+const MAX_POWER_HIT_NUMBER = 20;
+
+const padNumber = (num: number) => num.toString(10).padStart(2, '0');
+
 const getMainNumbers = () => {
   return Array(7)
     .fill(0)
-    .reduce((array: number[]) => {
-      const number = getUniqueRandomIntInclusive(array, 1, 35);
-      array.push(number);
-      return array;
-    }, [])
-    .map((number) => `${number.toString().padStart(2, '0')}`)
-    .join(' ');
+    .reduce((accumulator, _value, index) => {
+      const number = getUniqueRandomIntInclusive(
+        accumulator,
+        MIN_POWER_BALL_NUMBER,
+        MAX_POWER_BALL_NUMBER
+      );
+      return `${accumulator}${index > 0 ? ' ' : ''}${padNumber(number)}`;
+    }, '');
 };
 
 const getPowerballNumber = () => {
-  return getRandomIntInclusive(1, 20).toString().padStart(2, '0');
+  const number = getRandomIntInclusive(
+    MIN_POWER_BALL_NUMBER,
+    MAX_POWER_HIT_NUMBER
+  );
+  return padNumber(number);
 };
 
-export const getPowerBallGame = (count: number): string => {
+const getPowerBallGame = (count: number) => {
   const games = Array(count)
     .fill(undefined)
-    .map(() => `${getMainNumbers()} PB:${getPowerballNumber()}`)
-    .join('\n');
+    .reduce<string>((accumulator, _value, index) => {
+      const line = `${getMainNumbers()} PB:${getPowerballNumber()}`;
+      return `${accumulator}${index > 0 ? '\n' : ''}${line}`;
+    }, '');
+
   return `\`\`\`${games}\`\`\``;
 };
 

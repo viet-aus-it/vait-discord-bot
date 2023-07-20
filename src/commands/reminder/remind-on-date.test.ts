@@ -1,4 +1,6 @@
-import { vi, it, describe, expect } from 'vitest';
+import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction } from 'discord.js';
 import { getYear } from 'date-fns';
 import { execute } from './remind-on-date';
 import { saveReminder } from './reminder-utils';
@@ -6,7 +8,7 @@ import { convertDateToEpoch } from '../../utils/dateUtils';
 
 vi.mock('./reminder-utils');
 const mockSaveReminder = vi.mocked(saveReminder);
-const replyMock = vi.fn();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 const dateString = `31/12/${getYear(new Date())} 00:00`;
 const message = 'blah';
@@ -14,38 +16,35 @@ const userId = 'user_12345';
 const guildId = 'guild_12345';
 const reminderId = '1';
 
-const mockGetString = (param: string, required?: boolean) => {
+const mockGetString = (param: string) => {
   switch (param) {
     case 'date':
       return dateString;
     case 'message':
       return message;
     case 'timezone':
-      return required ? undefined : null;
+      return null;
+    default:
+      return null;
   }
 };
 
 describe('remind on date', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+    mockInteraction.guildId = guildId;
+    mockInteraction.member!.user.id = userId;
+    mockInteraction.options.getString.mockImplementationOnce(mockGetString);
+  });
+
   it('should send error reply if it cannot save reminder', async () => {
     mockSaveReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
 
     await execute(mockInteraction);
 
-    expect(mockSaveReminder).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockSaveReminder).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `Cannot save reminder for <@${userId}>. Please try again later.`
     );
   });
@@ -59,24 +58,12 @@ describe('remind on date', () => {
       onTimestamp: unixTime,
       message,
     });
-    const mockInteraction: any = {
-      reply: replyMock,
-      member: {
-        user: {
-          id: userId,
-        },
-      },
-      guildId,
-      options: {
-        getString: mockGetString,
-      },
-    };
 
     await execute(mockInteraction);
 
-    expect(mockSaveReminder).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockSaveReminder).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`
     );
   });

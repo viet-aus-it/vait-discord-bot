@@ -1,5 +1,11 @@
-import { vi, it, describe, expect } from 'vitest';
-import { Collection, User } from 'discord.js';
+import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import {
+  ChatInputCommandInteraction,
+  Message,
+  Collection,
+  User,
+} from 'discord.js';
 import { giveRepSlashCommand, thankUserInMessage } from './giveReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
 
@@ -7,89 +13,75 @@ vi.mock('./_helpers');
 const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
 const mockUpdateRep = vi.mocked(updateRep);
 
-const replyMock = vi.fn(() => {});
-const sendMock = vi.fn(() => {});
+const mockMessage = mockDeep<Message>();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 describe('Thank user in a message', () => {
-  const getMockMsg = (mockUsers: Collection<string, User>): any => ({
-    content: 'thank',
-    reply: replyMock,
-    mentions: {
-      users: mockUsers,
-    },
-    author: {
-      id: '0',
-      bot: false,
-    },
-    channel: {
-      send: sendMock,
-    },
+  beforeEach(() => {
+    mockReset(mockMessage);
+    mockMessage.content = 'thank';
+    mockMessage.author.id = '0';
+    mockMessage.author.bot = false;
   });
 
   it('should do nothing if bot is saying the keywords', async () => {
-    const mockUsers = new Collection<string, User>();
-    mockUsers.set('0', { id: '1' } as User);
-    const mockMsg = getMockMsg(mockUsers);
-    const botMsg = {
-      ...mockMsg,
-      author: {
-        ...mockMsg.author,
-        bot: true,
-      },
-    };
+    mockMessage.author.bot = true;
 
-    await thankUserInMessage(botMsg);
+    await thankUserInMessage(mockMessage);
+
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
-    expect(replyMock).not.toHaveBeenCalled();
+    expect(mockMessage.reply).not.toHaveBeenCalled();
   });
 
   it('should do nothing if user mention no one', async () => {
     const mockUsers = new Collection<string, User>();
-    const mockMsg = getMockMsg(mockUsers);
+    mockMessage.mentions.users = mockUsers as typeof mockMessage.mentions.users;
 
-    await thankUserInMessage(mockMsg);
+    await thankUserInMessage(mockMessage);
+
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
-    expect(replyMock).not.toHaveBeenCalled();
+    expect(mockMessage.reply).not.toHaveBeenCalled();
   });
 
   it('should do nothing if only bot is mentioned', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1', bot: true } as User);
-    const mockMsg = getMockMsg(mockUsers);
+    mockMessage.mentions.users = mockUsers as typeof mockMessage.mentions.users;
 
-    await thankUserInMessage(mockMsg);
+    await thankUserInMessage(mockMessage);
+
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
-    expect(replyMock).not.toHaveBeenCalled();
+    expect(mockMessage.reply).not.toHaveBeenCalled();
   });
 
   it('should send reject message if user mention themself', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '0' } as User);
-    const mockMsg = getMockMsg(mockUsers);
+    mockMessage.mentions.users = mockUsers as typeof mockMessage.mentions.users;
 
-    await thankUserInMessage(mockMsg);
+    await thankUserInMessage(mockMessage);
 
-    expect(replyMock).toHaveBeenCalled();
+    expect(mockMessage.reply).toHaveBeenCalled();
   });
 
   it('should call reply and add rep if user mention another user', async () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1' } as User);
+    mockMessage.mentions.users = mockUsers as typeof mockMessage.mentions.users;
     mockCreateUpdateUser
       .mockResolvedValueOnce({ id: '1', reputation: 0 })
       .mockResolvedValueOnce({ id: '2', reputation: 0 });
     mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
 
-    const mockMsg = getMockMsg(mockUsers);
-    await thankUserInMessage(mockMsg);
+    await thankUserInMessage(mockMessage);
 
     expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
-    expect(mockUpdateRep).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(0);
-    expect(sendMock).toHaveBeenCalledTimes(1);
+    expect(mockUpdateRep).toHaveBeenCalledOnce();
+    expect(mockMessage.reply).not.toHaveBeenCalled();
+    expect(mockMessage.channel.send).toHaveBeenCalledOnce();
   });
 
   it('should give rep multiple times if mentions more than one user', async () => {
@@ -98,6 +90,7 @@ describe('Thank user in a message', () => {
     mockUsers.set('1', { id: '1', bot: true } as User);
     mockUsers.set('2', { id: '2', bot: false } as User);
     mockUsers.set('3', { id: '3', bot: false } as User);
+    mockMessage.mentions.users = mockUsers as typeof mockMessage.mentions.users;
     mockCreateUpdateUser
       .mockResolvedValueOnce({ id: '0', reputation: 0 })
       .mockResolvedValueOnce({ id: '2', reputation: 0 })
@@ -106,34 +99,28 @@ describe('Thank user in a message', () => {
     mockUpdateRep
       .mockResolvedValueOnce({ id: '2', reputation: 0 })
       .mockResolvedValueOnce({ id: '3', reputation: 0 });
-    const mockMsg = getMockMsg(mockUsers);
 
-    await thankUserInMessage(mockMsg);
+    await thankUserInMessage(mockMessage);
 
-    expect(sendMock).toHaveBeenCalledTimes(1);
+    expect(mockMessage.channel.send).toHaveBeenCalledOnce();
   });
 });
 
 describe('Give rep slash command', () => {
-  const getMockInteraction = (mockUser: User): any => ({
-    reply: replyMock,
-    member: {
-      user: {
-        id: '0',
-      },
-    },
-    options: {
-      getUser: vi.fn(() => mockUser),
-    },
+  beforeEach(() => {
+    mockReset(mockInteraction);
   });
 
   it('should send reject message if user mention themself', async () => {
-    const mockInteraction = getMockInteraction({ id: '0' } as User);
+    mockInteraction.options.getUser.mockReturnValueOnce({ id: '0' } as User);
+    mockInteraction.member!.user.id = '0';
 
     await giveRepSlashCommand(mockInteraction);
 
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith('You cannot give rep to yourself');
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
+      'You cannot give rep to yourself'
+    );
   });
 
   it('should call reply and add rep if user mention another user', async () => {
@@ -142,12 +129,12 @@ describe('Give rep slash command', () => {
       .mockResolvedValueOnce({ id: '0', reputation: 0 })
       .mockResolvedValueOnce({ id: '1', reputation: 0 });
     mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
-    const mockInteraction = getMockInteraction(mockUser);
+    mockInteraction.options.getUser.mockReturnValueOnce(mockUser);
 
     await giveRepSlashCommand(mockInteraction);
 
     expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
-    expect(mockUpdateRep).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledTimes(1);
+    expect(mockUpdateRep).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
   });
 });

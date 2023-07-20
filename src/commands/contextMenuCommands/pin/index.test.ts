@@ -1,47 +1,42 @@
-import { vi, it, describe, expect } from 'vitest';
+import { it, describe, expect } from 'vitest';
+import { mockDeep } from 'vitest-mock-extended';
+import {
+  ContextMenuCommandInteraction,
+  MessageContextMenuCommandInteraction,
+} from 'discord.js';
 import { pinMessage } from '.';
-
-const replyMock = vi.fn();
 
 describe('pinMessage context menu test', () => {
   it('Should return if interaction is not message context menu command', async () => {
-    const mockInteraction: any = {
-      isMessageContextMenuCommand: vi.fn(() => false),
-      reply: replyMock,
-    };
+    const mockInteraction = mockDeep<ContextMenuCommandInteraction>();
+    mockInteraction.isMessageContextMenuCommand.mockReturnValueOnce(false);
 
-    await pinMessage(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(0);
+    await pinMessage(mockInteraction as ContextMenuCommandInteraction);
+    expect(mockInteraction.reply).not.toHaveBeenCalled();
   });
 
   it('Should reply skipping if message is already pinned', async () => {
-    const mockInteraction: any = {
-      isMessageContextMenuCommand: vi.fn(() => true),
-      targetMessage: {
-        pinned: true,
-      },
-      reply: replyMock,
-    };
+    const mockInteraction = mockDeep<MessageContextMenuCommandInteraction>();
+    mockInteraction.isMessageContextMenuCommand.mockReturnValueOnce(true);
+    mockInteraction.targetMessage.pinned = true;
 
     await pinMessage(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       'Message is already pinned. Skipping...'
     );
   });
 
   it('Should pin the message', async () => {
-    const mockInteraction: any = {
-      isMessageContextMenuCommand: vi.fn(() => true),
-      targetMessage: {
-        pinned: false,
-        pin: vi.fn(),
-      },
-      reply: replyMock,
-    };
+    const mockInteraction = mockDeep<MessageContextMenuCommandInteraction>();
+    mockInteraction.isMessageContextMenuCommand.mockReturnValueOnce(true);
+    mockInteraction.targetMessage.pinned = false;
 
     await pinMessage(mockInteraction);
-    expect(replyMock).toHaveBeenCalledTimes(1);
-    expect(replyMock).toHaveBeenCalledWith('Message is now pinned!');
+    expect(mockInteraction.targetMessage.pin).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
+      'Message is now pinned!'
+    );
   });
 });

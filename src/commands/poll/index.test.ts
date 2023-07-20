@@ -1,47 +1,43 @@
-import { vi, it, describe, expect } from 'vitest';
+import { it, describe, expect, beforeEach } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { ChatInputCommandInteraction, Message } from 'discord.js';
 import { createPoll, NUMBER_AS_STRING } from '.';
 
-const replyMock = vi.fn();
-const getStringMock = vi.fn((option: string): string | undefined => option);
-const errorSpy = vi.spyOn(console, 'error');
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
+type MockReplyMessage = ChatInputCommandInteraction['reply'];
+const mockMessage = mockDeep<Message<false>>();
 
 describe('Poll test', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+    mockReset(mockMessage);
+    const mockReply = (() => mockMessage) as unknown as MockReplyMessage;
+    mockInteraction.reply.mockImplementationOnce(mockReply);
+  });
+
   it('Should send a poll as embeded message', async () => {
-    const mockedReact = vi.fn();
-    replyMock.mockReturnValueOnce({
-      react: mockedReact,
-    });
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: getStringMock,
-      },
-    };
+    mockInteraction.options.getString.mockImplementation(
+      (option: string) => option
+    );
+
     await createPoll(mockInteraction);
-    expect(mockedReact).toHaveBeenCalledTimes(NUMBER_AS_STRING.length);
+
+    expect(mockInteraction.reply).toHaveBeenCalled();
+    expect(mockMessage.react).toHaveBeenCalledTimes(NUMBER_AS_STRING.length);
   });
 
   it('Should send a poll with fewer than 9 options', async () => {
-    const mockedReact = vi.fn();
-    replyMock.mockReturnValueOnce({
-      react: mockedReact,
-    });
     const maxOptions = 3;
-    getStringMock.mockImplementation((option: string) => {
+    mockInteraction.options.getString.mockImplementation((option: string) => {
       if (option === 'question') return option;
 
       const index = Number(option.substring(6));
-      return index <= maxOptions ? option : undefined;
+      return index <= maxOptions ? option : null;
     });
-    const mockInteraction: any = {
-      reply: replyMock,
-      options: {
-        getString: getStringMock,
-      },
-    };
+
     await createPoll(mockInteraction);
 
-    expect(replyMock).toHaveBeenCalled();
-    expect(mockedReact).toHaveBeenCalledTimes(maxOptions);
+    expect(mockInteraction.reply).toHaveBeenCalled();
+    expect(mockMessage.react).toHaveBeenCalledTimes(maxOptions);
   });
 });

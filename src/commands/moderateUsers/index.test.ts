@@ -1,12 +1,21 @@
-import { it, describe, expect } from 'vitest';
+import { it, describe, expect, beforeEach } from 'vitest';
+import { DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeUserByRole } from '.';
 import { isAdmin, isModerator } from '../../utils';
-import { Collection, Role, ThreadMember } from 'discord.js';
+import {
+  APIRole,
+  ChatInputCommandInteraction,
+  Collection,
+  Role,
+  ThreadMember,
+  ThreadMemberManager,
+} from 'discord.js';
 
 vi.mock('../../utils/isSentFromAdmin');
 const mockIsSentFromAdmin = vi.mocked(isAdmin);
 const mockIsSentFromModerator = vi.mocked(isModerator);
-const replyMock = vi.fn(() => {});
+
+const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
 
 describe('Remove users who have the role', () => {
   beforeAll(() => {
@@ -14,37 +23,34 @@ describe('Remove users who have the role', () => {
     mockIsSentFromModerator.mockReturnValue(true);
   });
 
+  beforeEach(() => {
+    mockReset(mockInteraction);
+  });
+
   it('should reply with an error message if the user is not an admin or a moderator', async () => {
     mockIsSentFromAdmin.mockReturnValueOnce(false);
     mockIsSentFromModerator.mockReturnValueOnce(false);
-    const mockInteraction: any = {
-      reply: replyMock,
-    };
 
     await removeUserByRole(mockInteraction);
-    expect(replyMock).toHaveBeenCalledWith(
+
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       "You don't have enough permission to run this command."
     );
   });
 
   it('should reply with an error message if the command is not executed in a thread', async () => {
-    const interaction: any = {
-      channel: {
-        isThread: false,
-      },
-      reply: replyMock,
-    };
+    mockInteraction.channel?.isThread.mockReturnValueOnce(false);
 
-    await removeUserByRole(interaction);
-    expect(replyMock).toHaveBeenCalledWith(
+    await removeUserByRole(mockInteraction);
+
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       "You can't remove all users with role from entire channel. This command only works in a thread."
     );
   });
 
   it('should remove all users from the thread with the matching role', async () => {
-    const fakeRole: any = { id: 'role-id', name: 'name' };
     const fakeRoles = new Collection<string, Role>();
-    fakeRoles.set('1', fakeRole);
+    fakeRoles.set('1', { id: 'role-id', name: 'name' } as Role);
     const mockMembers = new Collection<string, ThreadMember>();
     mockMembers.set('1', {
       id: 'user1-id',
@@ -70,29 +76,20 @@ describe('Remove users who have the role', () => {
         },
       },
     } as ThreadMember);
-    const interaction: any = {
-      channel: {
-        isThread: true,
-        members: {
-          fetch: () => {
-            return mockMembers;
-          },
-          remove: vi.fn(() => {}),
-        },
-      },
-      reply: replyMock,
-      deferReply: replyMock,
-      editReply: replyMock,
-      options: {
-        getRole: () => {
-          return {
-            id: 'role-id',
-            name: 'name',
-          };
-        },
-      },
-    };
-    await removeUserByRole(interaction);
-    expect(replyMock).toHaveBeenCalled();
+
+    mockInteraction.channel?.isTextBased.mockReturnValueOnce(true);
+    mockInteraction.channel?.isThread.mockReturnValueOnce(true);
+    (
+      mockInteraction.channel?.members as DeepMockProxy<ThreadMemberManager>
+    ).fetch.mockResolvedValueOnce(mockMembers);
+    mockInteraction.options.getRole.mockReturnValueOnce({
+      id: 'role-id',
+      name: 'name',
+    } as APIRole);
+
+    await removeUserByRole(mockInteraction);
+
+    expect(mockInteraction.deferReply).toHaveBeenCalled();
+    expect(mockInteraction.editReply).toHaveBeenCalled();
   });
 });

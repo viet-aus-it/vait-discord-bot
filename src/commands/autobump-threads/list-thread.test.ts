@@ -19,8 +19,8 @@ describe('List autobump threads', () => {
 
     await listAutobumpThreadsCommand(mockInteraction);
 
-    expect(mockListAutobumpThread).toHaveBeenCalledTimes(1);
-    expect(mockInteraction.reply).toHaveBeenCalledTimes(1);
+    expect(mockListAutobumpThread).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledWith(
       "ERROR: Cannot get list of threads from the database, maybe the server threads aren't setup yet?"
     );
@@ -31,8 +31,8 @@ describe('List autobump threads', () => {
 
     await listAutobumpThreadsCommand(mockInteraction);
 
-    expect(mockListAutobumpThread).toHaveBeenCalledTimes(1);
-    expect(mockInteraction.reply).toHaveBeenCalledTimes(1);
+    expect(mockListAutobumpThread).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledWith(
       'No threads have been setup for autobumping in this server'
     );
@@ -43,8 +43,8 @@ describe('List autobump threads', () => {
 
     await listAutobumpThreadsCommand(mockInteraction);
 
-    expect(mockListAutobumpThread).toHaveBeenCalledTimes(1);
-    expect(mockInteraction.reply).toHaveBeenCalledTimes(1);
+    expect(mockListAutobumpThread).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledWith(
       `Here is the threads to be autobumped in this server:
 - <#${threadId}>

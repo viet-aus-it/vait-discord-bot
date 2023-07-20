@@ -29,12 +29,13 @@ export const removeUserByRole = async (
   }
 
   const channel = interaction.channel as ThreadChannel;
-  if (!channel?.isThread) {
+  if (!channel?.isThread()) {
     await interaction.reply(
       "You can't remove all users with role from entire channel. This command only works in a thread."
     );
     return;
   }
+
   await interaction.deferReply({ ephemeral: true });
   const role = interaction.options.getRole('name', true);
   const members = await channel.members.fetch({ withMember: true });
