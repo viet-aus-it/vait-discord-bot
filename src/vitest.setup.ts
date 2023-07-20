@@ -1,12 +1,18 @@
 import { beforeAll, afterAll, afterEach, vi } from 'vitest';
 import { faker } from '@faker-js/faker';
+import { getLogger } from './utils/logger';
 import { server } from './mocks/server';
+import winston from 'winston';
 
-const consoleErrorSpy = vi.spyOn(console, 'error');
+vi.mock('./utils/logger');
+const mockGetLogger = vi.mocked(getLogger);
 
 beforeAll(() => {
   server.listen();
-  consoleErrorSpy.mockImplementation(() => {});
+  mockGetLogger.mockReturnValue({
+    info: () => {},
+    error: () => {},
+  } as unknown as winston.Logger);
 });
 
 afterEach(() => {
@@ -15,5 +21,5 @@ afterEach(() => {
 
 afterAll(() => {
   server.close();
-  consoleErrorSpy.mockRestore();
+  mockGetLogger.mockRestore();
 });
