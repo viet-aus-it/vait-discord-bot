@@ -348,6 +348,7 @@ in development, and was messing up deployments.
 - Remove the side effect of cleaning up referral codes when requesting a random code.
 - Introduced `oxide.ts` to handle async workflows with safe results.
 - Refactored manual test mocks with `vitest-mock-extended`.
+- Migrated to Prisma 5.
 
 [//]: # (Template:)
 
