@@ -2,9 +2,11 @@ import { Result } from 'oxide.ts';
 import { deployGuildCommands } from '../commands/deploy-command';
 import { commandList, contextMenuCommandList } from '../commands';
 import { loadEnv } from '../utils/loadEnv';
+import { getLogger } from '../utils/logger';
 
 const deploy = async () => {
   loadEnv();
+  const logger = getLogger();
   const token = process.env.TOKEN ?? '';
   const clientId = process.env.CLIENT_ID ?? '';
   const guildId = process.env.GUILD_ID ?? '';
@@ -20,7 +22,7 @@ const deploy = async () => {
     process.exit(0);
   }
 
-  console.error('Cannot deploy commands', op.unwrapErr());
+  logger.error('Cannot deploy commands', op.unwrapErr());
   process.exit(1);
 };
 

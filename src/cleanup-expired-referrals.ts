@@ -2,10 +2,12 @@ import { getUnixTime } from 'date-fns';
 import { Result } from 'oxide.ts';
 import { cleanupExpiredCode } from './commands/referral/cleanupExpiredCode';
 import { loadEnv } from './utils/loadEnv';
+import { getLogger } from './utils/logger';
 
 const cleanup = async () => {
   loadEnv();
-  console.log(
+  const logger = getLogger();
+  logger.info(
     `CLEANING UP EXPIRED REFERRALS. Current Timestamp: ${getUnixTime(
       new Date()
     )}`
@@ -13,7 +15,7 @@ const cleanup = async () => {
 
   const op = await Result.safe(cleanupExpiredCode());
   if (op.isErr()) {
-    console.error(
+    logger.error(
       `Error cleaning up expired referrals. timestamp: ${getUnixTime(
         new Date()
       )}`
@@ -21,7 +23,7 @@ const cleanup = async () => {
     process.exit(1);
   }
 
-  console.log(
+  logger.info(
     `Removed expired referrals. Timestamp: ${getUnixTime(new Date())}`
   );
   process.exit(0);
