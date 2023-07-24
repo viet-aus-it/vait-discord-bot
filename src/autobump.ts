@@ -1,15 +1,12 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
 import { getUnixTime } from 'date-fns';
 import { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';
-
-const env = dotenv.config();
-dotenvExpand.expand(env);
+import { loadEnv } from './utils/loadEnv';
 
 const autobump = async () => {
+  loadEnv();
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
     console.error(

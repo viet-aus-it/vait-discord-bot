@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
 import { ChannelType } from 'discord.js';
 import { getUnixTime } from 'date-fns';
 import { Result } from 'oxide.ts';
@@ -10,11 +8,10 @@ import {
   removeReminders,
 } from './commands/reminder/reminder-utils';
 import { getReminderChannel } from './commands/serverSettings/server-utils';
-
-const env = dotenv.config();
-dotenvExpand.expand(env);
+import { loadEnv } from './utils/loadEnv';
 
 const broadcastReminder = async () => {
+  loadEnv();
   const currentTime = getUnixTime(new Date());
   const reminders = await Result.safe(getReminderByTime(currentTime));
   if (reminders.isErr()) {

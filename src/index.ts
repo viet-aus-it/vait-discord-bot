@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
 import { InteractionType } from 'discord-api-types/v10';
 import { getUnixTime } from 'date-fns';
 import { Result } from 'oxide.ts';
@@ -8,11 +6,10 @@ import { getDiscordClient } from './clients';
 import { getConfigs } from './config';
 import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
-
-const env = dotenv.config();
-dotenvExpand.expand(env);
+import { loadEnv } from './utils/loadEnv';
 
 const main = async () => {
+  loadEnv();
   const token = process.env.TOKEN ?? '';
   const client = await getDiscordClient({ token });
 

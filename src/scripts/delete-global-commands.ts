@@ -1,12 +1,9 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
 import { Result } from 'oxide.ts';
 import { deployGlobalCommands } from '../commands/deploy-command';
-
-const env = dotenv.config();
-dotenvExpand.expand(env);
+import { loadEnv } from '../utils/loadEnv';
 
 const deploy = async () => {
+  loadEnv();
   const token = process.env.TOKEN ?? '';
   const clientId = process.env.CLIENT_ID ?? '';
 
