@@ -342,6 +342,10 @@ in development, and was messing up deployments.
 
 ## \[Unreleased\]
 
+### Added
+
+- Added a module to load and validate environment variables before running.
+
 ### Changed
 
 - Create a dedicated Docker task for cleaning up expired referral codes.

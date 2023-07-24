@@ -1,13 +1,10 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
 import { getUnixTime } from 'date-fns';
-import { cleanupExpiredCode } from './commands/referral/cleanupExpiredCode';
 import { Result } from 'oxide.ts';
-
-const env = dotenv.config();
-dotenvExpand.expand(env);
+import { cleanupExpiredCode } from './commands/referral/cleanupExpiredCode';
+import { loadEnv } from './utils/loadEnv';
 
 const cleanup = async () => {
+  loadEnv();
   console.log(
     `CLEANING UP EXPIRED REFERRALS. Current Timestamp: ${getUnixTime(
       new Date()
