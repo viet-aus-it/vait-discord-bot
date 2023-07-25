@@ -3,8 +3,10 @@ import dotenvExpand from 'dotenv-expand';
 import { z } from 'zod';
 
 const configSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production']).default('development'),
-  TZ: z.string(),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
+  TZ: z.string().default('Australia/Brisbane'),
 
   // Discord config
   TOKEN: z.string(),

@@ -17,5 +17,3 @@ afterAll(() => {
   server.close();
   consoleErrorSpy.mockRestore();
 });
-
-process.env.TOKEN = faker.finance.accountNumber(10);
