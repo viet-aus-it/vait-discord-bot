@@ -353,6 +353,7 @@ in development, and was messing up deployments.
 - Introduced `oxide.ts` to handle async workflows with safe results.
 - Refactored manual test mocks with `vitest-mock-extended`.
 - Migrated to Prisma 5.
+- Add a sample `.env.ci` file for testing in CI/CD environments.
 
 [//]: # (Template:)
 
