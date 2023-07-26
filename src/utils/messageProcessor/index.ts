@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { getLogger } from '../logger';
+import { logger } from '../logger';
 
 type CommandPromise = Promise<any> | undefined;
 
@@ -45,7 +45,6 @@ export const processMessage = async (
   try {
     await Promise.all(keywordPromises);
   } catch (error) {
-    const logger = getLogger();
     logger.error('ERROR PROCESSING MESSAGE', error);
   }
 };

@@ -7,11 +7,10 @@ import { getConfigs } from './config';
 import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
 import { loadEnv } from './utils/loadEnv';
-import { getLogger } from './utils/logger';
+import { logger } from './utils/logger';
 
 const main = async () => {
   loadEnv();
-  const logger = getLogger();
   const token = process.env.TOKEN ?? '';
   const client = await getDiscordClient({ token });
 

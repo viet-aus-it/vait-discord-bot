@@ -33,8 +33,6 @@ const prodOptions: winston.LoggerOptions = {
   ),
 };
 
-const logger = winston.createLogger(
+export const logger = winston.createLogger(
   process.env.NODE_ENV === 'production' ? prodOptions : devOptions
 );
-
-export const getLogger = () => logger;

@@ -1,11 +1,10 @@
 import { Result } from 'oxide.ts';
 import { deployGuildCommands } from '../commands/deploy-command';
 import { loadEnv } from '../utils/loadEnv';
-import { getLogger } from '../utils/logger';
+import { logger } from '../utils/logger';
 
 const deploy = async () => {
   loadEnv();
-  const logger = getLogger();
   const token = process.env.TOKEN ?? '';
   const clientId = process.env.CLIENT_ID ?? '';
   const guildId = process.env.GUILD_ID ?? '';

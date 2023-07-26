@@ -2,11 +2,10 @@ import { getUnixTime } from 'date-fns';
 import { Result } from 'oxide.ts';
 import { cleanupExpiredCode } from './commands/referral/cleanupExpiredCode';
 import { loadEnv } from './utils/loadEnv';
-import { getLogger } from './utils/logger';
+import { logger } from './utils/logger';
 
 const cleanup = async () => {
   loadEnv();
-  const logger = getLogger();
   logger.info(
     `CLEANING UP EXPIRED REFERRALS. Current Timestamp: ${getUnixTime(
       new Date()

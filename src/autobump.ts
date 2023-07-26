@@ -4,11 +4,10 @@ import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';
 import { loadEnv } from './utils/loadEnv';
-import { getLogger } from './utils/logger';
+import { logger } from './utils/logger';
 
 const autobump = async () => {
   loadEnv();
-  const logger = getLogger();
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
     logger.error(

@@ -9,11 +9,10 @@ import {
 } from './commands/reminder/reminder-utils';
 import { getReminderChannel } from './commands/serverSettings/server-utils';
 import { loadEnv } from './utils/loadEnv';
-import { getLogger } from './utils/logger';
+import { logger } from './utils/logger';
 
 const broadcastReminder = async () => {
   loadEnv();
-  const logger = getLogger();
   const currentTime = getUnixTime(new Date());
   const reminders = await Result.safe(getReminderByTime(currentTime));
   if (reminders.isErr()) {
