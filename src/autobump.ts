@@ -4,12 +4,13 @@ import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';
 import { loadEnv } from './utils/loadEnv';
+import { logger } from './utils/logger';
 
 const autobump = async () => {
   loadEnv();
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
-    console.error(
+    logger.error(
       `Cannot retrieve autobump thread lists. Timestamp: ${getUnixTime(
         new Date()
       )}`
@@ -19,7 +20,7 @@ const autobump = async () => {
 
   const data = settings.unwrap();
   if (data.length === 0) {
-    console.log(
+    logger.info(
       `No autobump threads settings found. Timestamp: ${getUnixTime(
         new Date()
       )}`
@@ -50,7 +51,7 @@ const autobump = async () => {
     Promise.resolve([] as unknown[])
   );
 
-  console.log(
+  logger.info(
     `Thread autobump complete. Jobs: ${jobs.length}. Timestamp: ${getUnixTime(
       new Date()
     )}`

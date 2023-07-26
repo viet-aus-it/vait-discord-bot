@@ -9,19 +9,20 @@ import {
 } from './commands/reminder/reminder-utils';
 import { getReminderChannel } from './commands/serverSettings/server-utils';
 import { loadEnv } from './utils/loadEnv';
+import { logger } from './utils/logger';
 
 const broadcastReminder = async () => {
   loadEnv();
   const currentTime = getUnixTime(new Date());
   const reminders = await Result.safe(getReminderByTime(currentTime));
   if (reminders.isErr()) {
-    console.error('Cannot retrieve reminders.');
+    logger.error('Cannot retrieve reminders.');
     process.exit(1);
   }
 
   const remindersData = reminders.unwrap();
   if (remindersData.length === 0) {
-    console.log('No reminders to broadcast.');
+    logger.info('No reminders to broadcast.');
     process.exit(0);
   }
 
@@ -59,7 +60,7 @@ const broadcastReminder = async () => {
 
   await removeReminders(remindersData);
 
-  console.log(`Reminders fan out complete. Jobs: ${jobs.length}`);
+  logger.info(`Reminders fan out complete. Jobs: ${jobs.length}`);
   process.exit(0);
 };
 

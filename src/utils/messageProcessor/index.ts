@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+import { logger } from '../logger';
 
 type CommandPromise = Promise<any> | undefined;
 
@@ -44,6 +45,6 @@ export const processMessage = async (
   try {
     await Promise.all(keywordPromises);
   } catch (error) {
-    console.error('ERROR PROCESSING MESSAGE', error);
+    logger.error('ERROR PROCESSING MESSAGE', error);
   }
 };

@@ -7,6 +7,7 @@ import { getConfigs } from './config';
 import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
 import { loadEnv } from './utils/loadEnv';
+import { logger } from './utils/logger';
 
 const main = async () => {
   loadEnv();
@@ -14,7 +15,7 @@ const main = async () => {
   const client = await getDiscordClient({ token });
 
   if (!client.user) throw new Error('Something went wrong!');
-  console.log(`Logged in as ${client.user.tag}!`);
+  logger.info(`Logged in as ${client.user.tag}!`);
 
   if (process.env.NODE_ENV === 'production') {
     // This should only be run once during the bot startup in production.
@@ -26,7 +27,7 @@ const main = async () => {
       })
     );
     if (op.isErr()) {
-      console.error('Cannot deploy commands', op.unwrapErr());
+      logger.error('Cannot deploy commands', op.unwrapErr());
       process.exit(1);
     }
   }
@@ -66,9 +67,8 @@ const main = async () => {
         return await command?.autocomplete?.(interaction);
       }
     } catch (error) {
-      // TODO: More error handling here and/or forward this to a tracker service
       const currentTimestamp = getUnixTime(Date.now());
-      console.error(
+      logger.error(
         `ERROR HANDLING INTERACTION. TIMESTAMP: ${currentTimestamp}, ERROR: ${error}.`
       );
     }

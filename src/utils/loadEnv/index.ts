@@ -12,6 +12,11 @@ const configSchema = z.object({
   TOKEN: z.string(),
   CLIENT_ID: z.string(),
   GUILD_ID: z.string().optional(),
+
+  // Axiom config
+  AXIOM_TOKEN: z.string().optional(),
+  AXIOM_DATASET: z.string().optional(),
+  AXIOM_ORG_ID: z.string().optional(),
 });
 type ConfigSchema = z.infer<typeof configSchema>;
 

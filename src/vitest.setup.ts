@@ -1,12 +1,10 @@
 import { beforeAll, afterAll, afterEach, vi } from 'vitest';
-import { faker } from '@faker-js/faker';
+import { logger } from './utils/logger';
 import { server } from './mocks/server';
-
-const consoleErrorSpy = vi.spyOn(console, 'error');
 
 beforeAll(() => {
   server.listen();
-  consoleErrorSpy.mockImplementation(() => {});
+  logger.silent = true;
 });
 
 afterEach(() => {
@@ -15,5 +13,5 @@ afterEach(() => {
 
 afterAll(() => {
   server.close();
-  consoleErrorSpy.mockRestore();
+  logger.silent = false;
 });

@@ -39,6 +39,7 @@
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only"
   },
   "dependencies": {
+    "@axiomhq/winston": "^0.1.2",
     "@discordjs/rest": "1.7.1",
     "@prisma/client": "^5.0.0",
     "cowsay": "^1.5.0",
@@ -50,6 +51,7 @@
     "node-fetch": "^3.3.1",
     "oxide.ts": "^1.1.0",
     "parse-duration": "^1.0.3",
+    "winston": "^3.10.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

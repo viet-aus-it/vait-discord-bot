@@ -1,6 +1,7 @@
 import { Result } from 'oxide.ts';
 import { deployGlobalCommands } from '../commands/deploy-command';
 import { loadEnv } from '../utils/loadEnv';
+import { logger } from '../utils/logger';
 
 const deploy = async () => {
   loadEnv();
@@ -17,7 +18,7 @@ const deploy = async () => {
     process.exit(0);
   }
 
-  console.error('Cannot delete commands', op.unwrapErr());
+  logger.error('Cannot delete commands', op.unwrapErr());
   process.exit(1);
 };
 
