@@ -17,7 +17,6 @@
     - [Running tests](#running-lints-and-tests)
     - [Testing staging/production build](#testing-stagingproduction-build)
 
-
 ## Forewords
 
 This documentation below is for **contributing** to the bot. For bot commands and usage,
@@ -61,7 +60,6 @@ Once you have invited the bot to your server, open Discord, go to Settings > Adv
 Then, right-click on the server title and select "Copy ID" to get the `GUILD ID`.
 
 Please make sure you have these information before proceeding to the next step.
-
 
 ### Creating the config files
 
@@ -140,11 +138,12 @@ pnpm prisma:studio
   in the `.env` file.
 - Add your commands into the `src/command/index.ts` file like so.
 
-```typescript
+```ts
 import yourCommand from './yourCommand';
 
 export const commandList: Command[] = [yourCommand];
 ```
+
 - Run the `deploy:command` command.
 
 ```bash
@@ -156,8 +155,7 @@ there is a change in command registration (adding a new command, editing
 options of an existing one). Running this too many times in a short period
 of time will cause Discord API to **lock your bot out**.
 
-
-### Troubleshooting:
+### Troubleshooting
 
 - When deploy slash commands, if you got `Error: Cannot deploy commands`,
 it's normally because of your bot doesn't have permission to do so. You
@@ -179,16 +177,15 @@ pnpm test
 
 ---
 
-## Testing staging/production build
+## Testing production build
 
-- Copy out an env file for the stage you're testing. Use `.env.staging` for staging, and `.env.production` for production.
+- Copy out an env file for the stage you're testing. Use `.env.production` for production.
 - Build the staging/production stage image.
 - Start the service to test.
-- For the `.env.[stage]` file, instead of `localhost`, put in `db` as the `POSTGRES_HOST`.
+- For the `.env.production` file, instead of `localhost`, put in `db` as the `POSTGRES_HOST`.
 
 ```bash
-# Replace the `[stage]` with either `production` or `staging`
-cp .env.dist .env.[stage]
-docker compose -f docker-compose.yml -f docker-compose.[stage].yml build bot
-docker compose -f docker-compose.yml -f docker-compose.[stage].yml up db bot
+cp .env.dist .env.production
+docker compose -f docker-compose.yml -f docker-compose.production.yml build bot
+docker compose -f docker-compose.yml -f docker-compose.production.yml up db bot
 ```
