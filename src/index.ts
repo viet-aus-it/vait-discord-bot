@@ -27,9 +27,10 @@ const main = async () => {
       })
     );
     if (op.isErr()) {
-      logger.error('Cannot deploy commands', op.unwrapErr());
+      logger.error('Cannot deploy global commands', op.unwrapErr());
       process.exit(1);
     }
+    logger.info('Successfully deployed global commands');
   }
 
   const configs = getConfigs();

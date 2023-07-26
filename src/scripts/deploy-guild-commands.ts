@@ -18,10 +18,11 @@ const deploy = async () => {
     })
   );
   if (op.isOk()) {
+    logger.info('Guild commands deployed successfully');
     process.exit(0);
   }
 
-  logger.error('Cannot deploy commands', op.unwrapErr());
+  logger.error('Cannot deploy guild commands', op.unwrapErr());
   process.exit(1);
 };
 

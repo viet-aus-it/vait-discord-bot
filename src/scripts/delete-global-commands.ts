@@ -15,10 +15,11 @@ const deploy = async () => {
     })
   );
   if (op.isOk()) {
+    logger.info('Global commands deleted successfully');
     process.exit(0);
   }
 
-  logger.error('Cannot delete commands', op.unwrapErr());
+  logger.error('Cannot delete global commands', op.unwrapErr());
   process.exit(1);
 };
 
