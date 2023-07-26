@@ -340,7 +340,7 @@ in development, and was messing up deployments.
 
 - Update giverep, takerep and setrep response message to be consistent
 
-## \[Unreleased\]
+## 2.11.0
 
 ### Added
 
@@ -359,6 +359,8 @@ in development, and was messing up deployments.
 
 - Installed `winston` for logging, and integrate with [`Axiom`](https://axiom.co) for log
 ingestions and queries.
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
