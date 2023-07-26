@@ -366,6 +366,10 @@ ingestions and queries.
 
 - Add more logs for command deployments
 
+### Changed
+
+- Replace test coverage provider from c8 to v8
+
 [//]: # (Template:)
 
 [//]: # (Version number)
