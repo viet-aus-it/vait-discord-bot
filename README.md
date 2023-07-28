@@ -186,6 +186,6 @@ pnpm test
 
 ```bash
 cp .env.dist .env.production
-docker compose -f docker-compose.yml -f docker-compose.production.yml build bot
-docker compose -f docker-compose.yml -f docker-compose.production.yml up db bot
+docker compose -f docker-compose.production.yml build bot
+docker compose -f docker-compose.production.yml up db bot
 ```
