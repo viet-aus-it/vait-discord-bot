@@ -15,7 +15,7 @@
     - [Build and run the service locally](#build-and-run-the-service-locally)
   - [Useful commands](#useful-commands)
     - [Running tests](#running-lints-and-tests)
-    - [Testing staging/production build](#testing-stagingproduction-build)
+    - [Testing production build](#testing-production-build)
 
 ## Forewords
 

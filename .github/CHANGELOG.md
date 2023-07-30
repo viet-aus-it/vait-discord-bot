@@ -370,6 +370,7 @@ ingestions and queries.
 
 - Replace test coverage provider from c8 to v8
 - Upgrade Node to version 20
+- Update database image to run with postgres 15
 
 [//]: # (Template:)
 
