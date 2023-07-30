@@ -369,6 +369,7 @@ ingestions and queries.
 ### Changed
 
 - Replace test coverage provider from c8 to v8
+- Upgrade Node to version 20
 
 [//]: # (Template:)
 

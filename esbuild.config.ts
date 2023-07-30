@@ -34,7 +34,7 @@ async function build() {
     console.log('Starting bundling by ESBuild...');
     const result = await esbuild.build({
       platform: 'node',
-      target: 'node18',
+      target: 'node20',
       bundle: true,
       minify: false,
       entryPoints: [
