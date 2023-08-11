@@ -99,6 +99,7 @@ cp .env.dist .env
       you like with these or just leave it with default value, since it only affects
       your local dev environment. But please keep it consistent since if you lose it,
       you will lose access to your local database and will need to re-create it.
+    - Ignore the `Shadow DB` section. This is production only.
 
 **Note:** **DO NOT** commit the `.env` file to Git.
 
@@ -186,6 +187,6 @@ pnpm test
 
 ```bash
 cp .env.dist .env.production
-docker compose -f docker-compose.yml -f docker-compose.production.yml build bot
-docker compose -f docker-compose.yml -f docker-compose.production.yml up db bot
+docker compose -f docker-compose.production.yml build bot
+docker compose -f docker-compose.production.yml up db bot
 ```

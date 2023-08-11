@@ -9,13 +9,7 @@ services:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: discord_bot_prod
 
-  db:
-    env_file: ".env.production"
-    container_name: discord_bot_db_prod
-
   db-migrate:
-    depends_on:
-      - db
     image: ghcr.io/viet-aus-it/prisma-migrate-service
     volumes:
       - ./prisma:/src/prisma
@@ -23,24 +17,18 @@ services:
     container_name: discord_bot_db_migrate_prod
 
   broadcast-reminder:
-    depends_on:
-      - db
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: reminder_broadcaster_prod
     env_file: ".env.production"
     command: ["--enable-source-maps", "build/server/broadcast-reminder.js"]
 
   autobump:
-    depends_on:
-      - db
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: autobump_prod
     env_file: ".env.production"
     command: ["--enable-source-maps", "build/server/autobump.js"]
 
   cleanup-referrals:
-    depends_on:
-      - db
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: cleanup_referrals_prod
     env_file: ".env.production"
