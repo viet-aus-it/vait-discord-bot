@@ -42,6 +42,6 @@ services:
     depends_on:
       - db
     image: ghcr.io/viet-aus-it/discord-bot:production
-    container_name: autobump_prod
+    container_name: cleanup_referrals_prod
     env_file: ".env.production"
     command: ["--enable-source-maps", "build/server/cleanup-expired-referrals.js"]
