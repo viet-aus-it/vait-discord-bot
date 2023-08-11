@@ -360,7 +360,7 @@ in development, and was messing up deployments.
 - Installed `winston` for logging, and integrate with [`Axiom`](https://axiom.co) for log
 ingestions and queries.
 
-## \[Unreleased\]
+## 2.12.0
 
 ### Added
 
@@ -372,6 +372,8 @@ ingestions and queries.
 - Upgrade Node to version 20
 - Update database image to run with postgres 15
 - Moved from hosting the database internally to run with a cloud based service
+
+## \[Unreleased\]
 
 [//]: # (Template:)
 
