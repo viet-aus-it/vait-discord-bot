@@ -8,9 +8,11 @@ import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
+import { getCurrentUnixTime } from './utils/dateUtils';
 
 const main = async () => {
   loadEnv();
+  logger.info(`STARTING BOT. TIMESTAMP: ${getCurrentUnixTime()}`);
   const token = process.env.TOKEN ?? '';
   const client = await getDiscordClient({ token });
 
@@ -27,10 +29,15 @@ const main = async () => {
       })
     );
     if (op.isErr()) {
-      logger.error('Cannot deploy global commands', op.unwrapErr());
+      logger.error(
+        `Cannot deploy global commands. Timestamp: ${getCurrentUnixTime()}`,
+        op.unwrapErr()
+      );
       process.exit(1);
     }
-    logger.info('Successfully deployed global commands');
+    logger.info(
+      `Successfully deployed global commands. Timestamp: ${getCurrentUnixTime()}`
+    );
   }
 
   const configs = getConfigs();

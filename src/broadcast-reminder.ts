@@ -10,19 +10,26 @@ import {
 import { getReminderChannel } from './commands/serverSettings/server-utils';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
+import { getCurrentUnixTime } from './utils/dateUtils';
 
 const broadcastReminder = async () => {
   loadEnv();
-  const currentTime = getUnixTime(new Date());
-  const reminders = await Result.safe(getReminderByTime(currentTime));
+  logger.info(`BROADCASTING REMINDERS. TIMESTAMP: ${getUnixTime(new Date())}`);
+
+  const queryTime = getCurrentUnixTime();
+  const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
   if (reminders.isErr()) {
-    logger.error('Cannot retrieve reminders.');
+    logger.error(
+      `Cannot retrieve reminders. Timestamp: ${getCurrentUnixTime()}. Query Time: ${queryTime}`
+    );
     process.exit(1);
   }
 
   const remindersData = reminders.unwrap();
   if (remindersData.length === 0) {
-    logger.info('No reminders to broadcast.');
+    logger.info(
+      `No reminders to broadcast. Timestamp: ${getCurrentUnixTime()}. Query Time: ${queryTime}`
+    );
     process.exit(0);
   }
 
@@ -60,7 +67,11 @@ const broadcastReminder = async () => {
 
   await removeReminders(remindersData);
 
-  logger.info(`Reminders fan out complete. Jobs: ${jobs.length}`);
+  logger.info(
+    `Reminders fan out complete. Jobs: ${
+      jobs.length
+    }. Timestamp: ${getCurrentUnixTime()}`
+  );
   process.exit(0);
 };
 

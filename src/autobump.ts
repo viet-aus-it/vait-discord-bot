@@ -5,15 +5,16 @@ import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
+import { getCurrentUnixTime } from './utils/dateUtils';
 
 const autobump = async () => {
   loadEnv();
+  logger.info(`AUTOBUMPING THREADS. TIMESTAMP: ${getUnixTime(new Date())}`);
+
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
     logger.error(
-      `Cannot retrieve autobump thread lists. Timestamp: ${getUnixTime(
-        new Date()
-      )}`
+      `Cannot retrieve autobump thread lists. Timestamp: ${getCurrentUnixTime()}`
     );
     process.exit(1);
   }
@@ -21,9 +22,7 @@ const autobump = async () => {
   const data = settings.unwrap();
   if (data.length === 0) {
     logger.info(
-      `No autobump threads settings found. Timestamp: ${getUnixTime(
-        new Date()
-      )}`
+      `No autobump threads settings found. Timestamp: ${getCurrentUnixTime()}`
     );
     process.exit(0);
   }
@@ -52,9 +51,9 @@ const autobump = async () => {
   );
 
   logger.info(
-    `Thread autobump complete. Jobs: ${jobs.length}. Timestamp: ${getUnixTime(
-      new Date()
-    )}`
+    `Thread autobump complete. Jobs: ${
+      jobs.length
+    }. Timestamp: ${getCurrentUnixTime()}`
   );
   process.exit(0);
 };

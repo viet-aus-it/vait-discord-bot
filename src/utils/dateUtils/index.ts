@@ -9,3 +9,7 @@ export const convertDateToEpoch = (input: string) => {
   const date = parse(input, DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT, new Date());
   return getUnixTime(date);
 };
+
+export const getCurrentUnixTime = () => {
+  return getUnixTime(new Date());
+};

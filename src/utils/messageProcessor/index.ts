@@ -1,5 +1,6 @@
 import { Message } from 'discord.js';
 import { logger } from '../logger';
+import { getCurrentUnixTime } from '../dateUtils';
 
 type CommandPromise = Promise<any> | undefined;
 
@@ -45,6 +46,9 @@ export const processMessage = async (
   try {
     await Promise.all(keywordPromises);
   } catch (error) {
-    logger.error('ERROR PROCESSING MESSAGE', error);
+    logger.error(
+      `ERROR PROCESSING MESSAGE. TIMESTAMP: ${getCurrentUnixTime()}`,
+      error
+    );
   }
 };
