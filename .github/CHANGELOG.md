@@ -373,6 +373,12 @@ ingestions and queries.
 - Update database image to run with postgres 15
 - Moved from hosting the database internally to run with a cloud based service
 
+## 2.12.1
+
+### Changed
+
+- Add more timestamp to logs
+
 ## \[Unreleased\]
 
 [//]: # (Template:)
