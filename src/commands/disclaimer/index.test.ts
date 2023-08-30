@@ -1,7 +1,7 @@
-import { it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { DISCLAIMER_VI, DISCLAIMER_EN, getDisclaimer } from '.';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { DISCLAIMER_EN, DISCLAIMER_VI, getDisclaimer } from '.';
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const getEmbed = (content: string) => {

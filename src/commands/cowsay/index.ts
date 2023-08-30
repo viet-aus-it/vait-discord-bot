@@ -1,9 +1,5 @@
-import {
-  ChatInputCommandInteraction,
-  TextChannel,
-  SlashCommandBuilder,
-} from 'discord.js';
 import { say } from 'cowsay';
+import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
 import { Command } from '../builder';
@@ -14,9 +10,7 @@ const WRAP_TEXT_LIMIT = 35;
 const data = new SlashCommandBuilder()
   .setName('cowsay')
   .setDescription('Make a cow say your chat message')
-  .addStringOption((option) =>
-    option.setName('sentence').setDescription('What you want the cow to say')
-  );
+  .addStringOption((option) => option.setName('sentence').setDescription('What you want the cow to say'));
 
 // Remove backtick in message in case of nesting cowsay
 export const removeBacktick = (message: string) => {
@@ -69,15 +63,11 @@ export const cowsay = async (interaction: ChatInputCommandInteraction) => {
   }
 
   // If /cowsay is detected but content is blank, fetch the latest message in channel
-  const fetchedMessage = await Result.safe(
-    fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id)
-  );
+  const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
 
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
-    await interaction.reply(
-      'Cannot fetch latest message. Please try again later.'
-    );
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 

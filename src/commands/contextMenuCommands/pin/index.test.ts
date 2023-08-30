@@ -1,9 +1,6 @@
-import { it, describe, expect } from 'vitest';
+import { ContextMenuCommandInteraction, MessageContextMenuCommandInteraction } from 'discord.js';
+import { describe, expect, it } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
-import {
-  ContextMenuCommandInteraction,
-  MessageContextMenuCommandInteraction,
-} from 'discord.js';
 import { pinMessage } from '.';
 
 describe('pinMessage context menu test', () => {
@@ -22,9 +19,7 @@ describe('pinMessage context menu test', () => {
 
     await pinMessage(mockInteraction);
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'Message is already pinned. Skipping...'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('Message is already pinned. Skipping...');
   });
 
   it('Should pin the message', async () => {
@@ -35,8 +30,6 @@ describe('pinMessage context menu test', () => {
     await pinMessage(mockInteraction);
     expect(mockInteraction.targetMessage.pin).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'Message is now pinned!'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('Message is now pinned!');
   });
 });

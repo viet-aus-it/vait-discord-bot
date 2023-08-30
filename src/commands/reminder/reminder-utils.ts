@@ -8,12 +8,7 @@ type SaveReminderInput = {
   message: string;
   timestamp: number;
 };
-export const saveReminder = async ({
-  userId,
-  guildId,
-  message,
-  timestamp,
-}: SaveReminderInput) => {
+export const saveReminder = async ({ userId, guildId, message, timestamp }: SaveReminderInput) => {
   const currentDate = getUnixTime(new Date());
   if (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp)) {
     throw new Error('EXPIRED DATE');
@@ -39,18 +34,9 @@ type UpdateReminderInput = {
   message?: string;
   timestamp?: number;
 };
-export const updateReminder = async ({
-  userId,
-  guildId,
-  reminderId,
-  message,
-  timestamp,
-}: UpdateReminderInput) => {
+export const updateReminder = async ({ userId, guildId, reminderId, message, timestamp }: UpdateReminderInput) => {
   const currentDate = getUnixTime(new Date());
-  if (
-    timestamp &&
-    (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp))
-  ) {
+  if (timestamp && (isAfter(currentDate, timestamp) || isEqual(currentDate, timestamp))) {
     throw new Error('EXPIRED DATE');
   }
 
@@ -92,11 +78,7 @@ type RemoveReminderInput = {
   guildId: string;
   reminderId: string;
 };
-export const removeReminder = async ({
-  userId,
-  guildId,
-  reminderId,
-}: RemoveReminderInput) => {
+export const removeReminder = async ({ userId, guildId, reminderId }: RemoveReminderInput) => {
   const prisma = getPrismaClient();
   await prisma.reminder.deleteMany({
     where: {
@@ -109,11 +91,7 @@ export const removeReminder = async ({
   return;
 };
 
-export const formatReminderMessage = ({
-  userId,
-  message,
-  onTimestamp,
-}: Reminder) => {
+export const formatReminderMessage = ({ userId, message, onTimestamp }: Reminder) => {
   return `Reminder for <@${userId}> on <t:${onTimestamp}> \nmessage: ${message}`;
 };
 

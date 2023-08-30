@@ -38,9 +38,5 @@ export const roles = [
 export const searchRoles = (term?: string, searchRoleList = roles) => {
   const cleanedTerm = term?.trim().toLowerCase();
 
-  return searchRoleList
-    .filter((role) =>
-      cleanedTerm ? role.name.toLowerCase().includes(cleanedTerm) : true
-    )
-    .slice(0, 25);
+  return searchRoleList.filter((role) => (cleanedTerm ? role.name.toLowerCase().includes(cleanedTerm) : true)).slice(0, 25);
 };

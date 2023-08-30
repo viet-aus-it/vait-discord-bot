@@ -381,6 +381,10 @@ ingestions and queries.
 
 ## \[Unreleased\]
 
+### Changed
+
+- Migrate our linting and formatting setup from Rome to Biome
+
 [//]: # (Template:)
 
 [//]: # (Version number)

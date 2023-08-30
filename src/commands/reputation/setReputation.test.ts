@@ -1,9 +1,9 @@
-import { vi, it, describe, expect, beforeEach, beforeAll } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
-import { setReputation } from './setReputation';
-import { getOrCreateUser, updateRep } from './_helpers';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { isAdmin } from '../../utils';
+import { getOrCreateUser, updateRep } from './_helpers';
+import { setReputation } from './setReputation';
 
 vi.mock('./_helpers');
 const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
@@ -31,15 +31,11 @@ describe('setRep', () => {
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(mockInteraction.reply).toHaveBeenCalled();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      "You don't have enough permission to run this command."
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith("You don't have enough permission to run this command.");
   });
 
   it('Should call reply when user mentions another user', async () => {
-    mockCreateUpdateUser
-      .mockResolvedValueOnce({ id: '1', reputation: 1 })
-      .mockResolvedValueOnce({ id: '0', reputation: 1 });
+    mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 1 }).mockResolvedValueOnce({ id: '0', reputation: 1 });
     mockUpdateRep.mockResolvedValueOnce({ id: '0', reputation: 1234 });
     const mockUser = { id: '0' } as User;
     mockInteraction.member!.user.id = '1';
@@ -54,8 +50,6 @@ describe('setRep', () => {
     expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      "test1 just set test0's rep to 1234.\ntest0 → 1234 reps"
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith("test1 just set test0's rep to 1234.\ntest0 → 1234 reps");
   });
 });

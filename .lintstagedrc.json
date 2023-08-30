@@ -1,6 +1,6 @@
 {
   "*.{ts,js}": [
-    "rome check",
-    "rome format --write"
+    "biome check",
+    "biome format --write"
   ]
 }

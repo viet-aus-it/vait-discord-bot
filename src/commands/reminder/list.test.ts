@@ -1,10 +1,10 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction } from 'discord.js';
 import { getYear } from 'date-fns';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { convertDateToEpoch } from '../../utils/dateUtils';
 import { execute } from './list';
 import { getUserReminders } from './reminder-utils';
-import { convertDateToEpoch } from '../../utils/dateUtils';
 
 vi.mock('./reminder-utils');
 const mockGetReminders = vi.mocked(getUserReminders);
@@ -30,9 +30,7 @@ describe('List reminders', () => {
 
     expect(mockGetReminders).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'There is some error retrieving your reminders. Please try again later.'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('There is some error retrieving your reminders. Please try again later.');
   });
 
   it('Should reply with empty message if there is no reminder set up', async () => {
@@ -42,9 +40,7 @@ describe('List reminders', () => {
 
     expect(mockGetReminders).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      "You currently don't have any reminder set up."
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith("You currently don't have any reminder set up.");
   });
 
   it('Should reply with list of reminders if exists', async () => {

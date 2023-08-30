@@ -1,5 +1,5 @@
-import { it, describe, expect } from 'vitest';
 import { Collection, Role } from 'discord.js';
+import { describe, expect, it } from 'vitest';
 import { isAdmin, isModerator } from '.';
 
 describe('isModerator', () => {

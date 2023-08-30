@@ -1,10 +1,10 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction } from 'discord.js';
 import { getYear } from 'date-fns';
-import { execute } from './update';
-import { updateReminder } from './reminder-utils';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { convertDateToEpoch } from '../../utils/dateUtils';
+import { updateReminder } from './reminder-utils';
+import { execute } from './update';
 
 vi.mock('./reminder-utils');
 const mockUpdateReminder = vi.mocked(updateReminder);
@@ -46,9 +46,7 @@ describe('update reminder', () => {
 
     expect(mockUpdateReminder).not.toHaveBeenCalled();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'Nothing to update. Skipping...'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('Nothing to update. Skipping...');
   });
 
   it('Should send error reply if it cannot update reminder', async () => {
@@ -59,9 +57,7 @@ describe('update reminder', () => {
 
     expect(mockUpdateReminder).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `Cannot update reminder for <@${userId}> and reminder id ${reminderId}. Please try again later.`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`Cannot update reminder for <@${userId}> and reminder id ${reminderId}. Please try again later.`);
   });
 
   it('Should send reply with default timezone if no timezone given', async () => {

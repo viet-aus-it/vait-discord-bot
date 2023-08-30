@@ -730,9 +730,5 @@ const options = services.map((service) => ({
 export const searchServices = (term?: string) => {
   const cleanedTerm = term?.trim().toLowerCase();
 
-  return options
-    .filter((service) =>
-      cleanedTerm ? service.name.includes(cleanedTerm) : true
-    )
-    .slice(0, 25);
+  return options.filter((service) => (cleanedTerm ? service.name.includes(cleanedTerm) : true)).slice(0, 25);
 };

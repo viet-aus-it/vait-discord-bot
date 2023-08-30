@@ -20,17 +20,13 @@ const getData = () => {
 
 const autocomplete: AutocompleteHandler = async (interaction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);
-  const subcommand = subcommands.find(
-    ({ data: { name } }) => name === requestedSubcommand
-  );
+  const subcommand = subcommands.find(({ data: { name } }) => name === requestedSubcommand);
   return subcommand?.autocomplete?.(interaction);
 };
 
 const execute: CommandHandler = async (interaction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);
-  const subcommand = subcommands.find(
-    ({ data: { name } }) => name === requestedSubcommand
-  );
+  const subcommand = subcommands.find(({ data: { name } }) => name === requestedSubcommand);
   return subcommand?.execute?.(interaction);
 };
 

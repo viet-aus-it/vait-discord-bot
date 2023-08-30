@@ -1,21 +1,15 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
-import { fetchWeather } from './fetchWeather';
 import { isBlank } from '../../utils';
 import { Command } from '../builder';
+import { fetchWeather } from './fetchWeather';
 
 const DEFAULT_LOCATION = 'Brisbane';
 
 const data = new SlashCommandBuilder()
   .setName('weather')
   .setDescription('Get current weather report at location')
-  .addStringOption((option) =>
-    option
-      .setName('location')
-      .setDescription(
-        'The location you want a weather report on. Default: Brisbane'
-      )
-  );
+  .addStringOption((option) => option.setName('location').setDescription('The location you want a weather report on. Default: Brisbane'));
 
 export const weather = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();

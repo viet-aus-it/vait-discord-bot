@@ -8,19 +8,10 @@ const getData = () => {
   const data = new SlashCommandBuilder()
     .setName('hit')
     .setDescription('Hit up to 10 people. At least 1 user must be provided.')
-    .addUserOption((option) =>
-      option
-        .setName('target1')
-        .setDescription('target 1 to hit')
-        .setRequired(true)
-    );
+    .addUserOption((option) => option.setName('target1').setDescription('target 1 to hit').setRequired(true));
 
   [...Array(MAX_MENTIONS - 1).keys()].forEach((num) => {
-    data.addUserOption((option) =>
-      option
-        .setName(`target${num + 2}`)
-        .setDescription(`target ${num + 2} to hit`)
-    );
+    data.addUserOption((option) => option.setName(`target${num + 2}`).setDescription(`target ${num + 2} to hit`));
   });
 
   return data;

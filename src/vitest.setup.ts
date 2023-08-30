@@ -1,6 +1,6 @@
-import { beforeAll, afterAll, afterEach, vi } from 'vitest';
-import { logger } from './utils/logger';
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import { server } from './mocks/server';
+import { logger } from './utils/logger';
 
 beforeAll(() => {
   server.listen();

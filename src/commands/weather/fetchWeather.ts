@@ -9,9 +9,7 @@ export const fetchWeather = async (where: string) => {
   // Download weather info from the site
   const response = await fetch(getWeatherURL(where));
   if (response.statusText !== 'OK') {
-    throw new Error(
-      `ERROR IN FETCHING WEATHER: ERROR ${response.status}: ${response.statusText}`
-    );
+    throw new Error(`ERROR IN FETCHING WEATHER: ERROR ${response.status}: ${response.statusText}`);
   }
 
   return response.text();

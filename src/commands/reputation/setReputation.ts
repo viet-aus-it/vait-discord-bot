@@ -1,34 +1,18 @@
-import {
-  ChatInputCommandInteraction,
-  GuildMember,
-  SlashCommandSubcommandBuilder,
-} from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember, SlashCommandSubcommandBuilder } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
-import { getOrCreateUser, updateRep } from './_helpers';
 import { Subcommand } from '../builder';
+import { getOrCreateUser, updateRep } from './_helpers';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('set')
   .setDescription('ADMIN COMMAND. Set a rep number for a user')
-  .addUserOption((option) =>
-    option.setName('user').setDescription('A user to set rep').setRequired(true)
-  )
-  .addIntegerOption((option) =>
-    option
-      .setName('rep')
-      .setDescription('The rep number to set for the user')
-      .setRequired(true)
-      .setMinValue(0)
-  );
+  .addUserOption((option) => option.setName('user').setDescription('A user to set rep').setRequired(true))
+  .addIntegerOption((option) => option.setName('rep').setDescription('The rep number to set for the user').setRequired(true).setMinValue(0));
 
-export const setReputation = async (
-  interaction: ChatInputCommandInteraction
-) => {
+export const setReputation = async (interaction: ChatInputCommandInteraction) => {
   const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
-    await interaction.reply(
-      "You don't have enough permission to run this command."
-    );
+    await interaction.reply("You don't have enough permission to run this command.");
     return;
   }
 

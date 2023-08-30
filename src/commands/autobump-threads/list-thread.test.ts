@@ -1,8 +1,8 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { listThreadsByGuild } from './util';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { listAutobumpThreadsCommand } from './list-threads';
+import { listThreadsByGuild } from './util';
 
 vi.mock('./util');
 const mockListAutobumpThread = vi.mocked(listThreadsByGuild);
@@ -21,9 +21,7 @@ describe('List autobump threads', () => {
 
     expect(mockListAutobumpThread).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      "ERROR: Cannot get list of threads from the database, maybe the server threads aren't setup yet?"
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith("ERROR: Cannot get list of threads from the database, maybe the server threads aren't setup yet?");
   });
 
   it('Should reply with empty message if no autobump thread has been set', async () => {
@@ -33,9 +31,7 @@ describe('List autobump threads', () => {
 
     expect(mockListAutobumpThread).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'No threads have been setup for autobumping in this server'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('No threads have been setup for autobumping in this server');
   });
 
   it('Should reply with list of autobump thread if it has been set', async () => {

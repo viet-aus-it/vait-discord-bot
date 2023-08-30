@@ -1,10 +1,10 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction } from 'discord.js';
 import { getYear } from 'date-fns';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { convertDateToEpoch } from '../../utils/dateUtils';
 import { execute } from './remind-on-date';
 import { saveReminder } from './reminder-utils';
-import { convertDateToEpoch } from '../../utils/dateUtils';
 
 vi.mock('./reminder-utils');
 const mockSaveReminder = vi.mocked(saveReminder);
@@ -44,9 +44,7 @@ describe('remind on date', () => {
 
     expect(mockSaveReminder).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `Cannot save reminder for <@${userId}>. Please try again later.`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`Cannot save reminder for <@${userId}>. Please try again later.`);
   });
 
   it('should send reply if it can save reminder', async () => {
@@ -63,8 +61,6 @@ describe('remind on date', () => {
 
     expect(mockSaveReminder).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`);
   });
 });

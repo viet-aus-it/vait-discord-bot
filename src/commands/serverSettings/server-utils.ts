@@ -1,9 +1,6 @@
 import { getPrismaClient } from '../../clients';
 
-export const setReminderChannel = async (
-  guildId: string,
-  channelId: string
-) => {
+export const setReminderChannel = async (guildId: string, channelId: string) => {
   const prisma = getPrismaClient();
   const settings = await prisma.serverChannelsSettings.upsert({
     where: {

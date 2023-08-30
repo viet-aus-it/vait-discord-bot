@@ -1,32 +1,15 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+import { convertDateToEpoch } from '../../utils/dateUtils';
 import { CommandHandler, Subcommand } from '../builder';
 import { updateReminder } from './reminder-utils';
-import { convertDateToEpoch } from '../../utils/dateUtils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('update')
   .setDescription('Update a reminder')
-  .addStringOption((option) =>
-    option
-      .setName('id')
-      .setDescription('Reminder ID. This must be provided.')
-      .setRequired(true)
-  )
-  .addStringOption((option) =>
-    option
-      .setName('date')
-      .setDescription(
-        'The date to get a reminder on. Follow this format: DD/MM/YYYY hh:mm'
-      )
-      .setRequired(false)
-  )
-  .addStringOption((option) =>
-    option
-      .setName('message')
-      .setDescription('The message to get reminded for')
-      .setRequired(false)
-  );
+  .addStringOption((option) => option.setName('id').setDescription('Reminder ID. This must be provided.').setRequired(true))
+  .addStringOption((option) => option.setName('date').setDescription('The date to get a reminder on. Follow this format: DD/MM/YYYY hh:mm').setRequired(false))
+  .addStringOption((option) => option.setName('message').setDescription('The message to get reminded for').setRequired(false));
 
 export const execute: CommandHandler = async (interaction) => {
   const { user } = interaction.member!;
@@ -49,17 +32,11 @@ export const execute: CommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
-    await interaction.reply(
-      `Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`
-    );
+    await interaction.reply(`Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`);
     return;
   }
 
-  await interaction.reply(
-    `Reminder ${reminderId} has been updated to remind on <t:${
-      op.unwrap().onTimestamp
-    }> with the message: "${message}".`
-  );
+  await interaction.reply(`Reminder ${reminderId} has been updated to remind on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
 };
 
 const command: Subcommand = {

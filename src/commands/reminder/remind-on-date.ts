@@ -1,26 +1,14 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+import { convertDateToEpoch } from '../../utils/dateUtils';
 import { CommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './reminder-utils';
-import { convertDateToEpoch } from '../../utils/dateUtils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('on')
   .setDescription('Set reminder on a specific date.')
-  .addStringOption((option) =>
-    option
-      .setName('date')
-      .setDescription(
-        'The date to get a reminder on. Follow this format: DD/MM/YYYY hh:mm'
-      )
-      .setRequired(true)
-  )
-  .addStringOption((option) =>
-    option
-      .setName('message')
-      .setDescription('The message to get reminded for')
-      .setRequired(true)
-  );
+  .addStringOption((option) => option.setName('date').setDescription('The date to get a reminder on. Follow this format: DD/MM/YYYY hh:mm').setRequired(true))
+  .addStringOption((option) => option.setName('message').setDescription('The message to get reminded for').setRequired(true));
 
 export const execute: CommandHandler = async (interaction) => {
   const { user } = interaction.member!;
@@ -38,17 +26,11 @@ export const execute: CommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
-    await interaction.reply(
-      `Cannot save reminder for <@${user.id}>. Please try again later.`
-    );
+    await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
     return;
   }
 
-  await interaction.reply(
-    `New Reminder for <@${user.id}> set on <t:${
-      op.unwrap().onTimestamp
-    }> with the message: "${message}".`
-  );
+  await interaction.reply(`New Reminder for <@${user.id}> set on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
 };
 
 const command: Subcommand = {

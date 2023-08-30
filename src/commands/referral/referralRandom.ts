@@ -8,13 +8,7 @@ export const data = new SlashCommandSubcommandBuilder()
   .setName('random')
   .setDescription('randomly get a code/link for a service')
   .addStringOption((option) =>
-    option
-      .setName('service')
-      .setDescription(
-        'service to refer(type more than 3 characters to see suggestion)'
-      )
-      .setRequired(true)
-      .setAutocomplete(true)
+    option.setName('service').setDescription('service to refer(type more than 3 characters to see suggestion)').setRequired(true).setAutocomplete(true)
   );
 
 export const autocomplete: AutocompleteHandler = async (interaction) => {
@@ -25,8 +19,7 @@ export const autocomplete: AutocompleteHandler = async (interaction) => {
 };
 
 export const execute: CommandHandler = async (interaction) => {
-  const service =
-    interaction.options.getString('service', true)?.trim().toLowerCase() ?? '';
+  const service = interaction.options.getString('service', true)?.trim().toLowerCase() ?? '';
 
   const prisma = getPrismaClient();
   const referrals = await prisma.referralCode.findMany({

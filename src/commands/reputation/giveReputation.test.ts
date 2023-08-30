@@ -1,13 +1,8 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { ChatInputCommandInteraction, Collection, Message, User } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import {
-  ChatInputCommandInteraction,
-  Message,
-  Collection,
-  User,
-} from 'discord.js';
-import { giveRepSlashCommand, thankUserInMessage } from './giveReputation';
 import { getOrCreateUser, updateRep } from './_helpers';
+import { giveRepSlashCommand, thankUserInMessage } from './giveReputation';
 
 vi.mock('./_helpers');
 const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
@@ -71,9 +66,7 @@ describe('Thank user in a message', () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1' } as User);
     mockMessage.mentions.users = mockUsers as typeof mockMessage.mentions.users;
-    mockCreateUpdateUser
-      .mockResolvedValueOnce({ id: '1', reputation: 0 })
-      .mockResolvedValueOnce({ id: '2', reputation: 0 });
+    mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 0 }).mockResolvedValueOnce({ id: '2', reputation: 0 });
     mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
 
     await thankUserInMessage(mockMessage);
@@ -96,9 +89,7 @@ describe('Thank user in a message', () => {
       .mockResolvedValueOnce({ id: '2', reputation: 0 })
       .mockResolvedValueOnce({ id: '0', reputation: 0 })
       .mockResolvedValueOnce({ id: '3', reputation: 0 });
-    mockUpdateRep
-      .mockResolvedValueOnce({ id: '2', reputation: 0 })
-      .mockResolvedValueOnce({ id: '3', reputation: 0 });
+    mockUpdateRep.mockResolvedValueOnce({ id: '2', reputation: 0 }).mockResolvedValueOnce({ id: '3', reputation: 0 });
 
     await thankUserInMessage(mockMessage);
 
@@ -118,16 +109,12 @@ describe('Give rep slash command', () => {
     await giveRepSlashCommand(mockInteraction);
 
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'You cannot give rep to yourself'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('You cannot give rep to yourself');
   });
 
   it('should call reply and add rep if user mention another user', async () => {
     const mockUser = { id: '1' } as User;
-    mockCreateUpdateUser
-      .mockResolvedValueOnce({ id: '0', reputation: 0 })
-      .mockResolvedValueOnce({ id: '1', reputation: 0 });
+    mockCreateUpdateUser.mockResolvedValueOnce({ id: '0', reputation: 0 }).mockResolvedValueOnce({ id: '1', reputation: 0 });
     mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
     mockInteraction.options.getUser.mockReturnValueOnce(mockUser);
 

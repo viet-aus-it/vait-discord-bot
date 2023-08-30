@@ -1,21 +1,11 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { getRandomIntInclusive, getUniqueRandomIntInclusive } from '../../utils';
 import { Command } from '../builder';
-import {
-  getRandomIntInclusive,
-  getUniqueRandomIntInclusive,
-} from '../../utils';
 
 const data = new SlashCommandBuilder()
   .setName('powerball')
   .setDescription('Get some random Powerball numbers')
-  .addIntegerOption((option) =>
-    option
-      .setName('count')
-      .setDescription('How many games do you need?')
-      .setRequired(true)
-      .setMinValue(1)
-      .setMaxValue(10)
-  );
+  .addIntegerOption((option) => option.setName('count').setDescription('How many games do you need?').setRequired(true).setMinValue(1).setMaxValue(10));
 
 const MIN_POWER_BALL_NUMBER = 1;
 const MAX_POWER_BALL_NUMBER = 35;
@@ -27,20 +17,13 @@ const getMainNumbers = () => {
   return Array(7)
     .fill(0)
     .reduce((accumulator, _value, index) => {
-      const number = getUniqueRandomIntInclusive(
-        accumulator,
-        MIN_POWER_BALL_NUMBER,
-        MAX_POWER_BALL_NUMBER
-      );
+      const number = getUniqueRandomIntInclusive(accumulator, MIN_POWER_BALL_NUMBER, MAX_POWER_BALL_NUMBER);
       return `${accumulator}${index > 0 ? ' ' : ''}${padNumber(number)}`;
     }, '');
 };
 
 const getPowerballNumber = () => {
-  const number = getRandomIntInclusive(
-    MIN_POWER_BALL_NUMBER,
-    MAX_POWER_HIT_NUMBER
-  );
+  const number = getRandomIntInclusive(MIN_POWER_BALL_NUMBER, MAX_POWER_HIT_NUMBER);
   return padNumber(number);
 };
 

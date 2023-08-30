@@ -17,8 +17,7 @@ export interface Quote {
   html: string;
 }
 
-export const ZEN_QUOTES_URL =
-  'https://zenquotes.io/api/random/6a874c704a11dea9305fe58e145d51c218f9f143';
+export const ZEN_QUOTES_URL = 'https://zenquotes.io/api/random/6a874c704a11dea9305fe58e145d51c218f9f143';
 
 export const fetchQuote = async () => {
   const response = await fetch(ZEN_QUOTES_URL); // download quotes from this site

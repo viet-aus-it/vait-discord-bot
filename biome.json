@@ -1,11 +1,10 @@
 {
-  "$schema": "./node_modules/rome/configuration_schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "organizeImports": {
-    "enabled": false
+    "enabled": true
   },
   "linter": {
     "enabled": true,
-    "ignore": ["node_modules", "src/**/__snapshots__"],
     "rules": {
       "recommended": true,
       "suspicious": {
@@ -21,15 +20,15 @@
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentSize": 2,
-    "lineWidth": 80,
-    "ignore": ["node_modules", "src/**/__snapshots__"]
+    "lineWidth": 160
   },
   "javascript": {
     "formatter": {
       "trailingComma": "es5",
       "semicolons": "always",
       "quoteProperties": "asNeeded",
-      "quoteStyle": "single"
+      "quoteStyle": "single",
+      "arrowParentheses": "always"
     }
   }
 }

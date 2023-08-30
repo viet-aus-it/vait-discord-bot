@@ -1,8 +1,8 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { checkReputation } from './checkReputation';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { getOrCreateUser } from './_helpers';
+import { checkReputation } from './checkReputation';
 
 vi.mock('./_helpers');
 const mockGetOrCreateUser = vi.mocked(getOrCreateUser);

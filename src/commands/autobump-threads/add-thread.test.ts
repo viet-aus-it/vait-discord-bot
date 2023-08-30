@@ -1,13 +1,8 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
+import { ChannelType, ChatInputCommandInteraction, PublicThreadChannel, TextChannel } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import {
-  ChatInputCommandInteraction,
-  TextChannel,
-  PublicThreadChannel,
-  ChannelType,
-} from 'discord.js';
-import { addAutobumpThread } from './util';
 import { addAutobumpThreadCommand } from './add-thread';
+import { addAutobumpThread } from './util';
 
 vi.mock('./util');
 const mockAddAutobumpThread = vi.mocked(addAutobumpThread);
@@ -25,9 +20,7 @@ describe('Add autobump thread', () => {
     mockInteraction.options.getChannel.mockReturnValueOnce(mockChannel);
 
     await addAutobumpThreadCommand(mockInteraction);
-    expect(mockInteraction.reply).toBeCalledWith(
-      'ERROR: The channel in the input is not a thread.'
-    );
+    expect(mockInteraction.reply).toBeCalledWith('ERROR: The channel in the input is not a thread.');
     expect(mockAddAutobumpThread).not.toBeCalled();
   });
 
@@ -39,9 +32,7 @@ describe('Add autobump thread', () => {
     mockAddAutobumpThread.mockRejectedValueOnce(new Error('Synthetic Error'));
 
     await addAutobumpThreadCommand(mockInteraction);
-    expect(mockInteraction.reply).toBeCalledWith(
-      'ERROR: Cannot save this thread to be autobumped for this server. Please try again.'
-    );
+    expect(mockInteraction.reply).toBeCalledWith('ERROR: Cannot save this thread to be autobumped for this server. Please try again.');
     expect(mockAddAutobumpThread).toBeCalled();
   });
 
@@ -53,9 +44,7 @@ describe('Add autobump thread', () => {
     mockAddAutobumpThread.mockResolvedValueOnce([threadId]);
 
     await addAutobumpThreadCommand(mockInteraction);
-    expect(mockInteraction.reply).toBeCalledWith(
-      `Successfully saved setting. Thread <#${threadId}> will be autobumped.`
-    );
+    expect(mockInteraction.reply).toBeCalledWith(`Successfully saved setting. Thread <#${threadId}> will be autobumped.`);
     expect(mockAddAutobumpThread).toBeCalled();
   });
 });

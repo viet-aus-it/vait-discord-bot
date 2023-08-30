@@ -1,12 +1,9 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
-import {
-  AutocompleteInteraction,
-  ChatInputCommandInteraction,
-} from 'discord.js';
 import { PrismaClient } from '@prisma/client';
-import { autocomplete, execute } from './referralNew';
+import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getPrismaClient } from '../../clients';
+import { autocomplete, execute } from './referralNew';
 import { services } from './services';
 
 vi.mock('../../clients');
@@ -22,8 +19,7 @@ describe('autocomplete', () => {
 
   it('should return nothing if the search term shorter than 4', async () => {
     mockAutocompleteInteraction.options.getString.mockReturnValueOnce('solve');
-    const respondInput =
-      captor<Parameters<AutocompleteInteraction['respond']>['0']>();
+    const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
     await autocomplete(mockAutocompleteInteraction);
 
@@ -32,11 +28,8 @@ describe('autocomplete', () => {
   });
 
   it('should return nothing if no options found', async () => {
-    mockAutocompleteInteraction.options.getString.mockReturnValueOnce(
-      'some random search that not existed'
-    );
-    const respondInput =
-      captor<Parameters<AutocompleteInteraction['respond']>['0']>();
+    mockAutocompleteInteraction.options.getString.mockReturnValueOnce('some random search that not existed');
+    const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
     await autocomplete(mockAutocompleteInteraction);
 
@@ -46,8 +39,7 @@ describe('autocomplete', () => {
 
   it('should return some options if search term longer than 4 and found', async () => {
     mockAutocompleteInteraction.options.getString.mockReturnValueOnce('heal');
-    const respondInput =
-      captor<Parameters<AutocompleteInteraction['respond']>['0']>();
+    const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
     await autocomplete(mockAutocompleteInteraction);
 
@@ -86,39 +78,31 @@ describe('execute', () => {
 
   it('should return no service error if service is not in services list', async () => {
     const service = 'not in the list';
-    mockChatInputInteraction.options.getString.mockImplementation(
-      (name, required) => {
-        if (name === 'service') return service;
-        if (name === 'link_or_code') return null;
-        if (name === 'expiry_date' && required) return 'lol';
+    mockChatInputInteraction.options.getString.mockImplementation((name, required) => {
+      if (name === 'service') return service;
+      if (name === 'link_or_code') return null;
+      if (name === 'expiry_date' && required) return 'lol';
 
-        return null;
-      }
-    );
+      return null;
+    });
 
     await execute(mockChatInputInteraction);
 
-    expect(mockChatInputInteraction.reply).toBeCalledWith(
-      `No service named ${service}, ask the admin to add it`
-    );
+    expect(mockChatInputInteraction.reply).toBeCalledWith(`No service named ${service}, ask the admin to add it`);
   });
 
   it('should return INVALID_DATE error', async () => {
-    mockChatInputInteraction.options.getString.mockImplementation(
-      (name, required) => {
-        if (name === 'service') return services[0];
-        if (name === 'link_or_code') return null;
-        if (name === 'expiry_date' && required) return 'lol';
+    mockChatInputInteraction.options.getString.mockImplementation((name, required) => {
+      if (name === 'service') return services[0];
+      if (name === 'link_or_code') return null;
+      if (name === 'expiry_date' && required) return 'lol';
 
-        return null;
-      }
-    );
+      return null;
+    });
 
     await execute(mockChatInputInteraction);
 
-    expect(mockChatInputInteraction.reply).toBeCalledWith(
-      'expiry_date is invalid date try format DD/MM/YYYY'
-    );
+    expect(mockChatInputInteraction.reply).toBeCalledWith('expiry_date is invalid date try format DD/MM/YYYY');
   });
 
   it('should return EXPIRED_DATE error', async () => {
@@ -128,15 +112,11 @@ describe('execute', () => {
       expiry_date: '05/04/1994',
     };
 
-    mockChatInputInteraction.options.getString.mockImplementation(
-      (name: string) => input[name]
-    );
+    mockChatInputInteraction.options.getString.mockImplementation((name: string) => input[name]);
 
     await execute(mockChatInputInteraction);
 
-    expect(mockChatInputInteraction.reply).toBeCalledWith(
-      'expiry_date has already expired'
-    );
+    expect(mockChatInputInteraction.reply).toBeCalledWith('expiry_date has already expired');
   });
 
   it('should create a new referral code', async () => {
@@ -158,28 +138,22 @@ describe('execute', () => {
     });
     mockGetPrismaClient.mockReturnValueOnce(mockPrismaClient);
 
-    mockChatInputInteraction.options.getString.mockImplementation(
-      (name: string, required?: boolean) => {
-        if (name === 'service') return data.service;
-        if (name === 'link_or_code') return data.code;
-        if (name === 'expiry_date' && required) return data.expiry_date;
+    mockChatInputInteraction.options.getString.mockImplementation((name: string, required?: boolean) => {
+      if (name === 'service') return data.service;
+      if (name === 'link_or_code') return data.code;
+      if (name === 'expiry_date' && required) return data.expiry_date;
 
-        return null;
-      }
-    );
+      return null;
+    });
     const replyInput = captor<string>();
 
     await execute(mockChatInputInteraction);
 
-    expect(mockPrismaClient.referralCode.create).toBeCalledWith(
-      mockReferralInput
-    );
+    expect(mockPrismaClient.referralCode.create).toBeCalledWith(mockReferralInput);
     const input = mockReferralInput.value;
     expect(input.data.service).toBe(data.service);
     expect(input.data.code).toBe(data.code);
-    expect(input.data.expiry_date.toISOString()).toBe(
-      new Date(data.expiry_date).toISOString()
-    );
+    expect(input.data.expiry_date.toISOString()).toBe(new Date(data.expiry_date).toISOString());
 
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
     expect(replyInput.value).toContain('new SomeCodeHere in 3commas');

@@ -1,5 +1,5 @@
-import winston from 'winston';
 import { WinstonTransport as AxiomTransport } from '@axiomhq/winston';
+import winston from 'winston';
 import { loadEnv } from '../loadEnv';
 
 loadEnv();
@@ -15,10 +15,7 @@ const devOptions: winston.LoggerOptions = {
   level: 'debug',
   defaultMeta: { service: 'vait-chatbot-dev', timestamp: Date.now() },
   transports: [consoleTransport],
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.prettyPrint({ colorize: true })
-  ),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.prettyPrint({ colorize: true })),
 };
 
 const prodOptions: winston.LoggerOptions = {
@@ -27,12 +24,7 @@ const prodOptions: winston.LoggerOptions = {
   transports: [consoleTransport, axiomTransport],
   exceptionHandlers: [axiomTransport],
   rejectionHandlers: [axiomTransport],
-  format: winston.format.combine(
-    winston.format.errors({ stack: true }),
-    winston.format.json()
-  ),
+  format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
 };
 
-export const logger = winston.createLogger(
-  process.env.NODE_ENV === 'production' ? prodOptions : devOptions
-);
+export const logger = winston.createLogger(process.env.NODE_ENV === 'production' ? prodOptions : devOptions);

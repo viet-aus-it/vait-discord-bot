@@ -1,16 +1,11 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { Command } from '../builder';
 import { getRandomIntInclusive } from '../../utils';
+import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('8ball')
   .setDescription('Ask the magic 8ball a question')
-  .addStringOption((option) =>
-    option
-      .setName('question')
-      .setDescription('Question to ask the magic 8ball.')
-      .setRequired(true)
-  );
+  .addStringOption((option) => option.setName('question').setDescription('Question to ask the magic 8ball.').setRequired(true));
 
 const REPLIES = [
   'Yes',
@@ -27,8 +22,7 @@ const REPLIES = [
   'Keep it up',
 ] as const;
 
-const get8BallReply = () =>
-  REPLIES[getRandomIntInclusive(0, REPLIES.length - 1)];
+const get8BallReply = () => REPLIES[getRandomIntInclusive(0, REPLIES.length - 1)];
 
 export const ask8Ball = async (interaction: ChatInputCommandInteraction) => {
   const question = interaction.options.getString('question', true);
