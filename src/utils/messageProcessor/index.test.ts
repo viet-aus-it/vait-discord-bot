@@ -1,6 +1,6 @@
-import { vi, it, describe, expect } from 'vitest';
 import { Message } from 'discord.js';
-import { processMessage, CommandConfig } from '.';
+import { describe, expect, it, vi } from 'vitest';
+import { CommandConfig, processMessage } from '.';
 
 describe('processMessage', () => {
   beforeEach(() => {

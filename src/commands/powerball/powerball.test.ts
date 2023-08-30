@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset, captor } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction } from 'discord.js';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { powerball } from '.';
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();

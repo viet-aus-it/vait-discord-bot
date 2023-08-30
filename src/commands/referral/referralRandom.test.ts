@@ -1,10 +1,7 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
-import {
-  AutocompleteInteraction,
-  ChatInputCommandInteraction,
-} from 'discord.js';
 import { PrismaClient } from '@prisma/client';
+import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getPrismaClient } from '../../clients';
 import { autocomplete, execute } from './referralRandom';
 
@@ -22,8 +19,7 @@ describe('autocomplete', () => {
 
   it('should return nothing if the search term shorter than 4', async () => {
     mockAutocompleteInteraction.options.getString.mockReturnValueOnce('solve');
-    const respondInput =
-      captor<Parameters<AutocompleteInteraction['respond']>['0']>();
+    const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
     await autocomplete(mockAutocompleteInteraction);
 
@@ -32,11 +28,8 @@ describe('autocomplete', () => {
   });
 
   it('should return nothing if no options found', async () => {
-    mockAutocompleteInteraction.options.getString.mockReturnValueOnce(
-      'some random search that not existed'
-    );
-    const respondInput =
-      captor<Parameters<AutocompleteInteraction['respond']>['0']>();
+    mockAutocompleteInteraction.options.getString.mockReturnValueOnce('some random search that not existed');
+    const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
     await autocomplete(mockAutocompleteInteraction);
 
@@ -46,8 +39,7 @@ describe('autocomplete', () => {
 
   it('should return some options if search term longer than 4 and found', async () => {
     mockAutocompleteInteraction.options.getString.mockReturnValueOnce('heal');
-    const respondInput =
-      captor<Parameters<AutocompleteInteraction['respond']>['0']>();
+    const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
     await autocomplete(mockAutocompleteInteraction);
 
@@ -93,14 +85,10 @@ describe('execute', () => {
 
     await execute(mockChatInputInteraction);
 
-    expect(mockPrismaClient.referralCode.findMany).toBeCalledWith(
-      mockReferralInput
-    );
+    expect(mockPrismaClient.referralCode.findMany).toBeCalledWith(mockReferralInput);
     expect(mockReferralInput.value.where.service.contains).toEqual(service);
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toEqual(
-      `There is no code for ${service.trim().toLowerCase()} service`
-    );
+    expect(replyInput.value).toEqual(`There is no code for ${service.trim().toLowerCase()} service`);
   });
 
   it('should return code if found', async () => {
@@ -125,13 +113,9 @@ describe('execute', () => {
 
     await execute(mockChatInputInteraction);
 
-    expect(mockPrismaClient.referralCode.findMany).toBeCalledWith(
-      mockReferralInput
-    );
+    expect(mockPrismaClient.referralCode.findMany).toBeCalledWith(mockReferralInput);
     expect(mockReferralInput.value.where.service.contains).toEqual(service);
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toEqual(
-      `Service ${service.trim().toLowerCase()}: ${code}`
-    );
+    expect(replyInput.value).toEqual(`Service ${service.trim().toLowerCase()}: ${code}`);
   });
 });

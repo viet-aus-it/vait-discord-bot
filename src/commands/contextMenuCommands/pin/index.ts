@@ -1,17 +1,9 @@
-import {
-  ApplicationCommandType,
-  ContextMenuCommandBuilder,
-  ContextMenuCommandInteraction,
-} from 'discord.js';
+import { ApplicationCommandType, ContextMenuCommandBuilder, ContextMenuCommandInteraction } from 'discord.js';
 import { ContextMenuCommand } from '../../builder';
 
-export const data = new ContextMenuCommandBuilder()
-  .setName('Pin')
-  .setType(ApplicationCommandType.Message);
+export const data = new ContextMenuCommandBuilder().setName('Pin').setType(ApplicationCommandType.Message);
 
-export const pinMessage = async (
-  interaction: ContextMenuCommandInteraction
-) => {
+export const pinMessage = async (interaction: ContextMenuCommandInteraction) => {
   if (!interaction.isMessageContextMenuCommand()) return;
 
   const message = interaction.targetMessage;

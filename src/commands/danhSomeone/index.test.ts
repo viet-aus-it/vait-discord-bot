@@ -1,8 +1,8 @@
-import { vi, it, describe, expect } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction, User } from 'discord.js';
+import { describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { danhSomeone } from '.';
-import { getRandomIntInclusive, getRandomBoolean } from '../../utils';
+import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
 
 vi.mock('../../utils');
 const mockRandomInt = vi.mocked(getRandomIntInclusive);
@@ -25,9 +25,7 @@ describe('danhSomeone', () => {
 
     danhSomeone(mockInteraction);
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      "<@2>, I'm your father, you can't hit me."
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith("<@2>, I'm your father, you can't hit me.");
   });
 
   it('should not allow user to hit themself', () => {
@@ -39,9 +37,7 @@ describe('danhSomeone', () => {
 
     danhSomeone(mockInteraction);
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'Stop hitting yourself <@2>, hit someone else.'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('Stop hitting yourself <@2>, hit someone else.');
   });
 
   it('should allow user to hit someone else', () => {
@@ -69,9 +65,7 @@ describe('danhSomeone', () => {
 
     danhSomeone(mockInteraction);
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      '<@3> takes 1 dmg. Critical Hit!'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('<@3> takes 1 dmg. Critical Hit!');
   });
 
   it('should allow user to hit many people', () => {

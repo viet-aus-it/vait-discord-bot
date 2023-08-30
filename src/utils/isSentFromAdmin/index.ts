@@ -10,7 +10,5 @@ export const isAdmin = (member: GuildMember | null) => {
 export const isModerator = (member: GuildMember | null) => {
   if (!member) return false;
 
-  return member.roles.cache.some(
-    ({ name: roleName }) => roleName.toLowerCase() === 'moderator'
-  );
+  return member.roles.cache.some(({ name: roleName }) => roleName.toLowerCase() === 'moderator');
 };

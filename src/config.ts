@@ -1,5 +1,5 @@
-import { CommandConfig } from './utils';
 import { thankUserInMessage } from './commands';
+import { CommandConfig } from './utils';
 
 export const getConfigs = (): CommandConfig => {
   return {

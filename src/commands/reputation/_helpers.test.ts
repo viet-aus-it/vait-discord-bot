@@ -1,4 +1,4 @@
-import { vi, it, describe, expect } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { getPrismaClient } from '../../clients';
 import { getOrCreateUser, updateRep } from './_helpers';
 

@@ -1,7 +1,7 @@
-import { it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset, mock } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction, Message, Collection } from 'discord.js';
 import { faker } from '@faker-js/faker';
+import { ChatInputCommandInteraction, Collection, Message } from 'discord.js';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mock, mockDeep, mockReset } from 'vitest-mock-extended';
 import { cowsay, removeBacktick } from '.';
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
@@ -27,18 +27,14 @@ describe('cowsay test', () => {
   });
 
   it('It should reply for any text', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce(
-      faker.lorem.words(25)
-    );
+    mockInteraction.options.getString.mockReturnValueOnce(faker.lorem.words(25));
 
     await cowsay(mockInteraction);
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
   });
 
   it('Should be able to eliminate all backticks', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce(
-      '```a lot of backticks```'
-    );
+    mockInteraction.options.getString.mockReturnValueOnce('```a lot of backticks```');
 
     await cowsay(mockInteraction);
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
@@ -63,15 +59,11 @@ describe('cowsay test', () => {
       it('Should show error message if previous message cannot be retrieved', async () => {
         const mockMessageCollection = new Collection<string, Message<true>>();
         mockInteraction.options.getString.mockReturnValueOnce('');
-        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(
-          mockMessageCollection
-        );
+        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
 
         await cowsay(mockInteraction);
         expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();
-        expect(mockInteraction.reply).toBeCalledWith(
-          'Cannot fetch latest message. Please try again later.'
-        );
+        expect(mockInteraction.reply).toBeCalledWith('Cannot fetch latest message. Please try again later.');
       });
 
       it('It should refer to previous message', async () => {
@@ -79,9 +71,7 @@ describe('cowsay test', () => {
         const mockMessageCollection = new Collection<string, Message<true>>();
         mockMessageCollection.set(faker.string.nanoid(), mockMessage);
         mockInteraction.options.getString.mockReturnValueOnce('');
-        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(
-          mockMessageCollection
-        );
+        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
 
         await cowsay(mockInteraction);
         expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();

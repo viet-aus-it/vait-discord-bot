@@ -1,12 +1,10 @@
-import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Reminder } from '@prisma/client';
+import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { CommandHandler, Subcommand } from '../builder';
 import { getUserReminders } from './reminder-utils';
 
-export const data = new SlashCommandSubcommandBuilder()
-  .setName('list')
-  .setDescription('Get a list of your reminders');
+export const data = new SlashCommandSubcommandBuilder().setName('list').setDescription('Get a list of your reminders');
 
 const formatReminders = (reminders: Reminder[]) => {
   const reminderList = reminders.reduce((accum, reminder) => {
@@ -20,9 +18,7 @@ export const execute: CommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const op = await Result.safe(getUserReminders(user.id, guildId));
   if (op.isErr()) {
-    await interaction.reply(
-      'There is some error retrieving your reminders. Please try again later.'
-    );
+    await interaction.reply('There is some error retrieving your reminders. Please try again later.');
     return;
   }
 

@@ -1,7 +1,6 @@
 import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
 
-const getRandomThing = (things: string[]) =>
-  things[getRandomIntInclusive(0, things.length)];
+const getRandomThing = (things: string[]) => things[getRandomIntInclusive(0, things.length)];
 
 const verbs = [
   'artless',
@@ -228,5 +227,4 @@ const quotes = [
 ];
 
 // Randomly pick insult from 2 sources
-export const randomInsultGenerator = () =>
-  getRandomBoolean() ? randomCreate() : getRandomThing(quotes);
+export const randomInsultGenerator = () => (getRandomBoolean() ? randomCreate() : getRandomThing(quotes));

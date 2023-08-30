@@ -1,14 +1,14 @@
-import { InteractionType } from 'discord-api-types/v10';
 import { getUnixTime } from 'date-fns';
+import { InteractionType } from 'discord-api-types/v10';
 import { Result } from 'oxide.ts';
-import { processMessage } from './utils';
 import { getDiscordClient } from './clients';
-import { getConfigs } from './config';
 import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
+import { getConfigs } from './config';
+import { processMessage } from './utils';
+import { getCurrentUnixTime } from './utils/dateUtils';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
-import { getCurrentUnixTime } from './utils/dateUtils';
 
 const main = async () => {
   loadEnv();
@@ -29,15 +29,10 @@ const main = async () => {
       })
     );
     if (op.isErr()) {
-      logger.error(
-        `Cannot deploy global commands. Timestamp: ${getCurrentUnixTime()}`,
-        op.unwrapErr()
-      );
+      logger.error(`Cannot deploy global commands. Timestamp: ${getCurrentUnixTime()}`, op.unwrapErr());
       process.exit(1);
     }
-    logger.info(
-      `Successfully deployed global commands. Timestamp: ${getCurrentUnixTime()}`
-    );
+    logger.info(`Successfully deployed global commands. Timestamp: ${getCurrentUnixTime()}`);
   }
 
   const configs = getConfigs();
@@ -51,34 +46,25 @@ const main = async () => {
       const isContextMenuCommand = interaction.isContextMenuCommand();
       if (isCommand) {
         const { commandName } = interaction;
-        const command = commandList.find(
-          (cmd) => cmd.data.name === commandName
-        );
+        const command = commandList.find((cmd) => cmd.data.name === commandName);
         return await command?.execute(interaction);
       }
 
       if (isContextMenuCommand) {
         const { commandName } = interaction;
-        const command = contextMenuCommandList.find(
-          (cmd) => cmd.data.name === commandName
-        );
+        const command = contextMenuCommandList.find((cmd) => cmd.data.name === commandName);
         return await command?.execute(interaction);
       }
 
-      const isAutocomplete =
-        interaction.type === InteractionType.ApplicationCommandAutocomplete;
+      const isAutocomplete = interaction.type === InteractionType.ApplicationCommandAutocomplete;
       if (isAutocomplete) {
         const { commandName } = interaction;
-        const command = commandList.find(
-          (cmd) => cmd.data.name === commandName
-        );
+        const command = commandList.find((cmd) => cmd.data.name === commandName);
         return await command?.autocomplete?.(interaction);
       }
     } catch (error) {
       const currentTimestamp = getUnixTime(Date.now());
-      logger.error(
-        `ERROR HANDLING INTERACTION. TIMESTAMP: ${currentTimestamp}, ERROR: ${error}.`
-      );
+      logger.error(`ERROR HANDLING INTERACTION. TIMESTAMP: ${currentTimestamp}, ERROR: ${error}.`);
     }
   });
 };

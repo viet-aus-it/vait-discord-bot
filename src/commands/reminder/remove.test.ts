@@ -1,6 +1,6 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeReminder } from './reminder-utils';
 import { execute } from './remove';
 
@@ -23,9 +23,7 @@ describe('Remove Reminder', () => {
 
     expect(mockRemoveReminder).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `Cannot delete reminder id ${reminderId}. Please try again later.`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`Cannot delete reminder id ${reminderId}. Please try again later.`);
   });
 
   it('Should reply if reminder can be removed', async () => {
@@ -35,8 +33,6 @@ describe('Remove Reminder', () => {
 
     expect(mockRemoveReminder).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `Reminder ${reminderId} has been deleted.`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`Reminder ${reminderId} has been deleted.`);
   });
 });

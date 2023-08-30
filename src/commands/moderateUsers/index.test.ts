@@ -1,15 +1,8 @@
-import { it, describe, expect, beforeEach } from 'vitest';
+import { APIRole, ChatInputCommandInteraction, Collection, Role, ThreadMember, ThreadMemberManager } from 'discord.js';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeUserByRole } from '.';
 import { isAdmin, isModerator } from '../../utils';
-import {
-  APIRole,
-  ChatInputCommandInteraction,
-  Collection,
-  Role,
-  ThreadMember,
-  ThreadMemberManager,
-} from 'discord.js';
 
 vi.mock('../../utils/isSentFromAdmin');
 const mockIsSentFromAdmin = vi.mocked(isAdmin);
@@ -33,9 +26,7 @@ describe('Remove users who have the role', () => {
 
     await removeUserByRole(mockInteraction);
 
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      "You don't have enough permission to run this command."
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith("You don't have enough permission to run this command.");
   });
 
   it('should reply with an error message if the command is not executed in a thread', async () => {
@@ -43,9 +34,7 @@ describe('Remove users who have the role', () => {
 
     await removeUserByRole(mockInteraction);
 
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      "You can't remove all users with role from entire channel. This command only works in a thread."
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith("You can't remove all users with role from entire channel. This command only works in a thread.");
   });
 
   it('should remove all users from the thread with the matching role', async () => {
@@ -79,9 +68,7 @@ describe('Remove users who have the role', () => {
 
     mockInteraction.channel?.isTextBased.mockReturnValueOnce(true);
     mockInteraction.channel?.isThread.mockReturnValueOnce(true);
-    (
-      mockInteraction.channel?.members as DeepMockProxy<ThreadMemberManager>
-    ).fetch.mockResolvedValueOnce(mockMembers);
+    (mockInteraction.channel?.members as DeepMockProxy<ThreadMemberManager>).fetch.mockResolvedValueOnce(mockMembers);
     mockInteraction.options.getRole.mockReturnValueOnce({
       id: 'role-id',
       name: 'name',

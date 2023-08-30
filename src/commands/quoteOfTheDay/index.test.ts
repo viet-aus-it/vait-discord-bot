@@ -1,8 +1,8 @@
-import { it, describe, expect, beforeEach } from 'vitest';
 import { faker } from '@faker-js/faker';
-import { rest } from 'msw';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction } from 'discord.js';
+import { rest } from 'msw';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { getQuoteOfTheDay } from '.';
 import { server } from '../../mocks/server';
 import { ZEN_QUOTES_URL } from './fetchQuote';
@@ -22,9 +22,7 @@ describe('Get quote of the day test', () => {
 
     await getQuoteOfTheDay(mockInteraction);
     expect(mockInteraction.editReply).toHaveBeenCalledOnce();
-    expect(mockInteraction.editReply).toHaveBeenCalledWith(
-      'Error getting quotes'
-    );
+    expect(mockInteraction.editReply).toHaveBeenCalledWith('Error getting quotes');
   });
 
   it('Should reply with error message if it error while downloading quotes', async () => {
@@ -35,9 +33,7 @@ describe('Get quote of the day test', () => {
 
     await getQuoteOfTheDay(mockInteraction);
     expect(mockInteraction.editReply).toHaveBeenCalledOnce();
-    expect(mockInteraction.editReply).toHaveBeenCalledWith(
-      'Error getting quotes'
-    );
+    expect(mockInteraction.editReply).toHaveBeenCalledWith('Error getting quotes');
   });
 
   it('Should reply with a random quote', async () => {

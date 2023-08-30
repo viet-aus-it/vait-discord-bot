@@ -1,6 +1,6 @@
-import { vi, it, describe, expect } from 'vitest';
-import { getLeaderboard } from './leaderboard';
+import { describe, expect, it, vi } from 'vitest';
 import { getTop10 } from './_helpers';
+import { getLeaderboard } from './leaderboard';
 
 vi.mock('./_helpers');
 const mockGetTop10 = vi.mocked(getTop10);
@@ -18,9 +18,7 @@ describe('leaderboard', () => {
 
     expect(mockGetTop10).toHaveBeenCalledOnce();
     expect(replyMock).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledWith(
-      'No one has rep to be on the leaderboard, yet.'
-    );
+    expect(replyMock).toHaveBeenCalledWith('No one has rep to be on the leaderboard, yet.');
   });
 
   it('Should create a leaderboard entry with nickname if it can be fetched', async () => {

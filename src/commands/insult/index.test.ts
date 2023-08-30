@@ -1,9 +1,9 @@
-import { it, describe, expect, expectTypeOf } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction } from 'discord.js';
 import { faker } from '@faker-js/faker';
-import { randomCreate } from './insultGenerator';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { describe, expect, expectTypeOf, it } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { insult } from '.';
+import { randomCreate } from './insultGenerator';
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 

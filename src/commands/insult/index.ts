@@ -5,12 +5,8 @@ import { randomInsultGenerator } from './insultGenerator';
 
 const data = new SlashCommandBuilder()
   .setName('insult')
-  .setDescription(
-    'Generate an insult. If a target is provided, it will insult them directly.'
-  )
-  .addStringOption((option) =>
-    option.setName('target').setDescription('The name to insult')
-  );
+  .setDescription('Generate an insult. If a target is provided, it will insult them directly.')
+  .addStringOption((option) => option.setName('target').setDescription('The name to insult'));
 
 export const insult = async (interaction: ChatInputCommandInteraction) => {
   const target = interaction.options.getString('target');

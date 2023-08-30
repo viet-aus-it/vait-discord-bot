@@ -1,7 +1,7 @@
-import { it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset, mock } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction, Message, Collection } from 'discord.js';
 import { faker } from '@faker-js/faker';
+import { ChatInputCommandInteraction, Collection, Message } from 'discord.js';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mock, mockDeep, mockReset } from 'vitest-mock-extended';
 import { allCapExpandText } from '.';
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
@@ -28,9 +28,7 @@ describe('All caps test', () => {
         const mockMessageCollection = new Collection<string, Message<true>>();
         mockMessageCollection.set(faker.string.nanoid(), mockMessage);
         mockInteraction.options.getString.mockReturnValueOnce('');
-        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(
-          mockMessageCollection
-        );
+        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
 
         await allCapExpandText(mockInteraction);
         expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();
@@ -40,15 +38,11 @@ describe('All caps test', () => {
       it('Should show error message if there is no previous message', async () => {
         const mockMessageCollection = new Collection<string, Message<true>>();
         mockInteraction.options.getString.mockReturnValueOnce('');
-        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(
-          mockMessageCollection
-        );
+        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
 
         await allCapExpandText(mockInteraction);
         expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();
-        expect(mockInteraction.reply).toBeCalledWith(
-          'Cannot fetch latest message. Please try again later.'
-        );
+        expect(mockInteraction.reply).toBeCalledWith('Cannot fetch latest message. Please try again later.');
       });
     });
   });

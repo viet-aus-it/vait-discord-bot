@@ -6,12 +6,7 @@ import { removeReminder } from './reminder-utils';
 export const data = new SlashCommandSubcommandBuilder()
   .setName('delete')
   .setDescription('Delete a reminder')
-  .addStringOption((option) =>
-    option
-      .setName('id')
-      .setDescription('Reminder ID. This must be provided')
-      .setRequired(true)
-  );
+  .addStringOption((option) => option.setName('id').setDescription('Reminder ID. This must be provided').setRequired(true));
 
 export const execute: CommandHandler = async (interaction) => {
   const { user } = interaction.member!;
@@ -26,9 +21,7 @@ export const execute: CommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
-    await interaction.reply(
-      `Cannot delete reminder id ${reminderId}. Please try again later.`
-    );
+    await interaction.reply(`Cannot delete reminder id ${reminderId}. Please try again later.`);
     return;
   }
 

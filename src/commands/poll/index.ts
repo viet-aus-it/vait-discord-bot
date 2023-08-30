@@ -1,22 +1,7 @@
-import {
-  Message,
-  EmbedBuilder,
-  ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from 'discord.js';
 import { Command } from '../builder';
 
-export const NUMBER_AS_STRING = [
-  'one',
-  'two',
-  'three',
-  'four',
-  'five',
-  'six',
-  'seven',
-  'eight',
-  'nine',
-];
+export const NUMBER_AS_STRING = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
 
 const REACTION_NUMBERS = [
   '\u0031\u20E3',
@@ -34,12 +19,7 @@ const getData = () => {
   const data = new SlashCommandBuilder()
     .setName('poll')
     .setDescription('Create a poll')
-    .addStringOption((option) =>
-      option
-        .setName('question')
-        .setDescription('The question to create a poll for')
-        .setRequired(true)
-    );
+    .addStringOption((option) => option.setName('question').setDescription('The question to create a poll for').setRequired(true));
   NUMBER_AS_STRING.forEach((value, index) => {
     data.addStringOption((option) =>
       option
@@ -68,21 +48,15 @@ const createEmbeddedMessage = (question: string, pollOptions: string[]) => {
 
 export const createPoll = async (interaction: ChatInputCommandInteraction) => {
   const question = interaction.options.getString('question', true);
-  const pollOptions = NUMBER_AS_STRING.reduce<string[]>(
-    (accum, _value, index) => {
-      const option: string | null = interaction.options.getString(
-        `option${index + 1}`,
-        index < 2
-      );
+  const pollOptions = NUMBER_AS_STRING.reduce<string[]>((accum, _value, index) => {
+    const option: string | null = interaction.options.getString(`option${index + 1}`, index < 2);
 
-      if (!option) {
-        return accum;
-      }
+    if (!option) {
+      return accum;
+    }
 
-      return [...accum, option];
-    },
-    []
-  );
+    return [...accum, option];
+  }, []);
 
   const embed = createEmbeddedMessage(question, pollOptions);
 
@@ -91,9 +65,7 @@ export const createPoll = async (interaction: ChatInputCommandInteraction) => {
     fetchReply: true,
   });
 
-  const promises = pollOptions.map((_value, index) =>
-    pollMsg.react(REACTION_NUMBERS[index])
-  );
+  const promises = pollOptions.map((_value, index) => pollMsg.react(REACTION_NUMBERS[index]));
   await Promise.all(promises);
 };
 

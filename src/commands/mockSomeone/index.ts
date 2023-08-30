@@ -1,22 +1,12 @@
-import {
-  TextChannel,
-  ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
-import {
-  fetchLastMessageBeforeId,
-  getRandomBoolean,
-  isBlank,
-} from '../../utils';
+import { fetchLastMessageBeforeId, getRandomBoolean, isBlank } from '../../utils';
 import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('mock')
   .setDescription('Mock a sentence. SpOnGeBoB sTyLe.')
-  .addStringOption((option) =>
-    option.setName('sentence').setDescription('The sentence to mock')
-  );
+  .addStringOption((option) => option.setName('sentence').setDescription('The sentence to mock'));
 
 const generateMockText = (message: string) =>
   message
@@ -25,9 +15,7 @@ const generateMockText = (message: string) =>
     .split('')
     .reduce((outputText, character) => {
       const randomBoolean = getRandomBoolean();
-      const spongeCharacter = randomBoolean
-        ? character.toUpperCase()
-        : character.toLowerCase();
+      const spongeCharacter = randomBoolean ? character.toUpperCase() : character.toLowerCase();
 
       return `${outputText}${spongeCharacter}`;
     }, '');
@@ -42,23 +30,17 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   }
 
   // If /mock is detected but content is blank, fetch the latest message in channel
-  const fetchedMessage = await Result.safe(
-    fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id)
-  );
+  const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
 
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr()) {
-    await interaction.reply(
-      'Cannot fetch latest message. Please try again later.'
-    );
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 
   const { content } = fetchedMessage.unwrap();
   if (isBlank(content)) {
-    await interaction.reply(
-      'Cannot fetch latest message. Please try again later.'
-    );
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 

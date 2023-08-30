@@ -1,8 +1,8 @@
-import { vi, it, describe, expect, beforeEach } from 'vitest';
-import { mockReset, mockDeep } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { execute } from './set-reminder-channel';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { setReminderChannel } from './server-utils';
+import { execute } from './set-reminder-channel';
 
 vi.mock('./server-utils');
 const mockSetReminderChannel = vi.mocked(setReminderChannel);
@@ -24,9 +24,7 @@ describe('Set reminder channel', () => {
 
     expect(mockSetReminderChannel).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'Cannot save this reminder channel for this server. Please try again.'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('Cannot save this reminder channel for this server. Please try again.');
   });
 
   it('Should be able to set channel and reply', async () => {
@@ -39,8 +37,6 @@ describe('Set reminder channel', () => {
 
     expect(mockSetReminderChannel).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
   });
 });

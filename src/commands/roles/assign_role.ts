@@ -1,20 +1,11 @@
-import {
-  GuildMemberRoleManager,
-  SlashCommandSubcommandBuilder,
-} from 'discord.js';
+import { GuildMemberRoleManager, SlashCommandSubcommandBuilder } from 'discord.js';
 import { AutocompleteHandler, CommandHandler } from '../builder';
 import { roles, searchRoles } from './roles';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('assign')
   .setDescription('Assign new role to yourself')
-  .addStringOption((option) =>
-    option
-      .setName('role')
-      .setDescription('role from the role list')
-      .setRequired(true)
-      .setAutocomplete(true)
-  );
+  .addStringOption((option) => option.setName('role').setDescription('role from the role list').setRequired(true).setAutocomplete(true));
 
 export const autocomplete: AutocompleteHandler = async (interaction) => {
   const searchTerm = interaction.options.getString('role', true);
@@ -42,9 +33,7 @@ export const execute: CommandHandler = async (interaction) => {
         return interaction.reply(`Role ${roleName} does not exist`);
       }
 
-      await interaction.reply(
-        `${error.rawError.code}: ${error.rawError.message}`
-      );
+      await interaction.reply(`${error.rawError.code}: ${error.rawError.message}`);
     });
 };
 

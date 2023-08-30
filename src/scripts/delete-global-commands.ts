@@ -1,8 +1,8 @@
 import { Result } from 'oxide.ts';
 import { deployGlobalCommands } from '../commands/deploy-command';
+import { getCurrentUnixTime } from '../utils/dateUtils';
 import { loadEnv } from '../utils/loadEnv';
 import { logger } from '../utils/logger';
-import { getCurrentUnixTime } from '../utils/dateUtils';
 
 const deploy = async () => {
   loadEnv();
@@ -16,16 +16,11 @@ const deploy = async () => {
     })
   );
   if (op.isOk()) {
-    logger.info(
-      `Global commands deleted successfully. Timestamp: ${getCurrentUnixTime()}.`
-    );
+    logger.info(`Global commands deleted successfully. Timestamp: ${getCurrentUnixTime()}.`);
     process.exit(0);
   }
 
-  logger.error(
-    `Cannot delete global commands. Timestamp: ${getCurrentUnixTime()}`,
-    op.unwrapErr()
-  );
+  logger.error(`Cannot delete global commands. Timestamp: ${getCurrentUnixTime()}`, op.unwrapErr());
   process.exit(1);
 };
 

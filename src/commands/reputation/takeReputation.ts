@@ -1,30 +1,17 @@
-import {
-  ChatInputCommandInteraction,
-  GuildMember,
-  SlashCommandSubcommandBuilder,
-} from 'discord.js';
+import { ChatInputCommandInteraction, GuildMember, SlashCommandSubcommandBuilder } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
-import { getOrCreateUser, updateRep } from './_helpers';
 import { Subcommand } from '../builder';
+import { getOrCreateUser, updateRep } from './_helpers';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('take')
   .setDescription('ADMIN COMMAND. Take a rep from a user')
-  .addUserOption((option) =>
-    option
-      .setName('user')
-      .setDescription('A user to take rep from')
-      .setRequired(true)
-  );
+  .addUserOption((option) => option.setName('user').setDescription('A user to take rep from').setRequired(true));
 
-export const takeReputation = async (
-  interaction: ChatInputCommandInteraction
-) => {
+export const takeReputation = async (interaction: ChatInputCommandInteraction) => {
   const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
-    await interaction.reply(
-      "You don't have enough permission to run this command."
-    );
+    await interaction.reply("You don't have enough permission to run this command.");
     return;
   }
 
@@ -45,9 +32,7 @@ export const takeReputation = async (
   const taken = interaction.guild?.members.cache.get(discordUser.id);
   const taker = interaction.guild?.members.cache.get(author.id);
 
-  await interaction.reply(
-    `${taker?.displayName} took 1 rep from ${taken?.displayName}.\n${taken?.displayName} → ${updatedUser.reputation} reps`
-  );
+  await interaction.reply(`${taker?.displayName} took 1 rep from ${taken?.displayName}.\n${taken?.displayName} → ${updatedUser.reputation} reps`);
 };
 
 const command: Subcommand = {

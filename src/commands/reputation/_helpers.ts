@@ -14,10 +14,7 @@ export const getOrCreateUser = async (userId: string) => {
   return user;
 };
 
-type NumberAdjustment =
-  | { increment: number }
-  | { decrement: number }
-  | { set: number };
+type NumberAdjustment = { increment: number } | { decrement: number } | { set: number };
 
 const getAdjustmentOperation = (adjustment: NumberAdjustment) =>
   Object.entries(adjustment).map(([key, value]) => {
@@ -30,11 +27,7 @@ interface IUpdateRep {
   adjustment: { reputation: NumberAdjustment };
 }
 
-export const updateRep = async ({
-  fromUserId,
-  toUserId,
-  adjustment,
-}: IUpdateRep) => {
+export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep) => {
   const prisma = getPrismaClient();
 
   const updatedUserPromise = prisma.user.update({
@@ -42,9 +35,7 @@ export const updateRep = async ({
     data: adjustment,
   });
 
-  const operation = getAdjustmentOperation(
-    adjustment.reputation
-  ) as Prisma.JsonObject;
+  const operation = getAdjustmentOperation(adjustment.reputation) as Prisma.JsonObject;
 
   const logPromise = prisma.reputationLog.create({
     data: {
@@ -54,10 +45,7 @@ export const updateRep = async ({
     },
   });
 
-  const [updatedUser] = await prisma.$transaction([
-    updatedUserPromise,
-    logPromise,
-  ]);
+  const [updatedUser] = await prisma.$transaction([updatedUserPromise, logPromise]);
 
   return updatedUser;
 };

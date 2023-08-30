@@ -1,20 +1,16 @@
-import { beforeEach, afterEach, vi, it, describe, expect } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { ChatInputCommandInteraction } from 'discord.js';
 import { addSeconds, getUnixTime, parse } from 'date-fns';
+import { ChatInputCommandInteraction } from 'discord.js';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/dateUtils';
 import { execute } from './remind-duration';
 import { saveReminder } from './reminder-utils';
-import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/dateUtils';
 
 vi.mock('./reminder-utils');
 const mockSaveReminder = vi.mocked(saveReminder);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
-const currentDate = parse(
-  '11/04/2023 09:00',
-  DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT,
-  new Date()
-);
+const currentDate = parse('11/04/2023 09:00', DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT, new Date());
 const message = 'blah';
 const userId = 'user_12345';
 const guildId = 'guild_12345';
@@ -47,22 +43,18 @@ describe('remind on duration from now', () => {
   });
 
   it('should send error reply if duration is invalid', async () => {
-    mockInteraction.options.getString.mockImplementationOnce(
-      (param: string) => {
-        if (param === 'duration') {
-          return 'invalid duration';
-        }
-        return mockGetString(param);
+    mockInteraction.options.getString.mockImplementationOnce((param: string) => {
+      if (param === 'duration') {
+        return 'invalid duration';
       }
-    );
+      return mockGetString(param);
+    });
 
     await execute(mockInteraction);
 
     expect(mockSaveReminder).not.toHaveBeenCalled();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      'Invalid duration. Please specify a duration to get reminded.'
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith('Invalid duration. Please specify a duration to get reminded.');
   });
 
   it('should send error reply if it cannot save reminder', async () => {
@@ -73,9 +65,7 @@ describe('remind on duration from now', () => {
 
     expect(mockSaveReminder).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `Cannot save reminder for <@${userId}>. Please try again later.`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`Cannot save reminder for <@${userId}>. Please try again later.`);
   });
 
   it('should send reply if all options are provided', async () => {
@@ -93,8 +83,6 @@ describe('remind on duration from now', () => {
 
     expect(mockSaveReminder).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(
-      `New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`
-    );
+    expect(mockInteraction.reply).toHaveBeenCalledWith(`New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`);
   });
 });

@@ -1,27 +1,15 @@
-import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { addSeconds, getUnixTime } from 'date-fns';
-import parseDuration from 'parse-duration';
+import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+import parseDuration from 'parse-duration';
 import { CommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './reminder-utils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('in')
   .setDescription('Set reminder in ... minute/hours/days from now.')
-  .addStringOption((option) =>
-    option
-      .setName('duration')
-      .setDescription(
-        'The time from now you wanted to be reminded. e.g. 1hour 20minutes'
-      )
-      .setRequired(true)
-  )
-  .addStringOption((option) =>
-    option
-      .setName('message')
-      .setDescription('The message to get reminded for')
-      .setRequired(true)
-  );
+  .addStringOption((option) => option.setName('duration').setDescription('The time from now you wanted to be reminded. e.g. 1hour 20minutes').setRequired(true))
+  .addStringOption((option) => option.setName('message').setDescription('The message to get reminded for').setRequired(true));
 
 export const execute: CommandHandler = async (interaction) => {
   const { user } = interaction.member!;
@@ -30,9 +18,7 @@ export const execute: CommandHandler = async (interaction) => {
   const duration = interaction.options.getString('duration', true);
   const parsedDuration = parseDuration(duration, 'second');
   if (!parsedDuration) {
-    await interaction.reply(
-      'Invalid duration. Please specify a duration to get reminded.'
-    );
+    await interaction.reply('Invalid duration. Please specify a duration to get reminded.');
     return;
   }
 
@@ -47,17 +33,11 @@ export const execute: CommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
-    await interaction.reply(
-      `Cannot save reminder for <@${user.id}>. Please try again later.`
-    );
+    await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
     return;
   }
 
-  await interaction.reply(
-    `New Reminder for <@${user.id}> set on <t:${
-      op.unwrap().onTimestamp
-    }> with the message: "${message}".`
-  );
+  await interaction.reply(`New Reminder for <@${user.id}> set on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
 };
 
 const command: Subcommand = {

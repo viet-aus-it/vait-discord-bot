@@ -1,10 +1,10 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { Command } from '../builder';
 import checkRep from './checkReputation';
 import giveRep from './giveReputation';
-import takeRep from './takeReputation';
-import setRep from './setReputation';
 import leaderboard from './leaderboard';
+import setRep from './setReputation';
+import takeRep from './takeReputation';
 
 const data = new SlashCommandBuilder()
   .setName('rep')
@@ -20,9 +20,7 @@ const subcommands = [checkRep, giveRep, takeRep, setRep, leaderboard];
 const execute = async (interaction: ChatInputCommandInteraction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);
 
-  const subcommand = subcommands.find(
-    (cmd) => cmd.data.name === requestedSubcommand
-  );
+  const subcommand = subcommands.find((cmd) => cmd.data.name === requestedSubcommand);
   return subcommand?.execute(interaction);
 };
 

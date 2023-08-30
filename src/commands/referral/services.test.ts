@@ -1,4 +1,4 @@
-import { it, describe, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { searchServices } from './services';
 
 describe('Service search test', () => {

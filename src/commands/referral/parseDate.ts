@@ -1,14 +1,11 @@
-import { parse, isValid, isAfter, isEqual } from 'date-fns';
+import { isAfter, isEqual, isValid, parse } from 'date-fns';
 import { DAY_MONTH_YEAR_FORMAT } from '../../utils/dateUtils';
 
 type ParseInvalidDateError = ['INVALID_DATE'];
 type ParseExpiredDateError = ['EXPIRED_DATE'];
 type ParseDateSuccess = ['SUCCESS', Date];
 
-type ParseDatePayload =
-  | ParseDateSuccess
-  | ParseInvalidDateError
-  | ParseExpiredDateError;
+type ParseDatePayload = ParseDateSuccess | ParseInvalidDateError | ParseExpiredDateError;
 
 export const parseDate = (date: string): ParseDatePayload => {
   const parsedDate = parse(date, DAY_MONTH_YEAR_FORMAT, new Date());

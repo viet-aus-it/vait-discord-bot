@@ -1,13 +1,8 @@
-import {
-  ChatInputCommandInteraction,
-  SlashCommandSubcommandBuilder,
-} from 'discord.js';
-import { getTop10 } from './_helpers';
+import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Subcommand } from '../builder';
+import { getTop10 } from './_helpers';
 
-const data = new SlashCommandSubcommandBuilder()
-  .setName('leaderboard')
-  .setDescription('Show rep leaderboard');
+const data = new SlashCommandSubcommandBuilder().setName('leaderboard').setDescription('Show rep leaderboard');
 
 export const buildRepLeaderboard = (
   records: {
@@ -15,18 +10,9 @@ export const buildRepLeaderboard = (
     reputation: number;
   }[]
 ) => {
-  const repLength = Math.max(
-    ...records.map((record) => String(record.reputation).length),
-    'rep'.length
-  );
-  const usernameLength = Math.max(
-    ...records.map((record) => record.username.length),
-    'nickname'.length
-  );
-  const titleString = `${'#'.padStart(2, ' ')} ${'username'.padStart(
-    usernameLength,
-    ' '
-  )} ${'rep'.padStart(repLength, ' ')}\n`;
+  const repLength = Math.max(...records.map((record) => String(record.reputation).length), 'rep'.length);
+  const usernameLength = Math.max(...records.map((record) => record.username.length), 'nickname'.length);
+  const titleString = `${'#'.padStart(2, ' ')} ${'username'.padStart(usernameLength, ' ')} ${'rep'.padStart(repLength, ' ')}\n`;
   return records.reduce((accum, { username, reputation }, currentIndex) => {
     const position = String(currentIndex + 1).padStart(2, ' ');
     const paddedUsername = username.padStart(usernameLength, ' ');
@@ -35,9 +21,7 @@ export const buildRepLeaderboard = (
   }, titleString);
 };
 
-export const getLeaderboard = async (
-  interaction: ChatInputCommandInteraction
-) => {
+export const getLeaderboard = async (interaction: ChatInputCommandInteraction) => {
   const records = await getTop10();
   if (records.length === 0) {
     await interaction.reply('No one has rep to be on the leaderboard, yet.');

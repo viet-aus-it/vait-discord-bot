@@ -1,8 +1,4 @@
-import {
-  ChatInputCommandInteraction,
-  EmbedBuilder,
-  SlashCommandBuilder,
-} from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -12,14 +8,9 @@ const data = new SlashCommandBuilder()
   .addStringOption((option) =>
     option
       .setName('lang')
-      .setDescription(
-        'Choose a language for the disclaimer (Vietnamese / English)'
-      )
+      .setDescription('Choose a language for the disclaimer (Vietnamese / English)')
       .setRequired(true)
-      .addChoices(
-        { name: 'English', value: 'en' },
-        { name: 'Vietnamese', value: 'vi' }
-      )
+      .addChoices({ name: 'English', value: 'en' }, { name: 'Vietnamese', value: 'vi' })
   );
 
 export const DISCLAIMER_VI =
@@ -27,9 +18,7 @@ export const DISCLAIMER_VI =
 export const DISCLAIMER_EN =
   'In case of an investigation by any federal entity or similar, I do not have any involvement with this group or with the people in it. I do not know how I am here, probably added by a third party, and I do not support any actions by the members of this group.' as const;
 
-export const getDisclaimer = async (
-  interaction: ChatInputCommandInteraction
-) => {
+export const getDisclaimer = async (interaction: ChatInputCommandInteraction) => {
   const lang = interaction.options.getString('lang');
   const content = lang?.toLowerCase() === 'en' ? DISCLAIMER_EN : DISCLAIMER_VI;
   const embedMessage = new EmbedBuilder({

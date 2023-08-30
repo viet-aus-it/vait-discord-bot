@@ -18,15 +18,11 @@ export const addAutobumpThread = async (guildId: string, threadId: string) => {
   return settings.autobumpThreads;
 };
 
-export const removeAutobumpThread = async (
-  guildId: string,
-  threadId: string
-) => {
+export const removeAutobumpThread = async (guildId: string, threadId: string) => {
   const prisma = getPrismaClient();
-  const { autobumpThreads } =
-    await prisma.serverChannelsSettings.findFirstOrThrow({
-      where: { guildId },
-    });
+  const { autobumpThreads } = await prisma.serverChannelsSettings.findFirstOrThrow({
+    where: { guildId },
+  });
 
   const settings = await prisma.serverChannelsSettings.update({
     where: { guildId },

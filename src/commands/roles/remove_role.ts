@@ -1,25 +1,14 @@
-import {
-  GuildMemberRoleManager,
-  SlashCommandSubcommandBuilder,
-} from 'discord.js';
+import { GuildMemberRoleManager, SlashCommandSubcommandBuilder } from 'discord.js';
 import { AutocompleteHandler, CommandHandler } from '../builder';
 import { roles, searchRoles } from './roles';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('remove')
   .setDescription('remove your existing role')
-  .addStringOption((option) =>
-    option
-      .setName('role')
-      .setDescription('role from your role list')
-      .setRequired(true)
-      .setAutocomplete(true)
-  );
+  .addStringOption((option) => option.setName('role').setDescription('role from your role list').setRequired(true).setAutocomplete(true));
 
 export const autocomplete: AutocompleteHandler = async (interaction) => {
-  const roleIds = Array.from(
-    (interaction.member?.roles as GuildMemberRoleManager).cache
-  ).map(([id]) => id);
+  const roleIds = Array.from((interaction.member?.roles as GuildMemberRoleManager).cache).map(([id]) => id);
 
   const userRoles = roles.filter((role) => roleIds.includes(role.value));
 
@@ -48,8 +37,6 @@ export const execute: CommandHandler = async (interaction) => {
         return interaction.reply(`Role ${roleName} does not exist`);
       }
 
-      await interaction.reply(
-        `${error.rawError.code}: ${error.rawError.message}`
-      );
+      await interaction.reply(`${error.rawError.code}: ${error.rawError.message}`);
     });
 };

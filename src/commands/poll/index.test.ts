@@ -1,7 +1,7 @@
-import { it, describe, expect, beforeEach } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { ChatInputCommandInteraction, Message } from 'discord.js';
-import { createPoll, NUMBER_AS_STRING } from '.';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { NUMBER_AS_STRING, createPoll } from '.';
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 type MockReplyMessage = ChatInputCommandInteraction['reply'];
@@ -16,9 +16,7 @@ describe('Poll test', () => {
   });
 
   it('Should send a poll as embeded message', async () => {
-    mockInteraction.options.getString.mockImplementation(
-      (option: string) => option
-    );
+    mockInteraction.options.getString.mockImplementation((option: string) => option);
 
     await createPoll(mockInteraction);
 
