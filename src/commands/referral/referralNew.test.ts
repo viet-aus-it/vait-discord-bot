@@ -156,6 +156,6 @@ describe('execute', () => {
     expect(input.data.expiry_date.toISOString()).toBe(new Date(data.expiry_date).toISOString());
 
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toContain('new SomeCodeHere in 3commas');
+    expect(replyInput.value).toContain('new SomeCodeHere in 1st energy');
   });
 });
