@@ -9,6 +9,9 @@ export interface Comic {
   alt: string | null;
   date: string;
   source: string;
+  day: string;
+  month: string;
+  year: string;
 }
 
 type GetRandomComicPayload =
@@ -51,7 +54,7 @@ type GetTodayNumberPayload =
 const getTodayNumber = async (): Promise<GetTodayNumberPayload> => {
   // fetch today's comic number
   return fetch(XKCD_API_URL)
-    .then((res) => res.json())
+    .then((res) => res.json() as Promise<{ num: number }>)
     .then((body) => {
       if (!body) throw new Error('There is something wrong!');
 
@@ -76,7 +79,7 @@ const getComic = async (comicNumber: number): Promise<GetComicPayload> => {
   const comicURL = `https://xkcd.com/${comicNumber}/info.0.json`;
   try {
     const response = await fetch(comicURL); // fetch today's comic number
-    const body = await response.json();
+    const body = (await response.json()) as Comic;
     if (!body) throw new Error('There is something wrong!');
     return {
       name: 'GetComicSuccess',
@@ -86,6 +89,9 @@ const getComic = async (comicNumber: number): Promise<GetComicPayload> => {
         alt: body.alt,
         date: `${body.day}/${body.month}/${body.year}`,
         source: `https://xkcd.com/${comicNumber}/`,
+        day: body.day,
+        month: body.month,
+        year: body.year,
       },
     };
   } catch (error: any) {

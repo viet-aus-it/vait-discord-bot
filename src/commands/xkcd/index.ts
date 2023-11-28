@@ -4,7 +4,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 import { getRandomRGBValues } from '../../utils';
-import { Command } from '../command';
+import { Command } from '../builder';
 import { getRandomComic } from './fetchComic';
 
 const data = new SlashCommandBuilder()
