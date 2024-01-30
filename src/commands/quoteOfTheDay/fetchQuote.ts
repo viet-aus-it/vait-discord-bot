@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import wretch from 'wretch';
 import { z } from 'zod';
 
 const ZenQuoteSchema = z.object({
@@ -7,7 +7,7 @@ const ZenQuoteSchema = z.object({
   h: z.string(),
 });
 
-const ZenQuoteResponse = z.array(ZenQuoteSchema);
+const ZenQuoteResponse = z.array(ZenQuoteSchema).min(1).max(1);
 
 type ZenQuote = z.infer<typeof ZenQuoteSchema>;
 
@@ -18,12 +18,11 @@ export interface Quote {
 }
 
 export const ZEN_QUOTES_URL = 'https://zenquotes.io/api/random/6a874c704a11dea9305fe58e145d51c218f9f143';
+const quotesApi = wretch(ZEN_QUOTES_URL);
 
 export const fetchQuote = async () => {
-  const response = await fetch(ZEN_QUOTES_URL); // download quotes from this site
-  const body = await response.json();
-  const parsedBody: ZenQuote[] = ZenQuoteResponse.parse(body);
-  if (parsedBody.length === 0) throw new Error('No quote downloaded');
+  const response = await quotesApi.get().json<ZenQuote[]>();
+  const parsedBody = ZenQuoteResponse.parse(response);
 
   const { q, a, h } = parsedBody[0];
   const result: Quote = {
