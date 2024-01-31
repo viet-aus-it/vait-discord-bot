@@ -20,7 +20,7 @@ describe('Add autobump thread', () => {
     mockInteraction.options.getChannel.mockReturnValueOnce(mockChannel);
 
     await addAutobumpThreadCommand(mockInteraction);
-    expect(mockInteraction.reply).toBeCalledWith('ERROR: The channel in the input is not a thread.');
+    expect(mockInteraction.reply).toBeCalledWith(`ERROR: The channel <#${mockChannel.id}> is not a thread.`);
     expect(mockAddAutobumpThread).not.toBeCalled();
   });
 

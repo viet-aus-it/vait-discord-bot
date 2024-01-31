@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { isBlank } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 import { randomInsultGenerator } from './insultGenerator';
 
@@ -14,11 +15,13 @@ export const insult = async (interaction: ChatInputCommandInteraction) => {
   const insultText = randomInsultGenerator();
 
   if (target && !isBlank(target)) {
+    logger.info(`[insult]: Received insult target: ${target}`);
     const replyText = `${target}, ${insultText.toLowerCase()}`;
     await interaction.reply(replyText);
     return;
   }
 
+  logger.info('[insult]: Generating insult text');
   await interaction.reply(insultText);
 };
 

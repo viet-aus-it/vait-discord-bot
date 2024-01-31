@@ -2,6 +2,7 @@ import { say } from 'cowsay';
 import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 // Only 35 characters per line due to limitation in phone screen width
@@ -57,6 +58,7 @@ export const cowsay = async (interaction: ChatInputCommandInteraction) => {
   const content = interaction.options.getString('sentence');
 
   if (content && !isBlank(content)) {
+    logger.info(`[cowsay] Received message: [${content}]`);
     const reply = `\`\`\`${generateCowsayText(content)}\`\`\``;
     await interaction.reply(reply);
     return;
@@ -71,6 +73,7 @@ export const cowsay = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  logger.info(`[cowsay] Fetched message: [${fetchedMessage.unwrap().content}`);
   const cowText = generateCowsayText(fetchedMessage.unwrap().content);
   const reply = `\`\`\`${cowText}\`\`\``;
   await interaction.reply(reply);

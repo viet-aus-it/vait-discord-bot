@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+import { logger } from '../../utils/logger';
 import { CommandHandler, Subcommand } from '../builder';
 import { removeAutobumpThread } from './util';
 
@@ -11,13 +12,15 @@ const data = new SlashCommandSubcommandBuilder()
 export const removeAutobumpThreadCommand: CommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const thread = interaction.options.getChannel('thread', true);
+  logger.info(`[remove-autobump-thread]: Removing thread ${thread.id} from autobump list for guild ${guildId}`);
 
   const op = await Result.safe(removeAutobumpThread(guildId, thread.id));
   if (op.isErr()) {
-    await interaction.reply('ERROR: Cannot remove this thread from the bump list for this server. Please try again.');
+    await interaction.reply(`ERROR: Cannot remove thread id <#${thread.id}> from the bump list for this server. Please try again.`);
     return;
   }
 
+  logger.info(`[remove-autobump-thread]: Successfully removed thread ${thread.id} from autobump list for guild ${guildId}`);
   await interaction.reply(`Successfully saved setting. Thread <#${thread.id}> will not be bumped.`);
 };
 

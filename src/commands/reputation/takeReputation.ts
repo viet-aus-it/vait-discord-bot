@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, GuildMember, SlashCommandSubcommandBuilder } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Subcommand } from '../builder';
 import { getOrCreateUser, updateRep } from './_helpers';
 
@@ -11,6 +12,7 @@ const data = new SlashCommandSubcommandBuilder()
 export const takeReputation = async (interaction: ChatInputCommandInteraction) => {
   const guildMember = interaction.member as GuildMember;
   if (!isAdmin(guildMember) && !isModerator(guildMember)) {
+    logger.info(`[take-reputation]: ${guildMember.user.tag} doesn't have enough permission to run this command.`);
     await interaction.reply("You don't have enough permission to run this command.");
     return;
   }
@@ -18,6 +20,8 @@ export const takeReputation = async (interaction: ChatInputCommandInteraction) =
   const author = interaction.member!.user;
   const authorUser = await getOrCreateUser(author.id);
   const discordUser = interaction.options.getUser('user', true);
+  logger.info(`[take-reputation]: ${guildMember.user.tag} is taking 1 rep from ${discordUser.tag}`);
+
   const user = await getOrCreateUser(discordUser.id);
   if (user.reputation === 0) {
     await interaction.reply(`<@${discordUser.id}> currently has 0 rep`);

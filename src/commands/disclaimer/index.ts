@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -20,6 +21,7 @@ export const DISCLAIMER_EN =
 
 export const getDisclaimer = async (interaction: ChatInputCommandInteraction) => {
   const lang = interaction.options.getString('lang');
+  logger.info(`[disclaimer]: Received language: ${lang}`);
   const content = lang?.toLowerCase() === 'en' ? DISCLAIMER_EN : DISCLAIMER_VI;
   const embedMessage = new EmbedBuilder({
     author: {

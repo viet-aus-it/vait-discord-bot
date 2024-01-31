@@ -31,7 +31,7 @@ describe('List autobump threads', () => {
 
     expect(mockListAutobumpThread).toHaveBeenCalledOnce();
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('No threads have been setup for autobumping in this server');
+    expect(mockInteraction.reply).toHaveBeenCalledWith('ERROR: No threads have been setup for autobumping in this server');
   });
 
   it('Should reply with list of autobump thread if it has been set', async () => {

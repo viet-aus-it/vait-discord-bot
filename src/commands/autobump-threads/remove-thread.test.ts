@@ -22,7 +22,7 @@ describe('Add autobump thread', () => {
     mockRemoveAutobumpThread.mockRejectedValueOnce(new Error('Synthetic Error'));
 
     await removeAutobumpThreadCommand(mockInteraction);
-    expect(mockInteraction.reply).toBeCalledWith('ERROR: Cannot remove this thread from the bump list for this server. Please try again.');
+    expect(mockInteraction.reply).toBeCalledWith(`ERROR: Cannot remove thread id <#${threadId}> from the bump list for this server. Please try again.`);
     expect(mockRemoveAutobumpThread).toBeCalled();
   });
 

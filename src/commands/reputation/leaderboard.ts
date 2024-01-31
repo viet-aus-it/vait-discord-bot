@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
+import { logger } from '../../utils/logger';
 import { Subcommand } from '../builder';
 import { getTop10 } from './_helpers';
 
@@ -24,10 +25,12 @@ export const buildRepLeaderboard = (
 export const getLeaderboard = async (interaction: ChatInputCommandInteraction) => {
   const records = await getTop10();
   if (records.length === 0) {
+    logger.info('[rep-leaderboard]: no one has rep in this server.');
     await interaction.reply('No one has rep to be on the leaderboard, yet.');
     return;
   }
 
+  logger.info('[rep-leaderboard]: got top 10');
   const guild = interaction.guild!;
   const guildMembers = await guild.members.fetch({
     user: records.map((r) => r.id),
@@ -48,7 +51,9 @@ export const getLeaderboard = async (interaction: ChatInputCommandInteraction) =
     };
   });
 
+  logger.info('[rep-leaderboard]: building leaderboard');
   const body = buildRepLeaderboard(mergeRecords);
+  logger.info('[rep-leaderboard]: Sending leaderboard back');
   await interaction.reply(`\`\`\`\n${body}\`\`\``);
 };
 

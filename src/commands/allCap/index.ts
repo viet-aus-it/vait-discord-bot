@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { fetchLastMessageBeforeId, isBlank } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -21,6 +22,7 @@ export const allCapExpandText = async (interaction: ChatInputCommandInteraction)
   const content = interaction.options.getString('sentence');
 
   if (content && !isBlank(content)) {
+    logger.info(`[allcap]: Received message: ${content}`);
     const reply = generateAllCapText(content);
     await interaction.reply(reply);
     return;
@@ -31,10 +33,12 @@ export const allCapExpandText = async (interaction: ChatInputCommandInteraction)
 
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
+    logger.info('[allcap]: Cannot fetch latest message');
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 
+  logger.info(`[allcap]: Fetched message: ${fetchedMessage.unwrap().content}`);
   const reply = generateAllCapText(fetchedMessage.unwrap().content);
   await interaction.reply(reply);
 };
