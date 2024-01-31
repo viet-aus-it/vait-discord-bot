@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { weather } from '.';
@@ -13,12 +13,13 @@ const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 describe('Weather test', () => {
   beforeEach(() => {
-    const endpoint = rest.get(`${WEATHER_URL}:location`, (req, res, ctx) => {
-      if (req.url.pathname === '/ErrorLocation') {
-        return res(ctx.status(500, 'Simulated Error'));
+    const endpoint = http.get(`${WEATHER_URL}:location`, ({ params }) => {
+      const { location } = params;
+      if (location === 'ErrorLocation') {
+        return HttpResponse.error();
       }
 
-      return res(ctx.status(200), ctx.text(mockWeatherMessage));
+      return HttpResponse.text(mockWeatherMessage);
     });
     server.use(endpoint);
 
@@ -51,8 +52,8 @@ describe('Weather test', () => {
 
   it('Should reply with error if input is valid but weather data cannot be downloaded', async () => {
     mockInteraction.options.getString.mockReturnValueOnce('Brisbane');
-    const endpoint = rest.get(`${WEATHER_URL}:location`, (_, res, ctx) => {
-      return res(ctx.status(500), ctx.json(undefined));
+    const endpoint = http.get(`${WEATHER_URL}:location`, () => {
+      return HttpResponse.error();
     });
     server.use(endpoint);
 
