@@ -11,6 +11,7 @@ const deploy = async () => {
   const clientId = process.env.CLIENT_ID ?? '';
   const guildId = process.env.GUILD_ID ?? '';
 
+  logger.info(`[deploy-guild-commands]: Deploying guild commands. Timestamp: ${getCurrentUnixTime()}`);
   const op = await Result.safe(
     deployGuildCommands(commandList, contextMenuCommandList, {
       token,
@@ -19,11 +20,11 @@ const deploy = async () => {
     })
   );
   if (op.isOk()) {
-    logger.info(`Guild commands deployed successfully. Timestamp: ${getCurrentUnixTime()}`);
+    logger.info(`[deploy-guild-commands]: Guild commands deployed successfully. Timestamp: ${getCurrentUnixTime()}`);
     process.exit(0);
   }
 
-  logger.error(`Cannot deploy guild commands. Timestamp ${getCurrentUnixTime()}`, op.unwrapErr());
+  logger.error(`[deploy-guild-commands]: Cannot deploy guild commands. Timestamp ${getCurrentUnixTime()}`, op.unwrapErr());
   process.exit(1);
 };
 
