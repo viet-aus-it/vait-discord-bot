@@ -12,9 +12,9 @@ const configSchema = z.object({
   GUILD_ID: z.string().optional(),
 
   // Axiom config
-  AXIOM_TOKEN: z.string(),
-  AXIOM_DATASET: z.string(),
-  AXIOM_ORG_ID: z.string(),
+  AXIOM_TOKEN: z.string().optional(),
+  AXIOM_DATASET: z.string().optional(),
+  AXIOM_ORG_ID: z.string().optional(),
 
   // Database config
   DATABASE_URL: z.string(),
