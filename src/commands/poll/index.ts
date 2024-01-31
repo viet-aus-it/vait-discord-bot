@@ -55,7 +55,8 @@ export const createPoll = async (interaction: ChatInputCommandInteraction) => {
       return accum;
     }
 
-    return [...accum, option];
+    accum.push(option);
+    return accum;
   }, []);
 
   const embed = createEmbeddedMessage(question, pollOptions);

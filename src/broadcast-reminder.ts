@@ -28,32 +28,35 @@ const broadcastReminder = async () => {
   const token = process.env.TOKEN ?? '';
   const client = await getDiscordClient({ token });
 
-  const jobs = await remindersData.reduce(async (accumulator, reminder) => {
-    const guild = client.guilds.cache.find((g) => g.available && g.id === reminder.guildId);
-    if (!guild) {
-      return accumulator;
-    }
+  const jobs = await remindersData.reduce(
+    async (accumulator, reminder) => {
+      const guild = client.guilds.cache.find((g) => g.available && g.id === reminder.guildId);
+      if (!guild) {
+        return accumulator;
+      }
 
-    const channelId = await Result.safe(getReminderChannel(guild.id));
-    if (channelId.isErr()) {
-      return accumulator;
-    }
+      const channelId = await Result.safe(getReminderChannel(guild.id));
+      if (channelId.isErr()) {
+        return accumulator;
+      }
 
-    const data = channelId.unwrap();
-    if (!data) {
-      return accumulator;
-    }
-    const channel = client.channels.cache.get(data);
-    if (!channel || channel.type !== ChannelType.GuildText) {
-      return accumulator;
-    }
+      const data = channelId.unwrap();
+      if (!data) {
+        return accumulator;
+      }
+      const channel = client.channels.cache.get(data);
+      if (!channel || channel.type !== ChannelType.GuildText) {
+        return accumulator;
+      }
 
-    const prev = await accumulator;
-    const message = formatReminderMessage(reminder);
-    const promise = channel.send(message);
+      const prev = await accumulator;
+      const message = formatReminderMessage(reminder);
+      const promise = channel.send(message);
 
-    return [...prev, promise];
-  }, Promise.resolve([] as unknown[]));
+      return [...prev, promise];
+    },
+    Promise.resolve([] as unknown[])
+  );
 
   await removeReminders(remindersData);
 

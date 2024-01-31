@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { rest } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { getQuoteOfTheDay } from '.';
@@ -15,8 +15,8 @@ describe('Get quote of the day test', () => {
   });
 
   it('Should reply with error if it downloaded a blank array', async () => {
-    const endpoint = rest.get(ZEN_QUOTES_URL, (_, res, ctx) => {
-      return res(ctx.status(200), ctx.json([]));
+    const endpoint = http.get(ZEN_QUOTES_URL, () => {
+      return HttpResponse.json([]);
     });
     server.use(endpoint);
 
@@ -26,8 +26,8 @@ describe('Get quote of the day test', () => {
   });
 
   it('Should reply with error message if it error while downloading quotes', async () => {
-    const endpoint = rest.get(ZEN_QUOTES_URL, (_, res, ctx) => {
-      return res(ctx.status(500), ctx.json(undefined));
+    const endpoint = http.get(ZEN_QUOTES_URL, () => {
+      return HttpResponse.error();
     });
     server.use(endpoint);
 
@@ -43,8 +43,8 @@ describe('Get quote of the day test', () => {
       a: 'Author',
       h: `<h1>${fakeQuote}</h1>`,
     };
-    const endpoint = rest.get(ZEN_QUOTES_URL, (_, res, ctx) => {
-      return res(ctx.status(200), ctx.json([sampleQuote]));
+    const endpoint = http.get(ZEN_QUOTES_URL, () => {
+      return HttpResponse.json([sampleQuote]);
     });
     server.use(endpoint);
 

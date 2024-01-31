@@ -28,7 +28,7 @@ const wrapText = (input: string, width: number) => {
   let line = '';
 
   // Check each words
-  words.forEach((word) => {
+  for (const word of words) {
     if ((line + word).length <= width) {
       // Add a word if line length is within limit
       line += (line ? ' ' : '') + word;
@@ -37,7 +37,7 @@ const wrapText = (input: string, width: number) => {
       resultArray.push(line);
       line = word;
     }
-  });
+  }
 
   // Add any leftover line to next line.
   resultArray.push(line);
