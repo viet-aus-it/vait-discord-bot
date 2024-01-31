@@ -34,7 +34,7 @@ describe('remind on date', () => {
     mockReset(mockInteraction);
     mockInteraction.guildId = guildId;
     mockInteraction.member!.user.id = userId;
-    mockInteraction.options.getString.mockImplementationOnce(mockGetString);
+    mockInteraction.options.getString.mockImplementation(mockGetString);
   });
 
   it('should send error reply if it cannot save reminder', async () => {
