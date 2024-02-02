@@ -15,7 +15,6 @@ import quoteOfTheDay from './quoteOfTheDay';
 import referral from './referral';
 import reminder from './reminder';
 import reputation from './reputation';
-import roles from './roles';
 import serverSettings from './serverSettings';
 import weatherCommand from './weather';
 
@@ -35,7 +34,6 @@ export const commandList: Command[] = [
   getdisclaimer,
   referral,
   reminder,
-  roles,
   serverSettings,
   removeUserByRole,
 ];
