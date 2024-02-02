@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getRandomIntInclusive } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -26,7 +27,9 @@ const get8BallReply = () => REPLIES[getRandomIntInclusive(0, REPLIES.length - 1)
 
 export const ask8Ball = async (interaction: ChatInputCommandInteraction) => {
   const question = interaction.options.getString('question', true);
-  await interaction.reply(`Q: ${question}\nA: ${get8BallReply()}`);
+  const reply = get8BallReply();
+  logger.info(`[8ball]: Q: ${question} - A: ${reply}`);
+  await interaction.reply(`Q: ${question}\nA: ${reply}`);
 };
 
 const command: Command = {

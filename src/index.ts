@@ -1,4 +1,3 @@
-import { getUnixTime } from 'date-fns';
 import { InteractionType } from 'discord-api-types/v10';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
@@ -12,16 +11,17 @@ import { logger } from './utils/logger';
 
 const main = async () => {
   loadEnv();
-  logger.info(`STARTING BOT. TIMESTAMP: ${getCurrentUnixTime()}`);
+  logger.info(`[main]: STARTING BOT. TIMESTAMP: ${getCurrentUnixTime()}`);
   const token = process.env.TOKEN ?? '';
   const client = await getDiscordClient({ token });
 
   if (!client.user) throw new Error('Something went wrong!');
-  logger.info(`Logged in as ${client.user.tag}!`);
+  logger.info(`[main]: Logged in as ${client.user.tag}!`);
 
   if (process.env.NODE_ENV === 'production') {
     // This should only be run once during the bot startup in production.
     // For development usage, please use `pnpm deploy:command`
+    logger.info(`[main]: Deploying global commands. Timestamp: ${getCurrentUnixTime()}`);
     const op = await Result.safe(
       deployGlobalCommands(commandList, contextMenuCommandList, {
         token,
@@ -29,10 +29,10 @@ const main = async () => {
       })
     );
     if (op.isErr()) {
-      logger.error(`Cannot deploy global commands. Timestamp: ${getCurrentUnixTime()}`, op.unwrapErr());
+      logger.error(`[main]: Cannot deploy global commands. Timestamp: ${getCurrentUnixTime()}`, op.unwrapErr());
       process.exit(1);
     }
-    logger.info(`Successfully deployed global commands. Timestamp: ${getCurrentUnixTime()}`);
+    logger.info(`[main]: Successfully deployed global commands. Timestamp: ${getCurrentUnixTime()}`);
   }
 
   const configs = getConfigs();
@@ -43,15 +43,17 @@ const main = async () => {
   client.on('interactionCreate', async (interaction) => {
     try {
       const isCommand = interaction.isChatInputCommand();
-      const isContextMenuCommand = interaction.isContextMenuCommand();
       if (isCommand) {
         const { commandName } = interaction;
+        logger.info(`[main]: RECEIVED COMMAND. COMMAND: ${commandName}. TIMESTAMP: ${getCurrentUnixTime()}.`);
         const command = commandList.find((cmd) => cmd.data.name === commandName);
         return await command?.execute(interaction);
       }
 
+      const isContextMenuCommand = interaction.isContextMenuCommand();
       if (isContextMenuCommand) {
         const { commandName } = interaction;
+        logger.info(`[main]: RECEIVED CONTEXT MENU COMMAND. COMMAND: ${commandName}. TIMESTAMP: ${getCurrentUnixTime()}.`);
         const command = contextMenuCommandList.find((cmd) => cmd.data.name === commandName);
         return await command?.execute(interaction);
       }
@@ -59,12 +61,12 @@ const main = async () => {
       const isAutocomplete = interaction.type === InteractionType.ApplicationCommandAutocomplete;
       if (isAutocomplete) {
         const { commandName } = interaction;
+        logger.info(`[main]: RECEIVED AUTOCOMPLETE. COMMAND: ${commandName}. TIMESTAMP: ${getCurrentUnixTime()}.`);
         const command = commandList.find((cmd) => cmd.data.name === commandName);
         return await command?.autocomplete?.(interaction);
       }
     } catch (error) {
-      const currentTimestamp = getUnixTime(Date.now());
-      logger.error(`ERROR HANDLING INTERACTION. TIMESTAMP: ${currentTimestamp}, ERROR: ${error}.`);
+      logger.error(`[main]: ERROR HANDLING INTERACTION. TIMESTAMP: ${getCurrentUnixTime()}, ERROR: ${error}.`);
     }
   });
 };

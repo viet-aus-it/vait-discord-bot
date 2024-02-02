@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getRandomIntInclusive, getUniqueRandomIntInclusive } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -39,6 +40,7 @@ const getPowerBallGame = (count: number) => {
 };
 
 export const powerball = async (interaction: ChatInputCommandInteraction) => {
+  logger.info(`[powerball]: ${interaction.user.tag} is getting some Powerball numbers.`);
   const gameCount = interaction.options.getInteger('count', true);
   const games = getPowerBallGame(gameCount);
   interaction.reply(games);

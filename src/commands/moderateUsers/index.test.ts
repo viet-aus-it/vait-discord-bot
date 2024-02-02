@@ -34,7 +34,7 @@ describe('Remove users who have the role', () => {
 
     await removeUserByRole(mockInteraction);
 
-    expect(mockInteraction.reply).toHaveBeenCalledWith("You can't remove all users with role from entire channel. This command only works in a thread.");
+    expect(mockInteraction.reply).toHaveBeenCalledWith("You can't remove all users from entire channel. This command only works in a thread.");
   });
 
   it('should remove all users from the thread with the matching role', async () => {

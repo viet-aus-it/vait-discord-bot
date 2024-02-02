@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { fetchLastMessageBeforeId, getRandomBoolean, isBlank } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -24,6 +25,7 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   const sentence = interaction.options.getString('sentence');
 
   if (sentence && !isBlank(sentence)) {
+    logger.info(`[mock]: Received message: ${sentence}`);
     const reply = generateMockText(sentence);
     await interaction.reply(reply);
     return;
@@ -34,16 +36,19 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
 
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr()) {
+    logger.info('[mock]: Cannot fetch latest message.');
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 
   const { content } = fetchedMessage.unwrap();
   if (isBlank(content)) {
+    logger.info('[mock]: Fetched message is blank.');
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 
+  logger.info(`[mock]: Fetched message: ${content}`);
   const reply = generateMockText(content);
   await interaction.reply(reply);
 };

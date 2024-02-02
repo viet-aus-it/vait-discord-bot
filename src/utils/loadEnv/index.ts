@@ -34,6 +34,7 @@ export const loadEnv = () => {
 
   const validatedEnv = configSchema.safeParse(process.env);
   if (!validatedEnv.success) {
+    console.error(`Error loading environment details. ${validatedEnv.error.message}`);
     throw new Error('INVALID CONFIG!', { cause: validatedEnv.error.issues });
   }
 };

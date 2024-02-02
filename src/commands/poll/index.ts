@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder, Message, SlashCommandBuilder } from 'discord.js';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 export const NUMBER_AS_STRING = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
@@ -48,6 +49,7 @@ const createEmbeddedMessage = (question: string, pollOptions: string[]) => {
 
 export const createPoll = async (interaction: ChatInputCommandInteraction) => {
   const question = interaction.options.getString('question', true);
+  logger.info(`[poll]: ${interaction.user.tag} is creating a poll for "${question}"`);
   const pollOptions = NUMBER_AS_STRING.reduce<string[]>((accum, _value, index) => {
     const option: string | null = interaction.options.getString(`option${index + 1}`, index < 2);
 
@@ -58,6 +60,7 @@ export const createPoll = async (interaction: ChatInputCommandInteraction) => {
     accum.push(option);
     return accum;
   }, []);
+  logger.info(`[poll]: ${interaction.user.tag} is creating a poll with options: ${pollOptions.join(', ')}`);
 
   const embed = createEmbeddedMessage(question, pollOptions);
 
@@ -68,6 +71,7 @@ export const createPoll = async (interaction: ChatInputCommandInteraction) => {
 
   const promises = pollOptions.map((_value, index) => pollMsg.react(REACTION_NUMBERS[index]));
   await Promise.all(promises);
+  logger.info('[poll]: Poll created successfully!');
 };
 
 const command: Command = {

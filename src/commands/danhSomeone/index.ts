@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
+import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 
 const MAX_MENTIONS = 10;
@@ -29,10 +30,12 @@ export const danhSomeone = async (interaction: ChatInputCommandInteraction) => {
       }
 
       if (target.id === botId) {
+        logger.info(`[hit] ${author.id} hit bot.`);
         return `<@${author.id}>, I'm your father, you can't hit me.`;
       }
 
       if (target.id === author.id) {
+        logger.info(`[hit] ${author.id} hit themself.`);
         return `Stop hitting yourself <@${author.id}>, hit someone else.`;
       }
 
@@ -41,6 +44,7 @@ export const danhSomeone = async (interaction: ChatInputCommandInteraction) => {
       const critChance = getRandomBoolean();
       const critText = critChance ? ' Critical Hit!' : '';
 
+      logger.info(`[hit] ${author.id} hit ${target.id} for ${dmg} dmg.`);
       return `${dmgText}${critText}`;
     })
     .filter((msg) => msg)

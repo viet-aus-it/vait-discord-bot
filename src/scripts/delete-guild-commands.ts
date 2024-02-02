@@ -10,6 +10,7 @@ const deploy = async () => {
   const clientId = process.env.CLIENT_ID ?? '';
   const guildId = process.env.GUILD_ID ?? '';
 
+  logger.info(`[delete-guild-commands]: Deleting guild commands. Timestamp: ${getCurrentUnixTime()}`);
   const op = await Result.safe(
     deployGuildCommands([], [], {
       token,
@@ -18,11 +19,11 @@ const deploy = async () => {
     })
   );
   if (op.isOk()) {
-    logger.info(`Guild commands deleted successfully. Timestamp: ${getCurrentUnixTime()}`);
+    logger.info(`[delete-guild-commands]: Guild commands deleted successfully. Timestamp: ${getCurrentUnixTime()}`);
     process.exit(0);
   }
 
-  logger.error(`Cannot delete guild commands. Timestamp ${getCurrentUnixTime()}`, op.unwrapErr());
+  logger.error(`[delete-guild-commands]: Cannot delete guild commands. Timestamp ${getCurrentUnixTime()}`, op.unwrapErr());
   process.exit(1);
 };
 

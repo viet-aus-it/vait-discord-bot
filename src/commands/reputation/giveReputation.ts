@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, Message, SlashCommandSubcommandBuilder } from 'discord.js';
+import { logger } from '../../utils/logger';
 import { Subcommand } from '../builder';
 import { getOrCreateUser, updateRep } from './_helpers';
 
@@ -38,6 +39,7 @@ export const thankUserInMessage = async (msg: Message) => {
     Promise.resolve(`${giver?.displayName} gave 1 rep to the following users:`)
   );
 
+  logger.info(`[thank-user-in-message]: ${message}`);
   await channel.send(message);
 };
 
@@ -59,7 +61,9 @@ export const giveRepSlashCommand = async (interaction: ChatInputCommandInteracti
   const updatedUser = await plusRep(author.id, discordUser.id);
   const receiver = interaction.guild?.members.cache.get(discordUser.id);
   const giver = interaction.guild?.members.cache.get(author.id);
-  await interaction.reply(`${giver?.displayName} gave 1 rep to ${receiver?.displayName}.\n${receiver?.displayName} → ${updatedUser.reputation} reps`);
+  const message = `${giver?.displayName} gave 1 rep to ${receiver?.displayName}.\n${receiver?.displayName} → ${updatedUser.reputation} reps`;
+  logger.info(`[give-rep-slash-cmd]: ${message}`);
+  await interaction.reply(message);
 };
 
 const subcommand: Subcommand = {

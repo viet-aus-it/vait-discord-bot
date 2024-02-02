@@ -15,13 +15,13 @@ const broadcastReminder = async () => {
   const queryTime = getCurrentUnixTime();
   const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
   if (reminders.isErr()) {
-    logger.error(`Cannot retrieve reminders. Timestamp: ${getCurrentUnixTime()}. Query Time: ${queryTime}`);
+    logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Timestamp: ${getCurrentUnixTime()}. Query Time: ${queryTime}`);
     process.exit(1);
   }
 
   const remindersData = reminders.unwrap();
   if (remindersData.length === 0) {
-    logger.info(`No reminders to broadcast. Timestamp: ${getCurrentUnixTime()}. Query Time: ${queryTime}`);
+    logger.info(`[broadcast-reminder]: No reminders to broadcast. Timestamp: ${getCurrentUnixTime()}. Query Time: ${queryTime}`);
     process.exit(0);
   }
 
@@ -32,26 +32,39 @@ const broadcastReminder = async () => {
     async (accumulator, reminder) => {
       const guild = client.guilds.cache.find((g) => g.available && g.id === reminder.guildId);
       if (!guild) {
+        logger.info(`[broadcast-reminder]: Cannot find guild ${reminder.guildId} for reminder. Timestamp: ${getCurrentUnixTime()}`);
         return accumulator;
       }
 
       const channelId = await Result.safe(getReminderChannel(guild.id));
       if (channelId.isErr()) {
+        logger.info(`[broadcast-reminder]: Cannot find reminder channel settings for guild ${reminder.guildId}. Timestamp: ${getCurrentUnixTime()}`);
         return accumulator;
       }
 
       const data = channelId.unwrap();
       if (!data) {
+        logger.info(`[broadcast-reminder]: Cannot unwrap reminder channel for guild ${reminder.guildId}. Timestamp: ${getCurrentUnixTime()}`);
         return accumulator;
       }
       const channel = client.channels.cache.get(data);
-      if (!channel || channel.type !== ChannelType.GuildText) {
+      if (!channel) {
+        logger.info(`[broadcast-reminder]: Cannot find reminder channel id ${data} for guild ${reminder.guildId}. Timestamp: ${getCurrentUnixTime()}`);
+        return accumulator;
+      }
+      if (channel.type !== ChannelType.GuildText) {
+        logger.info(
+          `[broadcast-reminder]: Reminder channel id ${data} for guild ${reminder.guildId} is not a text channel. Timestamp: ${getCurrentUnixTime()}`
+        );
         return accumulator;
       }
 
       const prev = await accumulator;
+
+      logger.info(`[broadcast-reminder]: Broadcasting reminder ${reminder.id} in guild ${guild.name} (${guild.id})`);
       const message = formatReminderMessage(reminder);
       const promise = channel.send(message);
+      logger.info(`[broadcast-reminder]: Broadcasted reminder ${reminder.id} in guild ${guild.name} (${guild.id})`);
 
       return [...prev, promise];
     },
@@ -60,7 +73,7 @@ const broadcastReminder = async () => {
 
   await removeReminders(remindersData);
 
-  logger.info(`Reminders fan out complete. Jobs: ${jobs.length}. Timestamp: ${getCurrentUnixTime()}`);
+  logger.info(`[broadcast-reminder]: Reminders fan out complete. Jobs: ${jobs.length}. Timestamp: ${getCurrentUnixTime()}`);
   process.exit(0);
 };
 
