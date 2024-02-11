@@ -10,7 +10,7 @@ const deploy = async () => {
   const clientId = process.env.CLIENT_ID ?? '';
   const guildId = process.env.GUILD_ID ?? '';
 
-  logger.info(`[delete-guild-commands]: Deleting guild commands. Timestamp: ${getCurrentUnixTime()}`);
+  logger.info('[delete-guild-commands]: Deleting guild commands');
   const op = await Result.safe(
     deployGuildCommands([], [], {
       token,
@@ -19,7 +19,7 @@ const deploy = async () => {
     })
   );
   if (op.isOk()) {
-    logger.info(`[delete-guild-commands]: Guild commands deleted successfully. Timestamp: ${getCurrentUnixTime()}`);
+    logger.info('[delete-guild-commands]: Guild commands deleted successfully');
     process.exit(0);
   }
 

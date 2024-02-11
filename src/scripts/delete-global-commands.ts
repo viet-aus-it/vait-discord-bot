@@ -9,7 +9,7 @@ const deploy = async () => {
   const token = process.env.TOKEN ?? '';
   const clientId = process.env.CLIENT_ID ?? '';
 
-  logger.info(`[delete-global-commands]: Deleting global commands. Timestamp: ${getCurrentUnixTime()}.`);
+  logger.info('[delete-global-commands]: Deleting global commands');
   const op = await Result.safe(
     deployGlobalCommands([], [], {
       token,
@@ -17,11 +17,11 @@ const deploy = async () => {
     })
   );
   if (op.isOk()) {
-    logger.info(`[delete-global-commands]: Global commands deleted successfully. Timestamp: ${getCurrentUnixTime()}.`);
+    logger.info('[delete-global-commands]: Global commands deleted successfully');
     process.exit(0);
   }
 
-  logger.error(`[delete-global-commands]: Cannot delete global commands. Timestamp: ${getCurrentUnixTime()}`, op.unwrapErr());
+  logger.error('[delete-global-commands]: Cannot delete global commands', op.unwrapErr());
   process.exit(1);
 };
 

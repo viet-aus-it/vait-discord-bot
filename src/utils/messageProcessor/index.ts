@@ -35,6 +35,6 @@ export const processMessage = async (message: Message, config: CommandConfig) =>
   try {
     await Promise.all(keywordPromises);
   } catch (error) {
-    logger.error(`ERROR PROCESSING MESSAGE. TIMESTAMP: ${getCurrentUnixTime()}`, error);
+    logger.error('ERROR PROCESSING MESSAGE', error);
   }
 };

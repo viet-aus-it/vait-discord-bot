@@ -1,25 +1,23 @@
-import { getUnixTime } from 'date-fns';
 import { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';
-import { getCurrentUnixTime } from './utils/dateUtils';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
 
 const autobump = async () => {
   loadEnv();
-  logger.info(`AUTOBUMPING THREADS. TIMESTAMP: ${getUnixTime(new Date())}`);
+  logger.info('AUTOBUMPING THREADS');
 
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
-    logger.error(`[autobump]: Cannot retrieve autobump thread lists. Timestamp: ${getCurrentUnixTime()}`);
+    logger.error('[autobump]: Cannot retrieve autobump thread lists');
     process.exit(1);
   }
 
   const data = settings.unwrap();
   if (data.length === 0) {
-    logger.info(`[autobump]: No autobump threads settings found. Timestamp: ${getCurrentUnixTime()}`);
+    logger.info('[autobump]: No autobump threads settings found');
     process.exit(0);
   }
 
@@ -30,7 +28,7 @@ const autobump = async () => {
     async (accumulator, { guildId, autobumpThreads }) => {
       const guild = client.guilds.cache.find((g) => g.available && g.id === guildId);
       if (!guild) {
-        logger.info(`[autobump]: Cannot find guild ${guildId} for autobump. Timestamp: ${getCurrentUnixTime()}`);
+        logger.info(`[autobump]: Cannot find guild ${guildId} for autobump`);
         return accumulator;
       }
 
@@ -47,7 +45,7 @@ const autobump = async () => {
     Promise.resolve([] as unknown[])
   );
 
-  logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}. Timestamp: ${getCurrentUnixTime()}`);
+  logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
   process.exit(0);
 };
 
