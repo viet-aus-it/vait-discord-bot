@@ -7,6 +7,7 @@ const weatherApi = wretch(WEATHER_URL);
 
 export const fetchWeather = async (where: string) => {
   const response = await weatherApi
+    .headers({ 'User-Agent': 'curl', 'Content-Type': 'text/plain' })
     .get(where + ARGUMENTS)
     .text()
     .catch((err) => {
