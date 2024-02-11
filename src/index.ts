@@ -20,18 +20,18 @@ const main = async () => {
   if (process.env.NODE_ENV === 'production') {
     // This should only be run once during the bot startup in production.
     // For development usage, please use `pnpm deploy:command`
-    logger.info('[main]: Deploying global commands');
-    const op = await Result.safe(
-      deployGlobalCommands(commandList, contextMenuCommandList, {
-        token,
-        clientId: client.user.id,
-      })
-    );
-    if (op.isErr()) {
-      logger.error('[main]: Cannot deploy global commands', op.unwrapErr());
-      process.exit(1);
-    }
-    logger.info('[main]: Successfully deployed global commands');
+    // logger.info('[main]: Deploying global commands');
+    // const op = await Result.safe(
+    //   deployGlobalCommands(commandList, contextMenuCommandList, {
+    //     token,
+    //     clientId: client.user.id,
+    //   })
+    // );
+    // if (op.isErr()) {
+    //   logger.error('[main]: Cannot deploy global commands', op.unwrapErr());
+    //   process.exit(1);
+    // }
+    // logger.info('[main]: Successfully deployed global commands');
   }
 
   const configs = getConfigs();
