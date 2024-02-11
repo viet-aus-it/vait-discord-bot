@@ -52,6 +52,8 @@ jobs:
     needs: build-discord-bot
     env:
       STAGE: ${{ inputs.stage }}
+    concurrency:
+      group: ${{ github.workflow }}-deploy-${{ inputs.stage }}
 
     steps:
       - name: SSH into Cloud Server and deploy
