@@ -5,7 +5,7 @@ FROM node:20.5-bullseye as build
 WORKDIR /app
 
 # Install global node modules: pnpm
-RUN npm install -g pnpm@8.6.0
+RUN npm install -g pnpm@8.15.1
 
 # Install Node modules
 COPY package.json pnpm-lock.yaml ./
