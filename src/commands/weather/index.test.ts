@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { weather } from '.';
+import { DEFAULT_LOCATION, weather } from '.';
 import { server } from '../../mocks/server';
 import { WEATHER_URL } from './fetchWeather';
 
@@ -19,7 +19,7 @@ describe('Weather test', () => {
         return HttpResponse.error();
       }
 
-      return HttpResponse.text(mockWeatherMessage);
+      return HttpResponse.text(location + mockWeatherMessage);
     });
     server.use(endpoint);
 
@@ -31,7 +31,7 @@ describe('Weather test', () => {
 
     await weather(mockInteraction);
     expect(mockInteraction.editReply).toHaveBeenCalledOnce();
-    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\n${mockWeatherMessage}\n\`\`\``);
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\nHanoi${mockWeatherMessage}\n\`\`\``);
   });
 
   it('Should run with default input if no input is given', async () => {
@@ -39,7 +39,15 @@ describe('Weather test', () => {
 
     await weather(mockInteraction);
     expect(mockInteraction.editReply).toHaveBeenCalledOnce();
-    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\n${mockWeatherMessage}\n\`\`\``);
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\n${DEFAULT_LOCATION}${mockWeatherMessage}\n\`\`\``);
+  });
+
+  it('Should construct the URL correctly if input has many words', async () => {
+    mockInteraction.options.getString.mockReturnValueOnce('Ho Chi Minh City');
+
+    await weather(mockInteraction);
+    expect(mockInteraction.editReply).toHaveBeenCalledOnce();
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\nHo+Chi+Minh+City${mockWeatherMessage}\n\`\`\``);
   });
 
   it('Should reply with error if given an error location', async () => {

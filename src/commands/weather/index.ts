@@ -5,7 +5,7 @@ import { logger } from '../../utils/logger';
 import { Command } from '../builder';
 import { fetchWeather } from './fetchWeather';
 
-const DEFAULT_LOCATION = 'Brisbane';
+export const DEFAULT_LOCATION = 'Brisbane';
 
 const data = new SlashCommandBuilder()
   .setName('weather')
