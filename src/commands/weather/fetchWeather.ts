@@ -11,7 +11,7 @@ export const fetchWeather = async (where: string) => {
     .get(where + ARGUMENTS)
     .text()
     .catch((err) => {
-      throw new Error(`ERROR IN FETCHING WEATHER: ERROR ${err.status}: ${err.response}`);
+      throw new Error(`ERROR IN FETCHING WEATHER: ERROR ${err.status}`, err);
     });
 
   return response;
