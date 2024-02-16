@@ -23,7 +23,6 @@ type ConfigSchema = z.infer<typeof configSchema>;
 
 declare global {
   namespace NodeJS {
-    // biome-ignore lint/suspicious/noEmptyInterface: We already know which types we need.
     interface ProcessEnv extends ConfigSchema {}
   }
 }
