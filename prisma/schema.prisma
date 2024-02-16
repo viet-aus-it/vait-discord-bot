@@ -4,7 +4,6 @@
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  // shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
@@ -36,7 +35,7 @@ model ReputationLog {
 model ReferralCode {
   id          String   @id @default(cuid())
   service     String
-  code        String
+  code        String   @unique
   expiry_date DateTime
 }
 

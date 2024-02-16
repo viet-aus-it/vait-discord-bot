@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { getPrismaClient } from '../../clients';
+import { logger } from '../../utils/logger';
 import { AutocompleteHandler, CommandHandler } from '../builder';
 import { parseDate } from './parseDate';
 import { searchServices, services } from './services';
@@ -22,10 +23,12 @@ export const autocomplete: AutocompleteHandler = async (interaction) => {
 
 export const execute: CommandHandler = async (interaction) => {
   const code = interaction.options.getString('link_or_code', true);
-
   const service = interaction.options.getString('service', true).toLowerCase();
+  logger.info(`[referral-new]: Adding new referral code for ${service} with code/link: ${code}`);
+
   const hasService = services.find((option) => option.toLowerCase() === service);
   if (!hasService) {
+    logger.info(`[referral-new]: No service named ${service}.`);
     await interaction.reply(`No service named ${service}, ask the admin to add it`);
     return;
   }
@@ -34,22 +37,32 @@ export const execute: CommandHandler = async (interaction) => {
   const [parseDateCase, parsedExpiryDate] = parseDate(expiredDate);
 
   if (parseDateCase === 'INVALID_DATE') {
+    logger.info(`[referral-new]: expiry_date is invalid date format input:${expiredDate}`);
     await interaction.reply('expiry_date is invalid date try format DD/MM/YYYY');
     return;
   }
   if (parseDateCase === 'EXPIRED_DATE') {
+    logger.info(`[referral-new]: expiry_date is already expired input:${expiredDate}`);
     await interaction.reply('expiry_date has already expired');
     return;
   }
 
   const prisma = getPrismaClient();
-  const newReferralCode = await prisma.referralCode.create({
-    data: {
-      service,
-      code,
-      expiry_date: parsedExpiryDate,
-    },
-  });
 
-  await interaction.reply(`new ${newReferralCode.code} in ${newReferralCode.service} expired on ${newReferralCode.expiry_date.toDateString()}`);
+  try {
+    const newReferralCode = await prisma.referralCode.create({
+      data: {
+        service,
+        code,
+        expiry_date: parsedExpiryDate,
+      },
+    });
+
+    await interaction.reply(`new ${newReferralCode.code} in ${newReferralCode.service} expired on ${newReferralCode.expiry_date.toDateString()}`);
+  } catch (error) {
+    logger.error('[referral-new]: Failed to add referral code.', error);
+    await interaction.reply(
+      'Failed to add referral code. This might be an error with the database, or the referral code already exists. Please try again later.'
+    );
+  }
 };
