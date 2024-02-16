@@ -5,7 +5,6 @@ import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
 import { getConfigs } from './config';
 import { processMessage } from './utils';
-import { getCurrentUnixTime } from './utils/dateUtils';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
 
