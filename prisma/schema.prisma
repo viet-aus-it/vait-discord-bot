@@ -20,6 +20,7 @@ model User {
   reputation Int             @default(0)
   thankTo    ReputationLog[] @relation("FromUser")
   thankBy    ReputationLog[] @relation("ToUser")
+  reminders  Reminder[]
 }
 
 model ReputationLog {
@@ -42,6 +43,7 @@ model ReferralCode {
 model Reminder {
   id          String @id @default(cuid())
   userId      String
+  owner       User   @relation(fields: [userId], references: [id])
   onTimestamp Int // Unix Timestamp
   message     String
   guildId     String
