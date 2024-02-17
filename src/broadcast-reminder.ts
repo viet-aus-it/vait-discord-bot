@@ -1,4 +1,3 @@
-import { getUnixTime } from 'date-fns';
 import { ChannelType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';

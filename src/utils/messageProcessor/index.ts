@@ -1,5 +1,4 @@
 import { Message } from 'discord.js';
-import { getCurrentUnixTime } from '../dateUtils';
 import { logger } from '../logger';
 
 type CommandPromise = Promise<any> | undefined;

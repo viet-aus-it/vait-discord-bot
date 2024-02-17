@@ -1,7 +1,5 @@
-import { getUnixTime } from 'date-fns';
 import { Result } from 'oxide.ts';
 import { cleanupExpiredCode } from './commands/referral/cleanupExpiredCode';
-import { getCurrentUnixTime } from './utils/dateUtils';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
 
