@@ -34,6 +34,7 @@ export default defineConfig({
     path.resolve(binPath, 'broadcast-reminder.ts'),
     path.resolve(binPath, 'autobump.ts'),
     path.resolve(binPath, 'cleanup-expired-referrals.ts'),
+    path.resolve(binPath, 'tracing.ts'),
   ],
   outDir: path.resolve(outputPath, 'server'),
   format: ['cjs', 'esm'],
