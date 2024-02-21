@@ -36,6 +36,7 @@ async function build() {
         path.resolve(binPath, 'broadcast-reminder.ts'),
         path.resolve(binPath, 'autobump.ts'),
         path.resolve(binPath, 'cleanup-expired-referrals.ts'),
+        path.resolve(binPath, 'tracing.ts'),
       ],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',
