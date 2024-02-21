@@ -1,6 +1,6 @@
+import path from 'node:path';
 import esbuild from 'esbuild';
 import { copy } from 'esbuild-plugin-copy';
-import path from 'node:path';
 import pkg from './package.json';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
@@ -21,13 +21,7 @@ const prismaClientPath = path.resolve(
   'client'
 );
 
-const cowPath = path.resolve(
-  __dirname,
-  'node_modules',
-  'cowsay',
-  'cows',
-  'default.cow'
-);
+const cowPath = path.resolve(__dirname, 'node_modules', 'cowsay', 'cows', 'default.cow');
 
 async function build() {
   try {
@@ -42,6 +36,7 @@ async function build() {
         path.resolve(srcPath, 'broadcast-reminder.ts'),
         path.resolve(srcPath, 'autobump.ts'),
         path.resolve(srcPath, 'cleanup-expired-referrals.ts'),
+        path.resolve(srcPath, 'tracing.ts'),
       ],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',
@@ -52,10 +47,7 @@ async function build() {
           verbose: true,
           assets: [
             {
-              from: [
-                path.join(prismaClientPath, 'libquery_engine-*'),
-                path.join(prismaClientPath, 'schema.prisma'),
-              ],
+              from: [path.join(prismaClientPath, 'libquery_engine-*'), path.join(prismaClientPath, 'schema.prisma')],
               to: ['.'],
             },
           ],
