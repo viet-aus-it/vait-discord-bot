@@ -1,8 +1,8 @@
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 
 export const addAutobumpThread = async (guildId: string, threadId: string) => {
-  const prisma = getPrismaClient();
-  const settings = await prisma.serverChannelsSettings.upsert({
+  const db = getDbClient();
+  const settings = await db.serverChannelsSettings.upsert({
     where: { guildId },
     update: {
       autobumpThreads: {
@@ -19,12 +19,12 @@ export const addAutobumpThread = async (guildId: string, threadId: string) => {
 };
 
 export const removeAutobumpThread = async (guildId: string, threadId: string) => {
-  const prisma = getPrismaClient();
-  const { autobumpThreads } = await prisma.serverChannelsSettings.findFirstOrThrow({
+  const db = getDbClient();
+  const { autobumpThreads } = await db.serverChannelsSettings.findFirstOrThrow({
     where: { guildId },
   });
 
-  const settings = await prisma.serverChannelsSettings.update({
+  const settings = await db.serverChannelsSettings.update({
     where: { guildId },
     data: {
       autobumpThreads: autobumpThreads.filter((t) => t !== threadId),
@@ -35,8 +35,8 @@ export const removeAutobumpThread = async (guildId: string, threadId: string) =>
 };
 
 export const listThreadsByGuild = async (guildId: string) => {
-  const prisma = getPrismaClient();
-  const settings = await prisma.serverChannelsSettings.findFirstOrThrow({
+  const db = getDbClient();
+  const settings = await db.serverChannelsSettings.findFirstOrThrow({
     where: { guildId },
   });
 
@@ -44,8 +44,8 @@ export const listThreadsByGuild = async (guildId: string) => {
 };
 
 export const listAllThreads = async () => {
-  const prisma = getPrismaClient();
-  const settings = await prisma.serverChannelsSettings.findMany({
+  const db = getDbClient();
+  const settings = await db.serverChannelsSettings.findMany({
     select: {
       guildId: true,
       autobumpThreads: true,

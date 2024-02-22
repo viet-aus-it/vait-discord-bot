@@ -1,5 +1,5 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 import { logger } from '../../utils/logger';
 import { AutocompleteHandler, CommandHandler } from '../builder';
 import { parseDate } from './parseDate';
@@ -47,10 +47,10 @@ export const execute: CommandHandler = async (interaction) => {
     return;
   }
 
-  const prisma = getPrismaClient();
+  const db = getDbClient();
 
   try {
-    const newReferralCode = await prisma.referralCode.create({
+    const newReferralCode = await db.referralCode.create({
       data: {
         service,
         code,

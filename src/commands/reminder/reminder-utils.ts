@@ -1,6 +1,6 @@
 import { Reminder } from '@prisma/client';
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 
 type SaveReminderInput = {
   userId: string;
@@ -14,8 +14,8 @@ export const saveReminder = async ({ userId, guildId, message, timestamp }: Save
     throw new Error('EXPIRED DATE');
   }
 
-  const prisma = getPrismaClient();
-  const reminder = await prisma.reminder.create({
+  const db = getDbClient();
+  const reminder = await db.reminder.create({
     data: {
       userId,
       guildId,
@@ -40,12 +40,12 @@ export const updateReminder = async ({ userId, guildId, reminderId, message, tim
     throw new Error('EXPIRED DATE');
   }
 
-  const prisma = getPrismaClient();
-  let reminder = await prisma.reminder.findFirstOrThrow({
+  const db = getDbClient();
+  let reminder = await db.reminder.findFirstOrThrow({
     where: { id: reminderId, userId, guildId },
   });
 
-  reminder = await prisma.reminder.update({
+  reminder = await db.reminder.update({
     where: {
       id: reminderId,
     },
@@ -59,8 +59,8 @@ export const updateReminder = async ({ userId, guildId, reminderId, message, tim
 };
 
 export const getUserReminders = async (userId: string, guildId: string) => {
-  const prisma = getPrismaClient();
-  const reminders = await prisma.reminder.findMany({
+  const db = getDbClient();
+  const reminders = await db.reminder.findMany({
     where: {
       userId,
       guildId,
@@ -79,8 +79,8 @@ type RemoveReminderInput = {
   reminderId: string;
 };
 export const removeReminder = async ({ userId, guildId, reminderId }: RemoveReminderInput) => {
-  const prisma = getPrismaClient();
-  await prisma.reminder.deleteMany({
+  const db = getDbClient();
+  await db.reminder.deleteMany({
     where: {
       id: reminderId,
       userId,
@@ -96,8 +96,8 @@ export const formatReminderMessage = ({ userId, message, onTimestamp }: Reminder
 };
 
 export const getReminderByTime = async (timestamp: number) => {
-  const prisma = getPrismaClient();
-  const reminders = await prisma.reminder.findMany({
+  const db = getDbClient();
+  const reminders = await db.reminder.findMany({
     where: {
       onTimestamp: {
         lte: timestamp,
@@ -109,8 +109,8 @@ export const getReminderByTime = async (timestamp: number) => {
 };
 
 export const removeReminders = async (reminders: Reminder[]) => {
-  const prisma = getPrismaClient();
-  await prisma.reminder.deleteMany({
+  const db = getDbClient();
+  await db.reminder.deleteMany({
     where: {
       id: {
         in: reminders.map((r) => r.id),

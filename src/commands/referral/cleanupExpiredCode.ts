@@ -1,9 +1,9 @@
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 
 export const cleanupExpiredCode = async () => {
-  const prisma = getPrismaClient();
+  const db = getDbClient();
   const currentDate = new Date();
-  return prisma.referralCode.deleteMany({
+  return db.referralCode.deleteMany({
     where: {
       expiry_date: {
         lt: currentDate,
