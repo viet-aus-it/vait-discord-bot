@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 vi.mock('../../clients');
-const mockGetPrismaClient = vi.mocked(getPrismaClient);
+const mockGetDbClient = vi.mocked(getDbClient);
 
 describe('getOrCreateUser', () => {
   it('should return user if user is existed', async () => {
@@ -12,7 +12,7 @@ describe('getOrCreateUser', () => {
         findUnique: () => ({ id: '1' }),
       },
     };
-    mockGetPrismaClient.mockReturnValueOnce(mockPrisma);
+    mockGetDbClient.mockReturnValueOnce(mockPrisma);
 
     const user = await getOrCreateUser('1');
     expect(user.id).toBe('1');
@@ -25,7 +25,7 @@ describe('getOrCreateUser', () => {
         create: () => ({ id: '1' }),
       },
     };
-    mockGetPrismaClient.mockReturnValueOnce(mockPrisma);
+    mockGetDbClient.mockReturnValueOnce(mockPrisma);
 
     const user = await getOrCreateUser('1');
     expect(user.id).toBe('1');
@@ -66,7 +66,7 @@ describe('updateRep', () => {
         },
       ],
     };
-    mockGetPrismaClient.mockReturnValueOnce(mockPrisma);
+    mockGetDbClient.mockReturnValueOnce(mockPrisma);
 
     const result = await updateRep({
       fromUserId: '2',

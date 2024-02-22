@@ -2,12 +2,12 @@ import { PrismaClient } from '@prisma/client';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 import { autocomplete, execute } from './referralNew';
 import { services } from './services';
 
 vi.mock('../../clients');
-const mockGetPrismaClient = vi.mocked(getPrismaClient);
+const mockGetDbClient = vi.mocked(getDbClient);
 
 const mockAutocompleteInteraction = mockDeep<AutocompleteInteraction>();
 const mockChatInputInteraction = mockDeep<ChatInputCommandInteraction>();
@@ -136,7 +136,7 @@ describe('execute', () => {
       code: data.code,
       expiry_date: new Date(data.expiry_date),
     });
-    mockGetPrismaClient.mockReturnValueOnce(mockPrismaClient);
+    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
 
     mockChatInputInteraction.options.getString.mockImplementation((name: string, required?: boolean) => {
       if (name === 'service') return data.service;

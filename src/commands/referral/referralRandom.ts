@@ -1,5 +1,5 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 import { getRandomIntInclusive } from '../../utils';
 import { AutocompleteHandler, CommandHandler } from '../builder';
 import { searchServices } from './services';
@@ -21,8 +21,8 @@ export const autocomplete: AutocompleteHandler = async (interaction) => {
 export const execute: CommandHandler = async (interaction) => {
   const service = interaction.options.getString('service', true)?.trim().toLowerCase() ?? '';
 
-  const prisma = getPrismaClient();
-  const referrals = await prisma.referralCode.findMany({
+  const db = getDbClient();
+  const referrals = await db.referralCode.findMany({
     where: {
       service: {
         contains: service,

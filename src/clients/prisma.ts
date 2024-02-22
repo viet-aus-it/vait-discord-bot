@@ -17,4 +17,4 @@ if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient();
 }
 
-export const getPrismaClient = () => prisma;
+export const getDbClient = () => prisma;

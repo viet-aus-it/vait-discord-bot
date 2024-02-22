@@ -1,14 +1,13 @@
-import { Prisma } from '@prisma/client';
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 
 const MAX_LEADERBOARD = 10;
 
 export const getOrCreateUser = async (userId: string) => {
-  const prisma = getPrismaClient();
+  const db = getDbClient();
 
-  let user = await prisma.user.findUnique({ where: { id: userId } });
+  let user = await db.user.findUnique({ where: { id: userId } });
   if (!user) {
-    user = await prisma.user.create({ data: { id: userId } });
+    user = await db.user.create({ data: { id: userId } });
   }
 
   return user;
@@ -28,16 +27,16 @@ interface IUpdateRep {
 }
 
 export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep) => {
-  const prisma = getPrismaClient();
+  const db = getDbClient();
 
-  const updatedUserPromise = prisma.user.update({
+  const updatedUserPromise = db.user.update({
     where: { id: toUserId },
     data: adjustment,
   });
 
-  const operation = getAdjustmentOperation(adjustment.reputation) as Prisma.JsonObject;
+  const operation = getAdjustmentOperation(adjustment.reputation);
 
-  const logPromise = prisma.reputationLog.create({
+  const logPromise = db.reputationLog.create({
     data: {
       fromUserId,
       toUserId,
@@ -45,15 +44,15 @@ export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep
     },
   });
 
-  const [updatedUser] = await prisma.$transaction([updatedUserPromise, logPromise]);
+  const [updatedUser] = await db.$transaction([updatedUserPromise, logPromise]);
 
   return updatedUser;
 };
 
 export const getTop10 = async () => {
-  const prisma = getPrismaClient();
+  const db = getDbClient();
 
-  return prisma.user.findMany({
+  return db.user.findMany({
     orderBy: [
       {
         reputation: 'desc',

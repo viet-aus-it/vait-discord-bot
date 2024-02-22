@@ -2,11 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
-import { getPrismaClient } from '../../clients';
+import { getDbClient } from '../../clients';
 import { autocomplete, execute } from './referralRandom';
 
 vi.mock('../../clients');
-const mockGetPrismaClient = vi.mocked(getPrismaClient);
+const mockGetDbClient = vi.mocked(getDbClient);
 
 const mockAutocompleteInteraction = mockDeep<AutocompleteInteraction>();
 const mockChatInputInteraction = mockDeep<ChatInputCommandInteraction>();
@@ -79,7 +79,7 @@ describe('execute', () => {
       where: { service: { contains: string } };
     }>();
     mockPrismaClient.referralCode.findMany.mockResolvedValueOnce([]);
-    mockGetPrismaClient.mockReturnValueOnce(mockPrismaClient);
+    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
     mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
     const replyInput = captor<string>();
 
@@ -107,7 +107,7 @@ describe('execute', () => {
         service,
       },
     ]);
-    mockGetPrismaClient.mockReturnValueOnce(mockPrismaClient);
+    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
     mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
     const replyInput = captor<string>();
 
