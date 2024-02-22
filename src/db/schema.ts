@@ -38,7 +38,7 @@ export const serverChannelsSettings = pgTable(
   {
     guildId: text('guildId').notNull(),
     reminderChannel: text('reminderChannel'),
-    autobumpThreads: text('autobumpThreads').default('[]').array(),
+    autobumpThreads: text('autobumpThreads').array().default([]),
   },
   (table) => {
     return {

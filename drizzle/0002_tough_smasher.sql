@@ -1,0 +1,1 @@
+ALTER TABLE "ServerChannelsSettings" ALTER COLUMN "autobumpThreads" SET DEFAULT ;

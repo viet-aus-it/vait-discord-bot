@@ -1,0 +1,269 @@
+{
+  "id": "ad04d67b-577f-4c2e-87d7-d037c1cb844d",
+  "prevId": "444fb340-0597-4283-ae53-621aca81cf87",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "ReferralCode": {
+      "name": "ReferralCode",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "service": {
+          "name": "service",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expiry_date": {
+          "name": "expiry_date",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "ReferralCode_code_key": {
+          "name": "ReferralCode_code_key",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "Reminder": {
+      "name": "Reminder",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "onTimestamp": {
+          "name": "onTimestamp",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "guildId": {
+          "name": "guildId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "Reminder_id_idx": {
+          "name": "Reminder_id_idx",
+          "columns": [
+            "id"
+          ],
+          "isUnique": false
+        },
+        "Reminder_userId_idx": {
+          "name": "Reminder_userId_idx",
+          "columns": [
+            "userId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "Reminder_userId_User_id_fk": {
+          "name": "Reminder_userId_User_id_fk",
+          "tableFrom": "Reminder",
+          "tableTo": "User",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "ReputationLog": {
+      "name": "ReputationLog",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "fromUserId": {
+          "name": "fromUserId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "toUserId": {
+          "name": "toUserId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "operation": {
+          "name": "operation",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::jsonb"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "ReputationLog_fromUserId_User_id_fk": {
+          "name": "ReputationLog_fromUserId_User_id_fk",
+          "tableFrom": "ReputationLog",
+          "tableTo": "User",
+          "columnsFrom": [
+            "fromUserId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        },
+        "ReputationLog_toUserId_User_id_fk": {
+          "name": "ReputationLog_toUserId_User_id_fk",
+          "tableFrom": "ReputationLog",
+          "tableTo": "User",
+          "columnsFrom": [
+            "toUserId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "ServerChannelsSettings": {
+      "name": "ServerChannelsSettings",
+      "schema": "",
+      "columns": {
+        "guildId": {
+          "name": "guildId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reminderChannel": {
+          "name": "reminderChannel",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "autobumpThreads": {
+          "name": "autobumpThreads",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false,
+          "default": []
+        }
+      },
+      "indexes": {
+        "ServerChannelsSettings_guildId_key": {
+          "name": "ServerChannelsSettings_guildId_key",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": true
+        },
+        "ServerChannelsSettings_reminderChannel_key": {
+          "name": "ServerChannelsSettings_reminderChannel_key",
+          "columns": [
+            "reminderChannel"
+          ],
+          "isUnique": true
+        },
+        "ServerChannelsSettings_guildId_idx": {
+          "name": "ServerChannelsSettings_guildId_idx",
+          "columns": [
+            "guildId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "User": {
+      "name": "User",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "reputation": {
+          "name": "reputation",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
