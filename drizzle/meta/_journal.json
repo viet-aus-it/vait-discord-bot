@@ -8,6 +8,13 @@
       "when": 1708585402714,
       "tag": "0000_smiling_star_brand",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1708604696813,
+      "tag": "0001_next_tinkerer",
+      "breakpoints": true
     }
   ]
 }
