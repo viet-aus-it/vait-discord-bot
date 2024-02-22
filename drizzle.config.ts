@@ -4,7 +4,7 @@ import { loadEnv } from './src/utils/loadEnv';
 loadEnv();
 
 export default defineConfig({
-  schema: './src/schema.ts',
+  schema: './src/db/schema.ts',
   out: './drizzle',
   driver: 'pg',
   dbCredentials: {

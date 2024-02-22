@@ -31,3 +31,4 @@ yarn-error.log*
 
 # Local db for testing
 db
+!src/db
