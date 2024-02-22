@@ -1,5 +1,4 @@
-import { sql } from 'drizzle-orm';
-import { foreignKey, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core';
+import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('User', {
   id: text('id').primaryKey().notNull(),
