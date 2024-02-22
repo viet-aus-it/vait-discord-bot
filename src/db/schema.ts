@@ -1,3 +1,4 @@
+import { createId as createCuid } from '@paralleldrive/cuid2';
 import { index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('User', {
@@ -6,7 +7,7 @@ export const user = pgTable('User', {
 });
 
 export const reputationLog = pgTable('ReputationLog', {
-  id: text('id').primaryKey().notNull(),
+  id: text('id').primaryKey().notNull().$defaultFn(createCuid),
   fromUserId: text('fromUserId')
     .notNull()
     .references(() => user.id, { onDelete: 'restrict', onUpdate: 'cascade' }),
@@ -20,7 +21,7 @@ export const reputationLog = pgTable('ReputationLog', {
 export const referralCode = pgTable(
   'ReferralCode',
   {
-    id: text('id').primaryKey().notNull(),
+    id: text('id').primaryKey().notNull().$defaultFn(createCuid),
     service: text('service').notNull(),
     code: text('code').notNull(),
     expiryDate: timestamp('expiry_date', { precision: 3, mode: 'string' }).notNull(),
@@ -37,7 +38,7 @@ export const serverChannelsSettings = pgTable(
   {
     guildId: text('guildId').notNull(),
     reminderChannel: text('reminderChannel'),
-    autobumpThreads: text('autobumpThreads').default('RRAY[').array(),
+    autobumpThreads: text('autobumpThreads').default('[]').array(),
   },
   (table) => {
     return {
@@ -51,7 +52,7 @@ export const serverChannelsSettings = pgTable(
 export const reminder = pgTable(
   'Reminder',
   {
-    id: text('id').primaryKey().notNull(),
+    id: text('id').primaryKey().notNull().$defaultFn(createCuid),
     userId: text('userId')
       .notNull()
       .references(() => user.id, { onDelete: 'restrict', onUpdate: 'cascade' }),
