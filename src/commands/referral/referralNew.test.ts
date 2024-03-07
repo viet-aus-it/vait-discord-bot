@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, ChatInputCommandInteraction, Guild } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getDbClient } from '../../clients';
@@ -124,6 +124,8 @@ describe('execute', () => {
       service: services[0],
       code: 'SomeCodeHere',
       expiry_date: `04/04/${new Date().getFullYear() + 1}`,
+      userId: '1234',
+      guildId: '12345',
     };
 
     const mockPrismaClient = mockDeep<PrismaClient>();
@@ -135,9 +137,13 @@ describe('execute', () => {
       service: data.service,
       code: data.code,
       expiry_date: new Date(data.expiry_date),
+      userId: data.userId,
+      guildId: data.guildId,
     });
     mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
 
+    mockChatInputInteraction.user.id = data.userId;
+    (mockChatInputInteraction.guild as Guild).id = data.guildId;
     mockChatInputInteraction.options.getString.mockImplementation((name: string, required?: boolean) => {
       if (name === 'service') return data.service;
       if (name === 'link_or_code') return data.code;
@@ -156,6 +162,6 @@ describe('execute', () => {
     expect(input.data.expiry_date.toISOString()).toBe(new Date(data.expiry_date).toISOString());
 
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toContain(`new SomeCodeHere in ${services[0]}`);
+    expect(replyInput.value).toContain(`just added referral code SomeCodeHere in ${services[0]}`);
   });
 });

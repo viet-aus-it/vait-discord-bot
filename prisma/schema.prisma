@@ -16,10 +16,11 @@ generator client {
 model User {
   id String @id
 
-  reputation Int             @default(0)
-  thankTo    ReputationLog[] @relation("FromUser")
-  thankBy    ReputationLog[] @relation("ToUser")
-  reminders  Reminder[]
+  reputation   Int             @default(0)
+  thankTo      ReputationLog[] @relation("FromUser")
+  thankBy      ReputationLog[] @relation("ToUser")
+  reminders    Reminder[]
+  ReferralCode ReferralCode[]
 }
 
 model ReputationLog {
@@ -35,8 +36,11 @@ model ReputationLog {
 model ReferralCode {
   id          String   @id @default(cuid())
   service     String
-  code        String   @unique
+  code        String
   expiry_date DateTime
+  guildId     String
+  userId      String
+  owner       User     @relation(fields: [userId], references: [id])
 }
 
 model Reminder {

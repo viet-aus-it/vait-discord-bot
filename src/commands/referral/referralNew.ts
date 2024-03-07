@@ -1,4 +1,5 @@
-import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { getUnixTime } from 'date-fns';
+import { Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { getDbClient } from '../../clients';
 import { logger } from '../../utils/logger';
 import { AutocompleteHandler, CommandHandler } from '../builder';
@@ -48,6 +49,9 @@ export const execute: CommandHandler = async (interaction) => {
   }
 
   const db = getDbClient();
+  const guildId = (interaction.guild as Guild).id;
+  const userId = interaction.user.id;
+  const nickname = interaction.user.displayName;
 
   try {
     const newReferralCode = await db.referralCode.create({
@@ -55,10 +59,14 @@ export const execute: CommandHandler = async (interaction) => {
         service,
         code,
         expiry_date: parsedExpiryDate,
+        userId,
+        guildId,
       },
     });
 
-    await interaction.reply(`new ${newReferralCode.code} in ${newReferralCode.service} expired on ${newReferralCode.expiry_date.toDateString()}`);
+    await interaction.reply(
+      `${nickname} just added referral code ${newReferralCode.code} in ${newReferralCode.service} expired on <t:${getUnixTime(newReferralCode.expiry_date)}:D>`
+    );
   } catch (error) {
     logger.error('[referral-new]: Failed to add referral code.', error);
     await interaction.reply(

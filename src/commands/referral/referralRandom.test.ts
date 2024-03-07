@@ -105,6 +105,8 @@ describe('execute', () => {
         code,
         expiry_date: expiryDate,
         service,
+        userId: '12345',
+        guildId: '12345',
       },
     ]);
     mockGetDbClient.mockReturnValueOnce(mockPrismaClient);

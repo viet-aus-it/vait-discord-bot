@@ -1,4 +1,4 @@
-import { SlashCommandSubcommandBuilder } from 'discord.js';
+import { Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { getDbClient } from '../../clients';
 import { getRandomIntInclusive } from '../../utils';
 import { AutocompleteHandler, CommandHandler } from '../builder';
@@ -20,6 +20,7 @@ export const autocomplete: AutocompleteHandler = async (interaction) => {
 
 export const execute: CommandHandler = async (interaction) => {
   const service = interaction.options.getString('service', true)?.trim().toLowerCase() ?? '';
+  const guildId = (interaction.guild as Guild).id;
 
   const db = getDbClient();
   const referrals = await db.referralCode.findMany({
