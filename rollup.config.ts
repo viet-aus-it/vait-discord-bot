@@ -1,6 +1,4 @@
 import path from 'node:path';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import swc from '@rollup/plugin-swc';
 import { defineConfig } from 'rollup';
 import copy from 'rollup-plugin-copy';
 import esbuild from 'rollup-plugin-esbuild';
