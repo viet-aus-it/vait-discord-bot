@@ -1,11 +1,11 @@
 ################
 # Build assets #
 ################
-FROM node:20.5-bullseye as build
+FROM node:20.10 as build
 WORKDIR /app
 
 # Install global node modules: pnpm
-RUN npm install -g pnpm@8.15.1
+RUN npm install -g pnpm@8.15
 
 # Install Node modules
 COPY package.json pnpm-lock.yaml ./
@@ -23,8 +23,15 @@ RUN pnpm build
 ####################
 # Production image #
 ####################
-FROM node:20.5-bullseye-slim as production
+FROM node:20.10-slim as production
 WORKDIR /app
+
+RUN set -xe && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends openssl && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /usr/share/man/* /usr/share/doc/*
 
 COPY --chown=node:node --from=build /app/build build
 
