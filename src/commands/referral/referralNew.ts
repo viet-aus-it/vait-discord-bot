@@ -69,6 +69,19 @@ export const execute: CommandHandler = async (interaction) => {
   const userId = interaction.user.id;
   const nickname = interaction.user.displayName;
 
+  const existingReferralCode = await db.referralCode.findFirst({
+    where: {
+      service,
+      userId,
+      guildId,
+    },
+  });
+  if (existingReferralCode) {
+    logger.error(`[referral-new]: Referral code for ${service} by ${nickname} already exists.`);
+    await interaction.reply(`You have already entered the referral code for ${service}.`);
+    return;
+  }
+
   try {
     const user = await getOrCreateUser(userId);
     const newReferralCode = await db.referralCode.create({

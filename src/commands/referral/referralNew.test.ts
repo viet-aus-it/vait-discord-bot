@@ -124,6 +124,41 @@ describe('execute', () => {
     expect(mockChatInputInteraction.reply).toBeCalledWith('expiry_date has already expired');
   });
 
+  it('should block adding referral code if the user already has one', async () => {
+    const data = {
+      service: services[0],
+      code: 'SomeCodeHere',
+      expiry_date: `04/04/${new Date().getFullYear() + 1}`,
+      userId: '1234',
+      guildId: '1234',
+    };
+
+    const mockPrismaClient = mockDeep<PrismaClient>();
+    mockPrismaClient.referralCode.findFirst.mockResolvedValueOnce({
+      id: '12345',
+      service: data.service,
+      code: data.code,
+      expiry_date: new Date(data.expiry_date),
+      userId: data.userId,
+      guildId: data.guildId,
+    });
+    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
+    mockGetOrCreateUser.mockResolvedValueOnce({ id: data.userId, reputation: 0 });
+
+    mockChatInputInteraction.user.id = data.userId;
+    mockChatInputInteraction.options.getString.mockImplementation((name: string, required?: boolean) => {
+      if (name === 'service') return data.service;
+      if (name === 'link_or_code') return data.code;
+      if (name === 'expiry_date') return data.expiry_date;
+
+      return null;
+    });
+
+    await execute(mockChatInputInteraction);
+
+    expect(mockChatInputInteraction.reply).toBeCalledWith(`You have already entered the referral code for ${services[0]}.`);
+  });
+
   it('should create a new referral code', async () => {
     const data = {
       service: services[0],
@@ -190,7 +225,7 @@ describe('execute', () => {
       code: data.code,
       expiry_date: data.expiry_date,
       userId: data.userId,
-      guildId: data.guildId
+      guildId: data.guildId,
     });
     mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
 
