@@ -4,7 +4,6 @@ import esbuild from 'rollup-plugin-esbuild';
 import { nodeExternals } from 'rollup-plugin-node-externals';
 
 const srcPath = path.resolve('src');
-
 const outputPath = path.resolve('build');
 
 export default defineConfig({
@@ -19,6 +18,14 @@ export default defineConfig({
     format: 'esm',
     entryFileNames: '[name].mjs',
     chunkFileNames: '[name]-[hash].mjs',
+    sourcemap: true,
   },
-  plugins: [nodeExternals(), esbuild()],
+  plugins: [
+    nodeExternals(),
+    esbuild({
+      platform: 'node',
+      target: 'node20',
+      minify: true,
+    }),
+  ],
 });
