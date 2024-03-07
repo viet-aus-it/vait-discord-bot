@@ -1,6 +1,7 @@
 import { Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { getDbClient } from '../../clients';
 import { getRandomIntInclusive } from '../../utils';
+import { logger } from '../../utils/logger';
 import { AutocompleteHandler, CommandHandler } from '../builder';
 import { searchServices } from './services';
 
@@ -31,14 +32,25 @@ export const execute: CommandHandler = async (interaction) => {
       expiry_date: {
         gte: new Date(),
       },
+      guildId,
     },
   });
 
   if (referrals.length === 0) {
-    await interaction.reply(`There is no code for ${service} service`);
+    logger.info(`[referral-random]: There is no code for ${service} service in the system.`);
+    await interaction.reply(`There is no code for ${service} service in the system.`);
     return;
   }
 
   const referral = referrals[getRandomIntInclusive(0, referrals.length - 1)];
-  await interaction.reply(`Service ${service}: ${referral.code}`);
+  logger.info(`[referral-random]: Found referral code for ${service}, code: ${referral.code}, by user ${referral.userId}`);
+
+  let displayName = referral.userId;
+  const member = await interaction.guild?.members.fetch(referral.userId);
+  if (member) {
+    logger.info(`[referral-random]: Found member ${member.displayName} from userId ${referral.userId}`);
+    displayName = member.displayName;
+  }
+
+  await interaction.reply(`Service ${service}: ${referral.code} added by user ${displayName}`);
 };
