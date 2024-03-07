@@ -1,10 +1,13 @@
-import { getUnixTime } from 'date-fns';
+import { addDays, getUnixTime } from 'date-fns';
 import { Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { getDbClient } from '../../clients';
 import { logger } from '../../utils/logger';
 import { AutocompleteHandler, CommandHandler } from '../builder';
+import { getOrCreateUser } from '../reputation/_helpers';
 import { parseDate } from './parseDate';
 import { searchServices, services } from './services';
+
+export const DEFAULT_EXPIRY_DAYS_FROM_NOW = 30;
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('new')
@@ -13,7 +16,12 @@ export const data = new SlashCommandSubcommandBuilder()
     option.setName('service').setDescription('service to refer(type more than 3 characters to see suggestion)').setRequired(true).setAutocomplete(true)
   )
   .addStringOption((option) => option.setName('link_or_code').setDescription('referral link or code').setRequired(true))
-  .addStringOption((option) => option.setName('expiry_date').setDescription('when the code/link expired (DD/MM//YYYY)').setRequired(true));
+  .addStringOption((option) =>
+    option
+      .setName('expiry_date')
+      .setDescription(`when the code/link expired (DD/MM//YYYY). By default, it's ${DEFAULT_EXPIRY_DAYS_FROM_NOW} days from now.`)
+      .setRequired(false)
+  );
 
 export const autocomplete: AutocompleteHandler = async (interaction) => {
   const searchTerm = interaction.options.getString('service', true);
@@ -34,18 +42,26 @@ export const execute: CommandHandler = async (interaction) => {
     return;
   }
 
-  const expiredDate = interaction.options.getString('expiry_date', true);
-  const [parseDateCase, parsedExpiryDate] = parseDate(expiredDate);
+  const expiryDateInput = interaction.options.getString('expiry_date', false);
+  let expiryDate: Date;
 
-  if (parseDateCase === 'INVALID_DATE') {
-    logger.info(`[referral-new]: expiry_date is invalid date format input:${expiredDate}`);
-    await interaction.reply('expiry_date is invalid date try format DD/MM/YYYY');
-    return;
-  }
-  if (parseDateCase === 'EXPIRED_DATE') {
-    logger.info(`[referral-new]: expiry_date is already expired input:${expiredDate}`);
-    await interaction.reply('expiry_date has already expired');
-    return;
+  if (expiryDateInput) {
+    const [parseDateCase, parsedExpiryDate] = parseDate(expiryDateInput);
+
+    if (parseDateCase === 'INVALID_DATE') {
+      logger.info(`[referral-new]: expiry_date is invalid date format input:${expiryDateInput}`);
+      await interaction.reply('expiry_date is invalid date try format DD/MM/YYYY');
+      return;
+    }
+    if (parseDateCase === 'EXPIRED_DATE') {
+      logger.info(`[referral-new]: expiry_date is already expired input:${expiryDateInput}`);
+      await interaction.reply('expiry_date has already expired');
+      return;
+    }
+
+    expiryDate = parsedExpiryDate;
+  } else {
+    expiryDate = addDays(new Date(), 30);
   }
 
   const db = getDbClient();
@@ -54,12 +70,13 @@ export const execute: CommandHandler = async (interaction) => {
   const nickname = interaction.user.displayName;
 
   try {
+    const user = await getOrCreateUser(userId);
     const newReferralCode = await db.referralCode.create({
       data: {
         service,
         code,
-        expiry_date: parsedExpiryDate,
-        userId,
+        expiry_date: expiryDate,
+        userId: user.id,
         guildId,
       },
     });
