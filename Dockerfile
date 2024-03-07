@@ -26,6 +26,13 @@ RUN pnpm build
 FROM node:20.10-slim as production
 WORKDIR /app
 
+RUN set -xe && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends openssl && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /usr/share/man/* /usr/share/doc/*
+
 COPY --chown=node:node --from=build /app/build build
 
 USER node
