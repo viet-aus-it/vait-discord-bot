@@ -20,8 +20,7 @@
   "scripts": {
     "prepare": "husky",
     "typecheck": "tsc",
-    "build:esbuild": "rimraf build && tsx esbuild.config.ts",
-    "build:rollup": "rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
+    "build:rollup": "rimraf build && rollup -c rollup.config.ts --configPlugin @rollup/plugin-typescript",
     "build": "pnpm run build:rollup",
     "build:typecheck": "pnpm typecheck && pnpm build",
     "lint": "biome check ./src *.ts",
@@ -70,7 +69,6 @@
     "@vitest/coverage-v8": "^1.3.1",
     "@vitest/ui": "^1.3.1",
     "esbuild": "^0.20.1",
-    "esbuild-plugin-copy": "^2.1.1",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "msw": "^2.2.2",
