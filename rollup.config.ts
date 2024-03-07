@@ -18,6 +18,7 @@ export default defineConfig({
     dir: path.resolve(outputPath),
     format: 'esm',
     entryFileNames: '[name].mjs',
+    chunkFileNames: '[name]-[hash].mjs',
   },
   plugins: [nodeExternals(), esbuild()],
 });
