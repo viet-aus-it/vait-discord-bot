@@ -39,10 +39,8 @@ export default defineConfig({
     entryFileNames: '[name].mjs',
   },
   plugins: [
-    nodeExternals({
-      deps: false,
-    }),
-    swc(),
+    nodeExternals(),
+    esbuild(),
     copy({
       verbose: true,
       targets: [
