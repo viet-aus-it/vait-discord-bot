@@ -1,15 +1,15 @@
-import { PrismaClient } from '@prisma/client';
 import { addDays } from 'date-fns';
 import { AutocompleteInteraction, ChatInputCommandInteraction, Guild } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
-import { getDbClient } from '../../clients';
 import { getOrCreateUser } from '../reputation/_helpers';
 import { DEFAULT_EXPIRY_DAYS_FROM_NOW, autocomplete, execute } from './referralNew';
+import { CreateReferralInput, createReferralCode, findExistingReferralCode } from './referralUtils';
 import { services } from './services';
 
-vi.mock('../../clients');
-const mockGetDbClient = vi.mocked(getDbClient);
+vi.mock('./referralUtils');
+const mockFindExistingReferralCode = vi.mocked(findExistingReferralCode);
+const mockCreateReferralCode = vi.mocked(createReferralCode);
 
 vi.mock('../reputation/_helpers');
 const mockGetOrCreateUser = vi.mocked(getOrCreateUser);
@@ -133,8 +133,7 @@ describe('execute', () => {
       guildId: '1234',
     };
 
-    const mockPrismaClient = mockDeep<PrismaClient>();
-    mockPrismaClient.referralCode.findFirst.mockResolvedValueOnce({
+    mockFindExistingReferralCode.mockResolvedValueOnce({
       id: '12345',
       service: data.service,
       code: data.code,
@@ -142,7 +141,6 @@ describe('execute', () => {
       userId: data.userId,
       guildId: data.guildId,
     });
-    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
     mockGetOrCreateUser.mockResolvedValueOnce({ id: data.userId, reputation: 0 });
 
     mockChatInputInteraction.user.id = data.userId;
@@ -168,11 +166,9 @@ describe('execute', () => {
       guildId: '12345',
     };
 
-    const mockPrismaClient = mockDeep<PrismaClient>();
-    const mockReferralInput = captor<{
-      data: { service: string; code: string; expiry_date: Date };
-    }>();
-    mockPrismaClient.referralCode.create.mockResolvedValueOnce({
+    const mockReferralInput = captor<CreateReferralInput>();
+    mockFindExistingReferralCode.mockResolvedValueOnce(null);
+    mockCreateReferralCode.mockResolvedValueOnce({
       id: '12345',
       service: data.service,
       code: data.code,
@@ -180,7 +176,6 @@ describe('execute', () => {
       userId: data.userId,
       guildId: data.guildId,
     });
-    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
     mockGetOrCreateUser.mockResolvedValueOnce({ id: data.userId, reputation: 0 });
 
     mockChatInputInteraction.user.id = data.userId;
@@ -196,11 +191,11 @@ describe('execute', () => {
 
     await execute(mockChatInputInteraction);
 
-    expect(mockPrismaClient.referralCode.create).toBeCalledWith(mockReferralInput);
+    expect(mockCreateReferralCode).toBeCalledWith(mockReferralInput);
     const input = mockReferralInput.value;
-    expect(input.data.service).toBe(data.service);
-    expect(input.data.code).toBe(data.code);
-    expect(input.data.expiry_date.toISOString()).toBe(new Date(data.expiry_date).toISOString());
+    expect(input.service).toBe(data.service);
+    expect(input.code).toBe(data.code);
+    expect(input.expiryDate.toISOString()).toBe(new Date(data.expiry_date).toISOString());
 
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
     expect(replyInput.value).toContain(`just added referral code SomeCodeHere in ${services[0]}`);
@@ -215,11 +210,9 @@ describe('execute', () => {
       expiry_date: addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW),
     };
 
-    const mockPrismaClient = mockDeep<PrismaClient>();
-    const mockReferralInput = captor<{
-      data: { service: string; code: string; expiry_date: Date };
-    }>();
-    mockPrismaClient.referralCode.create.mockResolvedValueOnce({
+    const mockReferralInput = captor<CreateReferralInput>();
+    mockFindExistingReferralCode.mockResolvedValueOnce(null);
+    mockCreateReferralCode.mockResolvedValueOnce({
       id: '12345',
       service: data.service,
       code: data.code,
@@ -227,7 +220,6 @@ describe('execute', () => {
       userId: data.userId,
       guildId: data.guildId,
     });
-    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
 
     mockChatInputInteraction.user.id = data.userId;
     (mockChatInputInteraction.guild as Guild).id = data.guildId;
@@ -242,11 +234,11 @@ describe('execute', () => {
 
     await execute(mockChatInputInteraction);
 
-    expect(mockPrismaClient.referralCode.create).toBeCalledWith(mockReferralInput);
+    expect(mockCreateReferralCode).toBeCalledWith(mockReferralInput);
     const input = mockReferralInput.value;
-    expect(input.data.service).toBe(data.service);
-    expect(input.data.code).toBe(data.code);
-    expect(input.data.expiry_date.toISOString()).toBe(new Date(data.expiry_date).toISOString());
+    expect(input.service).toBe(data.service);
+    expect(input.code).toBe(data.code);
+    expect(input.expiryDate.toISOString()).toBe(new Date(data.expiry_date).toISOString());
 
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
     expect(replyInput.value).toContain(`just added referral code SomeCodeHere in ${services[0]}`);

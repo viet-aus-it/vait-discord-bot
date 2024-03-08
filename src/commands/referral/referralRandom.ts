@@ -1,8 +1,9 @@
 import { Guild, SlashCommandSubcommandBuilder } from 'discord.js';
-import { getDbClient } from '../../clients';
+import { Result } from 'oxide.ts';
 import { getRandomIntInclusive } from '../../utils';
 import { logger } from '../../utils/logger';
 import { AutocompleteHandler, CommandHandler } from '../builder';
+import { getAllReferralCodesForService } from './referralUtils';
 import { searchServices } from './services';
 
 export const data = new SlashCommandSubcommandBuilder()
@@ -23,19 +24,14 @@ export const execute: CommandHandler = async (interaction) => {
   const service = interaction.options.getString('service', true)?.trim().toLowerCase() ?? '';
   const guildId = (interaction.guild as Guild).id;
 
-  const db = getDbClient();
-  const referrals = await db.referralCode.findMany({
-    where: {
-      service: {
-        contains: service,
-      },
-      expiry_date: {
-        gte: new Date(),
-      },
-      guildId,
-    },
-  });
+  const op = await Result.safe(getAllReferralCodesForService({ guildId, service }));
+  if (op.isErr()) {
+    logger.error(`[referral-random]: Error getting referral codes for ${service} service`, op.unwrapErr());
+    await interaction.reply(`Error getting referral codes for ${service} service. Please try again later.`);
+    return;
+  }
 
+  const referrals = op.unwrap();
   if (referrals.length === 0) {
     logger.info(`[referral-random]: There is no code for ${service} service in the system.`);
     await interaction.reply(`There is no code for ${service} service in the system.`);
