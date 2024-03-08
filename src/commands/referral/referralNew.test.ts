@@ -79,6 +79,13 @@ describe('autocomplete', () => {
 describe('execute', () => {
   beforeEach(() => {
     mockReset(mockChatInputInteraction);
+    vi.useFakeTimers();
+    const date = new Date();
+    vi.setSystemTime(date);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should return no service error if service is not in services list', async () => {
