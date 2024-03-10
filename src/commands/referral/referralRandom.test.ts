@@ -1,16 +1,19 @@
 import { PrismaClient } from '@prisma/client';
-import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, ChatInputCommandInteraction, Collection, GuildMember } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getDbClient } from '../../clients';
 import { autocomplete, execute } from './referralRandom';
+import { GetAllReferralCodesForServiceInput, getAllReferralCodesForService } from './referralUtils';
 
 vi.mock('../../clients');
 const mockGetDbClient = vi.mocked(getDbClient);
 
+vi.mock('./referralUtils');
+const mockGetAllReferralCodesForService = vi.mocked(getAllReferralCodesForService);
+
 const mockAutocompleteInteraction = mockDeep<AutocompleteInteraction>();
 const mockChatInputInteraction = mockDeep<ChatInputCommandInteraction>();
-const mockPrismaClient = mockDeep<PrismaClient>();
 
 describe('autocomplete', () => {
   beforeEach(() => {
@@ -75,20 +78,17 @@ describe('execute', () => {
   it('should return found no code message when no code is found', async () => {
     const service = 'not existed service';
 
-    const mockReferralInput = captor<{
-      where: { service: { contains: string } };
-    }>();
-    mockPrismaClient.referralCode.findMany.mockResolvedValueOnce([]);
-    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
+    const mockReferralInput = captor<GetAllReferralCodesForServiceInput>();
+    mockGetAllReferralCodesForService.mockResolvedValueOnce([]);
     mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
     const replyInput = captor<string>();
 
     await execute(mockChatInputInteraction);
 
-    expect(mockPrismaClient.referralCode.findMany).toBeCalledWith(mockReferralInput);
-    expect(mockReferralInput.value.where.service.contains).toEqual(service);
+    expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
+    expect(mockReferralInput.value.service).toContain(service);
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toEqual(`There is no code for ${service.trim().toLowerCase()} service`);
+    expect(replyInput.value).toContain(`There is no code for ${service} service`);
   });
 
   it('should return code if found', async () => {
@@ -96,26 +96,55 @@ describe('execute', () => {
     const code = 'SomeCode';
     const expiryDate = new Date(`05/04/${new Date().getFullYear() + 1}`);
 
-    const mockReferralInput = captor<{
-      where: { service: { contains: string } };
-    }>();
-    mockPrismaClient.referralCode.findMany.mockResolvedValueOnce([
+    const mockReferralInput = captor<GetAllReferralCodesForServiceInput>();
+    mockGetAllReferralCodesForService.mockResolvedValueOnce([
       {
         id: '1',
         code,
         expiry_date: expiryDate,
         service,
+        userId: '12345',
+        guildId: '12345',
       },
     ]);
-    mockGetDbClient.mockReturnValueOnce(mockPrismaClient);
     mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
     const replyInput = captor<string>();
 
     await execute(mockChatInputInteraction);
 
-    expect(mockPrismaClient.referralCode.findMany).toBeCalledWith(mockReferralInput);
-    expect(mockReferralInput.value.where.service.contains).toEqual(service);
+    expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
+    expect(mockReferralInput.value.service).toContain(service);
     expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toEqual(`Service ${service.trim().toLowerCase()}: ${code}`);
+    expect(replyInput.value).toContain(`Service ${service}: ${code} added by user 12345`);
+  });
+
+  it('should return member name if found', async () => {
+    const service = 'some service';
+    const code = 'SomeCode';
+    const expiryDate = new Date(`05/04/${new Date().getFullYear() + 1}`);
+
+    const mockReferralInput = captor<GetAllReferralCodesForServiceInput>();
+    mockGetAllReferralCodesForService.mockResolvedValueOnce([
+      {
+        id: '1',
+        code,
+        expiry_date: expiryDate,
+        service,
+        userId: '1234',
+        guildId: '1234',
+      },
+    ]);
+    mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
+    const members = new Collection<string, GuildMember>();
+    members.set('1234', { displayName: 'SomeMember' } as GuildMember);
+    mockChatInputInteraction.guild?.members.fetch.mockResolvedValueOnce(members);
+    const replyInput = captor<string>();
+
+    await execute(mockChatInputInteraction);
+
+    expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
+    expect(mockReferralInput.value.service).toContain(service);
+    expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
+    expect(replyInput.value).toContain(`Service ${service.trim().toLowerCase()}: ${code}`);
   });
 });
