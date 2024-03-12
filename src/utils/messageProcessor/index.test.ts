@@ -23,7 +23,7 @@ describe('processMessage', () => {
           fn: km2,
         },
         {
-          matchers: ['nein'],
+          matchers: ['nein', 'sta', 'his', 'thin'],
           fn: noMatch,
         },
       ],
