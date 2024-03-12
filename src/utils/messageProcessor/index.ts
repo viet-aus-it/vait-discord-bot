@@ -1,6 +1,22 @@
 import { Message } from 'discord.js';
 import { logger } from '../logger';
 
+const keywordMatched = (content: string, keyword: string): boolean => {
+  const lowerCaseContent = content.toLowerCase();
+  const matchedIdx = lowerCaseContent.indexOf(keyword);
+
+  if (matchedIdx === -1) {
+    return false;
+  }
+
+  const prevIdx = matchedIdx - 1;
+  const prevIdxValid = prevIdx <= 0 || !lowerCaseContent[prevIdx].match(/[a-z]/);
+  const nextIdx = matchedIdx + keyword.length;
+  const nextIdxValid = nextIdx >= lowerCaseContent.length || !lowerCaseContent[nextIdx].match(/[a-z]/);
+
+  return prevIdxValid && nextIdxValid;
+};
+
 type CommandPromise = Promise<any> | undefined;
 
 type CommandPromises = Array<CommandPromise>;
@@ -14,7 +30,7 @@ type KeywordMatchCommands = Array<KeywordMatchCommand>;
 
 const processKeywordMatch = (message: Message, config: KeywordMatchCommands): CommandPromises => {
   return config.map((conf) => {
-    const hasKeyword = conf.matchers.some((keyword) => message.content.toLowerCase().includes(keyword));
+    const hasKeyword = conf.matchers.some((keyword) => keywordMatched(message.content, keyword));
 
     if (!hasKeyword) {
       return;
