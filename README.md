@@ -26,9 +26,20 @@ please visit [our Wiki page](https://github.com/viet-aus-it/vait-discord-bot/wik
 
 ## Requirements
 
-- [Node 20+](https://nodejs.org/en/)
-- [PNPM 8+](https://pnpm.io/)
-- Docker 20+, Docker Compose 1.28+
+- To run the bot process, you'll need:
+
+  - [Node 20+](https://nodejs.org/en/)
+  - [PNPM 8+](https://pnpm.io/)
+
+- To run the database, you'll need either:
+  - Docker 20+, Docker Compose 1.28+ - To run locally
+  - **OR** A Postgres DBaaS Account. Our preferred provider is [Neon](https://neon.tech). They have a free tier that is more than enough for development.
+
+> Note: From this point onwards, this document assumes you're running the
+> database locally with Docker. If you prefer using a DBaaS instead, please fill
+> in the `.env` file with the values you get from your DBaaS provider, and just
+> skip the steps of setting up a local DB container (e.g. any steps that requires
+> `docker compose up db`)
 
 ## Contributions
 
@@ -43,23 +54,23 @@ For Contributions, please have a look these document
 
 ### Creating your discord app and bot
 
-You will need to manually create a new discord application and a new bot. Please check out [Create a Bot Application](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-and [Adding a bot to your servers](https://discordjs.guide/preparations/adding-your-bot-to-servers.html) for more details, with 2 notes:
+- You will need to manually create a new discord application and a new bot. Please check out [Create a Bot Application](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
+  and [Adding a bot to your servers](https://discordjs.guide/preparations/adding-your-bot-to-servers.html) for more details, with 2 notes:
 
-1. To ensure that the bot can read the messages content, check the [Discord Developer Portal => Bot Section](https://discord.com/developers/applications)
-and ensure that `Privileged Gateway Intents => Message Content Intent` feature is enabled
-2. When adding the bot to your server using OAuth2 URL generator, under `BOT PERMISSIONS => GENERAL PERMISSIONS`, ensure that "Administrator" is enabled.
+  1. To ensure that the bot can read the messages content, check the [Discord Developer Portal => Bot Section](https://discord.com/developers/applications)
+     and ensure that `Privileged Gateway Intents => Message Content Intent` feature is enabled
+  2. When adding the bot to your server using OAuth2 URL generator, under `BOT PERMISSIONS => GENERAL PERMISSIONS`, ensure that "Administrator" is enabled.
 
-While creating the bot, please note down the bot `TOKEN`
+- While creating the bot, please note down the bot `TOKEN`
 
-On the application page, go to the General Information and note down the `PUBLIC KEY`
+- On the application page, go to the General Information and note down the `PUBLIC KEY`
 
-Click Oauth2 from the left panel, and note down your `CLIENT ID`
+- Click Oauth2 from the left panel, and note down your `CLIENT ID`
 
-Once you have invited the bot to your server, open Discord, go to Settings > Advanced and enable developer mode.
-Then, right-click on the server title and select "Copy ID" to get the `GUILD ID`.
+- Once you have invited the bot to your server, open Discord, go to Settings > Advanced and enable developer mode.
+  Then, right-click on the server title and select "Copy ID" to get the `GUILD ID`.
 
-Please make sure you have these information before proceeding to the next step.
+- Please make sure you have these information before proceeding to the next step.
 
 ### Creating the config files
 
@@ -67,7 +78,7 @@ Please make sure you have these information before proceeding to the next step.
 
 On most UNIX-like systems (macOS, Linux and WSL), you should be able to run the
 onboarding script. This script will create a local dev environment file, install
-dependencies, build the docker containers and set up a pre-commit git hook.
+dependencies, and setup a pre-commit git hook and a local database setup via Docker.
 
 ```shell
 ./scripts/onboarding.sh
@@ -99,7 +110,6 @@ cp .env.dist .env
       you like with these or just leave it with default value, since it only affects
       your local dev environment. But please keep it consistent since if you lose it,
       you will lose access to your local database and will need to re-create it.
-    - Ignore the `Shadow DB` section. This is production only.
 
 **Note:** **DO NOT** commit the `.env` file to Git.
 
@@ -152,22 +162,22 @@ pnpm deploy:command
 ```
 
 - **IMPORTANT:** You should only deploy your commands **ONCE ONLY** after
-there is a change in command registration (adding a new command, editing
-options of an existing one). Running this too many times in a short period
-of time will cause Discord API to **lock your bot out**.
+  there is a change in command registration (adding a new command, editing
+  options of an existing one). Running this too many times in a short period
+  of time will cause Discord API to **lock your bot out**.
 
 ### Troubleshooting
 
 - When deploy slash commands, if you got `Error: Cannot deploy commands`,
-it's normally because of your bot doesn't have permission to do so. You
-need to authorize your bot with scope: `bot` and `applications.commands`
-using `https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scope=bot%20applications.commands`
+  it's normally because of your bot doesn't have permission to do so. You
+  need to authorize your bot with scope: `bot` and `applications.commands`
+  using `https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scope=bot%20applications.commands`
 
 - Another reason might be because the bot authorisation failed. Please open the previously generated `.env` file
-and make sure your credentials are correct.
+  and make sure your credentials are correct.
 
 - If a bot cannot read the messages content, check the [Discord Developer Portal => Bot Section](https://discord.com/developers/applications)
-and see under `Privileged Gateway Intents => Message Content Intent` feature is enabled. This should be enabled.
+  and see under `Privileged Gateway Intents => Message Content Intent` feature is enabled. This should be enabled.
 
 ### Running lints and tests
 
