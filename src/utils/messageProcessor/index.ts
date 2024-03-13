@@ -1,20 +1,9 @@
 import { Message } from 'discord.js';
 import { logger } from '../logger';
 
-const keywordMatched = (content: string, keyword: string): boolean => {
-  const lowerCaseContent = content.toLowerCase();
-  const matchedIdx = lowerCaseContent.indexOf(keyword);
-
-  if (matchedIdx === -1) {
-    return false;
-  }
-
-  const prevIdx = matchedIdx - 1;
-  const prevIdxValid = prevIdx <= 0 || !lowerCaseContent[prevIdx].match(/[a-z]/);
-  const nextIdx = matchedIdx + keyword.length;
-  const nextIdxValid = nextIdx >= lowerCaseContent.length || !lowerCaseContent[nextIdx].match(/[a-z]/);
-
-  return prevIdxValid && nextIdxValid;
+const keywordMatched = (sentence: string, keyword: string): boolean => {
+  const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+  return regex.test(sentence);
 };
 
 type CommandPromise = Promise<any> | undefined;
