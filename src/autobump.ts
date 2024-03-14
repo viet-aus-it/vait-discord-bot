@@ -1,4 +1,4 @@
-import { ThreadChannel } from 'discord.js';
+import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import { listAllThreads } from './commands/autobump-threads/util';

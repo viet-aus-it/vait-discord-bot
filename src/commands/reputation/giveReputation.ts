@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, Message, SlashCommandSubcommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, type Message, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
-import { Subcommand } from '../builder';
+import type { Subcommand } from '../builder';
 import { getOrCreateUser, updateRep } from './_helpers';
 
 const plusRep = async (fromUserId: string, toUserId: string) => {

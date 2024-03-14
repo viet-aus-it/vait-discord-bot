@@ -1,6 +1,6 @@
-import { Message } from 'discord.js';
+import type { Message } from 'discord.js';
 import { describe, expect, it, vi } from 'vitest';
-import { CommandConfig, processMessage } from '.';
+import { type CommandConfig, processMessage } from '.';
 
 describe('processMessage', () => {
   beforeEach(() => {

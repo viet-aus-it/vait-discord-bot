@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
-import { Subcommand } from '../builder';
+import type { Subcommand } from '../builder';
 import { getTop10 } from './_helpers';
 
 const data = new SlashCommandSubcommandBuilder().setName('leaderboard').setDescription('Show rep leaderboard');

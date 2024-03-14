@@ -1,6 +1,6 @@
-import { ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
-import { Subcommand } from '../builder';
+import type { Subcommand } from '../builder';
 import { getOrCreateUser } from './_helpers';
 
 const data = new SlashCommandSubcommandBuilder().setName('check').setDescription('Check your current rep');

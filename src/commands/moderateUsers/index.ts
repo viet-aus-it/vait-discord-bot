@@ -1,7 +1,7 @@
-import { ChatInputCommandInteraction, GuildMember, SlashCommandBuilder, ThreadChannel } from 'discord.js';
+import { type ChatInputCommandInteraction, type GuildMember, SlashCommandBuilder, type ThreadChannel } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
 import { logger } from '../../utils/logger';
-import { Command } from '../builder';
+import type { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('removeuserbyrole')

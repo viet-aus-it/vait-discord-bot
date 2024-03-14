@@ -1,9 +1,9 @@
-import { GuildMember, SlashCommandBuilder } from 'discord.js';
+import { type GuildMember, SlashCommandBuilder } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
 import addThread from '../autobump-threads/add-thread';
 import listThreads from '../autobump-threads/list-threads';
 import removeThread from '../autobump-threads/remove-thread';
-import { Command, CommandHandler } from '../builder';
+import type { Command, CommandHandler } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('autobump-threads')

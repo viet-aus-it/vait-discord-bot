@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import type { Message } from 'discord.js';
 import { logger } from '../logger';
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {

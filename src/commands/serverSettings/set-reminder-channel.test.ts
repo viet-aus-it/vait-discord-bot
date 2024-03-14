@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { setReminderChannel } from './server-utils';

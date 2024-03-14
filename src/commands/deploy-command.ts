@@ -1,6 +1,6 @@
-import { REST, RequestData, RouteLike } from '@discordjs/rest';
+import { REST, type RequestData, type RouteLike } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
-import { Command, ContextMenuCommand } from './builder';
+import type { Command, ContextMenuCommand } from './builder';
 
 interface DiscordRequestConfig {
   token: string;

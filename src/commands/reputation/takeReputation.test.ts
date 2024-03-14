@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
+import type { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { isAdmin } from '../../utils';

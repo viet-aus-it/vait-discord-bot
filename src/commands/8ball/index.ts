@@ -1,7 +1,7 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { getRandomIntInclusive } from '../../utils';
 import { logger } from '../../utils/logger';
-import { Command } from '../builder';
+import type { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('8ball')

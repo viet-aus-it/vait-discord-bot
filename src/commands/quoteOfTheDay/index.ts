@@ -1,7 +1,7 @@
-import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import { Command } from '../builder';
+import type { Command } from '../builder';
 import { fetchQuote } from './fetchQuote';
 
 const data = new SlashCommandBuilder().setName('qotd').setDescription('Get Quote of the Day');

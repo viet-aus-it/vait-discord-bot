@@ -2,7 +2,7 @@ import { addSeconds, getUnixTime } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import parseDuration from 'parse-duration';
-import { CommandHandler, Subcommand } from '../builder';
+import type { CommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './reminder-utils';
 
 export const data = new SlashCommandSubcommandBuilder()

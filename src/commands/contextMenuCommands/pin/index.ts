@@ -1,6 +1,6 @@
-import { ApplicationCommandType, ContextMenuCommandBuilder, ContextMenuCommandInteraction } from 'discord.js';
+import { ApplicationCommandType, ContextMenuCommandBuilder, type ContextMenuCommandInteraction } from 'discord.js';
 import { logger } from '../../../utils/logger';
-import { ContextMenuCommand } from '../../builder';
+import type { ContextMenuCommand } from '../../builder';
 
 export const data = new ContextMenuCommandBuilder().setName('Pin').setType(ApplicationCommandType.Message);
 

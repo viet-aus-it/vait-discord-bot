@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { AutocompleteInteraction, ChatInputCommandInteraction, Collection, GuildMember } from 'discord.js';
+import { type AutocompleteInteraction, type ChatInputCommandInteraction, Collection, type GuildMember } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getDbClient } from '../../clients';
 import { autocomplete, execute } from './referralRandom';
-import { GetAllReferralCodesForServiceInput, getAllReferralCodesForService } from './referralUtils';
+import { type GetAllReferralCodesForServiceInput, getAllReferralCodesForService } from './referralUtils';
 
 vi.mock('../../clients');
 const mockGetDbClient = vi.mocked(getDbClient);

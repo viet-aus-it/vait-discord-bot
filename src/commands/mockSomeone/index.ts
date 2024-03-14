@@ -1,8 +1,8 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from 'discord.js';
+import { type ChatInputCommandInteraction, SlashCommandBuilder, type TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { fetchLastMessageBeforeId, getRandomBoolean, isBlank } from '../../utils';
 import { logger } from '../../utils/logger';
-import { Command } from '../builder';
+import type { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('mock')

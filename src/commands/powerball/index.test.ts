@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { powerball } from '.';

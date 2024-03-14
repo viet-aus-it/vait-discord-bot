@@ -1,6 +1,6 @@
-import { GuildMember, SlashCommandBuilder } from 'discord.js';
+import { type GuildMember, SlashCommandBuilder } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils';
-import { Command, CommandHandler } from '../builder';
+import type { Command, CommandHandler } from '../builder';
 import setReminderChannel from './set-reminder-channel';
 
 const data = new SlashCommandBuilder().setName('server-settings').setDescription('ADMIN ONLY COMMAND. Server Settings.').addSubcommand(setReminderChannel.data);
