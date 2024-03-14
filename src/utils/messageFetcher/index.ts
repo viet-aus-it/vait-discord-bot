@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js';
+import type { TextChannel } from 'discord.js';
 
 export const fetchLastMessageBeforeId = async (channel: TextChannel, id: string) => {
   const lastMessages = await channel.messages.fetch({ limit: 1, before: id });

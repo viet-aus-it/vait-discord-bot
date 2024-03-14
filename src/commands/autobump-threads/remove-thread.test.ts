@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, PublicThreadChannel } from 'discord.js';
+import type { ChatInputCommandInteraction, PublicThreadChannel } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeAutobumpThreadCommand } from './remove-thread';

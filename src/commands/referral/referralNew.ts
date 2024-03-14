@@ -1,8 +1,8 @@
 import { addDays, getUnixTime } from 'date-fns';
-import { Guild, SlashCommandSubcommandBuilder } from 'discord.js';
+import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import { AutocompleteHandler, CommandHandler } from '../builder';
+import type { AutocompleteHandler, CommandHandler } from '../builder';
 import { parseDate } from './parseDate';
 import { createReferralCode, findExistingReferralCode } from './referralUtils';
 import { searchServices, services } from './services';

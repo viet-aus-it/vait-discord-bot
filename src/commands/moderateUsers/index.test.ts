@@ -1,6 +1,6 @@
-import { APIRole, ChatInputCommandInteraction, Collection, Role, ThreadMember, ThreadMemberManager } from 'discord.js';
+import { type APIRole, type ChatInputCommandInteraction, Collection, type Role, type ThreadMember, type ThreadMemberManager } from 'discord.js';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
+import { type DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeUserByRole } from '.';
 import { isAdmin, isModerator } from '../../utils';
 

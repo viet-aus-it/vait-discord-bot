@@ -1,4 +1,4 @@
-import { ContextMenuCommandInteraction, MessageContextMenuCommandInteraction } from 'discord.js';
+import type { ContextMenuCommandInteraction, MessageContextMenuCommandInteraction } from 'discord.js';
 import { describe, expect, it } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 import { pinMessage } from '.';

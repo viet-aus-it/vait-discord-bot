@@ -1,4 +1,4 @@
-import { ChannelType, ChatInputCommandInteraction, PublicThreadChannel, TextChannel } from 'discord.js';
+import { ChannelType, type ChatInputCommandInteraction, type PublicThreadChannel, type TextChannel } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { addAutobumpThreadCommand } from './add-thread';

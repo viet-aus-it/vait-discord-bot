@@ -1,7 +1,7 @@
 import ask8ball from './8ball';
 import allCap from './allCap';
 import autobumpThread from './autobump-threads';
-import { Command, ContextMenuCommand } from './builder';
+import type { Command, ContextMenuCommand } from './builder';
 import pinMessageContextMenuCommand from './contextMenuCommands/pin';
 import cowsayCommand from './cowsay';
 import danhCommand from './danhSomeone';

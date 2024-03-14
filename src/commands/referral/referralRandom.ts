@@ -1,8 +1,8 @@
-import { Guild, SlashCommandSubcommandBuilder } from 'discord.js';
+import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getRandomIntInclusive } from '../../utils';
 import { logger } from '../../utils/logger';
-import { AutocompleteHandler, CommandHandler } from '../builder';
+import type { AutocompleteHandler, CommandHandler } from '../builder';
 import { getAllReferralCodesForService } from './referralUtils';
 import { searchServices } from './services';
 

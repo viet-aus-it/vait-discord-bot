@@ -1,5 +1,5 @@
 import { addSeconds, getUnixTime, parse } from 'date-fns';
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/dateUtils';

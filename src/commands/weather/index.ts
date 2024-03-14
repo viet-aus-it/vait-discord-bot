@@ -1,8 +1,8 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils';
 import { logger } from '../../utils/logger';
-import { Command } from '../builder';
+import type { Command } from '../builder';
 import { fetchWeather } from './fetchWeather';
 
 export const DEFAULT_LOCATION = 'Brisbane';

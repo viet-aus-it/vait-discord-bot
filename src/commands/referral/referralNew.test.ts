@@ -1,10 +1,10 @@
 import { addDays } from 'date-fns';
-import { AutocompleteInteraction, ChatInputCommandInteraction, Guild } from 'discord.js';
+import type { AutocompleteInteraction, ChatInputCommandInteraction, Guild } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getOrCreateUser } from '../reputation/_helpers';
 import { DEFAULT_EXPIRY_DAYS_FROM_NOW, autocomplete, execute } from './referralNew';
-import { CreateReferralInput, createReferralCode, findExistingReferralCode } from './referralUtils';
+import { type CreateReferralInput, createReferralCode, findExistingReferralCode } from './referralUtils';
 import { services } from './services';
 
 vi.mock('./referralUtils');

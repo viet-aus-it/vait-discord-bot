@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { ChatInputCommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { insult } from '.';

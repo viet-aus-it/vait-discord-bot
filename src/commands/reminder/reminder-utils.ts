@@ -1,4 +1,4 @@
-import { Reminder } from '@prisma/client';
+import type { Reminder } from '@prisma/client';
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
 import { getDbClient } from '../../clients';
 

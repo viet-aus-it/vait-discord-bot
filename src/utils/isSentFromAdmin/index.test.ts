@@ -1,4 +1,4 @@
-import { Collection, Role } from 'discord.js';
+import { Collection, type Role } from 'discord.js';
 import { describe, expect, it } from 'vitest';
 import { isAdmin, isModerator } from '.';
 
