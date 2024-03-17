@@ -45,7 +45,7 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
 
   const { content } = fetchedMessage.unwrap();
   if (isBlank(content)) {
-    logger.info('[mock]: Fetched message is blank.');
+    logger.error('[mock]: Cannot fetch message to mock');
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }

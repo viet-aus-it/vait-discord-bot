@@ -1,4 +1,5 @@
 import { ApplicationCommandType, ContextMenuCommandBuilder, type ContextMenuCommandInteraction } from 'discord.js';
+import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import type { ContextMenuCommand } from '../builder';
 
@@ -16,7 +17,13 @@ export const pinMessage = async (interaction: ContextMenuCommandInteraction) => 
     return;
   }
 
-  await message.pin();
+  const op = await Result.safe(message.pin());
+  if (op.isErr()) {
+    logger.error(`[pin]: Cannot pin message ${message.id} in channel ${message.channelId}`, op.unwrapErr());
+    await interaction.reply('ERROR: Cannot pin message. Please try again later.');
+    return;
+  }
+
   logger.info(`[pin]: Successfully pinned message ${message.id} in channel ${message.channelId}`);
   await interaction.reply('Message is now pinned!');
 };

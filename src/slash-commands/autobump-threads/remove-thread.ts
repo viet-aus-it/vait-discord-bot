@@ -16,6 +16,7 @@ export const removeAutobumpThreadCommand: SlashCommandHandler = async (interacti
 
   const op = await Result.safe(removeAutobumpThread(guildId, thread.id));
   if (op.isErr()) {
+    logger.error(`[remove-autobump-thread]: Cannot remove thread ${thread.id} from autobump list for guild ${guildId}`, op.unwrapErr());
     await interaction.reply(`ERROR: Cannot remove thread id <#${thread.id}> from the bump list for this server. Please try again.`);
     return;
   }
