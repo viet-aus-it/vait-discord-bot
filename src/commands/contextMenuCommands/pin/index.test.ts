@@ -26,6 +26,7 @@ describe('pinMessage context menu test', () => {
     const mockInteraction = mockDeep<MessageContextMenuCommandInteraction>();
     mockInteraction.isMessageContextMenuCommand.mockReturnValueOnce(true);
     mockInteraction.targetMessage.pinned = false;
+    mockInteraction.targetMessage.pin.mockResolvedValueOnce({} as any);
 
     await pinMessage(mockInteraction);
     expect(mockInteraction.targetMessage.pin).toHaveBeenCalledOnce();
