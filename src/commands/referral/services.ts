@@ -1,4 +1,4 @@
-// serivce data is scraped from https://www.ozbargain.com.au/user/83105/edit/referrals
+// service data is scraped from https://www.ozbargain.com.au/user/83105/edit/referrals
 const OZBARGAIN_SERVICES: string[] = [
   '1st energy',
   '3commas',
