@@ -1,6 +1,5 @@
-// serivce data is scraped from
-// https://www.ozbargain.com.au/user/83105/edit/referrals
-export const services = [
+// service data is scraped from https://www.ozbargain.com.au/user/83105/edit/referrals
+const OZBARGAIN_SERVICES: string[] = [
   '1st energy',
   '3commas',
   'abra',
@@ -729,12 +728,16 @@ export const services = [
   'zwift',
 ];
 
+const CUSTOM_SERVICES: string[] = ['everyday rewards (woolworth & big W)'];
+
+export const services: string[] = [...new Set([...OZBARGAIN_SERVICES, ...CUSTOM_SERVICES])];
+
 const options = services.map((service) => ({
   name: service,
   value: service,
 }));
 
-export const searchServices = (term?: string) => {
+export const searchServices = (term: string) => {
   const cleanedTerm = term?.trim().toLowerCase();
 
   return options.filter((service) => (cleanedTerm ? service.name.includes(cleanedTerm) : true)).slice(0, 25);
