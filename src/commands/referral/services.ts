@@ -728,7 +728,7 @@ const OZBARGAIN_SERVICES: string[] = [
   'zwift',
 ];
 
-const CUSTOM_SERVICES: string[] = ['everyday rewards (woolworth & big W)'];
+const CUSTOM_SERVICES: string[] = ['everyday extra (woolworths & big w)'];
 
 export const services: string[] = [...new Set([...OZBARGAIN_SERVICES, ...CUSTOM_SERVICES])];
 
