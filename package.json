@@ -51,6 +51,7 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "dotenv-expand": "^11.0.6",
+    "node-html-parser": "^6.1.12",
     "oxide.ts": "^1.1.0",
     "parse-duration": "^1.1.0",
     "winston": "^3.12.0",
