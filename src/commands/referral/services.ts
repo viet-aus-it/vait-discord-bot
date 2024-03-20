@@ -1,6 +1,6 @@
 // Service data is scraped from https://www.ozbargain.com.au/wiki/list_of_referral_links
 // Go to the above link, run the following code in the console and copy the result back here
-// const elements = document.getElementsByClassName('level1'); const finalList = []; for (const t of test) finalList.push(t.outerText.toLowerCase()); console.log(JSON.stringify(finalList))
+// const elements = document.getElementsByClassName('level1'); const finalList = []; for (const t of elements) finalList.push(t.outerText.toLowerCase()); console.log(JSON.stringify(finalList))
 // @TODO automate the above process later
 
 const OZBARGAIN_SERVICES: string[] = [
