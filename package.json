@@ -36,7 +36,7 @@
     "deploy:command": "tsx scripts/deploy-guild-commands.ts",
     "delete:command": "tsx scripts/delete-guild-commands.ts",
     "delete:command-global": "tsx scripts/delete-global-commands.ts",
-    "start:only": "tsx watch --clear-screen=false ./bin/main.ts",
+    "start:only": "tsx ./bin/main.ts",
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only",
     "build:referrals": "tsx scripts/build-referral-list.ts"
   },
@@ -46,6 +46,7 @@
     "@neondatabase/serverless": "^0.9.0",
     "@opentelemetry/api": "^1.8.0",
     "@opentelemetry/auto-instrumentations-node": "^0.43.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.49.1",
     "@opentelemetry/instrumentation": "^0.49.1",
     "@opentelemetry/instrumentation-winston": "^0.35.0",
     "@opentelemetry/resources": "^1.22.0",
