@@ -8,33 +8,35 @@ const ozbargainApi = wretch('https://www.ozbargain.com.au/wiki/list_of_referral_
 const OUTPUT_DIR = path.join(__dirname, '..', 'commands', 'referral', 'generated');
 
 const getOzbReferralNodes = async () => {
+  logger.info('[get-ozbargain-referral-nodes]: Fetching Ozbargain referral list');
   const rawHtml = await ozbargainApi.get().text();
   const htmlTree = parseHtml(rawHtml);
   const nodes = htmlTree.querySelectorAll('.level1');
+  logger.info('[get-ozbargain-referral-nodes]: Fetch Ozbargain referral list complete');
   return nodes;
 };
 
-const buildOzbServicesTs = (nodes: HTMLElement[]) => {
-  const content = nodes.reduce(
-    (accum, node, index) => `${accum}\n"${node.text.toLowerCase()}"${index === nodes.length - 1 ? '];' : ','}`,
-    'export const OZBARGAIN_SERVICES = ['
-  );
-  const filePath = path.join(OUTPUT_DIR, 'ozbargain-services.ts');
-  fs.writeFileSync(filePath, content);
+const cleanOutpitDir = () => {
+  logger.info('[clean-output-dir]: Cleaning output directory');
+  fs.rmSync(OUTPUT_DIR, { recursive: true });
+  fs.mkdirSync(OUTPUT_DIR);
+  logger.info('[clean-output-dir]: Output directory cleaned');
 };
 
-const buildOzbServicesJson = (nodes: HTMLElement[]) => {
+const buildOzbServicesFile = (nodes: HTMLElement[]) => {
+  logger.info('[build-ozbaragain-services-file]: Building Ozbargain referral list');
   const content = JSON.stringify(nodes.map((node) => node.text.toLowerCase()));
-  const filePath = path.join(OUTPUT_DIR, 'ozbargain-services-data.json');
+  const filePath = path.join(OUTPUT_DIR, 'ozbargain-services.json');
   fs.writeFileSync(filePath, content);
+  logger.info('[build-ozbaragain-services-file]: Ozbargain referral list complete');
 };
 
-const go = async () => {
-  logger.info('Building Ozbargain referral list');
+const build = async () => {
+  logger.info('[build-referral-list]: Building Ozbargain referral list');
   const nodes = await getOzbReferralNodes();
-  buildOzbServicesTs(nodes);
-  buildOzbServicesJson(nodes);
-  logger.info('Ozbargain referral list complete');
+  cleanOutpitDir();
+  buildOzbServicesFile(nodes);
+  logger.info('[build-referral-list]: Ozbargain referral list complete');
 };
 
-go();
+build();

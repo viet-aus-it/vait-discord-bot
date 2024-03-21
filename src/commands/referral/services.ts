@@ -1,9 +1,8 @@
-import { OZBARGAIN_SERVICES } from './generated/ozbargain-services';
-import data from './generated/ozbargain-services-data.json';
+import OZBARGAIN_SERVICES from './generated/ozbargain-services.json';
 
 const CUSTOM_SERVICES: string[] = ['everyday extra (woolworths & big w)'];
 
-export const services: string[] = [...new Set([...data, ...CUSTOM_SERVICES])];
+export const services: string[] = [...new Set([...OZBARGAIN_SERVICES, ...CUSTOM_SERVICES])];
 
 const options = services.map((service) => ({
   name: service,
