@@ -1,0 +1,32 @@
+name: Build OzBargain referrals list
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  build-referrals-list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up project
+        uses: ./.github/actions/setup-node-deps
+
+      - name: Build OzBargain referrals list
+        run: pnpm run build:referrals
+
+      - name: Setup Git Credentials
+        run: |
+          git config --global user.email "admin@vietausit.com"
+          git config --global user.name "Vietausit Admin (Github Actions)"
+
+      - name: Compare changes
+        run: |
+          git diff --quiet && git diff --staged --quiet || git commit -am 'Added license headers'
+
+      - name: Create new PR
+        run: |
+          gh pr create --title "chore: update OzBargain referrals list" --body "This PR updates the OzBargain referrals list" --base master
