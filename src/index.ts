@@ -1,3 +1,5 @@
+import './tracing';
+
 import { InteractionType } from 'discord-api-types/v10';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';

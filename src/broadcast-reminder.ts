@@ -1,3 +1,5 @@
+import './tracing';
+
 import { ChannelType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';

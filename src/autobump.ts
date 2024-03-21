@@ -1,3 +1,5 @@
+import './tracing';
+
 import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
