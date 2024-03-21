@@ -1,3 +1,5 @@
+import './tracing';
+
 import { Result } from 'oxide.ts';
 import { cleanupExpiredCode } from '../src/slash-commands/referral/utils';
 import { loadEnv } from '../src/utils/load-env';
