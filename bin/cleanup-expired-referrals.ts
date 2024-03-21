@@ -2,9 +2,11 @@ import { Result } from 'oxide.ts';
 import { cleanupExpiredCode } from '../src/slash-commands/referral/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
+import { setupTracer } from './tracing';
 
 const cleanup = async () => {
   loadEnv();
+  setupTracer();
   logger.info('[cleanup-expired-referrals]: CLEANING UP EXPIRED REFERRALS');
 
   const op = await Result.safe(cleanupExpiredCode());
