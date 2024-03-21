@@ -38,7 +38,7 @@
     "delete:command-global": "tsx src/scripts/delete-global-commands.ts",
     "start:only": "tsx watch --clear-screen=false ./src/index.ts",
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only",
-    "build:referrals": "tsx src/commands/referral/build-referral-list.ts"
+    "build:referrals": "tsx src/scripts/build-referral-list.ts"
   },
   "dependencies": {
     "@axiomhq/winston": "^0.1.3",

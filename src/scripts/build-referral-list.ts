@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { type HTMLElement, parse as parseHtml } from 'node-html-parser';
 import wretch from 'wretch';
-import { logger } from '../../utils/logger';
+import { logger } from '../utils/logger';
 
 const ozbargainApi = wretch('https://www.ozbargain.com.au/wiki/list_of_referral_links');
 
@@ -18,7 +18,7 @@ const buildOzbServicesFile = (nodes: HTMLElement[]) => {
     (accum, node, index) => `${accum}\n"${node.text.toLowerCase()}"${index === nodes.length - 1 ? '];' : ','}`,
     'export const OZBARGAIN_SERVICES = ['
   );
-  const filePath = path.join(__dirname, 'generated', 'ozbargain-services.ts');
+  const filePath = path.join(__dirname, '..', 'commands', 'referral', 'generated', 'ozbargain-services.ts');
   fs.writeFileSync(filePath, content);
 };
 
