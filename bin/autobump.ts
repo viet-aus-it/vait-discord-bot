@@ -4,9 +4,11 @@ import { getDiscordClient } from '../src/clients';
 import { listAllThreads } from '../src/slash-commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
+import { setupTracer } from './tracing';
 
 const autobump = async () => {
   loadEnv();
+  setupTracer();
   logger.info('AUTOBUMPING THREADS');
 
   const settings = await Result.safe(listAllThreads());
