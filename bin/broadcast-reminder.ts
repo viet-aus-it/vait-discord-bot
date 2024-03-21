@@ -6,9 +6,11 @@ import { getReminderChannel } from '../src/slash-commands/server-settings/utils'
 import { getCurrentUnixTime } from '../src/utils/date';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
+import { setupTracer } from './tracing';
 
 const broadcastReminder = async () => {
   loadEnv();
+  setupTracer();
   logger.info('BROADCASTING REMINDERS');
 
   const queryTime = getCurrentUnixTime();

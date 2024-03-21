@@ -9,6 +9,7 @@ import { processInteraction } from '../src/utils/interaction-processor';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
+import { setupTracer } from './tracing';
 
 const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -29,6 +30,7 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
 
 const main = async () => {
   loadEnv();
+  setupTracer();
   logger.info('[main]: STARTING BOT');
 
   const token = process.env.TOKEN;
