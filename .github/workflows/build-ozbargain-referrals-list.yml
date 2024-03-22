@@ -45,7 +45,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [[ `git status --porcelain` ]]; then
+            git checkout -b automated-referrals-update
             git commit -m "chore: update ozbargain referrals list" src/commands/referral
+            git push -u origin automated-referrals-update
             gh pr create --fill --base master
           else
             echo "No changes to report"
