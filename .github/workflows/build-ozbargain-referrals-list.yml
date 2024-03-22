@@ -1,0 +1,48 @@
+name: Build OzBargain referrals list
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  build-referrals-list:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up project
+        uses: ./.github/actions/setup-node-deps
+
+      - name: Build OzBargain referrals list
+        run: pnpm run build:referrals
+        env:
+          AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
+          AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
+          AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
+          CLIENT_ID: blank
+          TOKEN: blank
+          DATABASE_URL: blank
+
+      - name: Setup Git Credentials
+        run: |
+          git config --global user.email "admin@vietausit.com"
+          git config --global user.name "Vietausit Admin (Github Actions)"
+
+      - name: Compare changes and create PR if succeed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            git checkout -b autoupdate/referrals
+            git add src/commands/referral
+            git commit -m "chore: update ozbargain referrals list"
+            git push -f -u origin autoupdate/referrals
+            gh pr create --title "chore: update ozbargain referrals list" --body "this is generated via build-ozbargain-referrals-list.yml" --base master --head autoupdate/referrals
+          else
+            echo "No changes to report"
+          fi
