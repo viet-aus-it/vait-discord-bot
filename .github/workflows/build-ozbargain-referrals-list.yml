@@ -2,8 +2,11 @@ name: Build OzBargain referrals list
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 1 * *'
+  # schedule:
+  #   - cron: '0 0 1 * *'
+  push:
+    branches:
+      - test-referrals-automate
 
 jobs:
   build-referrals-list:
