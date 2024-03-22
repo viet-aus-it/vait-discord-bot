@@ -28,8 +28,8 @@ jobs:
 
       - name: Compare changes
         run: |
-          git diff --quiet && git diff --staged --quiet || git commit -am 'Added license headers'
+          git diff --quiet && git diff --staged --quiet || git commit -am "chore: update ozbargain referrals list"
 
       - name: Create new PR
         run: |
-          gh pr create --title "chore: update OzBargain referrals list" --body "This PR updates the OzBargain referrals list" --base master
+          gh pr create --fill --base master
