@@ -38,6 +38,7 @@ jobs:
         run: |
           git config --global user.email "admin@vietausit.com"
           git config --global user.name "Vietausit Admin (Github Actions)"
+          git status --porcelain
 
       - name: Compare changes and create PR if succeed
         env:
