@@ -9,7 +9,6 @@ import getdisclaimer from './disclaimer';
 import insultCommand from './insult';
 import mockCommand from './mockSomeone';
 import removeUserByRole from './moderateUsers';
-import poll from './poll';
 import playPowerball from './powerball';
 import quoteOfTheDay from './quoteOfTheDay';
 import referral from './referral';
@@ -26,7 +25,6 @@ export const commandList: Command[] = [
   danhCommand,
   insultCommand,
   mockCommand,
-  poll,
   playPowerball,
   quoteOfTheDay,
   reputation,
