@@ -26,10 +26,11 @@ jobs:
           git config --global user.email "admin@vietausit.com"
           git config --global user.name "Vietausit Admin (Github Actions)"
 
-      - name: Compare changes
+      - name: Compare changes and create PR if succeed
         run: |
-          git diff --quiet && git diff --staged --quiet || git commit -am "chore: update ozbargain referrals list"
-
-      - name: Create new PR
-        run: |
-          gh pr create --fill --base master
+          if [[ `git status --porcelain` ]]; then
+            git commit -am "chore: update ozbargain referrals list"
+            gh pr create --fill --base master
+          else
+            echo "No changes to report"
+          fi
