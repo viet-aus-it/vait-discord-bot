@@ -21,6 +21,13 @@ jobs:
 
       - name: Build OzBargain referrals list
         run: pnpm run build:referrals
+        env:
+          AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
+          AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
+          AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
+          CLIENT_ID: blank
+          TOKEN: blank
+          DATABASE_URL: blank
 
       - name: Setup Git Credentials
         run: |
