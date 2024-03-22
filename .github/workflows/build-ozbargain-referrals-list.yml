@@ -49,7 +49,7 @@ jobs:
             git add src/commands/referral
             git commit -m "chore: update ozbargain referrals list"
             git push -u origin automated-referrals-update
-            gh pr create --fill --base master
+            gh pr create --title "chore: update ozbargain referrals list" --body "this is generated via build-ozbargain-referrals-list.yml" --base master --head automated-referrals-update
           else
             echo "No changes to report"
           fi
