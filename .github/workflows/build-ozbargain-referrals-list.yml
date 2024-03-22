@@ -30,7 +30,9 @@ jobs:
           DATABASE_URL: blank
 
       - name: print out file
-        run: cat src/commands/referrals/generated/ozbargain-services.json
+        run: |
+          ls src/commands/referral/generated
+          cat src/commands/referral/generated/ozbargain-services.json
 
       - name: Setup Git Credentials
         run: |
@@ -42,7 +44,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           if [[ `git status --porcelain` ]]; then
-            git commit -am "chore: update ozbargain referrals list"
+            git commit -am "chore: update ozbargain referrals list" src/commands/referral
             gh pr create --fill --base master
           else
             echo "No changes to report"
