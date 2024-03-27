@@ -1,7 +1,5 @@
 import { getDbClient } from '../../clients';
 
-const MAX_LEADERBOARD = 10;
-
 export const getOrCreateUser = async (userId: string) => {
   const db = getDbClient();
 
@@ -49,19 +47,16 @@ export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep
   return updatedUser;
 };
 
-export const getTop10 = async () => {
+export const getRepLeaderboard = async (size: number) => {
   const db = getDbClient();
 
   return db.user.findMany({
-    orderBy: [
-      {
-        reputation: 'desc',
-      },
-    ],
+    where: { reputation: { gt: 0 } },
+    orderBy: [{ reputation: 'desc' }],
     select: {
       id: true,
       reputation: true,
     },
-    take: MAX_LEADERBOARD,
+    take: size,
   });
 };
