@@ -109,7 +109,19 @@ describe('Give rep slash command', () => {
     await giveRepSlashCommand(mockInteraction);
 
     expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('You cannot give rep to yourself');
+    expect(mockInteraction.reply).toHaveBeenCalledWith('You cannot give rep to a bot or yourself');
+  });
+
+  it('should send reject message if user mention a bot', async () => {
+    const mockUser = { id: '1', bot: true } as User;
+    mockInteraction.options.getUser.mockReturnValueOnce(mockUser);
+
+    await giveRepSlashCommand(mockInteraction);
+
+    expect(mockCreateUpdateUser).not.toHaveBeenCalled();
+    expect(mockUpdateRep).not.toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith('You cannot give rep to a bot or yourself');
   });
 
   it('should call reply and add rep if user mention another user', async () => {

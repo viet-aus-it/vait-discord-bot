@@ -53,8 +53,8 @@ export const giveRepSlashCommand = async (interaction: ChatInputCommandInteracti
   const discordUser = interaction.options.getUser('user', true);
 
   const isAuthor = author.id === discordUser.id;
-  if (isAuthor) {
-    await interaction.reply('You cannot give rep to yourself');
+  if (isAuthor || discordUser.bot) {
+    await interaction.reply('You cannot give rep to a bot or yourself');
     return;
   }
 
