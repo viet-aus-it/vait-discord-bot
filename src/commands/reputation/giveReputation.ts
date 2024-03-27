@@ -18,7 +18,7 @@ export const thankUserInMessage = async (msg: Message) => {
   if (author.bot) return; // return if author is a Discord bot
 
   // Filter out bot users
-  const mentionedUsers = mentions.users.filter((user) => !user.bot);
+  const mentionedUsers = mentions.users.filter((user) => !user.bot && user.id !== author.id);
   if (mentionedUsers.size < 1) return;
 
   const giver = msg.guild?.members.cache.get(author.id);
@@ -53,8 +53,8 @@ export const giveRepSlashCommand = async (interaction: ChatInputCommandInteracti
   const discordUser = interaction.options.getUser('user', true);
 
   const isAuthor = author.id === discordUser.id;
-  if (isAuthor) {
-    await interaction.reply('You cannot give rep to yourself');
+  if (isAuthor || discordUser.bot) {
+    await interaction.reply('You cannot give rep to a bot or yourself');
     return;
   }
 
