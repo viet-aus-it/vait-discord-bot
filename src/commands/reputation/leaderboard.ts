@@ -1,9 +1,17 @@
 import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import type { Subcommand } from '../builder';
-import { getTop10 } from './_helpers';
+import { getRepLeaderboard } from './_helpers';
 
-const data = new SlashCommandSubcommandBuilder().setName('leaderboard').setDescription('Show rep leaderboard');
+export const DEFAULT_LEADERBOARD = 10;
+export const MAX_LEADERBOARD = 25;
+
+const data = new SlashCommandSubcommandBuilder()
+  .setName('leaderboard')
+  .setDescription('Show rep leaderboard')
+  .addNumberOption((option) =>
+    option.setName('size').setDescription(`Number of users to show. Default: ${DEFAULT_LEADERBOARD}. Max: ${MAX_LEADERBOARD}`).setRequired(false)
+  );
 
 export const buildRepLeaderboard = (
   records: {
@@ -23,14 +31,21 @@ export const buildRepLeaderboard = (
 };
 
 export const getLeaderboard = async (interaction: ChatInputCommandInteraction) => {
-  const records = await getTop10();
+  const size = interaction.options.getNumber('size', false) ?? DEFAULT_LEADERBOARD;
+  if (size > MAX_LEADERBOARD) {
+    logger.info('[rep-leaderboard]: size is too big', size);
+    await interaction.reply(`The size is too big. Max is ${MAX_LEADERBOARD}`);
+    return;
+  }
+
+  const records = await getRepLeaderboard(size);
   if (records.length === 0) {
     logger.info('[rep-leaderboard]: no one has rep in this server.');
     await interaction.reply('No one has rep to be on the leaderboard, yet.');
     return;
   }
 
-  logger.info('[rep-leaderboard]: got top 10');
+  logger.info('[rep-leaderboard]: got top leaderboard');
   const guild = interaction.guild!;
   const guildMembers = await guild.members.fetch({
     user: records.map((r) => r.id),
