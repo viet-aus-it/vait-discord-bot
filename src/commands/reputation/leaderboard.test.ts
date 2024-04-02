@@ -1,24 +1,27 @@
-import { describe, expect, it, vi } from 'vitest';
+import { type ChatInputCommandInteraction, Collection, type GuildMember } from 'discord.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { getTop10 } from './_helpers';
-import { getLeaderboard } from './leaderboard';
+import { getLeaderboard as getLeaderboardCommand } from './leaderboard';
 
 vi.mock('./_helpers');
 const mockGetTop10 = vi.mocked(getTop10);
-const replyMock = vi.fn();
+
+const mockInteraction = mockDeep<ChatInputCommandInteraction<'cached'>>();
 
 describe('leaderboard', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+  });
+
   it('Should send reply error if it cannot retrieve the top 10', async () => {
     mockGetTop10.mockResolvedValueOnce([]);
-    const interaction: any = {
-      reply: replyMock,
-      guild: {},
-    };
 
-    await getLeaderboard(interaction);
+    await getLeaderboardCommand(mockInteraction);
 
     expect(mockGetTop10).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledWith('No one has rep to be on the leaderboard, yet.');
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith('No one has rep to be on the leaderboard, yet.');
   });
 
   it('Should create a leaderboard entry with nickname if it can be fetched', async () => {
@@ -29,26 +32,15 @@ describe('leaderboard', () => {
         reputation: 0,
       },
     ]);
-    const interaction: any = {
-      reply: replyMock,
-      guild: {
-        members: {
-          fetch() {
-            return {
-              get() {
-                return { nickname: 'sam' };
-              },
-            };
-          },
-        },
-      },
-    };
+    const mockMembers = new Collection<string, GuildMember>();
+    mockMembers.set(userid, { nickname: 'sam', displayName: 'sammy' } as GuildMember);
+    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
 
-    await getLeaderboard(interaction);
+    await getLeaderboardCommand(mockInteraction);
 
     expect(mockGetTop10).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `\`\`\`
  # username rep
  1      sam   0
@@ -64,26 +56,15 @@ describe('leaderboard', () => {
         reputation: 0,
       },
     ]);
-    const interaction: any = {
-      reply: replyMock,
-      guild: {
-        members: {
-          fetch() {
-            return {
-              get() {
-                return { nickname: null, displayName: 'sammy' };
-              },
-            };
-          },
-        },
-      },
-    };
+    const mockMembers = new Collection<string, GuildMember>();
+    mockMembers.set(userid, { nickname: null, displayName: 'sammy' } as GuildMember);
+    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
 
-    await getLeaderboard(interaction);
+    await getLeaderboardCommand(mockInteraction);
 
     expect(mockGetTop10).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `\`\`\`
  # username rep
  1    sammy   0
@@ -99,26 +80,14 @@ describe('leaderboard', () => {
         reputation: 0,
       },
     ]);
-    const interaction: any = {
-      reply: replyMock,
-      guild: {
-        members: {
-          fetch() {
-            return {
-              get() {
-                return undefined;
-              },
-            };
-          },
-        },
-      },
-    };
+    const mockMembers = new Collection<string, GuildMember>();
+    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
 
-    await getLeaderboard(interaction);
+    await getLeaderboardCommand(mockInteraction);
 
     expect(mockGetTop10).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `\`\`\`
  # username rep
  1        1   0
@@ -141,35 +110,16 @@ describe('leaderboard', () => {
         reputation: 1,
       },
     ]);
-    const interaction: any = {
-      reply: replyMock,
-      guild: {
-        members: {
-          fetch() {
-            return {
-              get(id: string) {
-                switch (id) {
-                  case '1':
-                    return { nickname: 'sam' };
+    const mockMembers = new Collection<string, GuildMember>();
+    mockMembers.set('1', { nickname: 'sam' } as GuildMember);
+    mockMembers.set('2', { nickname: null, displayName: 'sam2' } as GuildMember);
+    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
 
-                  case '2':
-                    return { nickname: null, displayName: 'sam2' };
-
-                  case '3':
-                    return undefined;
-                }
-              },
-            };
-          },
-        },
-      },
-    };
-
-    await getLeaderboard(interaction);
+    await getLeaderboardCommand(mockInteraction);
 
     expect(mockGetTop10).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledOnce();
-    expect(replyMock).toHaveBeenCalledWith(
+    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    expect(mockInteraction.reply).toHaveBeenCalledWith(
       `\`\`\`
  # username rep
  1        3   3
