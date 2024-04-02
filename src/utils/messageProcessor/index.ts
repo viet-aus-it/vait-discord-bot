@@ -6,13 +6,13 @@ const keywordMatched = (sentence: string, keyword: string): boolean => {
   return regex.test(sentence);
 };
 
-type CommandPromise = Promise<undefined> | undefined;
+type CommandPromise = Promise<void> | void;
 
 type CommandPromises = Array<CommandPromise>;
 
 interface KeywordMatchCommand {
   matchers: Array<string>;
-  fn: (message: Message) => Promise<undefined>;
+  fn: (message: Message) => Promise<void>;
 }
 
 type KeywordMatchCommands = Array<KeywordMatchCommand>;
@@ -33,7 +33,7 @@ export interface CommandConfig {
   keywordMatchCommands: KeywordMatchCommands;
 }
 
-export const processMessage = async (message: Message, config: CommandConfig): Promise<undefined> => {
+export const processMessage = async (message: Message, config: CommandConfig): Promise<void> => {
   const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
 
   try {
