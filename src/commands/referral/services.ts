@@ -1,6 +1,6 @@
 import OZBARGAIN_SERVICES from './generated/ozbargain-services.json';
 
-const CUSTOM_SERVICES: string[] = ['everyday extra (woolworths & big w)'];
+const CUSTOM_SERVICES: string[] = ['everyday extra (woolworths & big w)', 'warp terminal'];
 
 export const services: string[] = [...new Set([...OZBARGAIN_SERVICES, ...CUSTOM_SERVICES])];
 
