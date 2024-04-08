@@ -1,6 +1,3 @@
 {
-  "*.{ts,js}": [
-    "biome check",
-    "biome format --write"
-  ]
+  "*.{ts,js}": ["biome check", "biome format --write"]
 }
