@@ -2,7 +2,7 @@ import { getYear } from 'date-fns';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { convertDateToEpoch } from '../../utils/dateUtils';
+import { convertDateToEpoch } from '../../utils/date-utils';
 import { execute } from './list';
 import { getUserReminders } from './reminder-utils';
 

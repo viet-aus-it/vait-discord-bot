@@ -1,7 +1,7 @@
 import { Result } from 'oxide.ts';
 import { commandList, contextMenuCommandList } from '../commands';
 import { deployGuildCommands } from '../commands/deploy-command';
-import { getCurrentUnixTime } from '../utils/dateUtils';
+import { getCurrentUnixTime } from '../utils/date-utils';
 import { loadEnv } from '../utils/loadEnv';
 import { logger } from '../utils/logger';
 

@@ -3,7 +3,7 @@ import { Result } from 'oxide.ts';
 import { getDiscordClient } from './clients';
 import { formatReminderMessage, getReminderByTime, removeReminders } from './commands/reminder/reminder-utils';
 import { getReminderChannel } from './commands/serverSettings/server-utils';
-import { getCurrentUnixTime } from './utils/dateUtils';
+import { getCurrentUnixTime } from './utils/date-utils';
 import { loadEnv } from './utils/loadEnv';
 import { logger } from './utils/logger';
 
