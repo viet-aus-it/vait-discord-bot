@@ -2,7 +2,7 @@ import { type APIRole, type ChatInputCommandInteraction, Collection, type Role, 
 import { beforeEach, describe, expect, it } from 'vitest';
 import { type DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeUserByRole } from '.';
-import { isAdmin, isModerator } from '../../utils';
+import { isAdmin, isModerator } from '../../utils/isSentFromAdmin';
 
 vi.mock('../../utils/isSentFromAdmin');
 const mockIsSentFromAdmin = vi.mocked(isAdmin);

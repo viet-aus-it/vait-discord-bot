@@ -1,6 +1,6 @@
 import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
 import { logger } from '../../utils/logger';
+import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
 import type { Command } from '../builder';
 
 const MAX_MENTIONS = 10;

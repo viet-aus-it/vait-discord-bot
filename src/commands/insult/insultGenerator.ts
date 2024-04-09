@@ -1,4 +1,4 @@
-import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
+import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
 
 const getRandomThing = (things: string[]) => things[getRandomIntInclusive(0, things.length)];
 

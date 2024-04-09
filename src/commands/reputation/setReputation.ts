@@ -1,5 +1,5 @@
 import { type ChatInputCommandInteraction, type GuildMember, SlashCommandSubcommandBuilder } from 'discord.js';
-import { isAdmin, isModerator } from '../../utils';
+import { isAdmin, isModerator } from '../../utils/isSentFromAdmin';
 import { logger } from '../../utils/logger';
 import type { Subcommand } from '../builder';
 import { getOrCreateUser, updateRep } from './_helpers';

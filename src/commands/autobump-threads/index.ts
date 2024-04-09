@@ -1,5 +1,5 @@
 import { type GuildMember, SlashCommandBuilder } from 'discord.js';
-import { isAdmin, isModerator } from '../../utils';
+import { isAdmin, isModerator } from '../../utils/isSentFromAdmin';
 import addThread from '../autobump-threads/add-thread';
 import listThreads from '../autobump-threads/list-threads';
 import removeThread from '../autobump-threads/remove-thread';

@@ -1,7 +1,7 @@
 import type { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { isAdmin } from '../../utils';
+import { isAdmin } from '../../utils/isSentFromAdmin';
 import { getOrCreateUser, updateRep } from './_helpers';
 import { setReputation } from './setReputation';
 
