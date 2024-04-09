@@ -9,7 +9,7 @@ export default defineConfig({
       provider: 'v8',
       clean: true,
       include: ['src/commands/**/*.ts', 'src/utils/**/*.ts'],
-      exclude: ['src/utils/random/*'],
+      exclude: ['src/utils/random.*'],
     },
     clearMocks: true,
     setupFiles: ['./src/vitest.setup.ts'],

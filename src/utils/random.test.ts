@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getUniqueRandomIntInclusive } from '.';
+import { getUniqueRandomIntInclusive } from './random';
 
 describe('Random unique number', () => {
   it('should return a unique number that is not in the array', async () => {
