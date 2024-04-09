@@ -12,6 +12,6 @@ export default defineConfig({
       exclude: ['src/utils/random.*'],
     },
     clearMocks: true,
-    setupFiles: ['./src/vitest.setup.ts'],
+    setupFiles: ['./vitest.setup.ts'],
   },
 });
