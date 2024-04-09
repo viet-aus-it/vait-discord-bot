@@ -1,5 +1,5 @@
 import { type GuildMember, SlashCommandBuilder } from 'discord.js';
-import { isAdmin, isModerator } from '../../utils/isSentFromAdmin';
+import { isAdmin, isModerator } from '../../utils/permission';
 import type { Command, CommandHandler } from '../builder';
 import setReminderChannel from './set-reminder-channel';
 

@@ -1,6 +1,6 @@
 import { type ChatInputCommandInteraction, type GuildMember, SlashCommandBuilder, type ThreadChannel } from 'discord.js';
-import { isAdmin, isModerator } from '../../utils/isSentFromAdmin';
 import { logger } from '../../utils/logger';
+import { isAdmin, isModerator } from '../../utils/permission';
 import type { Command } from '../builder';
 
 const data = new SlashCommandBuilder()
