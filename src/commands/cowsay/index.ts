@@ -3,7 +3,7 @@ import { type ChatInputCommandInteraction, SlashCommandBuilder, type TextChannel
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
-import { fetchLastMessageBeforeId } from '../../utils/messageFetcher';
+import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
 import type { Command } from '../builder';
 
 // Only 35 characters per line due to limitation in phone screen width
