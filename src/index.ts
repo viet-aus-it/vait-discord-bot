@@ -4,7 +4,7 @@ import { getDiscordClient } from './clients';
 import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
 import { getConfigs } from './config';
-import { loadEnv } from './utils/loadEnv';
+import { loadEnv } from './utils/load-env';
 import { logger } from './utils/logger';
 import { processMessage } from './utils/messageProcessor';
 

@@ -1,6 +1,6 @@
 import { Result } from 'oxide.ts';
 import { deployGlobalCommands } from '../commands/deploy-command';
-import { loadEnv } from '../utils/loadEnv';
+import { loadEnv } from '../utils/load-env';
 import { logger } from '../utils/logger';
 
 const deploy = async () => {
