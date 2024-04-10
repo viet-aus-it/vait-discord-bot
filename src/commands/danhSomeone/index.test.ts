@@ -2,9 +2,9 @@ import type { ChatInputCommandInteraction, User } from 'discord.js';
 import { describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { danhSomeone } from '.';
-import { getRandomBoolean, getRandomIntInclusive } from '../../utils';
+import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
 
-vi.mock('../../utils');
+vi.mock('../../utils/random');
 const mockRandomInt = vi.mocked(getRandomIntInclusive);
 const mockRandomBoolean = vi.mocked(getRandomBoolean);
 const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();

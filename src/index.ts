@@ -4,9 +4,9 @@ import { getDiscordClient } from './clients';
 import { commandList, contextMenuCommandList } from './commands';
 import { deployGlobalCommands } from './commands/deploy-command';
 import { getConfigs } from './config';
-import { processMessage } from './utils';
-import { loadEnv } from './utils/loadEnv';
+import { loadEnv } from './utils/load-env';
 import { logger } from './utils/logger';
+import { processMessage } from './utils/message-processor';
 
 const main = async () => {
   loadEnv();

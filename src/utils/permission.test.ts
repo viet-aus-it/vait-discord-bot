@@ -1,6 +1,6 @@
 import { Collection, type GuildMember, type Role } from 'discord.js';
 import { describe, expect, it } from 'vitest';
-import { isAdmin, isModerator } from '.';
+import { isAdmin, isModerator } from './permission';
 
 describe('isModerator', () => {
   it('Should return false if message does not contain member information', () => {

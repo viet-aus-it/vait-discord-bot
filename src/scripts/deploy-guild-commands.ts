@@ -1,8 +1,8 @@
 import { Result } from 'oxide.ts';
 import { commandList, contextMenuCommandList } from '../commands';
 import { deployGuildCommands } from '../commands/deploy-command';
-import { getCurrentUnixTime } from '../utils/dateUtils';
-import { loadEnv } from '../utils/loadEnv';
+import { getCurrentUnixTime } from '../utils/date-utils';
+import { loadEnv } from '../utils/load-env';
 import { logger } from '../utils/logger';
 
 const deploy = async () => {

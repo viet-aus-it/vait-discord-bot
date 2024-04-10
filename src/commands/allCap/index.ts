@@ -1,7 +1,8 @@
 import { type ChatInputCommandInteraction, SlashCommandBuilder, type TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
-import { fetchLastMessageBeforeId, isBlank } from '../../utils';
+import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
+import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
 import type { Command } from '../builder';
 
 const data = new SlashCommandBuilder()

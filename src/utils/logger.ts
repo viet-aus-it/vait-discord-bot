@@ -1,6 +1,6 @@
 import { WinstonTransport as AxiomTransport } from '@axiomhq/winston';
 import winston from 'winston';
-import { loadEnv } from '../loadEnv';
+import { loadEnv } from './load-env';
 
 loadEnv();
 

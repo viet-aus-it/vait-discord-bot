@@ -1,5 +1,5 @@
 import type { Message } from 'discord.js';
-import { logger } from '../logger';
+import { logger } from './logger';
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
   const regex = new RegExp(`\\b${keyword}\\b`, 'i');

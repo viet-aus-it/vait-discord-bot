@@ -1,6 +1,6 @@
 import { Result } from 'oxide.ts';
 import { cleanupExpiredCode } from './commands/referral/cleanupExpiredCode';
-import { loadEnv } from './utils/loadEnv';
+import { loadEnv } from './utils/load-env';
 import { logger } from './utils/logger';
 
 const cleanup = async () => {
