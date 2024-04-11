@@ -1,4 +1,4 @@
-import { thankUserInMessage } from './commands';
+import { thankUserInMessage } from './slash-commands/reputation/give-reputation';
 import type { CommandConfig } from './utils/message-processor';
 
 export const getConfigs = (): CommandConfig => {

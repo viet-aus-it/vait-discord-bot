@@ -1,5 +1,5 @@
 import { Result } from 'oxide.ts';
-import { cleanupExpiredCode } from '../src/commands/referral/cleanupExpiredCode';
+import { cleanupExpiredCode } from '../src/slash-commands/referral/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 

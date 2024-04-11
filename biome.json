@@ -25,7 +25,7 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 160,
-    "ignore": ["node_modules/**", "./src/commands/referral/generated"]
+    "ignore": ["node_modules/**", "./src/slash-commands/referral/generated"]
   },
   "javascript": {
     "formatter": {

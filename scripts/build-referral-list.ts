@@ -5,7 +5,7 @@ import wretch from 'wretch';
 import { logger } from '../src/utils/logger';
 
 const ozbargainApi = wretch('https://www.ozbargain.com.au/wiki/list_of_referral_links');
-const referralModuleDir = path.join(__dirname, '..', 'src', 'commands', 'referral');
+const referralModuleDir = path.join(__dirname, '..', 'src', 'slash-commands', 'referral');
 const OUTPUT_DIR = path.join(referralModuleDir, 'generated');
 
 const getOzbReferralNodes = async (): Promise<HTMLElement[]> => {
