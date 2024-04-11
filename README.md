@@ -140,19 +140,27 @@ pnpm run prisma:gen
 ### DB GUI
 
 ```bash
-pnpm prisma:studio
+pnpm run prisma:studio
 ```
 
 ### Deploying your commands to a test Discord Server
 
 - Please make sure you have filled out your `GUILD_ID`, `TOKEN` and `CLIENT_ID`
   in the `.env` file.
-- Add your commands into the `src/command/index.ts` file like so.
+- Add your commands into the `src/slash-commands/index.ts` & `src/context-menu-commands/index.ts` file like so.
 
 ```ts
-import yourCommand from './yourCommand';
+// File: src/slash-commands/index.ts
+import yourCommand from './your-command';
 
-export const commandList: Command[] = [yourCommand];
+export const commandList: SlashCommand[] = [yourCommand];
+```
+
+```ts
+// File: src/context-menu-commands/index.ts
+import yourCommand from './your-command';
+
+export const commandList: ContextMenuCommand[] = [yourCommand]
 ```
 
 - Run the `deploy:command` command.
@@ -182,6 +190,7 @@ pnpm run deploy:command
 ### Running lints and tests
 
 ```bash
+pnpm run lint
 pnpm run format
 pnpm run test
 ```
