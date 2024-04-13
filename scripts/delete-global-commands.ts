@@ -1,12 +1,12 @@
 import { Result } from 'oxide.ts';
-import { deployGlobalCommands } from '../commands/deploy-command';
-import { loadEnv } from '../utils/load-env';
-import { logger } from '../utils/logger';
+import { deployGlobalCommands } from '../src/commands/deploy-command';
+import { loadEnv } from '../src/utils/load-env';
+import { logger } from '../src/utils/logger';
 
 const deploy = async () => {
   loadEnv();
-  const token = process.env.TOKEN ?? '';
-  const clientId = process.env.CLIENT_ID ?? '';
+  const token = process.env.TOKEN;
+  const clientId = process.env.CLIENT_ID;
 
   logger.info('[delete-global-commands]: Deleting global commands');
   const op = await Result.safe(

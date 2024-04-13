@@ -33,12 +33,12 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:gen": "prisma generate",
     "prisma:studio": "prisma studio",
-    "deploy:command": "tsx src/scripts/deploy-guild-commands.ts",
-    "delete:command": "tsx src/scripts/delete-guild-commands.ts",
-    "delete:command-global": "tsx src/scripts/delete-global-commands.ts",
+    "deploy:command": "tsx scripts/deploy-guild-commands.ts",
+    "delete:command": "tsx scripts/delete-guild-commands.ts",
+    "delete:command-global": "tsx scripts/delete-global-commands.ts",
     "start:only": "tsx watch --clear-screen=false ./bin/main.ts",
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only",
-    "build:referrals": "tsx src/scripts/build-referral-list.ts"
+    "build:referrals": "tsx scripts/build-referral-list.ts"
   },
   "dependencies": {
     "@axiomhq/winston": "^0.1.3",
