@@ -4,12 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getDbClient } from '../../clients';
 import { autocomplete, execute } from './referralRandom';
-import { type GetAllReferralCodesForServiceInput, getAllReferralCodesForService } from './referralUtils';
+import { type GetAllReferralCodesForServiceInput, getAllReferralCodesForService } from './utils';
 
 vi.mock('../../clients');
 const mockGetDbClient = vi.mocked(getDbClient);
 
-vi.mock('./referralUtils');
+vi.mock('./utils');
 const mockGetAllReferralCodesForService = vi.mocked(getAllReferralCodesForService);
 
 const mockAutocompleteInteraction = mockDeep<AutocompleteInteraction>();
