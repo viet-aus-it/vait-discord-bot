@@ -1,5 +1,5 @@
 import { getDbClient } from '../../clients';
-import { getOrCreateUser } from '../reputation/_helpers';
+import { getOrCreateUser } from '../reputation/utils';
 
 export type CreateReferralInput = {
   userId: string;

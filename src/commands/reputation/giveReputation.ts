@@ -1,7 +1,7 @@
 import { type ChatInputCommandInteraction, type Message, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import type { Subcommand } from '../builder';
-import { getOrCreateUser, updateRep } from './_helpers';
+import { getOrCreateUser, updateRep } from './utils';
 
 const plusRep = async (fromUserId: string, toUserId: string) => {
   const author = await getOrCreateUser(fromUserId);

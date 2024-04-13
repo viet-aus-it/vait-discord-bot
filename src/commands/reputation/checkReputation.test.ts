@@ -1,10 +1,10 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { getOrCreateUser } from './_helpers';
 import { checkReputation } from './checkReputation';
+import { getOrCreateUser } from './utils';
 
-vi.mock('./_helpers');
+vi.mock('./utils');
 const mockGetOrCreateUser = vi.mocked(getOrCreateUser);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 

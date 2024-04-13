@@ -1,10 +1,10 @@
 import { type ChatInputCommandInteraction, Collection, type Message, type User } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { getOrCreateUser, updateRep } from './_helpers';
 import { giveRepSlashCommand, thankUserInMessage } from './giveReputation';
+import { getOrCreateUser, updateRep } from './utils';
 
-vi.mock('./_helpers');
+vi.mock('./utils');
 const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
 const mockUpdateRep = vi.mocked(updateRep);
 

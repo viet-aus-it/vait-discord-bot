@@ -1,7 +1,7 @@
 import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import type { Subcommand } from '../builder';
-import { getRepLeaderboard } from './_helpers';
+import { getRepLeaderboard } from './utils';
 
 export const DEFAULT_LEADERBOARD = 10;
 export const MAX_LEADERBOARD = 25;

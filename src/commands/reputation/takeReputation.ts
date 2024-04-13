@@ -2,7 +2,7 @@ import { type ChatInputCommandInteraction, type GuildMember, SlashCommandSubcomm
 import { logger } from '../../utils/logger';
 import { isAdmin, isModerator } from '../../utils/permission';
 import type { Subcommand } from '../builder';
-import { getOrCreateUser, updateRep } from './_helpers';
+import { getOrCreateUser, updateRep } from './utils';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('take')

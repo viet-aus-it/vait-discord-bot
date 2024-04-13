@@ -2,10 +2,10 @@ import { faker } from '@faker-js/faker';
 import { type ChatInputCommandInteraction, Collection, type GuildMember } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { getRepLeaderboard } from './_helpers';
 import { DEFAULT_LEADERBOARD, MAX_LEADERBOARD, getLeaderboard as getLeaderboardCommand } from './leaderboard';
+import { getRepLeaderboard } from './utils';
 
-vi.mock('./_helpers');
+vi.mock('./utils');
 const mockGetRepLeaderboard = vi.mocked(getRepLeaderboard);
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction<'cached'>>();
