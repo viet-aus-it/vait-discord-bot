@@ -2,7 +2,7 @@ import { addSeconds, getUnixTime, parse } from 'date-fns';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date-utils';
+import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { execute } from './remind-duration';
 import { saveReminder } from './utils';
 

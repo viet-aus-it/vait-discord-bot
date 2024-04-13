@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
-import { convertDateToEpoch } from '../../utils/date-utils';
+import { convertDateToEpoch } from '../../utils/date';
 import type { CommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './utils';
 

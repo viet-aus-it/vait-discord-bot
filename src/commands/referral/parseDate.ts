@@ -1,5 +1,5 @@
 import { isAfter, isEqual, isValid, parse } from 'date-fns';
-import { DAY_MONTH_YEAR_FORMAT } from '../../utils/date-utils';
+import { DAY_MONTH_YEAR_FORMAT } from '../../utils/date';
 
 type ParseInvalidDateError = ['INVALID_DATE'];
 type ParseExpiredDateError = ['EXPIRED_DATE'];
