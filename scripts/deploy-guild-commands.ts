@@ -1,6 +1,7 @@
 import { Result } from 'oxide.ts';
-import { commandList, contextMenuCommandList } from '../src/commands';
-import { deployGuildCommands } from '../src/commands/deploy-command';
+import { commands as slashCommandList } from '../src/slash-commands';
+import { commands as contextMenuCommandList } from '../src/context-menu-commands';
+import { deployGuildCommands } from '../src/deploy-command';
 import { getCurrentUnixTime } from '../src/utils/date';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
@@ -16,8 +17,9 @@ const deploy = async () => {
   }
 
   logger.info('[deploy-guild-commands]: Deploying guild commands');
+  const commands = [...slashCommandList, ...contextMenuCommandList];
   const op = await Result.safe(
-    deployGuildCommands([...commandList, ...contextMenuCommandList,], {
+    deployGuildCommands(commands, {
       token,
       clientId,
       guildId,

@@ -5,9 +5,10 @@ import wretch from 'wretch';
 import { logger } from '../src/utils/logger';
 
 const ozbargainApi = wretch('https://www.ozbargain.com.au/wiki/list_of_referral_links');
-const OUTPUT_DIR = path.join(__dirname, '..', 'src', 'commands', 'referral', 'generated');
+const referralModuleDir = path.join(__dirname, '..', 'src', 'slash-commands', 'referral');
+const OUTPUT_DIR = path.join(referralModuleDir, 'generated');
 
-const getOzbReferralNodes = async () => {
+const getOzbReferralNodes = async (): Promise<HTMLElement[]> => {
   logger.info('[get-ozbargain-referral-nodes]: Fetching Ozbargain referral list');
   const rawHtml = await ozbargainApi.get().text();
   const htmlTree = parseHtml(rawHtml);

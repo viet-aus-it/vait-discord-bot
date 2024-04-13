@@ -1,9 +1,10 @@
 import { InteractionType } from 'discord-api-types/v10';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
-import { commandList, contextMenuCommandList } from '../src/commands';
-import { deployGlobalCommands } from '../src/commands/deploy-command';
 import { getConfigs } from '../src/config';
+import { commands as contextMenuCommandList } from '../src/context-menu-commands';
+import { deployGlobalCommands } from '../src/deploy-command';
+import { commands as slashCommandList } from '../src/slash-commands';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
@@ -21,8 +22,9 @@ const main = async () => {
     // This should only be run once during the bot startup in production.
     // For development usage, please use `pnpm deploy:command`
     logger.info('[main]: Deploying global commands');
+    const commands = [...slashCommandList, ...contextMenuCommandList];
     const op = await Result.safe(
-      deployGlobalCommands([...commandList, ...contextMenuCommandList], {
+      deployGlobalCommands(commands, {
         token,
         clientId: client.user.id,
       })
@@ -45,7 +47,7 @@ const main = async () => {
       if (isCommand) {
         const { commandName } = interaction;
         logger.info(`[main]: RECEIVED COMMAND. COMMAND: ${commandName}`);
-        const command = commandList.find((cmd) => cmd.data.name === commandName);
+        const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
         return await command?.execute(interaction);
       }
 
@@ -61,7 +63,7 @@ const main = async () => {
       if (isAutocomplete) {
         const { commandName } = interaction;
         logger.info(`[main]: RECEIVED AUTOCOMPLETE. COMMAND: ${commandName}`);
-        const command = commandList.find((cmd) => cmd.data.name === commandName);
+        const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
         return await command?.autocomplete?.(interaction);
       }
     } catch (error) {
