@@ -16,7 +16,7 @@ const deploy = async () => {
 
   logger.info('[delete-guild-commands]: Deleting guild commands');
   const op = await Result.safe(
-    deployGuildCommands([], [], {
+    deployGuildCommands([], {
       token,
       clientId,
       guildId,

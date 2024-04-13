@@ -17,7 +17,7 @@ const deploy = async () => {
 
   logger.info('[deploy-guild-commands]: Deploying guild commands');
   const op = await Result.safe(
-    deployGuildCommands(commandList, contextMenuCommandList, {
+    deployGuildCommands([...commandList, ...contextMenuCommandList,], {
       token,
       clientId,
       guildId,
