@@ -1,11 +1,11 @@
 import { ChannelType } from 'discord.js';
 import { Result } from 'oxide.ts';
-import { getDiscordClient } from './clients';
-import { formatReminderMessage, getReminderByTime, removeReminders } from './commands/reminder/reminder-utils';
-import { getReminderChannel } from './commands/serverSettings/server-utils';
-import { getCurrentUnixTime } from './utils/date-utils';
-import { loadEnv } from './utils/load-env';
-import { logger } from './utils/logger';
+import { getDiscordClient } from '../src/clients';
+import { formatReminderMessage, getReminderByTime, removeReminders } from '../src/commands/reminder/reminder-utils';
+import { getReminderChannel } from '../src/commands/serverSettings/server-utils';
+import { getCurrentUnixTime } from '../src/utils/date-utils';
+import { loadEnv } from '../src/utils/load-env';
+import { logger } from '../src/utils/logger';
 
 const broadcastReminder = async () => {
   loadEnv();

@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "include": ["*.config.*", "*.setup.*", "src/**", "mocks/**", "**/*.json", "**/*.md", "**/*.yaml", "**/*.yml"],
+    "include": ["*.config.*", "*.setup.*", "bin/**", "src/**", "mocks/**", "**/*.json", "**/*.md", "**/*.yaml", "**/*.yml"],
     "ignore": ["node_modules", "build", "coverage"]
   },
   "organizeImports": {

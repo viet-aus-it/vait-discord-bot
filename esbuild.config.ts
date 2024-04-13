@@ -5,7 +5,7 @@ import pkg from './package.json';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
-const srcPath = path.resolve(__dirname, 'src');
+const binPath = path.resolve(__dirname, 'bin');
 
 const outputPath = path.resolve(__dirname, 'build');
 
@@ -32,10 +32,10 @@ async function build() {
       bundle: true,
       minify: false,
       entryPoints: [
-        path.resolve(srcPath, 'index.ts'),
-        path.resolve(srcPath, 'broadcast-reminder.ts'),
-        path.resolve(srcPath, 'autobump.ts'),
-        path.resolve(srcPath, 'cleanup-expired-referrals.ts'),
+        path.resolve(binPath, 'main.ts'),
+        path.resolve(binPath, 'broadcast-reminder.ts'),
+        path.resolve(binPath, 'autobump.ts'),
+        path.resolve(binPath, 'cleanup-expired-referrals.ts'),
       ],
       outdir: path.resolve(outputPath, 'server'),
       sourcemap: isProductionBuild() ? 'both' : 'linked',

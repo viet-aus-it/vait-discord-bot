@@ -1,12 +1,12 @@
 import { InteractionType } from 'discord-api-types/v10';
 import { Result } from 'oxide.ts';
-import { getDiscordClient } from './clients';
-import { commandList, contextMenuCommandList } from './commands';
-import { deployGlobalCommands } from './commands/deploy-command';
-import { getConfigs } from './config';
-import { loadEnv } from './utils/load-env';
-import { logger } from './utils/logger';
-import { processMessage } from './utils/message-processor';
+import { getDiscordClient } from '../src/clients';
+import { commandList, contextMenuCommandList } from '../src/commands';
+import { deployGlobalCommands } from '../src/commands/deploy-command';
+import { getConfigs } from '../src/config';
+import { loadEnv } from '../src/utils/load-env';
+import { logger } from '../src/utils/logger';
+import { processMessage } from '../src/utils/message-processor';
 
 const main = async () => {
   loadEnv();
