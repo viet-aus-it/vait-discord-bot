@@ -1,10 +1,10 @@
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { removeReminder } from './reminder-utils';
 import { execute } from './remove';
+import { removeReminder } from './utils';
 
-vi.mock('./reminder-utils');
+vi.mock('./utils');
 const mockRemoveReminder = vi.mocked(removeReminder);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 

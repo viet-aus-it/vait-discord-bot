@@ -4,9 +4,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { convertDateToEpoch } from '../../utils/date-utils';
 import { execute } from './remind-on-date';
-import { saveReminder } from './reminder-utils';
+import { saveReminder } from './utils';
 
-vi.mock('./reminder-utils');
+vi.mock('./utils');
 const mockSaveReminder = vi.mocked(saveReminder);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 

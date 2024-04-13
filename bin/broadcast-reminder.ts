@@ -1,7 +1,7 @@
 import { ChannelType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
-import { formatReminderMessage, getReminderByTime, removeReminders } from '../src/commands/reminder/reminder-utils';
+import { formatReminderMessage, getReminderByTime, removeReminders } from '../src/commands/reminder/utils';
 import { getReminderChannel } from '../src/commands/serverSettings/server-utils';
 import { getCurrentUnixTime } from '../src/utils/date-utils';
 import { loadEnv } from '../src/utils/load-env';

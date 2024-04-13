@@ -2,7 +2,7 @@ import type { Reminder } from '@prisma/client';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { CommandHandler, Subcommand } from '../builder';
-import { getUserReminders } from './reminder-utils';
+import { getUserReminders } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder().setName('list').setDescription('Get a list of your reminders');
 
