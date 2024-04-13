@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import type { CommandHandler, Subcommand } from '../builder';
-import { setReminderChannel } from './server-utils';
+import { setReminderChannel } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('reminder-channel')

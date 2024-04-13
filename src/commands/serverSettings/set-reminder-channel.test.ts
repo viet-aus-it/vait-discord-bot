@@ -1,10 +1,10 @@
 import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
-import { setReminderChannel } from './server-utils';
 import { execute } from './set-reminder-channel';
+import { setReminderChannel } from './utils';
 
-vi.mock('./server-utils');
+vi.mock('./utils');
 const mockSetReminderChannel = vi.mocked(setReminderChannel);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const channelId = 'channel_12345';
