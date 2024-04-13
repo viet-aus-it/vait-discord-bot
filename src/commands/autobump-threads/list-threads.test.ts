@@ -2,9 +2,9 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { listAutobumpThreadsCommand } from './list-threads';
-import { listThreadsByGuild } from './util';
+import { listThreadsByGuild } from './utils';
 
-vi.mock('./util');
+vi.mock('./utils');
 const mockListAutobumpThread = vi.mocked(listThreadsByGuild);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const threadId = 'thread_1234';

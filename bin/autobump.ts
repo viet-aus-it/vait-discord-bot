@@ -1,7 +1,7 @@
 import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
-import { listAllThreads } from '../src/commands/autobump-threads/util';
+import { listAllThreads } from '../src/commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 

@@ -2,9 +2,9 @@ import { ChannelType, type ChatInputCommandInteraction, type PublicThreadChannel
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { addAutobumpThreadCommand } from './add-thread';
-import { addAutobumpThread } from './util';
+import { addAutobumpThread } from './utils';
 
-vi.mock('./util');
+vi.mock('./utils');
 const mockAddAutobumpThread = vi.mocked(addAutobumpThread);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const threadId = 'thread_1234';
