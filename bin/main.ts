@@ -11,7 +11,7 @@ import { processMessage } from '../src/utils/message-processor';
 const main = async () => {
   loadEnv();
   logger.info('[main]: STARTING BOT');
-  const token = process.env.TOKEN ?? '';
+  const token = process.env.TOKEN;
   const client = await getDiscordClient({ token });
 
   if (!client.user) throw new Error('Something went wrong!');

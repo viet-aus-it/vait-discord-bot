@@ -24,7 +24,7 @@ const broadcastReminder = async () => {
     process.exit(0);
   }
 
-  const token = process.env.TOKEN ?? '';
+  const token = process.env.TOKEN;
   const client = await getDiscordClient({ token });
 
   const jobs = await remindersData.reduce(
