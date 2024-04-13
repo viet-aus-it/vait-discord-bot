@@ -121,9 +121,9 @@ Run these commands at the root of the project
 docker compose up -d db
 
 pnpm install
-pnpm prisma:gen
-pnpm deploy:command
-pnpm start
+pnpm run prisma:gen
+pnpm run deploy:command
+pnpm run start
 ```
 
 ---
@@ -133,8 +133,8 @@ pnpm start
 ### DB migration & Client Generation
 
 ```bash
-pnpm prisma:migrate
-pnpm prisma:gen
+pnpm run prisma:migrate
+pnpm run prisma:gen
 ```
 
 ### DB GUI
@@ -158,7 +158,7 @@ export const commandList: Command[] = [yourCommand];
 - Run the `deploy:command` command.
 
 ```bash
-pnpm deploy:command
+pnpm run deploy:command
 ```
 
 - **IMPORTANT:** You should only deploy your commands **ONCE ONLY** after
@@ -182,8 +182,8 @@ pnpm deploy:command
 ### Running lints and tests
 
 ```bash
-pnpm format
-pnpm test
+pnpm run format
+pnpm run test
 ```
 
 ---
