@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import type { CommandHandler, Subcommand } from '../builder';
-import { removeAutobumpThread } from './util';
+import { removeAutobumpThread } from './utils';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('remove')

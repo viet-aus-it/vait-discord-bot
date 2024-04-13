@@ -1,7 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { CommandHandler, Subcommand } from '../builder';
-import { removeReminder } from './reminder-utils';
+import { removeReminder } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('delete')

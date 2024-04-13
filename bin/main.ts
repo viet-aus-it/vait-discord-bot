@@ -22,7 +22,7 @@ const main = async () => {
     // For development usage, please use `pnpm deploy:command`
     logger.info('[main]: Deploying global commands');
     const op = await Result.safe(
-      deployGlobalCommands(commandList, contextMenuCommandList, {
+      deployGlobalCommands([...commandList, ...contextMenuCommandList], {
         token,
         clientId: client.user.id,
       })

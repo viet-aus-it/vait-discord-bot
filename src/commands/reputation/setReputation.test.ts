@@ -2,10 +2,10 @@ import type { ChatInputCommandInteraction, GuildMember, User } from 'discord.js'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { isAdmin } from '../../utils/permission';
-import { getOrCreateUser, updateRep } from './_helpers';
 import { setReputation } from './setReputation';
+import { getOrCreateUser, updateRep } from './utils';
 
-vi.mock('./_helpers');
+vi.mock('./utils');
 const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
 const mockUpdateRep = vi.mocked(updateRep);
 

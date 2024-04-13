@@ -3,7 +3,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import parseDuration from 'parse-duration';
 import type { CommandHandler, Subcommand } from '../builder';
-import { saveReminder } from './reminder-utils';
+import { saveReminder } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('in')

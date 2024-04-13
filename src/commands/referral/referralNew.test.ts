@@ -2,16 +2,16 @@ import { addDays } from 'date-fns';
 import type { AutocompleteInteraction, ChatInputCommandInteraction, Guild } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
-import { getOrCreateUser } from '../reputation/_helpers';
+import { getOrCreateUser } from '../reputation/utils';
 import { DEFAULT_EXPIRY_DAYS_FROM_NOW, autocomplete, execute } from './referralNew';
-import { type CreateReferralInput, createReferralCode, findExistingReferralCode } from './referralUtils';
 import { services } from './services';
+import { type CreateReferralInput, createReferralCode, findExistingReferralCode } from './utils';
 
-vi.mock('./referralUtils');
+vi.mock('./utils');
 const mockFindExistingReferralCode = vi.mocked(findExistingReferralCode);
 const mockCreateReferralCode = vi.mocked(createReferralCode);
 
-vi.mock('../reputation/_helpers');
+vi.mock('../reputation/utils');
 const mockGetOrCreateUser = vi.mocked(getOrCreateUser);
 
 const mockAutocompleteInteraction = mockDeep<AutocompleteInteraction>();

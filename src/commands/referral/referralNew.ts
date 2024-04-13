@@ -4,8 +4,8 @@ import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import type { AutocompleteHandler, CommandHandler } from '../builder';
 import { parseDate } from './parseDate';
-import { createReferralCode, findExistingReferralCode } from './referralUtils';
 import { searchServices, services } from './services';
+import { createReferralCode, findExistingReferralCode } from './utils';
 
 export const DEFAULT_EXPIRY_DAYS_FROM_NOW = 30;
 

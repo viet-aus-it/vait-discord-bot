@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { convertDateToEpoch } from '../../utils/date-utils';
 import type { CommandHandler, Subcommand } from '../builder';
-import { saveReminder } from './reminder-utils';
+import { saveReminder } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('on')

@@ -3,10 +3,10 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { convertDateToEpoch } from '../../utils/date-utils';
-import { updateReminder } from './reminder-utils';
 import { execute } from './update';
+import { updateReminder } from './utils';
 
-vi.mock('./reminder-utils');
+vi.mock('./utils');
 const mockUpdateReminder = vi.mocked(updateReminder);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 

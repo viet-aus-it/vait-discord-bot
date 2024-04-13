@@ -2,9 +2,9 @@ import type { ChatInputCommandInteraction, PublicThreadChannel } from 'discord.j
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeAutobumpThreadCommand } from './remove-thread';
-import { removeAutobumpThread } from './util';
+import { removeAutobumpThread } from './utils';
 
-vi.mock('./util');
+vi.mock('./utils');
 const mockRemoveAutobumpThread = vi.mocked(removeAutobumpThread);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const mockThread = mockDeep<PublicThreadChannel>();

@@ -3,8 +3,8 @@ import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive } from '../../utils/random';
 import type { AutocompleteHandler, CommandHandler } from '../builder';
-import { getAllReferralCodesForService } from './referralUtils';
 import { searchServices } from './services';
+import { getAllReferralCodesForService } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('random')

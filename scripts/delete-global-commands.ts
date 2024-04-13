@@ -10,7 +10,7 @@ const deploy = async () => {
 
   logger.info('[delete-global-commands]: Deleting global commands');
   const op = await Result.safe(
-    deployGlobalCommands([], [], {
+    deployGlobalCommands([], {
       token,
       clientId,
     })

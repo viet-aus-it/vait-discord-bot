@@ -19,23 +19,19 @@ const registerCommands = async ({ request, token, body }: DiscordRequestPayload)
   return rest.put(request, { body });
 };
 
-export const deployGuildCommands = async (commandList: Command[], contextMenuCommandList: ContextMenuCommand[], config: DiscordRequestConfig) => {
+export const deployGuildCommands = async (commandList: Array<Command | ContextMenuCommand>, config: DiscordRequestConfig) => {
   const { token, clientId, guildId } = config;
 
-  const commands = [...commandList, ...contextMenuCommandList].map((cmd) => cmd.data.toJSON());
+  const commands = commandList.map((cmd) => cmd.data.toJSON());
 
   const request = Routes.applicationGuildCommands(clientId, guildId);
   return registerCommands({ request, token, body: commands });
 };
 
-export const deployGlobalCommands = async (
-  commandList: Command[],
-  contextMenuCommandList: ContextMenuCommand[],
-  config: Omit<DiscordRequestConfig, 'guildId'>
-) => {
+export const deployGlobalCommands = async (commandList: Array<Command | ContextMenuCommand>, config: Omit<DiscordRequestConfig, 'guildId'>) => {
   const { token, clientId } = config;
 
-  const commands = [...commandList, ...contextMenuCommandList].map((cmd) => cmd.data.toJSON());
+  const commands = commandList.map((cmd) => cmd.data.toJSON());
 
   const request = Routes.applicationCommands(clientId);
   return registerCommands({ request, token, body: commands });

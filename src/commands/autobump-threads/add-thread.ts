@@ -2,7 +2,7 @@ import { ChannelType, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import type { CommandHandler, Subcommand } from '../builder';
-import { addAutobumpThread } from './util';
+import { addAutobumpThread } from './utils';
 
 const data = new SlashCommandSubcommandBuilder()
   .setName('add')
