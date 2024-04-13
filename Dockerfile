@@ -37,4 +37,4 @@ COPY --chown=node:node --from=build /app/build build
 
 USER node
 ENV NODE_ENV=production
-CMD ["--enable-source-maps", "build/server/index.js"]
+CMD ["--enable-source-maps", "build/server/main.js"]

@@ -1,9 +1,9 @@
 import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
-import { getDiscordClient } from './clients';
-import { listAllThreads } from './commands/autobump-threads/util';
-import { loadEnv } from './utils/load-env';
-import { logger } from './utils/logger';
+import { getDiscordClient } from '../src/clients';
+import { listAllThreads } from '../src/commands/autobump-threads/util';
+import { loadEnv } from '../src/utils/load-env';
+import { logger } from '../src/utils/logger';
 
 const autobump = async () => {
   loadEnv();

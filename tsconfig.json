@@ -17,6 +17,6 @@
     "outDir": "build",
     "noEmit": true
   },
-  "include": ["src", "mocks", "*.config.*", "*.setup.*"],
+  "include": ["bin", "src", "mocks", "*.config.*", "*.setup.*"],
   "exclude": ["node_modules", "build"]
 }
