@@ -29,7 +29,7 @@
   },
   "javascript": {
     "formatter": {
-      "trailingComma": "es5",
+      "trailingCommas": "es5",
       "semicolons": "always",
       "quoteProperties": "asNeeded",
       "quoteStyle": "single",
