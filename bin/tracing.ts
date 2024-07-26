@@ -5,6 +5,7 @@ import { registerInstrumentations } from '@opentelemetry/instrumentation';
 import { Resource } from '@opentelemetry/resources';
 import { BatchSpanProcessor, NodeTracerProvider, SimpleSpanProcessor, type SpanExporter, type SpanProcessor } from '@opentelemetry/sdk-trace-node';
 import { ATTR_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { PrismaInstrumentation } from '@prisma/instrumentation';
 
 const SERVICE_NAME = 'discord-bot';
 
@@ -45,6 +46,6 @@ export function setupTracer() {
 
   registerInstrumentations({
     tracerProvider: provider,
-    instrumentations: [getNodeAutoInstrumentations()],
+    instrumentations: [getNodeAutoInstrumentations(), new PrismaInstrumentation({ middleware: true, enabled: true })],
   });
 }
