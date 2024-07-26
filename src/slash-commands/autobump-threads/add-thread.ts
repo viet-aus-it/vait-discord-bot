@@ -23,7 +23,7 @@ export const addAutobumpThreadCommand: SlashCommandHandler = async (interaction)
 
   const op = await Result.safe(addAutobumpThread(guildId, thread.id));
   if (op.isErr()) {
-    logger.error(`[add-autobump-thread]: Cannot save thread ${thread.id} to be autobumped for guild ${guildId}`);
+    logger.error(`[add-autobump-thread]: Cannot save thread ${thread.id} to be autobumped for guild ${guildId}`, op.unwrapErr());
     await interaction.reply('ERROR: Cannot save this thread to be autobumped for this server. Please try again.');
     return;
   }

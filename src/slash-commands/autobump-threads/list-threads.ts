@@ -20,7 +20,7 @@ export const listAutobumpThreadsCommand: SlashCommandHandler = async (interactio
   logger.info(`[list-autobump-threads]: Listing autobump threads for guild ${guildId}`);
 
   if (threads.isErr()) {
-    logger.error(`[list-autobump-threads]: Cannot get list of threads from the database for guild ${guildId}`);
+    logger.error(`[list-autobump-threads]: Cannot get list of threads from the database for guild ${guildId}`, threads.unwrapErr());
     await interaction.reply("ERROR: Cannot get list of threads from the database, maybe the server threads aren't setup yet?");
     return;
   }
