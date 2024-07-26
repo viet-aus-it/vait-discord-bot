@@ -3,7 +3,7 @@ import { Routes } from 'discord-api-types/v10';
 import type { ContextMenuCommand } from './context-menu-commands/builder';
 import type { SlashCommand } from './slash-commands/builder';
 
-interface DiscordRequestConfig {
+export interface DiscordRequestConfig {
   token: string;
   clientId: string;
   guildId: string;
