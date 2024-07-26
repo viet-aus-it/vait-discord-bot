@@ -19,6 +19,7 @@ COPY . .
 
 ENV NODE_ENV=production
 RUN pnpm build
+RUN pnpm install --production --frozen-lockfile --ignore-scripts
 
 ####################
 # Production image #
@@ -34,6 +35,7 @@ RUN set -xe && \
     rm -rf /var/lib/apt/lists/* /usr/share/man/* /usr/share/doc/*
 
 COPY --chown=node:node --from=build /app/build build
+COPY --chown=node:node --from=build /app/node_modules node_modules
 
 USER node
 ENV NODE_ENV=production
