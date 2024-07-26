@@ -7,7 +7,7 @@ loadEnv();
 const consoleTransport = new winston.transports.Console();
 const axiomTransport = new AxiomTransport({
   dataset: process.env.AXIOM_DATASET,
-  token: process.env.AXIOM_TOKEN,
+  token: process.env.AXIOM_TOKEN || '',
   orgId: process.env.AXIOM_ORG_ID,
 });
 
