@@ -55,6 +55,7 @@
     "@opentelemetry/semantic-conventions": "^1.25.1",
     "@prisma/adapter-neon": "^5.17.0",
     "@prisma/client": "^5.17.0",
+    "@prisma/instrumentation": "^5.17.0",
     "cowsay": "^1.6.0",
     "date-fns": "^3.6.0",
     "discord-api-types": "^0.37.93",
