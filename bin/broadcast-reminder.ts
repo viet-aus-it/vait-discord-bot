@@ -1,3 +1,4 @@
+import { SpanStatusCode, context, trace } from '@opentelemetry/api';
 import { ChannelType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -11,18 +12,48 @@ import { setupTracer } from './tracing';
 const broadcastReminder = async () => {
   loadEnv();
   setupTracer();
+  const tracer = trace.getTracer('discord-bot');
+  const span = tracer.startSpan('broadcast-reminder', { root: true });
+  trace.setSpan(context.active(), span);
+
   logger.info('BROADCASTING REMINDERS');
+  span.setStatus({
+    code: SpanStatusCode.UNSET,
+    message: 'Broadcasting reminders',
+  });
+  span.setAttributes({
+    'app.entrypoint': 'broadcast-reminder',
+  });
 
   const queryTime = getCurrentUnixTime();
   const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
   if (reminders.isErr()) {
     logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Query Time: ${queryTime}`);
+    span.setStatus({
+      code: SpanStatusCode.ERROR,
+      message: 'Cannot retrieve reminders.',
+    });
+    span.setAttributes({
+      'app.reminders.query_time': queryTime,
+      'app.reminders.error': reminders.unwrapErr().toString(),
+    });
+    span.end();
+
     process.exit(1);
   }
 
   const remindersData = reminders.unwrap();
   if (remindersData.length === 0) {
     logger.info(`[broadcast-reminder]: No reminders to broadcast. Query Time: ${queryTime}`);
+    span.setStatus({
+      code: SpanStatusCode.OK,
+      message: 'No reminders to broadcast.',
+    });
+    span.setAttributes({
+      'app.reminders.query_time': queryTime,
+    });
+    span.end();
+
     process.exit(0);
   }
 
@@ -73,6 +104,16 @@ const broadcastReminder = async () => {
   await removeReminders(remindersData);
 
   logger.info(`[broadcast-reminder]: Reminders fan out complete. Jobs: ${jobs.length}`);
+  span.setStatus({
+    code: SpanStatusCode.OK,
+    message: 'Reminders fan out complete.',
+  });
+  span.setAttributes({
+    'app.reminders.query_time': queryTime,
+    'app.reminders.broadcasted': jobs.length,
+  });
+  span.end();
+
   process.exit(0);
 };
 

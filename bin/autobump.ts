@@ -1,3 +1,4 @@
+import { SpanStatusCode, context, trace } from '@opentelemetry/api';
 import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -9,17 +10,43 @@ import { setupTracer } from './tracing';
 const autobump = async () => {
   loadEnv();
   setupTracer();
+  const tracer = trace.getTracer('discord-bot');
+  const span = tracer.startSpan('autobump', { root: true });
+  trace.setSpan(context.active(), span);
+
   logger.info('AUTOBUMPING THREADS');
+  span.setStatus({
+    code: SpanStatusCode.UNSET,
+    message: 'Auto bumping threads',
+  });
+  span.setAttributes({
+    'app.entrypoint': 'autobump',
+  });
 
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
     logger.error('[autobump]: Cannot retrieve autobump thread lists');
+    span.setStatus({
+      code: SpanStatusCode.ERROR,
+      message: 'Cannot retrieve autobump thread lists',
+    });
+    span.setAttributes({
+      'app.autobump.error': settings.unwrapErr().toString(),
+    });
+    span.end();
+
     process.exit(1);
   }
 
   const data = settings.unwrap();
   if (data.length === 0) {
     logger.info('[autobump]: No autobump threads settings found');
+    span.setStatus({
+      code: SpanStatusCode.OK,
+      message: 'No autobump threads settings found',
+    });
+    span.end();
+
     process.exit(0);
   }
 
@@ -48,6 +75,15 @@ const autobump = async () => {
   );
 
   logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
+  span.setStatus({
+    code: SpanStatusCode.OK,
+    message: 'Thread autobump complete.',
+  });
+  span.setAttributes({
+    'app.autobump.threads': jobs.length,
+  });
+  span.end();
+
   process.exit(0);
 };
 
