@@ -1,15 +1,16 @@
 ################
 # Build assets #
 ################
-FROM node:20.10 as build
+FROM node:20.12 AS build
 WORKDIR /app
 
 # Install global node modules: pnpm
 RUN npm install -g pnpm@9.6
+ENV PNPM_ARGS="--frozen-lockfile --ignore-scripts"
 
 # Install Node modules
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm install ${PNPM_ARGS}
 
 # Generate Prisma schemas
 COPY prisma ./prisma
@@ -19,12 +20,12 @@ COPY . .
 
 ENV NODE_ENV=production
 RUN pnpm build
-RUN pnpm install --production --frozen-lockfile --ignore-scripts
+RUN pnpm install --production ${PNPM_ARGS}
 
 ####################
 # Production image #
 ####################
-FROM node:20.10-slim as production
+FROM node:20.12-slim AS production
 WORKDIR /app
 
 RUN set -xe && \
