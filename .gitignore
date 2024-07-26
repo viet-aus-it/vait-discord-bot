@@ -31,3 +31,6 @@ yarn-error.log*
 
 # Local db for testing
 db
+
+# Local OpenObserve for tracing
+openobserve

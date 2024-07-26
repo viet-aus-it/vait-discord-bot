@@ -8,3 +8,12 @@ services:
       - 5432:5432
     volumes:
       - ./db/data:/var/lib/postgresql/data
+
+  tracing:
+    image: public.ecr.aws/zinclabs/openobserve:latest
+    restart: unless-stopped
+    env_file: ".env"
+    ports:
+      - "5080:5080"
+    volumes:
+      - ./openobserve/data:/data
