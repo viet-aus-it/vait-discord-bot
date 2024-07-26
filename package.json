@@ -20,7 +20,7 @@
   "scripts": {
     "prepare": "husky",
     "typecheck": "tsc",
-    "build": "rimraf build && tsx esbuild.config.ts",
+    "build": "tsup",
     "build:typecheck": "pnpm typecheck && pnpm build",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -74,7 +74,7 @@
     "lint-staged": "^15.2.7",
     "msw": "^2.3.4",
     "prisma": "^5.17.0",
-    "rimraf": "^6.0.1",
+    "tsup": "^8.2.3",
     "tsx": "^4.16.2",
     "typescript": "^5.5.4",
     "vitest": "^2.0.4",
