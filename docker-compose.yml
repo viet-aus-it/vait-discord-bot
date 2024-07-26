@@ -8,3 +8,15 @@ services:
       - 5432:5432
     volumes:
       - ./db/data:/var/lib/postgresql/data
+
+  tracing:
+    image: jaegertracing/jaeger:2.2.0
+    restart: no
+    ports:
+      - 16686:16686
+      - 4317:4317
+      - 4318:4318
+      - 5778:5778
+      - 9411:9411
+    environment:
+      - LOG_LEVEL=debug
