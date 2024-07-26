@@ -5,7 +5,7 @@ FROM node:20.10 as build
 WORKDIR /app
 
 # Install global node modules: pnpm
-RUN npm install -g pnpm@8.15
+RUN npm install -g pnpm@9.6
 
 # Install Node modules
 COPY package.json pnpm-lock.yaml ./
