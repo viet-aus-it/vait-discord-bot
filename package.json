@@ -60,6 +60,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@faker-js/faker": "^9.3.0",
+    "@testcontainers/postgresql": "^10.16.0",
     "@types/node": "^22.10.2",
     "@types/node-fetch": "^2.6.12",
     "@vitest/coverage-v8": "^2.1.8",
@@ -73,6 +74,7 @@
     "pino-pretty": "^13.0.0",
     "prisma": "^6.0.1",
     "prisma-json-types-generator": "^3.2.2",
+    "testcontainers": "^10.16.0",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
