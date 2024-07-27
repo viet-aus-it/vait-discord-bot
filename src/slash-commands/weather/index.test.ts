@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { DEFAULT_LOCATION, weather } from '.';
-import { server } from '../../../mocks/server';
+import { server } from '../../../mocks/msw/server';
 import { WEATHER_URL } from './fetch-weather';
 
 const mockWeatherMessage = faker.lorem.words(10);

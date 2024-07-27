@@ -12,6 +12,6 @@ export default defineConfig({
       exclude: ['src/utils/random.*', 'src/config.ts', 'src/deploy-command.ts', 'src/clients/**.ts', 'src/*-commands/index.ts', 'src/*-commands/**/utils.ts'],
     },
     clearMocks: true,
-    setupFiles: ['./vitest.setup.ts'],
+    setupFiles: ['./mocks/logger/setup.ts', './mocks/msw/setup.ts'],
   },
 });
