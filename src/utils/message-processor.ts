@@ -1,3 +1,4 @@
+import { SpanStatusCode, trace } from '@opentelemetry/api';
 import type { Message } from 'discord.js';
 import { logger } from './logger';
 
@@ -34,11 +35,31 @@ export interface CommandConfig {
 }
 
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
+  const tracer = trace.getTracer('discord-bot');
+  const span = tracer.startSpan('process-message');
+
+  span.setStatus({
+    code: SpanStatusCode.UNSET,
+    message: 'Processing message',
+  });
+
   const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
 
   try {
     await Promise.all(keywordPromises);
+
+    span.setStatus({
+      code: SpanStatusCode.OK,
+      message: 'Finish processing message',
+    });
+    span.end();
   } catch (error) {
     logger.error('ERROR PROCESSING MESSAGE', error);
+    span.setStatus({
+      code: SpanStatusCode.ERROR,
+      message: 'Error processing message',
+    });
+    span.setAttribute('app.error', (error as Error).toString());
+    span.end();
   }
 };
