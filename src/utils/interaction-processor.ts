@@ -20,6 +20,9 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
       return;
     }
+
+    logger.info(`[process-interaction]: COMMAND HANDLED SUCCESSFULLY: ${commandName}`);
+    return;
   }
 
   const isContextMenuCommand = interaction.isContextMenuCommand();
@@ -37,6 +40,9 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
       return;
     }
+
+    logger.info(`[process-interaction]: CONTEXT MENU COMMAND HANDLED SUCCESSFULLY: ${commandName}`);
+    return;
   }
 
   const isAutocomplete = interaction.type === InteractionType.ApplicationCommandAutocomplete;
@@ -54,7 +60,9 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}, ERROR: ${op.unwrapErr()}`);
       return;
     }
-    return await command?.autocomplete?.(interaction);
+
+    logger.info(`[process-interaction]: AUTOCOMPLETE HANDLED SUCCESSFULLY: ${commandName}`);
+    return;
   }
 
   logger.info(`[process-interaction]: INTERACTION TYPE NOT RECOGNIZED. TYPE: ${interaction.type}`);
