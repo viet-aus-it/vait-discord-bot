@@ -13,5 +13,6 @@ export default defineConfig({
     },
     clearMocks: true,
     setupFiles: ['./mocks/logger/setup.ts', './mocks/msw/setup.ts'],
+    globalSetup: ['./mocks/database/globalSetup.ts'],
   },
 });

@@ -63,6 +63,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@faker-js/faker": "^8.4.1",
+    "@testcontainers/postgresql": "^10.10.4",
     "@types/node": "^20.14.12",
     "@types/node-fetch": "^2.6.11",
     "@types/ws": "^8.5.11",
@@ -74,6 +75,7 @@
     "lint-staged": "^15.2.7",
     "msw": "^2.3.4",
     "prisma": "^5.17.0",
+    "testcontainers": "^10.10.4",
     "tsup": "^8.2.3",
     "tsx": "^4.16.2",
     "typescript": "^5.5.4",
