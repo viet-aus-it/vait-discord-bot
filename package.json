@@ -59,6 +59,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@faker-js/faker": "^9.5.0",
+    "@testcontainers/postgresql": "^10.16.0",
     "@types/node": "^22.13.4",
     "@types/node-fetch": "^2.6.12",
     "@vitest/coverage-v8": "^3.0.5",
@@ -72,6 +73,7 @@
     "pino-pretty": "^13.0.0",
     "prisma": "^6.3.1",
     "prisma-json-types-generator": "^3.2.2",
+    "testcontainers": "^10.16.0",
     "tsup": "^8.3.6",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
@@ -79,6 +81,6 @@
     "vitest-mock-extended": "^2.0.2"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@biomejs/biome", "@prisma/client", "@prisma/engines", "esbuild", "msw", "prisma"]
+    "onlyBuiltDependencies": ["@biomejs/biome", "@prisma/client", "@prisma/engines", "cpu-features", "esbuild", "msw", "prisma", "ssh2"]
   }
 }
