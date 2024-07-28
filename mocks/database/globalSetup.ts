@@ -1,8 +1,7 @@
 import childProcess from 'node:child_process';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
-import { beforeAll } from 'vitest';
 
-beforeAll(async () => {
+export async function setup() {
   console.log('Starting Database');
   const db = await new PostgreSqlContainer('postgres:15-alpine').start();
   const databaseUrl = db.getConnectionUri();
@@ -14,9 +13,9 @@ beforeAll(async () => {
   childProcess.execSync('pnpm run prisma:migrate');
   console.log('Prisma Migrate ran');
 
-  return async () => {
+  return async function teardown() {
     console.log('Stopping Database');
     await db.stop();
     console.log('Database stopped');
   };
-});
+}
