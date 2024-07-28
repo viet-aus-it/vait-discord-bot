@@ -6,15 +6,22 @@ import { loadEnv } from '../utils/load-env';
 
 let prisma: PrismaClient;
 
+loadEnv();
+const DATABASE_URL = process.env.DATABASE_URL;
+
 if (process.env.NODE_ENV === 'production') {
-  loadEnv();
   neonConfig.webSocketConstructor = ws;
-  const connectionString = process.env.DATABASE_URL;
-  const pool = new Pool({ connectionString });
+  const pool = new Pool({ connectionString: DATABASE_URL });
   const adapter = new PrismaNeon(pool);
   prisma = new PrismaClient({ adapter });
 } else {
-  prisma = new PrismaClient();
+  prisma = new PrismaClient({
+    datasources: {
+      db: {
+        url: DATABASE_URL,
+      },
+    },
+  });
 }
 
 export const getDbClient = () => prisma;
