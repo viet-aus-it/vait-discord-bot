@@ -31,7 +31,7 @@ describe('processMessage', () => {
 
     const message = {
       content: 'star this thing :sadparrot:',
-    } as Message;
+    } as Message<true>;
 
     await processMessage(message, config);
 

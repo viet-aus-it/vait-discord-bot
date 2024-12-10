@@ -8,7 +8,7 @@ vi.mock('./utils');
 const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
 const mockUpdateRep = vi.mocked(updateRep);
 
-const mockMessage = mockDeep<Message>();
+const mockMessage = mockDeep<Message<true>>();
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 describe('Thank user in a message', () => {

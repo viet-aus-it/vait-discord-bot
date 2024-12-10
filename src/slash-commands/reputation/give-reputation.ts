@@ -13,7 +13,7 @@ const plusRep = async (fromUserId: string, toUserId: string) => {
   });
 };
 
-export const thankUserInMessage = async (msg: Message) => {
+export const thankUserInMessage = async (msg: Message<true>) => {
   const { author, channel, mentions } = msg;
   if (author.bot) return; // return if author is a Discord bot
 

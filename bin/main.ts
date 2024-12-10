@@ -1,3 +1,4 @@
+import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
 import { getConfigs } from '../src/config';
@@ -40,7 +41,7 @@ const main = async () => {
 
   const configs = getConfigs();
   client.on('messageCreate', (msg) => {
-    return processMessage(msg, configs);
+    return processMessage(msg as Message<true>, configs);
   });
 
   client.on('interactionCreate', async (interaction) => {

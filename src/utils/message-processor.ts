@@ -12,12 +12,12 @@ type CommandPromises = Array<CommandPromise>;
 
 interface KeywordMatchCommand {
   matchers: Array<string>;
-  fn: (message: Message) => Promise<void>;
+  fn: (message: Message<true>) => Promise<void>;
 }
 
 type KeywordMatchCommands = Array<KeywordMatchCommand>;
 
-const processKeywordMatch = (message: Message, config: KeywordMatchCommands): CommandPromises => {
+const processKeywordMatch = (message: Message<true>, config: KeywordMatchCommands): CommandPromises => {
   return config.map((conf) => {
     const hasKeyword = conf.matchers.some((keyword) => keywordMatched(message.content, keyword));
 
@@ -33,7 +33,7 @@ export interface CommandConfig {
   keywordMatchCommands: KeywordMatchCommands;
 }
 
-export const processMessage = async (message: Message, config: CommandConfig): Promise<void> => {
+export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
   const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
 
   try {
