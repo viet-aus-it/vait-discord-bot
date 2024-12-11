@@ -1,30 +1,42 @@
-import { WinstonTransport as AxiomTransport } from '@axiomhq/winston';
-import winston from 'winston';
+import pino from 'pino';
 import { loadEnv } from './load-env';
 
 loadEnv();
 
-const consoleTransport = new winston.transports.Console();
-const axiomTransport = new AxiomTransport({
-  dataset: process.env.AXIOM_DATASET,
-  token: process.env.AXIOM_TOKEN || '',
-  orgId: process.env.AXIOM_ORG_ID,
-});
-
-const devOptions: winston.LoggerOptions = {
+const devOptions: pino.LoggerOptions = {
+  name: 'vait-chatbot-dev',
   level: 'debug',
-  defaultMeta: { service: 'vait-chatbot-dev', timestamp: Date.now() },
-  transports: [consoleTransport],
-  format: winston.format.combine(winston.format.timestamp(), winston.format.prettyPrint({ colorize: true })),
+  timestamp: true,
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+    },
+  },
 };
 
-const prodOptions: winston.LoggerOptions = {
+const prodOptions: pino.LoggerOptions = {
+  name: 'vait-chatbot',
   level: 'info',
-  defaultMeta: { service: 'vait-chatbot', timestamp: Date.now() },
-  transports: [consoleTransport, axiomTransport],
-  exceptionHandlers: [axiomTransport],
-  rejectionHandlers: [axiomTransport],
-  format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
+  timestamp: true,
+  transport: {
+    targets: [
+      {
+        target: '@axiomhq/pino',
+        options: {
+          dataset: process.env.AXIOM_DATASET,
+          token: process.env.AXIOM_TOKEN,
+          orgId: process.env.AXIOM_ORG_ID,
+        },
+      },
+      {
+        target: 'pino/file',
+        options: {
+          destination: 1,
+        },
+      },
+    ],
+  },
 };
 
-export const logger = winston.createLogger(process.env.NODE_ENV === 'production' ? prodOptions : devOptions);
+export const logger = pino(process.env.NODE_ENV === 'production' ? prodOptions : devOptions);

@@ -1,5 +1,6 @@
 import path from 'node:path';
 import { copy } from 'esbuild-plugin-copy';
+import pino from 'esbuild-plugin-pino';
 import { defineConfig } from 'tsup';
 import pkg from './package.json';
 
@@ -59,5 +60,6 @@ export default defineConfig({
         },
       ],
     }),
+    pino({ transports: ['pino/file', '@axiomhq/pino'] }),
   ],
 });
