@@ -25,7 +25,7 @@ const cowPath = path.resolve(__dirname, 'node_modules', 'cowsay', 'cows', 'defau
 
 export default defineConfig({
   platform: 'node',
-  target: 'node20',
+  target: 'node22',
   bundle: true,
   minify: true,
   entry: [
