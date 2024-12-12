@@ -10,7 +10,7 @@ datasource db {
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
-  previewFeatures = ["relationJoins"]
+  previewFeatures = ["relationJoins", "omitApi"]
 }
 
 model User {
@@ -56,9 +56,11 @@ model Reminder {
 }
 
 model ServerChannelsSettings {
-  guildId         String   @unique
-  reminderChannel String?  @unique
-  autobumpThreads String[] @default([])
+  guildId          String   @unique
+  reminderChannel  String?  @unique
+  autobumpThreads  String[] @default([])
+  aocKey           String?
+  aocLeaderboardId String?
 
   @@index(guildId)
 }

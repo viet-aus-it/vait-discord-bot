@@ -1,5 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma: PrismaClient = new PrismaClient();
+const prisma = new PrismaClient({
+  omit: {
+    serverChannelsSettings: {
+      aocKey: true,
+    },
+  },
+});
 
 export const getDbClient = () => prisma;
