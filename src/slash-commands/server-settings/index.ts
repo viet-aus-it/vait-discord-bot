@@ -1,11 +1,16 @@
 import { type GuildMember, SlashCommandBuilder } from 'discord.js';
 import { isAdmin, isModerator } from '../../utils/permission';
 import type { SlashCommand, SlashCommandHandler } from '../builder';
+import setAocSettings from './set-aoc-settings';
 import setReminderChannel from './set-reminder-channel';
 
-const data = new SlashCommandBuilder().setName('server-settings').setDescription('ADMIN ONLY COMMAND. Server Settings.').addSubcommand(setReminderChannel.data);
+const data = new SlashCommandBuilder()
+  .setName('server-settings')
+  .setDescription('ADMIN ONLY COMMAND. Server Settings.')
+  .addSubcommand(setReminderChannel.data)
+  .addSubcommand(setAocSettings.data);
 
-const subcommands = [setReminderChannel];
+const subcommands = [setReminderChannel, setAocSettings];
 
 const execute: SlashCommandHandler = async (interaction) => {
   const member = interaction.member as GuildMember;
