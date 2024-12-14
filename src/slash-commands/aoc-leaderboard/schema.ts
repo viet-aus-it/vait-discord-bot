@@ -21,7 +21,7 @@ export type Member = z.infer<typeof Member>;
 
 export const AocLeaderboard = z
   .object({
-    event: z.number(),
+    event: z.coerce.number(),
     members: z.record(z.string(), Member),
   })
   .passthrough()

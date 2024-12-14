@@ -1,5 +1,6 @@
 import ask8ball from './8ball';
 import allCap from './all-cap';
+import getAocLeaderboard from './aoc-leaderboard';
 import autobumpThread from './autobump-threads';
 import type { SlashCommand } from './builder';
 import cowsayCommand from './cowsay';
@@ -33,4 +34,5 @@ export const commands: SlashCommand[] = [
   reminder,
   serverSettings,
   removeUserByRole,
+  getAocLeaderboard,
 ];
