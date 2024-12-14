@@ -10,7 +10,11 @@ datasource db {
 generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
-  previewFeatures = ["relationJoins"]
+  previewFeatures = ["relationJoins", "omitApi"]
+}
+
+generator json {
+  provider = "prisma-json-types-generator"
 }
 
 model User {
@@ -56,9 +60,21 @@ model Reminder {
 }
 
 model ServerChannelsSettings {
-  guildId         String   @unique
-  reminderChannel String?  @unique
-  autobumpThreads String[] @default([])
+  guildId          String   @unique
+  reminderChannel  String?  @unique
+  autobumpThreads  String[] @default([])
+  aocKey           String?
+  aocLeaderboardId String?
+
+  @@index(guildId)
+}
+
+model AocLeaderboard {
+  guildId String @unique
+
+  /// [AocLeaderboardData]
+  result    Json
+  updatedAt DateTime @default(now())
 
   @@index(guildId)
 }

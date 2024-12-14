@@ -26,3 +26,12 @@ export const getReminderChannel = async (guildId: string) => {
 
   return serverSettings.reminderChannel;
 };
+
+export const setAocSettings = async (guildId: string, aocKey: string, aocLeaderboardId: string) => {
+  const db = getDbClient();
+  return db.serverChannelsSettings.upsert({
+    where: { guildId },
+    update: { aocKey, aocLeaderboardId },
+    create: { guildId, aocKey },
+  });
+};
