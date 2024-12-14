@@ -27,7 +27,6 @@ export const AocLeaderboard = z
   .passthrough()
   .transform((board) => {
     const sortedMembers = Object.values(board.members)
-      .filter((member) => member.local_score === 0)
       .toSorted((prev, next) => next.local_score - prev.local_score)
       .reduce(
         (accum, member) => {
