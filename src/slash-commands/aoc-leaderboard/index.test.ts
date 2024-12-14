@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { subHours } from 'date-fns';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -13,6 +14,9 @@ const mockGetAocSettings = vi.mocked(getAocSettings);
 const mockFetchAndSaveLeaderboard = vi.mocked(fetchAndSaveLeaderboard);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const parsedMockData = AocLeaderboard.parse(mockAocData);
+const mockKey = faker.string.alphanumeric({ length: 127 });
+const mockLeaderboardId = faker.string.alphanumeric();
+const mockGuildId = faker.string.numeric();
 
 const mockSystemTime = new Date(2024, 11, 25, 16, 0, 0); // 25/12/2024 16:00:00
 const oneHourEarlier = subHours(mockSystemTime, 1); // 25/12/2024 15:00:00
@@ -114,9 +118,9 @@ Last updated at: 25/12/2024 16:00
         updatedAt: oneHourEarlier,
       });
       mockGetAocSettings.mockResolvedValueOnce({
-        guildId: '12345',
-        aocKey: '12345',
-        aocLeaderboardId: '12345',
+        guildId: mockGuildId,
+        aocKey: mockKey,
+        aocLeaderboardId: mockLeaderboardId,
       });
       mockFetchAndSaveLeaderboard.mockRejectedValueOnce(new Error('Synthetic error fetch and save'));
 
@@ -133,9 +137,9 @@ Last updated at: 25/12/2024 16:00
         updatedAt: oneHourEarlier,
       });
       mockGetAocSettings.mockResolvedValueOnce({
-        guildId: '12345',
-        aocKey: '12345',
-        aocLeaderboardId: '12345',
+        guildId: mockGuildId,
+        aocKey: mockKey,
+        aocLeaderboardId: mockLeaderboardId,
       });
       mockFetchAndSaveLeaderboard.mockResolvedValueOnce({
         result: parsedMockData,
