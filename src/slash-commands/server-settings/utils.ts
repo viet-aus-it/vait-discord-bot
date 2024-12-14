@@ -31,7 +31,18 @@ export const setAocSettings = async (guildId: string, aocKey: string, aocLeaderb
   const db = getDbClient();
   return db.serverChannelsSettings.upsert({
     where: { guildId },
-    update: { aocKey, aocLeaderboardId },
-    create: { guildId, aocKey },
+    update: {
+      aocKey,
+      aocLeaderboardId,
+    },
+    create: {
+      guildId,
+      aocKey,
+      aocLeaderboardId,
+    },
+    select: {
+      guildId: true,
+      aocLeaderboardId: true,
+    },
   });
 };

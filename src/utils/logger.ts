@@ -13,6 +13,7 @@ const devOptions: pino.LoggerOptions = {
       colorize: true,
     },
   },
+  enabled: !process.env.VITEST,
 };
 
 const prodOptions: pino.LoggerOptions = {
