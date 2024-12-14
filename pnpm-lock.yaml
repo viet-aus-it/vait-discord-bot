@@ -96,6 +96,9 @@ importers:
       prisma:
         specifier: ^6.0.1
         version: 6.0.1
+      prisma-json-types-generator:
+        specifier: ^3.2.2
+        version: 3.2.2(prisma@6.0.1)(typescript@5.7.2)
       tsup:
         specifier: ^8.3.5
         version: 8.3.5(postcss@8.4.33)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -771,6 +774,9 @@ packages:
       prisma:
         optional: true
 
+  '@prisma/debug@6.0.0':
+    resolution: {integrity: sha512-eUjoNThlDXdyJ1iQ2d7U6aTVwm59EwvODb5zFVNJEokNoSiQmiYWNzZIwZyDmZ+j51j42/0iTaHIJ4/aZPKFRg==}
+
   '@prisma/debug@6.0.1':
     resolution: {integrity: sha512-jQylgSOf7ibTVxqBacnAlVGvek6fQxJIYCQOeX2KexsfypNzXjJQSS2o5s+Mjj2Np93iSOQUaw6TvPj8syhG4w==}
 
@@ -782,6 +788,9 @@ packages:
 
   '@prisma/fetch-engine@6.0.1':
     resolution: {integrity: sha512-T36bWFVGeGYYSyYOj9d+O9G3sBC+pAyMC+jc45iSL63/Haq1GrYjQPgPMxrEj9m739taXrupoysRedQ+VyvM/Q==}
+
+  '@prisma/generator-helper@6.0.0':
+    resolution: {integrity: sha512-5DkG7hspZo6U4OtqI2W0JcgtY37sr7HgT8Q0W/sjL4VoV4px6ivzK6Eif5bKM7q+S4yFUHtjUt/3s69ErfLn7A==}
 
   '@prisma/get-platform@6.0.1':
     resolution: {integrity: sha512-zspC9vlxAqx4E6epMPMLLBMED2VD8axDe8sPnquZ8GOsn6tiacWK0oxrGK4UAHYzYUVuMVUApJbdXB2dFpLhvg==}
@@ -1801,6 +1810,14 @@ packages:
     resolution: {integrity: sha512-Kkpbhhdjw2qQs2O2DGX+8m5OVqEcbB9HRBvuYM9pgrjEFUg30A9LmXNlTAUj4S9kgtGyrMbTzVjH7E+s5Re2yg==}
     engines: {node: ^10 || ^12 || >=14}
 
+  prisma-json-types-generator@3.2.2:
+    resolution: {integrity: sha512-kvEbJPIP5gxk65KmLs0nAvY+CxpqVMWb4OsEvXlyXZmp2IGfi5f52BUV7ezTYQNjRPZyR4QlayWJXffoqVVAfA==}
+    engines: {node: '>=14.0'}
+    hasBin: true
+    peerDependencies:
+      prisma: ^5 || ^6
+      typescript: ^5.6.2
+
   prisma@6.0.1:
     resolution: {integrity: sha512-CaMNFHkf+DDq8zq3X/JJsQ4Koy7dyWwwtOKibkT/Am9j/tDxcfbg7+lB1Dzhx18G/+RQCMgjPYB61bhRqteNBQ==}
     engines: {node: '>=18.18'}
@@ -2768,6 +2785,8 @@ snapshots:
     optionalDependencies:
       prisma: 6.0.1
 
+  '@prisma/debug@6.0.0': {}
+
   '@prisma/debug@6.0.1': {}
 
   '@prisma/engines-version@5.23.0-27.5dbef10bdbfb579e07d35cc85fb1518d357cb99e': {}
@@ -2784,6 +2803,10 @@ snapshots:
       '@prisma/debug': 6.0.1
       '@prisma/engines-version': 5.23.0-27.5dbef10bdbfb579e07d35cc85fb1518d357cb99e
       '@prisma/get-platform': 6.0.1
+
+  '@prisma/generator-helper@6.0.0':
+    dependencies:
+      '@prisma/debug': 6.0.0
 
   '@prisma/get-platform@6.0.1':
     dependencies:
@@ -3801,6 +3824,13 @@ snapshots:
       nanoid: 3.3.7
       picocolors: 1.1.1
       source-map-js: 1.2.0
+
+  prisma-json-types-generator@3.2.2(prisma@6.0.1)(typescript@5.7.2):
+    dependencies:
+      '@prisma/generator-helper': 6.0.0
+      prisma: 6.0.1
+      tslib: 2.8.1
+      typescript: 5.7.2
 
   prisma@6.0.1:
     dependencies:

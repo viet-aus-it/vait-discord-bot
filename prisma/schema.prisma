@@ -13,6 +13,10 @@ generator client {
   previewFeatures = ["relationJoins", "omitApi"]
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 model User {
   id String @id
 
@@ -61,6 +65,16 @@ model ServerChannelsSettings {
   autobumpThreads  String[] @default([])
   aocKey           String?
   aocLeaderboardId String?
+
+  @@index(guildId)
+}
+
+model AocLeaderboard {
+  guildId String @unique
+
+  /// [AocLeaderboardData]
+  result    Json
+  updatedAt DateTime @default(now())
 
   @@index(guildId)
 }
