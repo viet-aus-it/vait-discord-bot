@@ -18,8 +18,8 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const op = await Result.safe(setAocSettings(guildId, key, leaderboardId));
   if (op.isErr()) {
-    logger.info(`[set-aoc-key]: ${interaction.member!.user.username} failed to set AOC Key.`);
-    await interaction.reply('Cannot set this AOC key. Please try again');
+    logger.info(`[set-aoc-key]: ${interaction.member!.user.username} failed to set AOC Key. Error: ${op.unwrapErr()}`);
+    await interaction.reply(`Cannot set this AOC key. Please try again. Error: ${op.unwrapErr()}`);
     return;
   }
 

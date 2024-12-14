@@ -17,7 +17,7 @@ describe('Set aoc key', () => {
   });
 
   it('should reply with error if it cannot set the key', async () => {
-    mockSetAocSettings.mockRejectedValueOnce(new Error('Synthetic Error'));
+    mockSetAocSettings.mockRejectedValueOnce(new Error('Synthetic Error save aoc settings'));
     mockChatInputInteraction.options.getString.mockImplementation((name) => {
       switch (name) {
         case 'key': {
@@ -37,14 +37,12 @@ describe('Set aoc key', () => {
 
     expect(mockSetAocSettings).toHaveBeenCalledOnce();
     expect(mockChatInputInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockChatInputInteraction.reply).toHaveBeenCalledWith('Cannot set this AOC key. Please try again');
+    expect(mockChatInputInteraction.reply).toHaveBeenCalledWith('Cannot set this AOC key. Please try again. Error: Error: Synthetic Error save aoc settings');
   });
 
   it('Should be able to set AOC key and reply', async () => {
     mockSetAocSettings.mockResolvedValueOnce({
       guildId: faker.string.numeric(),
-      reminderChannel: null,
-      autobumpThreads: [],
       aocLeaderboardId: faker.string.numeric(),
     });
     mockChatInputInteraction.options.getString.mockImplementation((name) => {
