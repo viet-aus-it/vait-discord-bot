@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
+import dotenv from '@dotenvx/dotenvx';
 import { z } from 'zod';
 
 const configSchema = z.object({
@@ -28,8 +27,7 @@ declare global {
 }
 
 export const loadEnv = () => {
-  const config = dotenv.config();
-  dotenvExpand.expand(config);
+  dotenv.config();
 
   const validatedEnv = configSchema.safeParse(process.env);
   if (!validatedEnv.success) {
