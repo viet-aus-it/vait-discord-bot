@@ -1,6 +1,6 @@
 import childProcess from 'node:child_process';
-import dotenv from '@dotenvx/dotenvx';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
+import { loadEnv } from '../../src/utils/load-env';
 
 function setupDb() {
   console.log('Running Prisma Migrate');
@@ -26,7 +26,7 @@ async function localSetup() {
 }
 
 async function ciSetup() {
-  dotenv.config();
+  loadEnv();
   console.log('Database is running at', process.env.DATABASE_URL);
 
   setupDb();
