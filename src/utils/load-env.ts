@@ -27,7 +27,7 @@ declare global {
 }
 
 export const loadEnv = () => {
-  dotenv.config();
+  dotenv.config({ quiet: true });
 
   const validatedEnv = configSchema.safeParse(process.env);
   if (!validatedEnv.success) {
