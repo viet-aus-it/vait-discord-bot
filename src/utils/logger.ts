@@ -23,14 +23,6 @@ const prodOptions: pino.LoggerOptions = {
   transport: {
     targets: [
       {
-        target: '@axiomhq/pino',
-        options: {
-          dataset: process.env.AXIOM_DATASET,
-          token: process.env.AXIOM_TOKEN,
-          orgId: process.env.AXIOM_ORG_ID,
-        },
-      },
-      {
         target: 'pino/file',
         options: {
           destination: 1,
