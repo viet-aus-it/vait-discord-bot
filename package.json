@@ -77,5 +77,15 @@
     "typescript": "^5.7.2",
     "vitest": "^2.1.8",
     "vitest-mock-extended": "^2.0.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "msw",
+      "prisma"
+    ]
   }
 }
