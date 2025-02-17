@@ -28,8 +28,8 @@ sed -i'' -e "s/#GUILD_ID=FOR_DEVELOPMENT_ONLY/GUILD_ID=${GUILD_ID}/g" .env
 
 NODE_VER=$(node --version)
 PNPM_VER=$(pnpm --version)
-if [[ $NODE_VER != *"18"* ]] || [[ $PNPM_VER != *"8"* ]]; then
-  echo "Please ensure you are using the correct version of Node (v18) and/or PNPM (v8) or else you cannot install the dependencies."
+if [[ $NODE_VER != *"22"* ]] || [[ $PNPM_VER != *"10"* ]]; then
+  echo "Please ensure you are using the correct version of Node (v22) and/or PNPM (v10) or else you cannot install the dependencies."
 else
   echo "Installing node dependencies"
   pnpm install

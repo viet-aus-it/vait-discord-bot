@@ -1,11 +1,11 @@
 ################
 # Build assets #
 ################
-FROM node:22.12 AS build
+FROM node:22.14 AS build
 WORKDIR /app
 
 # Install global node modules: pnpm
-RUN npm install -g pnpm@9.15
+RUN npm install -g pnpm@10.4
 ENV PNPM_ARGS="--frozen-lockfile --ignore-scripts"
 
 # Install Node modules
@@ -25,7 +25,7 @@ RUN pnpm install --production ${PNPM_ARGS}
 ####################
 # Production image #
 ####################
-FROM node:22.12-slim AS production
+FROM node:22.14-slim AS production
 WORKDIR /app
 
 RUN set -xe && \

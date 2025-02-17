@@ -28,8 +28,8 @@ please visit [our Wiki page](https://github.com/viet-aus-it/vait-discord-bot/wik
 
 - To run the bot process, you'll need:
 
-  - [Node 20+](https://nodejs.org/en/)
-  - [PNPM 8+](https://pnpm.io/)
+  - [Node 22+](https://nodejs.org/en/)
+  - [PNPM 10+](https://pnpm.io/)
 
 - To run the database, you'll need either:
   - Docker 20+, Docker Compose 1.28+ - To run locally
