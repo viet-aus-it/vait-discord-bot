@@ -17,6 +17,9 @@ function setupDb(databaseUrl?: string) {
   console.log('Prisma Migrate ran');
 }
 
+/**
+ * In local, start a separate database container using Testcontainers
+ */
 async function localSetup() {
   console.log('Starting Database');
   const db = await new PostgreSqlContainer('postgres:17-alpine').start();
@@ -32,6 +35,10 @@ async function localSetup() {
   };
 }
 
+/**
+ * in CI, we will use GitHub Actions to attach a service container to test,
+ * therefore, testcontainers isn't needed.
+ */
 async function ciSetup() {
   loadEnv();
   console.log('Database is running at', process.env.DATABASE_URL);
@@ -45,10 +52,5 @@ async function ciSetup() {
 
 export async function setup() {
   const isInCI = !!process.env.CI;
-
-  if (isInCI) {
-    return ciSetup();
-  }
-
-  return localSetup();
+  return isInCI ? ciSetup() : localSetup();
 }
