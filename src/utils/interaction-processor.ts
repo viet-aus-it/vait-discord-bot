@@ -46,6 +46,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           code: SpanStatusCode.ERROR,
           message: 'Error handling command',
         });
+        span.recordException(op.unwrapErr());
         span.setAttributes({
           'app.error': op.unwrapErr().toString(),
         });

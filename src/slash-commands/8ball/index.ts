@@ -1,3 +1,4 @@
+import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive } from '../../utils/random';
@@ -26,10 +27,24 @@ const REPLIES = [
 const get8BallReply = () => REPLIES[getRandomIntInclusive(0, REPLIES.length - 1)];
 
 export const ask8Ball = async (interaction: ChatInputCommandInteraction) => {
-  const question = interaction.options.getString('question', true);
-  const reply = get8BallReply();
-  logger.info(`[8ball]: Q: ${question} - A: ${reply}`);
-  await interaction.reply(`Q: ${question}\nA: ${reply}`);
+  const tracer = trace.getTracer('discord-bot');
+  return tracer.startActiveSpan(`command-${ask8Ball.name}`, async (span) => {
+    const question = interaction.options.getString('question', true);
+    const reply = get8BallReply();
+
+    span.setAttributes({
+      'command.8ball.question': question,
+      'command.8ball.reply': reply,
+    });
+    logger.info(`[8ball]: Q: ${question} - A: ${reply}`);
+
+    await interaction.reply(`Q: ${question}\nA: ${reply}`);
+
+    span.setStatus({
+      code: SpanStatusCode.OK,
+    });
+    span.end();
+  });
 };
 
 const command: SlashCommand = {
