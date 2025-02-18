@@ -106,7 +106,11 @@ Last updated at: 25/12/2024 16:00
       mockFetchLeaderboard.mockResolvedValueOnce(parsedMockData);
       mockInteraction.guildId = guildId;
 
-      await execute(mockInteraction);
+      const result = execute(mockInteraction);
+
+      vi.runAllTimers();
+
+      await result;
 
       const message = captor<string>();
       expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
