@@ -8,6 +8,7 @@ vi.mock('./utils');
 const mockListAutobumpThread = vi.mocked(listThreadsByGuild);
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const threadId = 'thread_1234';
+const guildId = '1234';
 
 describe('List autobump threads', () => {
   beforeEach(() => {
