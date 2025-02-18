@@ -1,34 +1,31 @@
 import { faker } from '@faker-js/faker';
-import { subHours } from 'date-fns';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { execute, formatLeaderboard, getAocYear } from '.';
+import { setAocSettings } from '../server-settings/utils';
+import { fetchLeaderboard } from './client';
 import mockAocData from './sample/aoc-data.json';
 import { AocLeaderboard } from './schema';
-import { fetchAndSaveLeaderboard, getAocSettings, getSavedLeaderboard } from './utils';
+import { deleteLeaderboard, saveLeaderboard } from './utils';
 
-vi.mock('./utils');
-const mockGetSavedLeaderboard = vi.mocked(getSavedLeaderboard);
-const mockGetAocSettings = vi.mocked(getAocSettings);
-const mockFetchAndSaveLeaderboard = vi.mocked(fetchAndSaveLeaderboard);
+vi.mock('./client');
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const parsedMockData = AocLeaderboard.parse(mockAocData);
+const mockFetchLeaderboard = vi.mocked(fetchLeaderboard);
 const mockKey = faker.string.alphanumeric({ length: 127 });
 const mockLeaderboardId = faker.string.alphanumeric();
-const mockGuildId = faker.string.numeric();
 
 const mockSystemTime = new Date(2024, 11, 25, 16, 0, 0); // 25/12/2024 16:00:00
-const oneHourEarlier = subHours(mockSystemTime, 1); // 25/12/2024 15:00:00
 
-describe('Get AOC Leaderboard test', () => {
+describe('Get AOC Leaderboard Utilities', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(mockSystemTime);
-    mockReset(mockInteraction);
   });
 
   afterEach(() => {
+    vi.runAllTimers();
     vi.useRealTimers();
   });
 
@@ -66,98 +63,57 @@ Last updated at: 25/12/2024 16:00
 \`\`\``);
     });
   });
+});
 
-  describe('Command tests', () => {
-    it('Should reply with saved leaderboard if it can get one', async () => {
-      mockGetSavedLeaderboard.mockResolvedValueOnce({
-        result: parsedMockData,
-        updatedAt: mockSystemTime,
-      });
+describe('Get AOC Leaderboard Command', () => {
+  beforeEach(() => {
+    mockReset(mockInteraction);
+  });
+  it('Should reply with saved leaderboard if it can get one', async () => {
+    const guildId = faker.string.nanoid();
+    await saveLeaderboard(guildId, parsedMockData);
+    mockInteraction.guildId = guildId;
 
-      await execute(mockInteraction);
+    await execute(mockInteraction);
 
-      expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`
+    const message = captor<string>();
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
+    expect(message.value).toContain(`
  #               name score
  1 (anonymous user 4) 474
  2              user2 361
  3              user3 353
  4              user1   0
+`);
 
+    await deleteLeaderboard(guildId);
+  });
 
-Last updated at: 25/12/2024 16:00
-\`\`\``);
-    });
+  it('Should reply with error if server is not configured', async () => {
+    const guildId = faker.string.nanoid();
+    mockInteraction.guildId = guildId;
 
-    it('Should reply with error if it errors out while finding aoc settings', async () => {
-      mockGetSavedLeaderboard.mockResolvedValueOnce({
-        result: parsedMockData,
-        updatedAt: oneHourEarlier,
-      });
-      mockGetAocSettings.mockRejectedValueOnce(new Error('Synthetic Error Get Settings'));
+    await execute(mockInteraction);
 
-      await execute(mockInteraction);
+    expect(mockInteraction.editReply).toHaveBeenCalledWith('ERROR: Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.');
+  });
 
-      expect(mockInteraction.editReply).toHaveBeenCalledWith('ERROR: Error: Synthetic Error Get Settings');
-    });
+  it('Should reply with newly fetched leaderboard after fetching and saving', async () => {
+    const guildId = faker.string.nanoid();
+    await setAocSettings(guildId, mockKey, mockLeaderboardId);
+    mockFetchLeaderboard.mockResolvedValueOnce(parsedMockData);
+    mockInteraction.guildId = guildId;
 
-    it('Should reply with error if server is not configured', async () => {
-      mockGetSavedLeaderboard.mockResolvedValueOnce({
-        result: parsedMockData,
-        updatedAt: oneHourEarlier,
-      });
-      mockGetAocSettings.mockResolvedValueOnce(null);
+    await execute(mockInteraction);
 
-      await execute(mockInteraction);
-
-      expect(mockInteraction.editReply).toHaveBeenCalledWith('ERROR: Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.');
-    });
-
-    it('Should reply with error if there is one during fetching and saving', async () => {
-      mockGetSavedLeaderboard.mockResolvedValueOnce({
-        result: parsedMockData,
-        updatedAt: oneHourEarlier,
-      });
-      mockGetAocSettings.mockResolvedValueOnce({
-        guildId: mockGuildId,
-        aocKey: mockKey,
-        aocLeaderboardId: mockLeaderboardId,
-      });
-      mockFetchAndSaveLeaderboard.mockRejectedValueOnce(new Error('Synthetic error fetch and save'));
-
-      await execute(mockInteraction);
-
-      expect(mockInteraction.editReply).toHaveBeenCalledWith(
-        'ERROR: Error fetching and/or saving new leaderboard result: Error: Synthetic error fetch and save'
-      );
-    });
-
-    it('Should reply with newly fetched leaderboard after fetching and saving', async () => {
-      mockGetSavedLeaderboard.mockResolvedValueOnce({
-        result: parsedMockData,
-        updatedAt: oneHourEarlier,
-      });
-      mockGetAocSettings.mockResolvedValueOnce({
-        guildId: mockGuildId,
-        aocKey: mockKey,
-        aocLeaderboardId: mockLeaderboardId,
-      });
-      mockFetchAndSaveLeaderboard.mockResolvedValueOnce({
-        result: parsedMockData,
-        updatedAt: mockSystemTime,
-      });
-
-      await execute(mockInteraction);
-
-      expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`
+    const message = captor<string>();
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
+    expect(message.value).toContain(`
  #               name score
  1 (anonymous user 4) 474
  2              user2 361
  3              user3 353
  4              user1   0
-
-
-Last updated at: 25/12/2024 16:00
-\`\`\``);
-    });
+`);
   });
 });

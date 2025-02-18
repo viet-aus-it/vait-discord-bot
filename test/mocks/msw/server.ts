@@ -1,4 +1,4 @@
 import { setupServer } from 'msw/node';
-import { handlers } from './handlers';
+import { aocHandlers } from './aoc-handlers';
 
-export const server = setupServer(...handlers);
+export const server = setupServer(...aocHandlers);
