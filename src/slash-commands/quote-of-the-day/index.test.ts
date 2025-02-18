@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { getQuoteOfTheDay } from '.';
-import { server } from '../../../mocks/server';
+import { server } from '../../../mocks/msw/server';
 import { ZEN_QUOTES_URL } from './fetch-quote';
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
