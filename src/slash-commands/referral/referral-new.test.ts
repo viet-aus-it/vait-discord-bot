@@ -50,29 +50,37 @@ describe('autocomplete', () => {
 
     expect(mockAutocompleteInteraction.respond).toBeCalledWith(respondInput);
     expect(respondInput.value).toMatchInlineSnapshot(`
-    [
-      {
-        "name": "ahm health insurance",
-        "value": "ahm health insurance",
-      },
-      {
-        "name": "doctors' health fund",
-        "value": "doctors' health fund",
-      },
-      {
-        "name": "phoenix health fund",
-        "value": "phoenix health fund",
-      },
-      {
-        "name": "qantas insurance - health insurance",
-        "value": "qantas insurance - health insurance",
-      },
-      {
-        "name": "westfund health insurance",
-        "value": "westfund health insurance",
-      },
-    ]
-  `);
+      [
+        {
+          "name": "ahm health insurance",
+          "value": "ahm health insurance",
+        },
+        {
+          "name": "doctors health by avant",
+          "value": "doctors health by avant",
+        },
+        {
+          "name": "phoenix health fund",
+          "value": "phoenix health fund",
+        },
+        {
+          "name": "qantas insurance - health insurance",
+          "value": "qantas insurance - health insurance",
+        },
+        {
+          "name": "queensland country health fund",
+          "value": "queensland country health fund",
+        },
+        {
+          "name": "teachers health",
+          "value": "teachers health",
+        },
+        {
+          "name": "westfund health insurance",
+          "value": "westfund health insurance",
+        },
+      ]
+    `);
   });
 });
 
