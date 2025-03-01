@@ -39,7 +39,7 @@ jobs:
         run: |
           if [[ `git status --porcelain` ]]; then
             git checkout -b autoupdate/referrals
-            git add src/commands/referral
+            git add src/slash-commands/referral
             git commit -m "chore: update ozbargain referrals list"
             git push -f -u origin autoupdate/referrals
             gh pr create --title "chore: update ozbargain referrals list" --body "this is generated via build-ozbargain-referrals-list.yml" --base master --head autoupdate/referrals
