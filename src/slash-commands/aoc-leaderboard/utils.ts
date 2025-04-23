@@ -1,5 +1,5 @@
+import type { ServerChannelsSettings } from '@prisma/client';
 import { getDbClient } from '../../clients';
-import type { ServerChannelsSettings } from '../../generated/prisma';
 import { logger } from '../../utils/logger';
 import { fetchLeaderboard } from './client';
 

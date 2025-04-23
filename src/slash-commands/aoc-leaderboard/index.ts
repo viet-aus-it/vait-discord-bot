@@ -1,8 +1,8 @@
+import type { AocLeaderboard } from '@prisma/client';
 import { differenceInMinutes } from 'date-fns';
 import { format } from 'date-fns';
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
-import type { AocLeaderboard } from '../../generated/prisma';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { logger } from '../../utils/logger';
 import type { SlashCommand } from '../builder';
