@@ -6,8 +6,6 @@ import { removeUserByRole } from '.';
 const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
 
 describe('Remove users who have the role', () => {
-  beforeAll(() => {});
-
   beforeEach(() => {
     mockReset(mockInteraction);
   });
