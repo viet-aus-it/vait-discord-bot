@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder, type TextChannel } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder, type TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
@@ -8,7 +8,8 @@ import type { SlashCommand } from '../builder';
 const data = new SlashCommandBuilder()
   .setName('allcap')
   .setDescription('Make your text L O O K S  L I K E  T H I S')
-  .addStringOption((option) => option.setName('sentence').setDescription('Sentence to All cap'));
+  .addStringOption((option) => option.setName('sentence').setDescription('Sentence to All cap'))
+  .setContexts(InteractionContextType.Guild);
 
 const generateAllCapText = (message: string) =>
   message

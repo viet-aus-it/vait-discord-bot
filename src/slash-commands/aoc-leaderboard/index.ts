@@ -1,7 +1,7 @@
 import type { AocLeaderboard } from '@prisma/client';
 import { differenceInMinutes } from 'date-fns';
 import { format } from 'date-fns';
-import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { logger } from '../../utils/logger';
@@ -12,7 +12,8 @@ export const DEFAULT_LEADERBOARD = 10;
 
 const data = new SlashCommandBuilder()
   .setName('aoc-leaderboard')
-  .setDescription("Fetch advent of code leaderboard. Will get current year, or the previous one if it isn't Dec yet.");
+  .setDescription("Fetch advent of code leaderboard. Will get current year, or the previous one if it isn't Dec yet.")
+  .setContexts(InteractionContextType.Guild);
 
 export function getAocYear(): number {
   const DECEMBER = 11;

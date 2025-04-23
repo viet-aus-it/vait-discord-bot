@@ -1,4 +1,4 @@
-import { Collection, type GuildMember, type Role } from 'discord.js';
+import { Collection, type GuildMember, PermissionFlagsBits, type Role } from 'discord.js';
 import { describe, expect, it } from 'vitest';
 import { isAdmin, isModerator } from './permission';
 
@@ -40,8 +40,22 @@ describe('isAdmin', () => {
   });
 
   it('Should return false for user without permissions', () => {
-    const fakeMember = { permissions: { has: () => false } } as unknown as GuildMember;
+    const fakeMember = {
+      permissions: { has: () => false },
+    } as unknown as GuildMember;
     const output = isAdmin(fakeMember);
     expect(output).toBeFalsy();
+  });
+
+  it('Should return true for user with admin permissions', () => {
+    const fakeMember = {
+      permissions: {
+        has: (flag: bigint): boolean => {
+          return flag === PermissionFlagsBits.Administrator;
+        },
+      },
+    } as unknown as GuildMember;
+    const output = isAdmin(fakeMember);
+    expect(output).toBeTruthy();
   });
 });

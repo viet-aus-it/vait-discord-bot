@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
 import type { SlashCommand } from '../builder';
@@ -7,7 +7,8 @@ import { randomInsultGenerator } from './insult-generator';
 const data = new SlashCommandBuilder()
   .setName('insult')
   .setDescription('Generate an insult. If a target is provided, it will insult them directly.')
-  .addStringOption((option) => option.setName('target').setDescription('The name to insult'));
+  .addStringOption((option) => option.setName('target').setDescription('The name to insult'))
+  .setContexts(InteractionContextType.Guild);
 
 export const insult = async (interaction: ChatInputCommandInteraction) => {
   const target = interaction.options.getString('target');

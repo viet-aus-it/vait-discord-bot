@@ -1,9 +1,9 @@
-import { ApplicationCommandType, ContextMenuCommandBuilder, type ContextMenuCommandInteraction } from 'discord.js';
+import { ApplicationCommandType, ContextMenuCommandBuilder, type ContextMenuCommandInteraction, InteractionContextType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import type { ContextMenuCommand } from '../builder';
 
-export const data = new ContextMenuCommandBuilder().setName('Pin').setType(ApplicationCommandType.Message);
+export const data = new ContextMenuCommandBuilder().setName('Pin').setType(ApplicationCommandType.Message).setContexts(InteractionContextType.Guild);
 
 export const pinMessage = async (interaction: ContextMenuCommandInteraction) => {
   if (!interaction.isMessageContextMenuCommand()) return;

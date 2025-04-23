@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder, type TextChannel } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder, type TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
@@ -9,7 +9,8 @@ import type { SlashCommand } from '../builder';
 const data = new SlashCommandBuilder()
   .setName('mock')
   .setDescription('Mock a sentence. SpOnGeBoB sTyLe.')
-  .addStringOption((option) => option.setName('sentence').setDescription('The sentence to mock'));
+  .addStringOption((option) => option.setName('sentence').setDescription('The sentence to mock'))
+  .setContexts(InteractionContextType.Guild);
 
 const generateMockText = (message: string) =>
   message

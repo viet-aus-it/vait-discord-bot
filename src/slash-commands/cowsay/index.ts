@@ -1,5 +1,5 @@
 import { say } from 'cowsay';
-import { type ChatInputCommandInteraction, SlashCommandBuilder, type TextChannel } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder, type TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
@@ -12,7 +12,8 @@ const WRAP_TEXT_LIMIT = 35;
 const data = new SlashCommandBuilder()
   .setName('cowsay')
   .setDescription('Make a cow say your chat message')
-  .addStringOption((option) => option.setName('sentence').setDescription('What you want the cow to say'));
+  .addStringOption((option) => option.setName('sentence').setDescription('What you want the cow to say'))
+  .setContexts(InteractionContextType.Guild);
 
 // Remove backtick in message in case of nesting cowsay
 export const removeBacktick = (message: string) => {

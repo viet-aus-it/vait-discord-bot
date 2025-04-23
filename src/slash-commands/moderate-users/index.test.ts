@@ -2,31 +2,14 @@ import { type APIRole, type ChatInputCommandInteraction, Collection, type Role, 
 import { beforeEach, describe, expect, it } from 'vitest';
 import { type DeepMockProxy, mockDeep, mockReset } from 'vitest-mock-extended';
 import { removeUserByRole } from '.';
-import { isAdmin, isModerator } from '../../utils/permission';
-
-vi.mock('../../utils/permission');
-const mockIsSentFromAdmin = vi.mocked(isAdmin);
-const mockIsSentFromModerator = vi.mocked(isModerator);
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
 
 describe('Remove users who have the role', () => {
-  beforeAll(() => {
-    mockIsSentFromAdmin.mockReturnValue(true);
-    mockIsSentFromModerator.mockReturnValue(true);
-  });
+  beforeAll(() => {});
 
   beforeEach(() => {
     mockReset(mockInteraction);
-  });
-
-  it('should reply with an error message if the user is not an admin or a moderator', async () => {
-    mockIsSentFromAdmin.mockReturnValueOnce(false);
-    mockIsSentFromModerator.mockReturnValueOnce(false);
-
-    await removeUserByRole(mockInteraction);
-
-    expect(mockInteraction.reply).toHaveBeenCalledWith("You don't have enough permission to run this command.");
   });
 
   it('should reply with an error message if the command is not executed in a thread', async () => {

@@ -1,21 +1,23 @@
-import { type ChatInputCommandInteraction, type GuildMember, SlashCommandBuilder, type ThreadChannel } from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  type GuildMember,
+  InteractionContextType,
+  PermissionFlagsBits,
+  SlashCommandBuilder,
+  type ThreadChannel,
+} from 'discord.js';
 import { logger } from '../../utils/logger';
-import { isAdmin, isModerator } from '../../utils/permission';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
   .setName('removeuserbyrole')
   .setDescription('Remove all users with a specific role from thread')
-  .addRoleOption((option) => option.setName('name').setDescription('Tag a role to remove the list of matching users').setRequired(true));
+  .addRoleOption((option) => option.setName('name').setDescription('Tag a role to remove the list of matching users').setRequired(true))
+  .setContexts(InteractionContextType.Guild)
+  .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels);
 
 export const removeUserByRole = async (interaction: ChatInputCommandInteraction) => {
   const guildMember = interaction.member as GuildMember;
-  if (!isAdmin(guildMember) && !isModerator(guildMember)) {
-    logger.info(`[remove-user-by-role]: ${guildMember.user.tag} doesn't have enough permission to run this command.`);
-    await interaction.reply("You don't have enough permission to run this command.");
-    return;
-  }
-
   const channel = interaction.channel as ThreadChannel;
   if (!channel?.isThread()) {
     logger.info(`[remove-user-by-role]: ${guildMember.user.tag} tried to remove all users with role from entire channel.`);

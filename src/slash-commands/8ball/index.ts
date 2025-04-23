@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive } from '../../utils/random';
 import type { SlashCommand } from '../builder';
@@ -6,7 +6,8 @@ import type { SlashCommand } from '../builder';
 const data = new SlashCommandBuilder()
   .setName('8ball')
   .setDescription('Ask the magic 8ball a question')
-  .addStringOption((option) => option.setName('question').setDescription('Question to ask the magic 8ball.').setRequired(true));
+  .addStringOption((option) => option.setName('question').setDescription('Question to ask the magic 8ball.').setRequired(true))
+  .setContexts(InteractionContextType.Guild);
 
 const REPLIES = [
   'Yes',

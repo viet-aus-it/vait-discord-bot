@@ -1,10 +1,10 @@
-import { type ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import type { SlashCommand } from '../builder';
 import { fetchQuote } from './fetch-quote';
 
-const data = new SlashCommandBuilder().setName('qotd').setDescription('Get Quote of the Day');
+const data = new SlashCommandBuilder().setName('qotd').setDescription('Get Quote of the Day').setContexts(InteractionContextType.Guild);
 
 export const getQuoteOfTheDay = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();

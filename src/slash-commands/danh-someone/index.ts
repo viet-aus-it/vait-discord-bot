@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
 import type { SlashCommand } from '../builder';
@@ -9,7 +9,8 @@ const getData = () => {
   const data = new SlashCommandBuilder()
     .setName('hit')
     .setDescription('Hit up to 10 people. At least 1 user must be provided.')
-    .addUserOption((option) => option.setName('target1').setDescription('target 1 to hit').setRequired(true));
+    .addUserOption((option) => option.setName('target1').setDescription('target 1 to hit').setRequired(true))
+    .setContexts(InteractionContextType.Guild);
 
   for (const num of [...Array(MAX_MENTIONS).keys()]) {
     data.addUserOption((option) => option.setName(`target${num + 2}`).setDescription(`target ${num + 2} to hit`));
