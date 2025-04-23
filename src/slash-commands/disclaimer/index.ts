@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import type { SlashCommand } from '../builder';
 
@@ -12,7 +12,8 @@ const data = new SlashCommandBuilder()
       .setDescription('Choose a language for the disclaimer (Vietnamese / English)')
       .setRequired(true)
       .addChoices({ name: 'English', value: 'en' }, { name: 'Vietnamese', value: 'vi' })
-  );
+  )
+  .setContexts(InteractionContextType.Guild);
 
 export const DISCLAIMER_VI =
   'Trong trường hợp nhóm này bị điều tra bởi các cơ quan trực thuộc bộ công an (hoặc các tổ chức chính trị tương tự), tôi khẳng định mình không liên quan tới nhóm hoặc những cá nhân khác trong nhóm này. Tôi không rõ tại sao mình lại có mặt ở đây, có lẽ tài khoản của tôi đã được thêm bởi một bên thứ ba. Tôi cũng xin khẳng định rằng mình không hề giúp sức cho những hành động của các thành viên trong nhóm này.' as const;

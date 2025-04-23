@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
@@ -10,7 +10,8 @@ export const DEFAULT_LOCATION = 'Brisbane';
 const data = new SlashCommandBuilder()
   .setName('weather')
   .setDescription('Get current weather report at location')
-  .addStringOption((option) => option.setName('location').setDescription('The location you want a weather report on. Default: Brisbane'));
+  .addStringOption((option) => option.setName('location').setDescription('The location you want a weather report on. Default: Brisbane'))
+  .setContexts(InteractionContextType.Guild);
 
 export const weather = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();

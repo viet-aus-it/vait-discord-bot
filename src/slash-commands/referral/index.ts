@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import type { AutocompleteHandler, SlashCommand, SlashCommandHandler } from '../builder';
 
 import * as referralNew from './referral-new';
@@ -13,7 +13,8 @@ const getData = () => {
     .setName('referral')
     .setDescription('Get referral code or link for services')
     .addSubcommand(referralNew.data)
-    .addSubcommand(referralRandom.data);
+    .addSubcommand(referralRandom.data)
+    .setContexts(InteractionContextType.Guild);
 
   return data;
 };

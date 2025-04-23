@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import type { SlashCommand } from '../builder';
 import list from './list';
 import remindDuration from './remind-duration';
@@ -9,6 +9,7 @@ import update from './update';
 const data = new SlashCommandBuilder()
   .setName('reminder')
   .setDescription('Set up a reminder')
+  .setContexts(InteractionContextType.Guild)
   .addSubcommand(remindOnDate.data)
   .addSubcommand(remindDuration.data)
   .addSubcommand(update.data)

@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import type { SlashCommand } from '../builder';
 import checkRep from './check-reputation';
 import giveRep from './give-reputation';
@@ -9,6 +9,7 @@ import takeRep from './take-reputation';
 const data = new SlashCommandBuilder()
   .setName('rep')
   .setDescription('Reputation module')
+  .setContexts(InteractionContextType.Guild)
   .addSubcommand(checkRep.data)
   .addSubcommand(giveRep.data)
   .addSubcommand(takeRep.data)
