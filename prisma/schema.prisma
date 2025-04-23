@@ -11,7 +11,6 @@ generator client {
   provider        = "prisma-client-js"
   binaryTargets   = ["native", "debian-openssl-1.1.x"]
   previewFeatures = ["relationJoins"]
-  output          = "../src/generated/prisma"
 }
 
 generator json {

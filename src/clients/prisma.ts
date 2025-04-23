@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient } from '@prisma/client';
 import type { AocLeaderboard } from '../slash-commands/aoc-leaderboard/schema';
 
 declare global {
