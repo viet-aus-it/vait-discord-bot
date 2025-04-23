@@ -1,7 +1,6 @@
 import path from 'node:path';
 import { copy } from 'esbuild-plugin-copy';
 import { defineConfig } from 'tsup';
-import pkg from './package.json';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
@@ -9,17 +8,7 @@ const binPath = path.resolve(__dirname, 'bin');
 
 const outputPath = path.resolve(__dirname, 'build');
 
-// Remove the '^' in '^a.b.c'
-const PRISMA_VERSION = pkg.dependencies['@prisma/client'].substring(1);
-const prismaClientPath = path.resolve(
-  __dirname,
-  'node_modules',
-  '.pnpm',
-  `@prisma+client@${PRISMA_VERSION}_prisma@${PRISMA_VERSION}`,
-  'node_modules',
-  '.prisma',
-  'client'
-);
+const prismaClientPath = path.resolve(__dirname, 'src', 'generated', 'prisma');
 
 const cowPath = path.resolve(__dirname, 'node_modules', 'cowsay', 'cows', 'default.cow');
 

@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
     "include": ["*.config.*", "*.setup.*", "bin/**", "src/**", "mocks/**", "**/*.json", "**/*.md", "**/*.yaml", "**/*.yml"],
-    "ignore": ["node_modules", "build", "coverage"]
+    "ignore": ["node_modules", "build", "coverage", "./src/slash-commands/referral/generated", "./src/generated"]
   },
   "organizeImports": {
     "enabled": true
@@ -24,8 +24,7 @@
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineWidth": 160,
-    "ignore": ["node_modules/**", "./src/slash-commands/referral/generated"]
+    "lineWidth": 160
   },
   "javascript": {
     "formatter": {
