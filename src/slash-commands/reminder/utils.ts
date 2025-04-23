@@ -1,6 +1,6 @@
-import type { Reminder } from '@prisma/client';
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
 import { getDbClient } from '../../clients';
+import type { Reminder } from '../../generated/prisma';
 
 type SaveReminderInput = {
   userId: string;
