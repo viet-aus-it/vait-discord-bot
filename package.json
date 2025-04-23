@@ -78,7 +78,7 @@
     "tsx": "^4.19.3",
     "typescript": "^5.8.3",
     "vitest": "^3.1.2",
-    "vitest-mock-extended": "^2.0.2"
+    "vitest-mock-extended": "^3.1.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": ["@biomejs/biome", "@prisma/client", "@prisma/engines", "cpu-features", "esbuild", "msw", "prisma", "protobufjs", "ssh2"]
