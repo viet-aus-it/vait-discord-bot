@@ -1,11 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { type ChatInputCommandInteraction, Collection, type Message } from 'discord.js';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { mock, mockDeep, mockReset } from 'vitest-mock-extended';
+import { Collection, type Message } from 'discord.js';
+import { describe, expect, it } from 'vitest';
 import { cowsay, removeBacktick } from '.';
-
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
-const mockMessage = mock<Message<true>>();
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 
 describe('Remove backtick test', () => {
   it("Should ignore when there's no backticks", () => {
@@ -22,60 +19,56 @@ describe('Remove backtick test', () => {
 });
 
 describe('cowsay test', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
+  chatInputCommandInteractionTest('It should reply for any text', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce(faker.lorem.words(25));
+
+    await cowsay(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
   });
 
-  it('It should reply for any text', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce(faker.lorem.words(25));
+  chatInputCommandInteractionTest('Should be able to eliminate all backticks', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('```a lot of backticks```');
 
-    await cowsay(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    await cowsay(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
   });
 
-  it('Should be able to eliminate all backticks', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce('```a lot of backticks```');
+  chatInputCommandInteractionTest('Should be able to handle short text', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('short');
 
-    await cowsay(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    await cowsay(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
   });
 
-  it('Should be able to handle short text', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce('short');
+  chatInputCommandInteractionTest('Should be able to handle long text', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce(faker.lorem.slug(30));
 
-    await cowsay(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-  });
-
-  it('Should be able to handle long text', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce(faker.lorem.slug(30));
-
-    await cowsay(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    await cowsay(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
   });
 
   describe('For cowsay with no content', () => {
     describe('Fetch the previous message', () => {
-      it('Should show error message if previous message cannot be retrieved', async () => {
+      chatInputCommandInteractionTest('Should show error message if previous message cannot be retrieved', async ({ interaction }) => {
         const mockMessageCollection = new Collection<string, Message<true>>();
-        mockInteraction.options.getString.mockReturnValueOnce('');
-        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
+        interaction.options.getString.mockReturnValueOnce('');
+        interaction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
 
-        await cowsay(mockInteraction);
-        expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();
-        expect(mockInteraction.reply).toBeCalledWith('Cannot fetch latest message. Please try again later.');
+        await cowsay(interaction);
+        expect(interaction.channel?.messages.fetch).toHaveBeenCalledOnce();
+        expect(interaction.reply).toBeCalledWith('Cannot fetch latest message. Please try again later.');
       });
 
-      it('It should refer to previous message', async () => {
-        mockMessage.content = faker.lorem.words(10);
+      chatInputCommandInteractionTest('It should refer to previous message', async ({ interaction, message }) => {
+        message.content = faker.lorem.words(10);
         const mockMessageCollection = new Collection<string, Message<true>>();
-        mockMessageCollection.set(faker.string.nanoid(), mockMessage);
-        mockInteraction.options.getString.mockReturnValueOnce('');
-        mockInteraction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
+        mockMessageCollection.set(faker.string.nanoid(), message);
+        interaction.options.getString.mockReturnValueOnce('');
+        interaction.channel?.messages.fetch.mockResolvedValueOnce(mockMessageCollection);
 
-        await cowsay(mockInteraction);
-        expect(mockInteraction.channel?.messages.fetch).toHaveBeenCalledOnce();
-        expect(mockInteraction.reply).toHaveBeenCalledOnce();
+        await cowsay(interaction);
+        expect(interaction.channel?.messages.fetch).toHaveBeenCalledOnce();
+        expect(interaction.reply).toHaveBeenCalledOnce();
       });
     });
   });
