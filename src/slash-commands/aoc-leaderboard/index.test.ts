@@ -4,15 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { execute, formatLeaderboard, getAocYear } from '.';
 import { setAocSettings } from '../server-settings/utils';
-import { fetchLeaderboard } from './client';
 import mockAocData from './sample/aoc-data.json';
 import { AocLeaderboard } from './schema';
 import { deleteLeaderboard, saveLeaderboard } from './utils';
 
-vi.mock('./client');
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const parsedMockData = AocLeaderboard.parse(mockAocData);
-const mockFetchLeaderboard = vi.mocked(fetchLeaderboard);
 const mockKey = faker.string.alphanumeric({ length: 127 });
 const mockLeaderboardId = faker.string.alphanumeric();
 
@@ -103,7 +100,6 @@ Last updated at: 25/12/2024 16:00
     it('Should reply with newly fetched leaderboard after fetching and saving', async () => {
       const guildId = faker.string.nanoid();
       await setAocSettings(guildId, mockKey, mockLeaderboardId);
-      mockFetchLeaderboard.mockResolvedValueOnce(parsedMockData);
       mockInteraction.guildId = guildId;
 
       await execute(mockInteraction);
