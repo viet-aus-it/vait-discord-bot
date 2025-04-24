@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { type ChatInputCommandInteraction, Collection, type GuildMember } from 'discord.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep, mockReset } from 'vitest-mock-extended';
@@ -8,7 +7,7 @@ import { getRepLeaderboard } from './utils';
 vi.mock('./utils');
 const mockGetRepLeaderboard = vi.mocked(getRepLeaderboard);
 
-const mockInteraction = mockDeep<ChatInputCommandInteraction<'cached'>>();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 describe('leaderboard', () => {
   beforeEach(() => {
@@ -35,7 +34,7 @@ describe('leaderboard', () => {
     ]);
     const mockMembers = new Collection<string, GuildMember>();
     mockMembers.set(userid, { nickname: 'sam', displayName: 'sammy' } as GuildMember);
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
+    mockInteraction.guild!.members.fetch.mockResolvedValueOnce(mockMembers);
 
     await getLeaderboardCommand(mockInteraction);
 
@@ -59,7 +58,7 @@ describe('leaderboard', () => {
     ]);
     const mockMembers = new Collection<string, GuildMember>();
     mockMembers.set(userid, { nickname: null, displayName: 'sammy' } as GuildMember);
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
+    mockInteraction.guild!.members.fetch.mockResolvedValueOnce(mockMembers);
 
     await getLeaderboardCommand(mockInteraction);
 
@@ -82,7 +81,7 @@ describe('leaderboard', () => {
       },
     ]);
     const mockMembers = new Collection<string, GuildMember>();
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
+    mockInteraction.guild!.members.fetch.mockResolvedValueOnce(mockMembers);
 
     await getLeaderboardCommand(mockInteraction);
 
@@ -114,7 +113,7 @@ describe('leaderboard', () => {
     const mockMembers = new Collection<string, GuildMember>();
     mockMembers.set('1', { nickname: 'sam' } as GuildMember);
     mockMembers.set('2', { nickname: null, displayName: 'sam2' } as GuildMember);
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
+    mockInteraction.guild!.members.fetch.mockResolvedValueOnce(mockMembers);
 
     await getLeaderboardCommand(mockInteraction);
 
@@ -159,7 +158,7 @@ describe('leaderboard', () => {
     mockMembers.set('1', { nickname: 'sam' } as GuildMember);
     mockMembers.set('2', { nickname: 'sam2' } as GuildMember);
     mockMembers.set('3', { nickname: 'sam3' } as GuildMember);
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
+    mockInteraction.guild!.members.fetch.mockResolvedValueOnce(mockMembers);
 
     await getLeaderboardCommand(mockInteraction);
 
@@ -186,7 +185,7 @@ describe('leaderboard', () => {
       });
     }
     mockGetRepLeaderboard.mockResolvedValueOnce(mockRepLeaderboard);
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce(mockMembers);
+    mockInteraction.guild!.members.fetch.mockResolvedValueOnce(mockMembers);
 
     await getLeaderboardCommand(mockInteraction);
 

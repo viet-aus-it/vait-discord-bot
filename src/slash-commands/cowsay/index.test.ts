@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { mock, mockDeep, mockReset } from 'vitest-mock-extended';
 import { cowsay, removeBacktick } from '.';
 
-const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const mockMessage = mock<Message<true>>();
 
 describe('Remove backtick test', () => {

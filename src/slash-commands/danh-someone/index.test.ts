@@ -7,13 +7,13 @@ import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
 vi.mock('../../utils/random');
 const mockRandomInt = vi.mocked(getRandomIntInclusive);
 const mockRandomBoolean = vi.mocked(getRandomBoolean);
-const mockInteraction = mockDeep<ChatInputCommandInteraction<'raw'>>();
+const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 describe('danhSomeone', () => {
   beforeEach(() => {
     mockReset(mockInteraction);
     mockInteraction.client.user.id = '1';
-    mockInteraction.member.user.id = '2';
+    mockInteraction.member!.user.id = '2';
   });
 
   it('should not allow user to hit bot', () => {
