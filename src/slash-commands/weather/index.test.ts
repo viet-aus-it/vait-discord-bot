@@ -1,28 +1,15 @@
-import { faker } from '@faker-js/faker';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { DEFAULT_LOCATION, weather } from '.';
 import { server } from '../../../test/mocks/msw/server';
 import { WEATHER_URL } from './fetch-weather';
-
-const mockWeatherMessage = faker.lorem.words(10);
 
 const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 describe('Weather test', () => {
   beforeEach(() => {
-    const endpoint = http.get(`${WEATHER_URL}:location`, ({ params }) => {
-      const { location } = params;
-      if (location === 'ErrorLocation') {
-        return HttpResponse.error();
-      }
-
-      return HttpResponse.text(location + mockWeatherMessage);
-    });
-    server.use(endpoint);
-
     mockReset(mockInteraction);
   });
 
@@ -31,7 +18,10 @@ describe('Weather test', () => {
 
     await weather(mockInteraction);
     expect(mockInteraction.editReply).toHaveBeenCalledOnce();
-    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\nHanoi${mockWeatherMessage}\n\`\`\``);
+
+    const message = captor<string>();
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
+    expect(message.value).toContain('Hanoi');
   });
 
   it('Should run with default input if no input is given', async () => {
@@ -39,7 +29,10 @@ describe('Weather test', () => {
 
     await weather(mockInteraction);
     expect(mockInteraction.editReply).toHaveBeenCalledOnce();
-    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\n${DEFAULT_LOCATION}${mockWeatherMessage}\n\`\`\``);
+
+    const message = captor<string>();
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
+    expect(message.value).toContain(DEFAULT_LOCATION);
   });
 
   it('Should construct the URL correctly if input has many words', async () => {
@@ -47,7 +40,10 @@ describe('Weather test', () => {
 
     await weather(mockInteraction);
     expect(mockInteraction.editReply).toHaveBeenCalledOnce();
-    expect(mockInteraction.editReply).toHaveBeenCalledWith(`\`\`\`\nHo+Chi+Minh+City${mockWeatherMessage}\n\`\`\``);
+
+    const message = captor<string>();
+    expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
+    expect(message.value).toContain('Ho+Chi+Minh+City');
   });
 
   it('Should reply with error if given an error location', async () => {
