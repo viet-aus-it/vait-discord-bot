@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll } from 'vitest';
-import { logger } from '../..//src/utils/logger';
+import { logger } from '../../src/utils/logger';
 import { server } from './server';
 
 beforeAll(() => {
