@@ -1,6 +1,6 @@
 import { addDays } from 'date-fns';
 import type { AutocompleteInteraction, ChatInputCommandInteraction, Guild } from 'discord.js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
 import { getOrCreateUser } from '../reputation/utils';
 import { DEFAULT_EXPIRY_DAYS_FROM_NOW, autocomplete, execute } from './referral-new';

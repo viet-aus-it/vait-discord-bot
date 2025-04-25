@@ -1,5 +1,5 @@
 import type { Message } from 'discord.js';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { type CommandConfig, processMessage } from './message-processor';
 
 describe('processMessage', () => {
