@@ -1,47 +1,42 @@
-import { type AutocompleteInteraction, type ChatInputCommandInteraction, Collection, type GuildMember } from 'discord.js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
+import { type AutocompleteInteraction, Collection, type GuildMember } from 'discord.js';
+import { describe, expect, vi } from 'vitest';
+import { captor } from 'vitest-mock-extended';
+import { autocompleteInteractionTest } from '../../../test/fixtures/autocomplete-interaction';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { autocomplete, execute } from './referral-random';
 import { type GetAllReferralCodesForServiceInput, getAllReferralCodesForService } from './utils';
 
 vi.mock('./utils');
 const mockGetAllReferralCodesForService = vi.mocked(getAllReferralCodesForService);
 
-const mockAutocompleteInteraction = mockDeep<AutocompleteInteraction>();
-const mockChatInputInteraction = mockDeep<ChatInputCommandInteraction>();
-
 describe('autocomplete', () => {
-  beforeEach(() => {
-    mockReset(mockAutocompleteInteraction);
-  });
-
-  it('should return nothing if the search term shorter than 4', async () => {
-    mockAutocompleteInteraction.options.getString.mockReturnValueOnce('solve');
+  autocompleteInteractionTest('should return nothing if the search term shorter than 4', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('solve');
     const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
-    await autocomplete(mockAutocompleteInteraction);
+    await autocomplete(interaction);
 
-    expect(mockAutocompleteInteraction.respond).toBeCalledWith(respondInput);
+    expect(interaction.respond).toBeCalledWith(respondInput);
     expect(respondInput.value.length).toEqual(1);
   });
 
-  it('should return nothing if no options found', async () => {
-    mockAutocompleteInteraction.options.getString.mockReturnValueOnce('some random search that not existed');
+  autocompleteInteractionTest('should return nothing if no options found', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('some random search that not existed');
     const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
-    await autocomplete(mockAutocompleteInteraction);
+    await autocomplete(interaction);
 
-    expect(mockAutocompleteInteraction.respond).toBeCalledWith(respondInput);
+    expect(interaction.respond).toBeCalledWith(respondInput);
     expect(respondInput.value.length).toEqual(0);
   });
 
-  it('should return some options if search term longer than 4 and found', async () => {
-    mockAutocompleteInteraction.options.getString.mockReturnValueOnce('heal');
+  autocompleteInteractionTest('should return some options if search term longer than 4 and found', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('heal');
     const respondInput = captor<Parameters<AutocompleteInteraction['respond']>['0']>();
 
-    await autocomplete(mockAutocompleteInteraction);
+    await autocomplete(interaction);
 
-    expect(mockAutocompleteInteraction.respond).toBeCalledWith(respondInput);
+    expect(interaction.respond).toBeCalledWith(respondInput);
     expect(respondInput.value).toMatchInlineSnapshot(`
       [
         {
@@ -78,23 +73,23 @@ describe('autocomplete', () => {
 });
 
 describe('execute', () => {
-  it('should return found no code message when no code is found', async () => {
+  chatInputCommandInteractionTest('should return found no code message when no code is found', async ({ interaction }) => {
     const service = 'not existed service';
 
     const mockReferralInput = captor<GetAllReferralCodesForServiceInput>();
     mockGetAllReferralCodesForService.mockResolvedValueOnce([]);
-    mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
+    interaction.options.getString.mockReturnValueOnce(service);
     const replyInput = captor<string>();
 
-    await execute(mockChatInputInteraction);
+    await execute(interaction);
 
     expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
     expect(mockReferralInput.value.service).toContain(service);
-    expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
+    expect(interaction.reply).toBeCalledWith(replyInput);
     expect(replyInput.value).toContain(`There is no code for ${service} service`);
   });
 
-  it('should return code if found', async () => {
+  chatInputCommandInteractionTest('should return code if found', async ({ interaction }) => {
     const service = 'some service';
     const code = 'SomeCode';
     const expiryDate = new Date(`05/04/${new Date().getFullYear() + 1}`);
@@ -110,18 +105,18 @@ describe('execute', () => {
         guildId: '12345',
       },
     ]);
-    mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
+    interaction.options.getString.mockReturnValueOnce(service);
     const replyInput = captor<string>();
 
-    await execute(mockChatInputInteraction);
+    await execute(interaction);
 
     expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
     expect(mockReferralInput.value.service).toContain(service);
-    expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
+    expect(interaction.reply).toBeCalledWith(replyInput);
     expect(replyInput.value).toContain(`Service ${service}: ${code} added by user 12345`);
   });
 
-  it('should return member name if found', async () => {
+  chatInputCommandInteractionTest('should return member name if found', async ({ interaction }) => {
     const service = 'some service';
     const code = 'SomeCode';
     const expiryDate = new Date(`05/04/${new Date().getFullYear() + 1}`);
@@ -137,17 +132,17 @@ describe('execute', () => {
         guildId: '1234',
       },
     ]);
-    mockChatInputInteraction.options.getString.mockReturnValueOnce(service);
+    interaction.options.getString.mockReturnValueOnce(service);
     const members = new Collection<string, GuildMember>();
     members.set('1234', { displayName: 'SomeMember' } as GuildMember);
-    mockChatInputInteraction.guild?.members.fetch.mockResolvedValueOnce(members);
+    interaction.guild?.members.fetch.mockResolvedValueOnce(members);
     const replyInput = captor<string>();
 
-    await execute(mockChatInputInteraction);
+    await execute(interaction);
 
     expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
     expect(mockReferralInput.value.service).toContain(service);
-    expect(mockChatInputInteraction.reply).toBeCalledWith(replyInput);
+    expect(interaction.reply).toBeCalledWith(replyInput);
     expect(replyInput.value).toContain(`Service ${service.trim().toLowerCase()}: ${code}`);
   });
 });
