@@ -2,6 +2,7 @@ import type { ServerChannelsSettings } from '@prisma/client';
 import { getDbClient } from '../../clients';
 import { logger } from '../../utils/logger';
 import { fetchLeaderboard } from './client';
+import type { AocLeaderboard } from './schema';
 
 export const getAocSettings = async (guildId: string) => {
   const db = getDbClient();
@@ -15,17 +16,9 @@ export const getAocSettings = async (guildId: string) => {
   });
 };
 
-type AocSettings = Pick<ServerChannelsSettings, 'aocKey' | 'aocLeaderboardId' | 'guildId'>;
-export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderboardId, guildId }: AocSettings) => {
-  if (!aocKey || !aocLeaderboardId) {
-    const errorMessage = 'Cannot fetch leaderboard without key and leaderboard id';
-    logger.error(`[fetch-and-save-leaderboard]: ${errorMessage}!`);
-    throw new Error(errorMessage);
-  }
-  const aocLeaderboardResponse = await fetchLeaderboard(aocKey, aocLeaderboardId, year);
-
+export const saveLeaderboard = async (guildId: string, aocLeaderboardResponse: AocLeaderboard) => {
   const db = getDbClient();
-  const savedResult = await db.aocLeaderboard.upsert({
+  return db.aocLeaderboard.upsert({
     where: { guildId },
     update: {
       updatedAt: new Date(),
@@ -40,6 +33,18 @@ export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderb
       updatedAt: true,
     },
   });
+};
+
+type AocSettings = Pick<ServerChannelsSettings, 'aocKey' | 'aocLeaderboardId' | 'guildId'>;
+export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderboardId, guildId }: AocSettings) => {
+  if (!aocKey || !aocLeaderboardId) {
+    const errorMessage = 'Cannot fetch leaderboard without key and leaderboard id';
+    logger.error(`[fetch-and-save-leaderboard]: ${errorMessage}!`);
+    throw new Error(errorMessage);
+  }
+  const aocLeaderboardResponse = await fetchLeaderboard(aocKey, aocLeaderboardId, year);
+
+  const savedResult = await saveLeaderboard(guildId, aocLeaderboardResponse);
 
   return savedResult;
 };
@@ -52,5 +57,12 @@ export const getSavedLeaderboard = async (guildId: string) => {
       result: true,
       updatedAt: true,
     },
+  });
+};
+
+export const deleteLeaderboard = async (guildId: string) => {
+  const db = getDbClient();
+  return db.aocLeaderboard.delete({
+    where: { guildId },
   });
 };

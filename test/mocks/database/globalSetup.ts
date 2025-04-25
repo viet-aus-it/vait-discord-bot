@@ -1,6 +1,6 @@
 import childProcess from 'node:child_process';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
-import { loadEnv } from '../../src/utils/load-env';
+import { loadEnv } from '../../../src/utils/load-env';
 
 function setupDb(databaseUrl?: string) {
   console.log('Running Prisma Migrate');
