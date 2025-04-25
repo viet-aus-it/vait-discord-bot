@@ -5,7 +5,7 @@ import { mockSomeone } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 
 describe('mockSomeone test', () => {
-  chatInputCommandInteractionTest('Should mock text if it was called by /mock', async ({ interaction, message }) => {
+  chatInputCommandInteractionTest('Should mock text if it was called by /mock', async ({ interaction }) => {
     interaction.options.getString.mockReturnValueOnce(faker.lorem.words(25));
 
     await mockSomeone(interaction);
@@ -14,7 +14,7 @@ describe('mockSomeone test', () => {
 
   describe('For /mock call with blank content', () => {
     describe('Fetching previous message', () => {
-      chatInputCommandInteractionTest('Should reply with error if previous message cannot be retrieved', async ({ interaction, message }) => {
+      chatInputCommandInteractionTest('Should reply with error if previous message cannot be retrieved', async ({ interaction }) => {
         const messageCollection = new Collection<string, Message<true>>();
         interaction.options.getString.mockReturnValueOnce('');
         interaction.channel?.messages.fetch.mockResolvedValueOnce(messageCollection);
