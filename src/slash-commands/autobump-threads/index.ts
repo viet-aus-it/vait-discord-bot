@@ -1,4 +1,4 @@
-import { type GuildMember, InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
+import { InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import type { SlashCommand, SlashCommandHandler } from '../builder';
 import addThread from './add-thread';
 import listThreads from './list-threads';

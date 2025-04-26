@@ -1,6 +1,6 @@
-import type { ChatInputCommandInteraction, GuildMember, User } from 'discord.js';
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import type { GuildMember, User } from 'discord.js';
+import { beforeAll, describe, expect, vi } from 'vitest';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { isAdmin } from '../../utils/permission';
 import { takeReputation } from './take-reputation';
 import { getOrCreateUser, updateRep } from './utils';
@@ -12,56 +12,50 @@ const mockUpdateRep = vi.mocked(updateRep);
 vi.mock('../../utils/permission');
 const mockIsSentFromAdmin = vi.mocked(isAdmin);
 
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
-
 describe('takeRep', () => {
   beforeAll(() => {
     mockIsSentFromAdmin.mockReturnValue(true);
   });
 
-  beforeEach(() => {
-    mockReset(mockInteraction);
-  });
-
-  it('should reply with an error message if the user is not an admin', async () => {
+  chatInputCommandInteractionTest('should reply with an error message if the user is not an admin', async ({ interaction }) => {
     mockIsSentFromAdmin.mockReturnValueOnce(false);
 
-    await takeReputation(mockInteraction);
+    await takeReputation(interaction);
 
     expect(mockCreateUpdateUser).not.toHaveBeenCalled();
     expect(mockUpdateRep).not.toHaveBeenCalled();
-    expect(mockInteraction.reply).toHaveBeenCalled();
-    expect(mockInteraction.reply).toHaveBeenCalledWith("You don't have enough permission to run this command.");
+    expect(interaction.reply).toHaveBeenCalled();
+    expect(interaction.reply).toHaveBeenCalledWith("You don't have enough permission to run this command.");
   });
 
-  it('should send a message if the user has 0 rep', async () => {
+  chatInputCommandInteractionTest('should send a message if the user has 0 rep', async ({ interaction }) => {
     mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 0 }).mockResolvedValueOnce({ id: '0', reputation: 0 });
     const mockUser = { id: '0' } as User;
-    mockInteraction.member!.user.id = '1';
-    mockInteraction.options.getUser.mockReturnValueOnce(mockUser);
+    interaction.member!.user.id = '1';
+    interaction.options.getUser.mockReturnValueOnce(mockUser);
 
-    await takeReputation(mockInteraction);
+    await takeReputation(interaction);
 
     expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).not.toHaveBeenCalled();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('<@0> currently has 0 rep');
+    expect(interaction.reply).toHaveBeenCalledWith('<@0> currently has 0 rep');
   });
 
-  it('Should call reply when user mentions another user', async () => {
+  chatInputCommandInteractionTest('Should call reply when user mentions another user', async ({ interaction }) => {
     mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 10 }).mockResolvedValueOnce({ id: '0', reputation: 10 });
     mockUpdateRep.mockResolvedValueOnce({ id: '0', reputation: 0 });
     const mockUser = { id: '0' } as User;
-    mockInteraction.guild!.members.cache.get.mockImplementation((key) => {
+    interaction.guild!.members.cache.get.mockImplementation((key) => {
       return { displayName: `test${key}` } as GuildMember;
     });
-    mockInteraction.member!.user.id = '1';
-    mockInteraction.options.getUser.mockReturnValueOnce(mockUser);
+    interaction.member!.user.id = '1';
+    interaction.options.getUser.mockReturnValueOnce(mockUser);
 
-    await takeReputation(mockInteraction);
+    await takeReputation(interaction);
 
     expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
     expect(mockUpdateRep).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('test1 took 1 rep from test0.\ntest0 → 0 reps');
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith('test1 took 1 rep from test0.\ntest0 → 0 reps');
   });
 });

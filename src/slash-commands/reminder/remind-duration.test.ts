@@ -1,14 +1,12 @@
 import { addSeconds, getUnixTime, parse } from 'date-fns';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { execute } from './remind-duration';
 import { saveReminder } from './utils';
 
 vi.mock('./utils');
 const mockSaveReminder = vi.mocked(saveReminder);
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 const currentDate = parse('11/04/2023 09:00', DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT, new Date());
 const message = 'blah';
@@ -33,42 +31,45 @@ describe('remind on duration from now', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(currentDate);
-    mockReset(mockInteraction);
-    mockInteraction.guildId = guildId;
-    mockInteraction.member!.user.id = userId;
   });
 
   afterEach(() => {
     vi.useRealTimers();
   });
 
-  it('should send error reply if duration is invalid', async () => {
-    mockInteraction.options.getString.mockImplementationOnce((param: string) => {
+  chatInputCommandInteractionTest('should send error reply if duration is invalid', async ({ interaction }) => {
+    interaction.guildId = guildId;
+    interaction.member!.user.id = userId;
+    interaction.options.getString.mockImplementationOnce((param: string) => {
       if (param === 'duration') {
         return 'invalid duration';
       }
       return mockGetString(param);
     });
 
-    await execute(mockInteraction);
+    await execute(interaction);
 
     expect(mockSaveReminder).not.toHaveBeenCalled();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('Invalid duration. Please specify a duration to get reminded.');
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith('Invalid duration. Please specify a duration to get reminded.');
   });
 
-  it('should send error reply if it cannot save reminder', async () => {
+  chatInputCommandInteractionTest('should send error reply if it cannot save reminder', async ({ interaction }) => {
+    interaction.guildId = guildId;
+    interaction.member!.user.id = userId;
     mockSaveReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
-    mockInteraction.options.getString.mockImplementation(mockGetString);
+    interaction.options.getString.mockImplementation(mockGetString);
 
-    await execute(mockInteraction);
+    await execute(interaction);
 
     expect(mockSaveReminder).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(`Cannot save reminder for <@${userId}>. Please try again later.`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(`Cannot save reminder for <@${userId}>. Please try again later.`);
   });
 
-  it('should send reply if all options are provided', async () => {
+  chatInputCommandInteractionTest('should send reply if all options are provided', async ({ interaction }) => {
+    interaction.guildId = guildId;
+    interaction.member!.user.id = userId;
     const unixTime = getUnixTime(addSeconds(currentDate, 60));
     mockSaveReminder.mockResolvedValueOnce({
       id: reminderId,
@@ -77,12 +78,12 @@ describe('remind on duration from now', () => {
       onTimestamp: unixTime,
       message,
     });
-    mockInteraction.options.getString.mockImplementation(mockGetString);
+    interaction.options.getString.mockImplementation(mockGetString);
 
-    await execute(mockInteraction);
+    await execute(interaction);
 
     expect(mockSaveReminder).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(`New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(`New Reminder for <@${userId}> set on <t:${unixTime}> with the message: "${message}".`);
   });
 });

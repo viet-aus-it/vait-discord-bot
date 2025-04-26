@@ -1,42 +1,37 @@
-import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import type { TextChannel } from 'discord.js';
+import { describe, expect, vi } from 'vitest';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { execute } from './set-reminder-channel';
 import { setReminderChannel } from './utils';
 
 vi.mock('./utils');
 const mockSetReminderChannel = vi.mocked(setReminderChannel);
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const channelId = 'channel_12345';
 
 describe('Set reminder channel', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
-  });
-
-  it('Should reply with error if it cannot set the channel', async () => {
+  chatInputCommandInteractionTest('Should reply with error if it cannot set the channel', async ({ interaction }) => {
     mockSetReminderChannel.mockRejectedValueOnce(new Error('Synthetic Error'));
-    mockInteraction.options.getChannel.mockReturnValueOnce({
+    interaction.options.getChannel.mockReturnValueOnce({
       id: channelId,
     } as TextChannel);
 
-    await execute(mockInteraction);
+    await execute(interaction);
 
     expect(mockSetReminderChannel).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('Cannot save this reminder channel for this server. Please try again.');
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith('Cannot save this reminder channel for this server. Please try again.');
   });
 
-  it('Should be able to set channel and reply', async () => {
+  chatInputCommandInteractionTest('Should be able to set channel and reply', async ({ interaction }) => {
     mockSetReminderChannel.mockResolvedValueOnce(channelId);
-    mockInteraction.options.getChannel.mockReturnValueOnce({
+    interaction.options.getChannel.mockReturnValueOnce({
       id: channelId,
     } as TextChannel);
 
-    await execute(mockInteraction);
+    await execute(interaction);
 
     expect(mockSetReminderChannel).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(`Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(`Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
   });
 });

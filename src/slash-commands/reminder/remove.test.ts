@@ -1,38 +1,33 @@
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { describe, expect, vi } from 'vitest';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { execute } from './remove';
 import { removeReminder } from './utils';
 
 vi.mock('./utils');
 const mockRemoveReminder = vi.mocked(removeReminder);
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 
 const reminderId = '1';
 
 describe('Remove Reminder', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
-    mockInteraction.options.getString.mockReturnValueOnce(reminderId);
-  });
-
-  it('Should reply with error if reminders cannot be removed', async () => {
+  chatInputCommandInteractionTest('Should reply with error if reminders cannot be removed', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce(reminderId);
     mockRemoveReminder.mockRejectedValueOnce(new Error('Synthetic error'));
 
-    await execute(mockInteraction);
+    await execute(interaction);
 
     expect(mockRemoveReminder).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(`Cannot delete reminder id ${reminderId}. Please try again later.`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(`Cannot delete reminder id ${reminderId}. Please try again later.`);
   });
 
-  it('Should reply if reminder can be removed', async () => {
+  chatInputCommandInteractionTest('Should reply if reminder can be removed', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce(reminderId);
     mockRemoveReminder.mockResolvedValueOnce();
 
-    await execute(mockInteraction);
+    await execute(interaction);
 
     expect(mockRemoveReminder).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith(`Reminder ${reminderId} has been deleted.`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(`Reminder ${reminderId} has been deleted.`);
   });
 });
