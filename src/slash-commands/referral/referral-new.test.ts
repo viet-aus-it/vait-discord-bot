@@ -116,7 +116,7 @@ describe('execute', () => {
 
     await execute(interaction);
 
-    expect(interaction.reply).toBeCalledWith('expiry_date is invalid date try format DD/MM/YYYY');
+    expect(interaction.reply).toBeCalledWith('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
   });
 
   chatInputCommandInteractionTest('should return EXPIRED_DATE error when expiry date is in the past', async ({ interaction }) => {
