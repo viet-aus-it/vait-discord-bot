@@ -50,7 +50,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
     if (parseDateCase === 'INVALID_DATE') {
       logger.info(`[referral-new]: expiry_date is invalid date format input:${expiryDateInput}`);
-      await interaction.reply('expiry_date is invalid date try format DD/MM/YYYY');
+      await interaction.reply('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
       return;
     }
     if (parseDateCase === 'EXPIRED_DATE') {

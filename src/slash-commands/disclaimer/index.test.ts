@@ -1,9 +1,8 @@
-import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { EmbedBuilder } from 'discord.js';
+import { describe, expect } from 'vitest';
 import { DISCLAIMER_EN, DISCLAIMER_VI, getDisclaimer } from '.';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const getEmbed = (content: string) => {
   return new EmbedBuilder({
     author: {
@@ -14,26 +13,22 @@ const getEmbed = (content: string) => {
 };
 
 describe('get disclaimer test', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
-  });
+  chatInputCommandInteractionTest('Should return the disclaimer text', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('');
 
-  it('Should return the disclaimer text', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce('');
-
-    await getDisclaimer(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith({
+    await getDisclaimer(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith({
       embeds: [getEmbed(DISCLAIMER_VI)],
     });
   });
 
-  it('Should return the EN disclaimer text', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce('en');
+  chatInputCommandInteractionTest('Should return the EN disclaimer text', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('en');
 
-    await getDisclaimer(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith({
+    await getDisclaimer(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith({
       embeds: [getEmbed(DISCLAIMER_EN)],
     });
   });

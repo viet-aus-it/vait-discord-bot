@@ -1,29 +1,22 @@
 import { faker } from '@faker-js/faker';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
 import { insult } from '.';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { randomCreate } from './insult-generator';
 
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
-
 describe('Insult someone test', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
+  chatInputCommandInteractionTest('Should send an insult when the cmd is sent', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce('');
+
+    await insult(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
   });
 
-  it('Should send an insult when the cmd is sent', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce('');
+  chatInputCommandInteractionTest('Should insult the chat content', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce(faker.lorem.words(2));
 
-    await insult(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-  });
-
-  it('Should insult the chat content', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce(faker.lorem.words(2));
-
-    await insult(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    await insult(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
   });
 });
 

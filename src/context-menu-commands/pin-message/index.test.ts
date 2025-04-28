@@ -1,36 +1,34 @@
-import type { ContextMenuCommandInteraction, MessageContextMenuCommandInteraction } from 'discord.js';
-import { describe, expect, it } from 'vitest';
+import type { Message } from 'discord.js';
+import { describe, expect } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 import { pinMessage } from '.';
+import { contextMenuCommandTest } from '../../../test/fixtures/context-menu-command-interaction';
 
 describe('pinMessage context menu test', () => {
-  it('Should return if interaction is not message context menu command', async () => {
-    const mockInteraction = mockDeep<ContextMenuCommandInteraction>();
-    mockInteraction.isMessageContextMenuCommand.mockReturnValueOnce(false);
+  contextMenuCommandTest('Should return if interaction is not message context menu command', async ({ interaction }) => {
+    interaction.isMessageContextMenuCommand.mockReturnValueOnce(false);
 
-    await pinMessage(mockInteraction as ContextMenuCommandInteraction);
-    expect(mockInteraction.reply).not.toHaveBeenCalled();
+    await pinMessage(interaction);
+    expect(interaction.reply).not.toHaveBeenCalled();
   });
 
-  it('Should reply skipping if message is already pinned', async () => {
-    const mockInteraction = mockDeep<MessageContextMenuCommandInteraction>();
-    mockInteraction.isMessageContextMenuCommand.mockReturnValueOnce(true);
-    mockInteraction.targetMessage.pinned = true;
+  contextMenuCommandTest('Should reply skipping if message is already pinned', async ({ interaction }) => {
+    interaction.isMessageContextMenuCommand.mockReturnValueOnce(true);
+    interaction.targetMessage.pinned = true;
 
-    await pinMessage(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('Message is already pinned. Skipping...');
+    await pinMessage(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith('Message is already pinned. Skipping...');
   });
 
-  it('Should pin the message', async () => {
-    const mockInteraction = mockDeep<MessageContextMenuCommandInteraction>();
-    mockInteraction.isMessageContextMenuCommand.mockReturnValueOnce(true);
-    mockInteraction.targetMessage.pinned = false;
-    mockInteraction.targetMessage.pin.mockResolvedValueOnce({} as any);
+  contextMenuCommandTest('Should pin the message', async ({ interaction }) => {
+    interaction.isMessageContextMenuCommand.mockReturnValueOnce(true);
+    interaction.targetMessage.pinned = false;
+    interaction.targetMessage.pin.mockResolvedValueOnce(mockDeep<Message<true>>());
 
-    await pinMessage(mockInteraction);
-    expect(mockInteraction.targetMessage.pin).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
-    expect(mockInteraction.reply).toHaveBeenCalledWith('Message is now pinned!');
+    await pinMessage(interaction);
+    expect(interaction.targetMessage.pin).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith('Message is now pinned!');
   });
 });

@@ -1,37 +1,27 @@
-import type { ChatInputCommandInteraction, PublicThreadChannel } from 'discord.js';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { describe, expect, vi } from 'vitest';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { removeAutobumpThreadCommand } from './remove-thread';
 import { removeAutobumpThread } from './utils';
 
 vi.mock('./utils');
 const mockRemoveAutobumpThread = vi.mocked(removeAutobumpThread);
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
-const mockThread = mockDeep<PublicThreadChannel>();
-const threadId = 'thread_1234';
 
 describe('Add autobump thread', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
-    mockReset(mockThread);
-    mockThread.id = threadId;
-  });
-
-  it('Should reply with error if it cannot be saved into the database', async () => {
-    mockInteraction.options.getChannel.mockReturnValueOnce(mockThread);
+  chatInputCommandInteractionTest('Should reply with error if it cannot be saved into the database', async ({ interaction, thread }) => {
+    interaction.options.getChannel.mockReturnValueOnce(thread);
     mockRemoveAutobumpThread.mockRejectedValueOnce(new Error('Synthetic Error'));
 
-    await removeAutobumpThreadCommand(mockInteraction);
-    expect(mockInteraction.reply).toBeCalledWith(`ERROR: Cannot remove thread id <#${threadId}> from the bump list for this server. Please try again.`);
+    await removeAutobumpThreadCommand(interaction);
+    expect(interaction.reply).toBeCalledWith(`ERROR: Cannot remove thread id <#${thread.id}> from the bump list for this server. Please try again.`);
     expect(mockRemoveAutobumpThread).toBeCalled();
   });
 
-  it('Should reply with success message if it can be saved into the database', async () => {
-    mockInteraction.options.getChannel.mockReturnValueOnce(mockThread);
-    mockRemoveAutobumpThread.mockResolvedValueOnce([threadId]);
+  chatInputCommandInteractionTest('Should reply with success message if it can be saved into the database', async ({ interaction, thread }) => {
+    interaction.options.getChannel.mockReturnValueOnce(thread);
+    mockRemoveAutobumpThread.mockResolvedValueOnce([thread.id]);
 
-    await removeAutobumpThreadCommand(mockInteraction);
-    expect(mockInteraction.reply).toBeCalledWith(`Successfully saved setting. Thread <#${threadId}> will not be bumped.`);
+    await removeAutobumpThreadCommand(interaction);
+    expect(interaction.reply).toBeCalledWith(`Successfully saved setting. Thread <#${thread.id}> will not be bumped.`);
     expect(mockRemoveAutobumpThread).toBeCalled();
   });
 });

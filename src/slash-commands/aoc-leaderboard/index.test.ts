@@ -1,14 +1,13 @@
 import { faker } from '@faker-js/faker';
-import type { ChatInputCommandInteraction } from 'discord.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { captor, mockDeep, mockReset } from 'vitest-mock-extended';
+import { captor } from 'vitest-mock-extended';
 import { execute, formatLeaderboard, getAocYear } from '.';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { setAocSettings } from '../server-settings/utils';
 import mockAocData from './sample/aoc-data.json';
 import { AocLeaderboard } from './schema';
 import { deleteLeaderboard, saveLeaderboard } from './utils';
 
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
 const parsedMockData = AocLeaderboard.parse(mockAocData);
 const mockKey = faker.string.alphanumeric({ length: 127 });
 const mockLeaderboardId = faker.string.alphanumeric();
@@ -16,10 +15,6 @@ const mockLeaderboardId = faker.string.alphanumeric();
 const mockSystemTime = new Date(2024, 11, 25, 16, 0, 0); // 25/12/2024 16:00:00
 
 describe('Get AOC Leaderboard test', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
-  });
-
   describe('Static time tests', () => {
     beforeEach(() => {
       vi.useFakeTimers();
@@ -68,15 +63,13 @@ Last updated at: 25/12/2024 16:00
   });
 
   describe('Command tests', () => {
-    it('Should reply with saved leaderboard if it can get one', async () => {
-      const guildId = faker.string.nanoid();
-      await saveLeaderboard(guildId, parsedMockData);
-      mockInteraction.guildId = guildId;
+    chatInputCommandInteractionTest('Should reply with saved leaderboard if it can get one', async ({ interaction }) => {
+      await saveLeaderboard(interaction.guildId!, parsedMockData);
 
-      await execute(mockInteraction);
+      await execute(interaction);
 
       const message = captor<string>();
-      expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
+      expect(interaction.editReply).toHaveBeenCalledWith(message);
       expect(message.value).toContain(`
  #               name score
  1 (anonymous user 4) 474
@@ -85,27 +78,22 @@ Last updated at: 25/12/2024 16:00
  4              user1   0
 `);
 
-      await deleteLeaderboard(guildId);
+      await deleteLeaderboard(interaction.guildId!);
     });
 
-    it('Should reply with error if server is not configured', async () => {
-      const guildId = faker.string.nanoid();
-      mockInteraction.guildId = guildId;
+    chatInputCommandInteractionTest('Should reply with error if server is not configured', async ({ interaction }) => {
+      await execute(interaction);
 
-      await execute(mockInteraction);
-
-      expect(mockInteraction.editReply).toHaveBeenCalledWith('ERROR: Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.');
+      expect(interaction.editReply).toHaveBeenCalledWith('ERROR: Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.');
     });
 
-    it('Should reply with newly fetched leaderboard after fetching and saving', async () => {
-      const guildId = faker.string.nanoid();
-      await setAocSettings(guildId, mockKey, mockLeaderboardId);
-      mockInteraction.guildId = guildId;
+    chatInputCommandInteractionTest('Should reply with newly fetched leaderboard after fetching and saving', async ({ interaction }) => {
+      await setAocSettings(interaction.guildId!, mockKey, mockLeaderboardId);
 
-      await execute(mockInteraction);
+      await execute(interaction);
 
       const message = captor<string>();
-      expect(mockInteraction.editReply).toHaveBeenCalledWith(message);
+      expect(interaction.editReply).toHaveBeenCalledWith(message);
       expect(message.value).toContain(`
  #               name score
  1 (anonymous user 4) 474

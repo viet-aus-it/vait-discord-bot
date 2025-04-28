@@ -1,20 +1,13 @@
 import { faker } from '@faker-js/faker';
-import type { ChatInputCommandInteraction } from 'discord.js';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { mockDeep, mockReset } from 'vitest-mock-extended';
+import { describe, expect } from 'vitest';
 import { ask8Ball } from '.';
-
-const mockInteraction = mockDeep<ChatInputCommandInteraction>();
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 
 describe('ask 8Ball test', () => {
-  beforeEach(() => {
-    mockReset(mockInteraction);
-  });
+  chatInputCommandInteractionTest('Should return yes or no randomly for any question', async ({ interaction }) => {
+    interaction.options.getString.mockReturnValueOnce(faker.lorem.words(25));
 
-  it('Should return yes or no randomly for any question', async () => {
-    mockInteraction.options.getString.mockReturnValueOnce(faker.lorem.words(25));
-
-    await ask8Ball(mockInteraction);
-    expect(mockInteraction.reply).toHaveBeenCalledOnce();
+    await ask8Ball(interaction);
+    expect(interaction.reply).toHaveBeenCalledOnce();
   });
 });
