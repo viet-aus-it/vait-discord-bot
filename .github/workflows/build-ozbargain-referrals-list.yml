@@ -39,6 +39,7 @@ jobs:
         run: |
           if [[ `git status --porcelain` ]]; then
             git checkout -b autoupdate/referrals
+            cp .env.ci .env
             npx vitest run -u
             git add src/slash-commands/referral
             git commit -m "chore: update ozbargain referrals list"
