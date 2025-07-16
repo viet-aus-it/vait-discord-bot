@@ -54,7 +54,7 @@
     "parse-duration": "^2.1.4",
     "winston": "^3.17.0",
     "wretch": "^2.11.0",
-    "zod": "^3.25.76"
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
