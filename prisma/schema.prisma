@@ -13,10 +13,6 @@ generator client {
   previewFeatures = ["relationJoins"]
 }
 
-generator json {
-  provider = "prisma-json-types-generator"
-}
-
 model User {
   id String @id
 
@@ -72,7 +68,6 @@ model ServerChannelsSettings {
 model AocLeaderboard {
   guildId String @unique
 
-  /// [AocLeaderboardData]
   result    Json
   updatedAt DateTime @default(now())
 
