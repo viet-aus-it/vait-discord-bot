@@ -1,4 +1,5 @@
 import type { ServerChannelsSettings } from '@prisma/client';
+import type { InputJsonValue } from '@prisma/client/runtime/library';
 import { getDbClient } from '../../clients';
 import { logger } from '../../utils/logger';
 import { fetchLeaderboard } from './client';
@@ -22,11 +23,11 @@ export const saveLeaderboard = async (guildId: string, aocLeaderboardResponse: A
     where: { guildId },
     update: {
       updatedAt: new Date(),
-      result: aocLeaderboardResponse,
+      result: aocLeaderboardResponse as InputJsonValue,
     },
     create: {
       guildId,
-      result: aocLeaderboardResponse,
+      result: aocLeaderboardResponse as InputJsonValue,
     },
     select: {
       result: true,

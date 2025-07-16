@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import type { JsonValue } from '@prisma/client/runtime/library';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor } from 'vitest-mock-extended';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
@@ -45,7 +46,7 @@ describe('Get AOC Leaderboard test', () => {
     describe('Format leaderboard', () => {
       it('Should match the leaderboard format', () => {
         const leaderboardMessage = formatLeaderboard({
-          result: parsedMockData,
+          result: parsedMockData as JsonValue,
           updatedAt: mockSystemTime,
         });
         expect(leaderboardMessage).toEqual(`\`\`\`
