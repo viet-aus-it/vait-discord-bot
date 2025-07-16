@@ -1,7 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import { describe, expect } from 'vitest';
-import { DISCLAIMER_EN, DISCLAIMER_VI, getDisclaimer } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { DISCLAIMER_EN, DISCLAIMER_VI, getDisclaimer } from '.';
 
 const getEmbed = (content: string) => {
   return new EmbedBuilder({

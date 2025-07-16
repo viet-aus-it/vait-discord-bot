@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { describe, expect, expectTypeOf, it } from 'vitest';
-import { insult } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { insult } from '.';
 import { randomCreate } from './insult-generator';
 
 describe('Insult someone test', () => {

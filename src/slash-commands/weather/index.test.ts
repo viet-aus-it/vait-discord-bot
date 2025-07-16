@@ -1,9 +1,9 @@
-import { http, HttpResponse } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { describe, expect } from 'vitest';
 import { captor } from 'vitest-mock-extended';
-import { DEFAULT_LOCATION, weather } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { server } from '../../../test/mocks/msw/server';
+import { DEFAULT_LOCATION, weather } from '.';
 import { WEATHER_URL } from './fetch-weather';
 
 describe('Weather test', () => {

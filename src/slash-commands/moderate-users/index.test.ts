@@ -1,8 +1,8 @@
 import { type APIRole, Collection, type GuildTextBasedChannel, type Role, type ThreadMember, type ThreadMemberManager } from 'discord.js';
 import { describe, expect } from 'vitest';
 import type { DeepMockProxy } from 'vitest-mock-extended';
-import { removeUserByRole } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { removeUserByRole } from '.';
 
 describe('Remove users who have the role', () => {
   chatInputCommandInteractionTest('should reply with an error message if the command is not executed in a thread', async ({ interaction }) => {

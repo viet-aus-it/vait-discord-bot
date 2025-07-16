@@ -1,8 +1,8 @@
 import type { Message } from 'discord.js';
 import { describe, expect } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
-import { pinMessage } from '.';
 import { contextMenuCommandTest } from '../../../test/fixtures/context-menu-command-interaction';
+import { pinMessage } from '.';
 
 describe('pinMessage context menu test', () => {
   contextMenuCommandTest('Should return if interaction is not message context menu command', async ({ interaction }) => {

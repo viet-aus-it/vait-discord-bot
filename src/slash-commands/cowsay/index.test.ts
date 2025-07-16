@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Collection, type Message } from 'discord.js';
 import { describe, expect, it } from 'vitest';
-import { cowsay, removeBacktick } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { cowsay, removeBacktick } from '.';
 
 describe('Remove backtick test', () => {
   it("Should ignore when there's no backticks", () => {

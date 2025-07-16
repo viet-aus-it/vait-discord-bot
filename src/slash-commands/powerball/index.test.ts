@@ -1,7 +1,7 @@
 import { describe, expect } from 'vitest';
 import { captor } from 'vitest-mock-extended';
-import { powerball } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { powerball } from '.';
 
 describe('powerball', () => {
   chatInputCommandInteractionTest('should return correct number of games', async ({ interaction }) => {

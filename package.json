@@ -57,7 +57,7 @@
     "zod": "^4.0.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.1.1",
     "@faker-js/faker": "^9.9.0",
     "@testcontainers/postgresql": "^11.2.1",
     "@types/node": "^22.16.4",
@@ -79,6 +79,16 @@
     "vitest-mock-extended": "^3.1.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["@biomejs/biome", "@prisma/client", "@prisma/engines", "cpu-features", "esbuild", "msw", "prisma", "protobufjs", "ssh2"]
+    "onlyBuiltDependencies": [
+      "@biomejs/biome",
+      "@prisma/client",
+      "@prisma/engines",
+      "cpu-features",
+      "esbuild",
+      "msw",
+      "prisma",
+      "protobufjs",
+      "ssh2"
+    ]
   }
 }

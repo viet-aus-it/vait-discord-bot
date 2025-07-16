@@ -1,7 +1,7 @@
 import { Collection, type GuildMember } from 'discord.js';
 import { describe, expect, vi } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
-import { DEFAULT_LEADERBOARD, MAX_LEADERBOARD, getLeaderboard as getLeaderboardCommand } from './leaderboard';
+import { DEFAULT_LEADERBOARD, getLeaderboard as getLeaderboardCommand, MAX_LEADERBOARD } from './leaderboard';
 import { getRepLeaderboard } from './utils';
 
 vi.mock('./utils');

@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor } from 'vitest-mock-extended';
-import { execute, formatLeaderboard, getAocYear } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { setAocSettings } from '../server-settings/utils';
+import { execute, formatLeaderboard, getAocYear } from '.';
 import mockAocData from './sample/aoc-data.json';
 import { AocLeaderboard } from './schema';
 import { deleteLeaderboard, saveLeaderboard } from './utils';

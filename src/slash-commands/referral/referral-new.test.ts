@@ -5,7 +5,7 @@ import { captor } from 'vitest-mock-extended';
 import { autocompleteInteractionTest } from '../../../test/fixtures/autocomplete-interaction';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { getOrCreateUser } from '../reputation/utils';
-import { DEFAULT_EXPIRY_DAYS_FROM_NOW, autocomplete, execute } from './referral-new';
+import { autocomplete, DEFAULT_EXPIRY_DAYS_FROM_NOW, execute } from './referral-new';
 import { services } from './services';
 import { type CreateReferralInput, createReferralCode, findExistingReferralCode } from './utils';
 

@@ -1,8 +1,8 @@
 import type { User } from 'discord.js';
 import { describe, expect, vi } from 'vitest';
-import { danhSomeone } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { getRandomBoolean, getRandomIntInclusive } from '../../utils/random';
+import { danhSomeone } from '.';
 
 vi.mock('../../utils/random');
 const mockRandomInt = vi.mocked(getRandomIntInclusive);

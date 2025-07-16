@@ -3,6 +3,7 @@ import type { AutocompleteHandler, SlashCommand, SlashCommandHandler } from '../
 
 import * as referralNew from './referral-new';
 import * as referralRandom from './referral-random';
+
 // referral new $SERVICE_NAME $LINK/CODE $EXPIRY_DATE(DD/MM/YYYY)
 // referral random $SERVICE_NAME
 

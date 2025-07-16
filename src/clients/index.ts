@@ -1,2 +1,2 @@
-export * from './discord';
 export * from './db';
+export * from './discord';
