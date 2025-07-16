@@ -6,7 +6,7 @@ export const Member = z
     name: z.string().nullish(),
     local_score: z.number(),
   })
-  .passthrough()
+  .loose()
   .transform((m): typeof m & { name: string } => {
     if (!m.name) {
       return {
@@ -24,7 +24,7 @@ export const AocLeaderboard = z
     event: z.coerce.number(),
     members: z.record(z.string(), Member),
   })
-  .passthrough()
+  .loose()
   .transform((board) => {
     const sortedMembers = Object.values(board.members)
       .toSorted((prev, next) => next.local_score - prev.local_score)
