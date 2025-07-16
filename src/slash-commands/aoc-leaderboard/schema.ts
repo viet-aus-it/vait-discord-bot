@@ -1,12 +1,11 @@
 import { z } from 'zod';
 
 export const Member = z
-  .object({
+  .looseObject({
     id: z.coerce.number(),
     name: z.string().nullish(),
     local_score: z.number(),
   })
-  .passthrough()
   .transform((m): typeof m & { name: string } => {
     if (!m.name) {
       return {
@@ -20,11 +19,10 @@ export const Member = z
 export type Member = z.infer<typeof Member>;
 
 export const AocLeaderboard = z
-  .object({
+  .looseObject({
     event: z.coerce.number(),
     members: z.record(z.string(), Member),
   })
-  .passthrough()
   .transform((board) => {
     const sortedMembers = Object.values(board.members)
       .toSorted((prev, next) => next.local_score - prev.local_score)
