@@ -39,7 +39,7 @@ export default defineConfig({
   dts: false,
   sourcemap: isProductionBuild() ? 'inline' : false,
   clean: true,
-  plugins: [
+  esbuildPlugins: [
     copy({
       verbose: true,
       assets: [
