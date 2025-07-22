@@ -7,16 +7,16 @@ datasource db {
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
-generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["relationJoins", "driverAdapters", "queryCompiler"]
-  output          = "../src/clients/prisma/generated/client"
-}
-
 // generator client {
-//   provider = "prisma-client"
-//   output   = "../src/clients/prisma/generated"
+//   provider        = "prisma-client-js"
+//   previewFeatures = ["relationJoins", "driverAdapters", "queryCompiler"]
+//   output          = "../src/clients/prisma/generated/client"
 // }
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/clients/prisma/generated"
+}
 
 model User {
   id String @id
