@@ -16,11 +16,7 @@
     "isolatedModules": false,
     "outDir": "build",
     "noEmit": true,
-    "baseUrl": ".",
-    "paths": {
-      "@prisma/client": ["src/clients/prisma/generated/client"],
-      "@prisma/client/*": ["src/clients/prisma/generated/client/*"]
-    }
+    "baseUrl": "."
   },
   "include": ["bin", "src", "scripts", "test", "*.config.*", "*.setup.*"],
   "exclude": ["node_modules", "build", "**/generated/**"]

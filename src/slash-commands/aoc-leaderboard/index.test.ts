@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import type { JsonValue } from '@prisma/client/runtime/library';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { captor } from 'vitest-mock-extended';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import type { JsonValue } from '../../clients/prisma/generated/client/runtime/library';
 import { setAocSettings } from '../server-settings/utils';
 import { execute, formatLeaderboard, getAocYear } from '.';
 import mockAocData from './sample/aoc-data.json';

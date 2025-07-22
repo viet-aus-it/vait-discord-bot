@@ -74,14 +74,12 @@
     "tsdown": "^0.13.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
-    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
     "vitest-mock-extended": "^3.1.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "@biomejs/biome",
-      "@prisma/client",
       "@prisma/engines",
       "cpu-features",
       "esbuild",

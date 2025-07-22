@@ -1,6 +1,6 @@
-import type { ServerChannelsSettings } from '@prisma/client';
-import type { InputJsonValue } from '@prisma/client/runtime/library';
 import { getDbClient } from '../../clients';
+import type { ServerChannelsSettings } from '../../clients/prisma/generated/client';
+import type { InputJsonValue } from '../../clients/prisma/generated/client/runtime/library';
 import { logger } from '../../utils/logger';
 import { fetchLeaderboard } from './client';
 import type { AocLeaderboard } from './schema';
