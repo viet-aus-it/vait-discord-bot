@@ -1,6 +1,6 @@
 import path from 'node:path';
-import { copy } from 'esbuild-plugin-copy';
-import { defineConfig } from 'tsup';
+import copy from 'rollup-plugin-copy';
+import { defineConfig } from 'tsdown';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
@@ -27,24 +27,22 @@ export default defineConfig({
   dts: false,
   sourcemap: isProductionBuild() ? 'inline' : false,
   clean: true,
-  esbuildPlugins: [
+  plugins: [
     copy({
-      resolveFrom: 'cwd',
       verbose: true,
-      assets: [
+      targets: [
         {
-          from: [path.join(prismaClientPath, 'libquery_engine-*'), path.join(prismaClientPath, 'schema.prisma')],
-          to: [path.resolve(outputPath, 'server')],
+          src: [path.join(prismaClientPath, 'libquery_engine-*'), path.join(prismaClientPath, 'schema.prisma')],
+          dest: [path.resolve(outputPath, 'server')],
         },
       ],
     }),
     copy({
-      resolveFrom: 'cwd',
       verbose: true,
-      assets: [
+      targets: [
         {
-          from: [cowPath],
-          to: [path.resolve(outputPath, 'cows')],
+          src: [cowPath],
+          dest: [path.resolve(outputPath, 'cows')],
         },
       ],
     }),
