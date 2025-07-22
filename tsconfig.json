@@ -15,8 +15,13 @@
     "resolveJsonModule": true,
     "isolatedModules": false,
     "outDir": "build",
-    "noEmit": true
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@prisma/client": ["src/clients/prisma/generated/client"],
+      "@prisma/client/*": ["src/clients/prisma/generated/client/*"]
+    }
   },
   "include": ["bin", "src", "scripts", "test", "*.config.*", "*.setup.*"],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build", "**/generated/**"]
 }
