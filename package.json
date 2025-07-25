@@ -44,6 +44,7 @@
     "@axiomhq/winston": "^1.3.1",
     "@discordjs/rest": "2.0.0",
     "@dotenvx/dotenvx": "^1.47.6",
+    "@prisma/client": "^6.12.0",
     "cowsay": "^1.6.0",
     "date-fns": "^4.1.0",
     "discord-api-types": "^0.38.16",
@@ -81,6 +82,7 @@
     "onlyBuiltDependencies": [
       "@biomejs/biome",
       "@prisma/engines",
+      "@prisma/client",
       "cpu-features",
       "esbuild",
       "msw",
