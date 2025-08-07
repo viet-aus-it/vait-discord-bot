@@ -1,5 +1,3 @@
-export type DisclaimerMap = { en: string; vi: string };
-
 export const DISCLAIMER_VI =
   'Trong trường hợp nhóm này bị điều tra bởi các cơ quan trực thuộc bộ công an (hoặc các tổ chức chính trị tương tự), tôi khẳng định mình không liên quan tới nhóm hoặc những cá nhân khác trong nhóm này. Tôi không rõ tại sao mình lại có mặt ở đây, có lẽ tài khoản của tôi đã được thêm bởi một bên thứ ba. Tôi cũng xin khẳng định rằng mình không hề giúp sức cho những hành động của các thành viên trong nhóm này.' as const;
 
@@ -12,6 +10,7 @@ export const FINANCIAL_DISCLAIMER_VI =
 export const FINANCIAL_DISCLAIMER_EN =
   'Information shared in this group is for educational and discussion purposes only. This is not financial, investment, or tax advice. All investments carry risk and you may lose some or all of your invested capital. Please consult with qualified financial professionals before making any investment decisions.' as const;
 
+export type DisclaimerMap = { en: string; vi: string };
 export const DISCLAIMERS: Record<string, DisclaimerMap> = {
   general: {
     en: DISCLAIMER_EN,

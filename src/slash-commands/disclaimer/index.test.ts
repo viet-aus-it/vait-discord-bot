@@ -2,7 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 import { describe, expect } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { getDisclaimer } from '.';
-import { DISCLAIMER_EN, DISCLAIMER_VI, FINANCIAL_DISCLAIMER_EN, FINANCIAL_DISCLAIMER_VI } from './disclaimers_meta';
+import { DISCLAIMER_EN, DISCLAIMER_VI, FINANCIAL_DISCLAIMER_EN, FINANCIAL_DISCLAIMER_VI } from './meta';
 
 const getEmbed = (content: string) => {
   return new EmbedBuilder({

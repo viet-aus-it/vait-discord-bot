@@ -1,7 +1,7 @@
 import { type ChatInputCommandInteraction, EmbedBuilder, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import type { SlashCommand } from '../builder';
-import { DISCLAIMERS, type DisclaimerMap } from './disclaimers_meta';
+import { DISCLAIMERS, type DisclaimerMap } from './meta';
 
 const data = new SlashCommandBuilder()
   .setName('disclaimer')
