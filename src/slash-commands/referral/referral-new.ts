@@ -61,7 +61,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
     expiryDate = parsedExpiryDate;
   } else {
-    expiryDate = addDays(new Date(), 30);
+    expiryDate = addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW);
   }
 
   const guildId = (interaction.guild as Guild).id;
