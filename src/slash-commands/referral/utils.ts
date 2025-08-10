@@ -66,3 +66,77 @@ export const cleanupExpiredCode = async () => {
     },
   });
 };
+
+export type GetUserReferralCodesInput = {
+  userId: string;
+  guildId: string;
+};
+export const getUserReferralCodes = async ({ userId, guildId }: GetUserReferralCodesInput) => {
+  const db = getDbClient();
+  return db.referralCode.findMany({
+    where: {
+      userId,
+      guildId,
+      expiry_date: {
+        gte: new Date(),
+      },
+    },
+    orderBy: {
+      service: 'asc',
+    },
+  });
+};
+
+export type UpdateReferralCodeInput = {
+  id: string;
+  userId: string;
+  guildId: string;
+  code?: string;
+  expiryDate?: Date;
+};
+export const updateReferralCode = async ({ id, userId, guildId, code, expiryDate }: UpdateReferralCodeInput) => {
+  const db = getDbClient();
+  return db.referralCode.updateMany({
+    where: {
+      id,
+      userId, // Ensure user can only update their own referrals
+      guildId,
+    },
+    data: {
+      ...(code && { code }),
+      ...(expiryDate && { expiry_date: expiryDate }),
+    },
+  });
+};
+
+export type DeleteReferralCodeInput = {
+  id: string;
+  userId: string;
+  guildId: string;
+};
+export const deleteReferralCode = async ({ id, userId, guildId }: DeleteReferralCodeInput) => {
+  const db = getDbClient();
+  return db.referralCode.deleteMany({
+    where: {
+      id,
+      userId, // Ensure user can only delete their own referrals
+      guildId,
+    },
+  });
+};
+
+export type GetReferralCodeByIdInput = {
+  id: string;
+  userId: string;
+  guildId: string;
+};
+export const getReferralCodeById = async ({ id, userId, guildId }: GetReferralCodeByIdInput) => {
+  const db = getDbClient();
+  return db.referralCode.findFirst({
+    where: {
+      id,
+      userId, // Ensure user can only access their own referrals
+      guildId,
+    },
+  });
+};
