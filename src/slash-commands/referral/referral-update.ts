@@ -44,22 +44,18 @@ export const execute: SlashCommandHandler = async (interaction) => {
     return;
   }
 
-  // Treat empty strings as null for logic purposes
-  const effectiveNewCode = newCode?.trim() || null;
-  const effectiveExpiryDateInput = expiryDateInput?.trim() || null;
-
   // Validate expiry date if provided
   let newExpiryDate: Date | undefined;
-  if (effectiveExpiryDateInput) {
-    const [parseDateCase, parsedExpiryDate] = parseDate(effectiveExpiryDateInput);
+  if (expiryDateInput) {
+    const [parseDateCase, parsedExpiryDate] = parseDate(expiryDateInput);
 
     if (parseDateCase === 'INVALID_DATE') {
-      logger.info(`[referral-update]: expiry_date is invalid date format input:${effectiveExpiryDateInput}`);
+      logger.info(`[referral-update]: expiry_date is invalid date format input:${expiryDateInput}`);
       await interaction.reply('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
       return;
     }
     if (parseDateCase === 'EXPIRED_DATE') {
-      logger.info(`[referral-update]: expiry_date is already expired input:${effectiveExpiryDateInput}`);
+      logger.info(`[referral-update]: expiry_date is already expired input:${expiryDateInput}`);
       await interaction.reply('expiry_date has already expired');
       return;
     }
@@ -67,21 +63,15 @@ export const execute: SlashCommandHandler = async (interaction) => {
     newExpiryDate = parsedExpiryDate;
   }
 
-  // Special case: if empty strings are provided for both, extend expiry by default
-  if (newCode === '' && expiryDateInput === '') {
+  // If no specific updates provided, extend expiry by default days
+  if (!newCode && !expiryDateInput) {
     newExpiryDate = addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW);
   }
 
   // Ensure at least one field is being updated
-  if (!effectiveNewCode && !effectiveExpiryDateInput && !(newCode === '' && expiryDateInput === '')) {
+  if (!newCode && !newExpiryDate) {
     await interaction.reply('Please specify either a new code/link or expiry date to update.');
     return;
-  }
-
-  // If no specific expiry date provided but we have other updates, keep existing expiry
-  // If expiry date input is provided, use the parsed date
-  if (!newExpiryDate && expiryDateInput) {
-    // This case is handled by the validation above
   }
 
   const updateOp = await Result.safe(
@@ -89,7 +79,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
       id,
       userId,
       guildId,
-      code: effectiveNewCode || undefined,
+      code: newCode || undefined,
       expiryDate: newExpiryDate,
     })
   );
@@ -110,8 +100,8 @@ export const execute: SlashCommandHandler = async (interaction) => {
   // Build success message
   let successMessage = `Successfully updated referral for **${existingReferral.service}**:`;
 
-  if (effectiveNewCode) {
-    successMessage += `\n• New code: \`${effectiveNewCode}\``;
+  if (newCode) {
+    successMessage += `\n• New code: \`${newCode}\``;
   }
 
   if (newExpiryDate) {

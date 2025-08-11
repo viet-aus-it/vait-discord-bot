@@ -159,8 +159,8 @@ describe('referral-update execute', () => {
     interaction.guild!.id = guildId;
     interaction.options.getString.mockImplementation((name: string, _required?: boolean) => {
       if (name === 'id') return referralId;
-      // Return empty string for optional fields to trigger default expiry extension
-      return '';
+      // Return null for optional fields to trigger default expiry extension
+      return null;
     });
 
     await execute(interaction);

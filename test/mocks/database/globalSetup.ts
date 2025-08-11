@@ -7,7 +7,7 @@ function setupDb(databaseUrl?: string) {
   if (databaseUrl) {
     process.env.DATABASE_URL = databaseUrl;
   }
-  childProcess.execSync('npm run prisma:migrate', {
+  childProcess.execSync('pnpm run prisma:migrate', {
     env: {
       ...process.env,
       DATABASE_URL: process.env.DATABASE_URL,
@@ -43,9 +43,7 @@ async function ciSetup() {
   loadEnv();
   console.log('Database is running at', process.env.DATABASE_URL);
 
-  // Skip database migration in CI when external downloads are blocked
-  // Most tests are unit tests with mocked database calls
-  console.log('Skipping database migration due to external dependency restrictions');
+  setupDb();
 
   return async function teardown() {
     console.log('Tearing down db...');
