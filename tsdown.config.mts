@@ -4,17 +4,17 @@ import { defineConfig } from 'tsdown';
 
 const isProductionBuild = () => process.env.NODE_ENV === 'production';
 
-const binPath = path.resolve(__dirname, 'bin');
+const binPath = path.resolve('bin');
 
-const outputPath = path.resolve(__dirname, 'build');
+const outputPath = path.resolve('build');
 
-const prismaClientPath = path.resolve(__dirname, 'src', 'clients', 'prisma', 'generated', 'client');
-const cowPath = path.resolve(__dirname, 'node_modules', 'cowsay', 'cows', 'default.cow');
+const prismaClientPath = path.resolve('src', 'clients', 'prisma', 'generated', 'client');
+const cowPath = path.resolve('node_modules', 'cowsay', 'cows', 'default.cow');
 
 export default defineConfig({
   platform: 'node',
   target: 'node22',
-  bundle: true,
+  unbundle: false,
   minify: true,
   entry: [
     path.resolve(binPath, 'main.ts'),
