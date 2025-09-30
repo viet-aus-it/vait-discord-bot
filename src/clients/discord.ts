@@ -19,7 +19,7 @@ export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
       partials: [Partials.Channel, Partials.Message, Partials.Reaction],
     });
     client
-      .on('ready', () => resolve(client))
+      .on('clientReady', () => resolve(client))
       .on('error', reject)
       .login(options.token);
   });
