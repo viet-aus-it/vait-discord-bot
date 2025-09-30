@@ -8,7 +8,6 @@ const binPath = path.resolve('bin');
 
 const outputPath = path.resolve('build');
 
-const prismaClientPath = path.resolve('src', 'clients', 'prisma', 'generated', 'client');
 const cowPath = path.resolve('node_modules', 'cowsay', 'cows', 'default.cow');
 
 export default defineConfig({
@@ -28,15 +27,6 @@ export default defineConfig({
   sourcemap: isProductionBuild() ? 'inline' : false,
   clean: true,
   plugins: [
-    copy({
-      verbose: true,
-      targets: [
-        {
-          src: [path.join(prismaClientPath, 'libquery_engine-*'), path.join(prismaClientPath, 'schema.prisma')],
-          dest: [path.resolve(outputPath, 'server')],
-        },
-      ],
-    }),
     copy({
       verbose: true,
       targets: [

@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
-import type { ServerChannelsSettings } from '../../clients/prisma/generated/client';
+import type { ServerChannelsSettings } from '../../clients/prisma/generated/client/client';
 import { logger } from '../../utils/logger';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { listThreadsByGuild } from './utils';
