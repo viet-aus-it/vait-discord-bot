@@ -22,7 +22,7 @@ const processKeywordMatch = (message: Message<true>, config: KeywordMatchCommand
     const hasKeyword = conf.matchers.some((keyword) => keywordMatched(message.content, keyword));
 
     if (!hasKeyword) {
-      return;
+      return undefined;
     }
 
     return conf.fn(message);

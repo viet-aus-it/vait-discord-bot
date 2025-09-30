@@ -14,7 +14,7 @@
       "!**/node_modules",
       "!**/build",
       "!**/coverage",
-      "!**/generated/**"
+      "!**/generated"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },

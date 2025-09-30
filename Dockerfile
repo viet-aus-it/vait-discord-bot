@@ -1,7 +1,7 @@
 ################
 # Build assets #
 ################
-FROM node:22.14 AS build
+FROM node:22.20 AS build
 WORKDIR /app
 
 # Install global node modules: pnpm
@@ -25,7 +25,7 @@ RUN pnpm install --production ${PNPM_ARGS}
 ####################
 # Production image #
 ####################
-FROM node:22.14-slim AS production
+FROM node:22.20-slim AS production
 WORKDIR /app
 
 RUN set -xe && \
