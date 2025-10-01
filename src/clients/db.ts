@@ -1,5 +1,5 @@
 import { PrismaPg } from '@prisma/adapter-pg';
-import { loadEnv } from 'src/utils/load-env';
+import { loadEnv } from '../utils/load-env';
 import { PrismaClient } from './prisma/generated/client/client';
 
 loadEnv();
