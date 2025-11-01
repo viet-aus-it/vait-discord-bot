@@ -1,4 +1,3 @@
-import dotenv from '@dotenvx/dotenvx';
 import { z } from 'zod';
 
 const configSchema = z.object({
@@ -27,8 +26,6 @@ declare global {
 }
 
 export const loadEnv = () => {
-  dotenv.config({ quiet: true });
-
   const validatedEnv = configSchema.safeParse(process.env);
   if (!validatedEnv.success) {
     console.error(`Error loading environment details. ${validatedEnv.error.message}`);
