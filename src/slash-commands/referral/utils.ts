@@ -108,3 +108,19 @@ export const updateReferralCode = async ({ service, userId, guildId, code, expir
     },
   });
 };
+
+export type DeleteReferralCodeInput = {
+  service: string;
+  userId: string;
+  guildId: string;
+};
+export const deleteReferralCode = async ({ service, userId, guildId }: DeleteReferralCodeInput) => {
+  const db = getDbClient();
+  return db.referralCode.deleteMany({
+    where: {
+      service,
+      userId,
+      guildId,
+    },
+  });
+};
