@@ -66,3 +66,23 @@ export const cleanupExpiredCode = async () => {
     },
   });
 };
+
+export type GetUserReferralCodesInput = {
+  userId: string;
+  guildId: string;
+};
+export const getUserReferralCodes = async ({ userId, guildId }: GetUserReferralCodesInput) => {
+  const db = getDbClient();
+  return db.referralCode.findMany({
+    where: {
+      userId,
+      guildId,
+      expiry_date: {
+        gte: new Date(),
+      },
+    },
+    orderBy: {
+      service: 'asc',
+    },
+  });
+};
