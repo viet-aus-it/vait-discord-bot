@@ -86,3 +86,25 @@ export const getUserReferralCodes = async ({ userId, guildId }: GetUserReferralC
     },
   });
 };
+
+export type UpdateReferralCodeInput = {
+  service: string;
+  userId: string;
+  guildId: string;
+  code?: string;
+  expiryDate?: Date;
+};
+export const updateReferralCode = async ({ service, userId, guildId, code, expiryDate }: UpdateReferralCodeInput) => {
+  const db = getDbClient();
+  return db.referralCode.updateMany({
+    where: {
+      service,
+      userId,
+      guildId,
+    },
+    data: {
+      ...(code && { code }),
+      ...(expiryDate && { expiry_date: expiryDate }),
+    },
+  });
+};

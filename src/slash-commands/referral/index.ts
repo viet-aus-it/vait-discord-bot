@@ -4,11 +4,12 @@ import type { AutocompleteHandler, SlashCommand, SlashCommandHandler } from '../
 import * as referralList from './referral-list';
 import * as referralNew from './referral-new';
 import * as referralRandom from './referral-random';
+import * as referralUpdate from './referral-update';
 
 // referral new $SERVICE_NAME $LINK/CODE $EXPIRY_DATE(DD/MM/YYYY)
 // referral random $SERVICE_NAME
 
-const subcommands = [referralNew, referralRandom, referralList];
+const subcommands = [referralNew, referralRandom, referralList, referralUpdate];
 
 const getData = () => {
   const data = new SlashCommandBuilder()
@@ -17,6 +18,7 @@ const getData = () => {
     .addSubcommand(referralNew.data)
     .addSubcommand(referralRandom.data)
     .addSubcommand(referralList.data)
+    .addSubcommand(referralUpdate.data)
     .setContexts(InteractionContextType.Guild);
 
   return data;
