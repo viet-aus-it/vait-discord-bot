@@ -7,8 +7,20 @@ permissions:
   contents: read
 
 jobs:
-  lint:
+  ci-checks:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: lint
+            command: ci
+          - name: typecheck
+            command: typecheck
+          - name: build
+            command: build
+
+    name: ${{ matrix.name }}
 
     steps:
       - name: Checkout code
@@ -17,8 +29,8 @@ jobs:
       - name: Set up project
         uses: ./.github/actions/setup-node-deps
 
-      - name: Run linting
-        run: pnpm run lint
+      - name: Run ${{ matrix.name }}
+        run: pnpm run ${{ matrix.command }}
 
   test:
     runs-on: ubuntu-latest
@@ -31,6 +43,12 @@ jobs:
           POSTGRES_DB: test
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,27 +60,3 @@ jobs:
         run: |
           cp .env.ci .env
           pnpm run test:silent
-
-  typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up project
-        uses: ./.github/actions/setup-node-deps
-
-      - name: Run typecheck
-        run: pnpm run typecheck
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up project
-        uses: ./.github/actions/setup-node-deps
-
-      - name: Build project
-        run: pnpm run build
