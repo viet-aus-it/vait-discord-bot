@@ -1,11 +1,15 @@
 import path from 'node:path';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { defineConfig } from 'prisma/config';
+import { defineConfig, env } from 'prisma/config';
 
 export default defineConfig({
   experimental: {
     adapter: true,
     studio: true,
+  },
+  datasource: {
+    url: env('DATABASE_URL'),
+    directUrl: env('DIRECT_DATABASE_URL'),
   },
   schema: path.join('prisma', 'schema.prisma'),
   migrations: {
