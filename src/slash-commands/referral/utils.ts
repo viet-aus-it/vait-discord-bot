@@ -66,3 +66,61 @@ export const cleanupExpiredCode = async () => {
     },
   });
 };
+
+export type GetUserReferralCodesInput = {
+  userId: string;
+  guildId: string;
+};
+export const getUserReferralCodes = async ({ userId, guildId }: GetUserReferralCodesInput) => {
+  const db = getDbClient();
+  return db.referralCode.findMany({
+    where: {
+      userId,
+      guildId,
+      expiry_date: {
+        gte: new Date(),
+      },
+    },
+    orderBy: {
+      service: 'asc',
+    },
+  });
+};
+
+export type UpdateReferralCodeInput = {
+  service: string;
+  userId: string;
+  guildId: string;
+  code?: string;
+  expiryDate?: Date;
+};
+export const updateReferralCode = async ({ service, userId, guildId, code, expiryDate }: UpdateReferralCodeInput) => {
+  const db = getDbClient();
+  return db.referralCode.updateMany({
+    where: {
+      service,
+      userId,
+      guildId,
+    },
+    data: {
+      ...(code && { code }),
+      ...(expiryDate && { expiry_date: expiryDate }),
+    },
+  });
+};
+
+export type DeleteReferralCodeInput = {
+  service: string;
+  userId: string;
+  guildId: string;
+};
+export const deleteReferralCode = async ({ service, userId, guildId }: DeleteReferralCodeInput) => {
+  const db = getDbClient();
+  return db.referralCode.deleteMany({
+    where: {
+      service,
+      userId,
+      guildId,
+    },
+  });
+};
