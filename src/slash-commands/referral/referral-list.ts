@@ -3,21 +3,22 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { ReferralCode } from '../../clients/prisma/generated/client/client';
 import { logger } from '../../utils/logger';
-import type { AutocompleteHandler, SlashCommandHandler } from '../builder';
+import type { SlashCommandHandler } from '../builder';
 import { getUserReferralCodes } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder().setName('list').setDescription('Get a list of your referral codes');
 
-export const autocomplete: AutocompleteHandler | undefined = undefined;
+export const MAX_REFERRAL_CODE_LENGTH = 36;
 
 export const buildReferralList = (referrals: ReferralCode[]) => {
   const serviceLength = Math.max(...referrals.map((referral) => referral.service.length), 'service'.length);
-  const codeLength = Math.max(...referrals.map((referral) => referral.code.length), 'code'.length);
+  let codeLength = Math.max(...referrals.map((referral) => referral.code.length), 'code'.length);
+  codeLength = Math.min(codeLength, MAX_REFERRAL_CODE_LENGTH);
   const expiryLength = 'expiry date'.length;
   const header = `| ${'service'.padEnd(serviceLength, ' ')} | ${'code'.padEnd(codeLength, ' ')} | ${'expiry date'.padEnd(expiryLength, ' ')} |\n| ${'-'.repeat(serviceLength)} | ${'-'.repeat(codeLength)} | ${'-'.repeat(expiryLength)} |\n`;
   return referrals.reduce((accum, { service, code, expiry_date }) => {
     const paddedService = service.padEnd(serviceLength, ' ');
-    const paddedCode = code.padEnd(codeLength, ' ');
+    const paddedCode = code.slice(0, MAX_REFERRAL_CODE_LENGTH).padEnd(codeLength, ' ');
     const formattedExpiry = format(expiry_date, 'dd/MM/yyyy');
     const paddedExpiry = formattedExpiry.padEnd(expiryLength, ' ');
     return `${accum}| ${paddedService} | ${paddedCode} | ${paddedExpiry} |\n`;

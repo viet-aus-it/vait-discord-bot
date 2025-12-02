@@ -1,15 +1,15 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import type { AutocompleteHandler, SlashCommandHandler } from '../builder';
+import type { SlashCommandHandler } from '../builder';
 import { deleteReferralCode } from './utils';
+
+export { autocomplete } from './referral-autocomplete';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('delete')
   .setDescription('Delete a referral code')
   .addStringOption((option) => option.setName('service').setDescription('Service name to delete referral code for. This must be provided.').setRequired(true));
-
-export const autocomplete: AutocompleteHandler | undefined = undefined;
 
 export const execute: SlashCommandHandler = async (interaction) => {
   const userId = interaction.user.id;

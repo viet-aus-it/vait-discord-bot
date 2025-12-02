@@ -2,12 +2,13 @@ import { addDays, getUnixTime } from 'date-fns';
 import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import type { AutocompleteHandler, SlashCommandHandler } from '../builder';
+import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
-import { searchServices, services } from './services';
+import { services } from './services';
 import { createReferralCode, findExistingReferralCode } from './utils';
 
 export const DEFAULT_EXPIRY_DAYS_FROM_NOW = 30;
+export { autocomplete } from './referral-autocomplete';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('new')
@@ -22,13 +23,6 @@ export const data = new SlashCommandSubcommandBuilder()
       .setDescription(`when the code/link expired (DD/MM//YYYY). By default, it's ${DEFAULT_EXPIRY_DAYS_FROM_NOW} days from now.`)
       .setRequired(false)
   );
-
-export const autocomplete: AutocompleteHandler = async (interaction) => {
-  const searchTerm = interaction.options.getString('service', true);
-
-  const options = searchServices(searchTerm);
-  interaction.respond(options);
-};
 
 export const execute: SlashCommandHandler = async (interaction) => {
   const code = interaction.options.getString('link_or_code', true);

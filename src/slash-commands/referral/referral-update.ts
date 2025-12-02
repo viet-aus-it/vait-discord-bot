@@ -2,9 +2,11 @@ import { getUnixTime } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import type { AutocompleteHandler, SlashCommandHandler } from '../builder';
+import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { updateReferralCode } from './utils';
+
+export { autocomplete } from './referral-autocomplete';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('update')
@@ -12,8 +14,6 @@ export const data = new SlashCommandSubcommandBuilder()
   .addStringOption((option) => option.setName('service').setDescription('Service name to update referral code for. This must be provided.').setRequired(true))
   .addStringOption((option) => option.setName('link_or_code').setDescription('New referral link or code').setRequired(false))
   .addStringOption((option) => option.setName('expiry_date').setDescription('New expiry date (DD/MM/YYYY)').setRequired(false));
-
-export const autocomplete: AutocompleteHandler | undefined = undefined;
 
 export const execute: SlashCommandHandler = async (interaction) => {
   const userId = interaction.user.id;

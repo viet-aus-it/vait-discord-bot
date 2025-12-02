@@ -1,5 +1,5 @@
 import { InteractionContextType, SlashCommandBuilder } from 'discord.js';
-import type { AutocompleteHandler, SlashCommand, SlashCommandHandler } from '../builder';
+import type { AutocompleteHandler, SlashCommand, SlashCommandHandler, Subcommand } from '../builder';
 
 import * as referralDelete from './referral-delete';
 import * as referralList from './referral-list';
@@ -10,7 +10,8 @@ import * as referralUpdate from './referral-update';
 // referral new $SERVICE_NAME $LINK/CODE $EXPIRY_DATE(DD/MM/YYYY)
 // referral random $SERVICE_NAME
 
-const subcommands = [referralNew, referralRandom, referralList, referralUpdate, referralDelete];
+const subcommandsWithoutAutocomplete: Subcommand[] = [referralNew, referralRandom, referralUpdate, referralDelete];
+const subcommands = subcommandsWithoutAutocomplete.concat([referralList]);
 
 const getData = () => {
   const data = new SlashCommandBuilder()
@@ -28,7 +29,10 @@ const getData = () => {
 
 const autocomplete: AutocompleteHandler = async (interaction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);
-  const subcommand = subcommands.find(({ data: { name } }) => name === requestedSubcommand);
+  if (requestedSubcommand === 'list') {
+    return;
+  }
+  const subcommand = subcommandsWithoutAutocomplete.find(({ data: { name } }) => name === requestedSubcommand);
   return subcommand?.autocomplete?.(interaction);
 };
 
