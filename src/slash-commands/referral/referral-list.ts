@@ -3,12 +3,10 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { ReferralCode } from '../../clients/prisma/generated/client/client';
 import { logger } from '../../utils/logger';
-import type { AutocompleteHandler, SlashCommandHandler } from '../builder';
+import type { SlashCommandHandler } from '../builder';
 import { getUserReferralCodes } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder().setName('list').setDescription('Get a list of your referral codes');
-
-export const autocomplete: AutocompleteHandler | undefined = undefined;
 
 export const buildReferralList = (referrals: ReferralCode[]) => {
   const serviceLength = Math.max(...referrals.map((referral) => referral.service.length), 'service'.length);
