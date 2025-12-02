@@ -2,9 +2,10 @@ import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive } from '../../utils/random';
-import type { AutocompleteHandler, SlashCommandHandler } from '../builder';
-import { searchServices } from './services';
+import type { SlashCommandHandler } from '../builder';
 import { getAllReferralCodesForService } from './utils';
+
+export { autocomplete } from './referral-autocomplete';
 
 export const data = new SlashCommandSubcommandBuilder()
   .setName('random')
@@ -12,13 +13,6 @@ export const data = new SlashCommandSubcommandBuilder()
   .addStringOption((option) =>
     option.setName('service').setDescription('service to refer(type more than 3 characters to see suggestion)').setRequired(true).setAutocomplete(true)
   );
-
-export const autocomplete: AutocompleteHandler = async (interaction) => {
-  const searchTerm = interaction.options.getString('service', true);
-
-  const options = searchServices(searchTerm);
-  await interaction.respond(options);
-};
 
 export const execute: SlashCommandHandler = async (interaction) => {
   const service = interaction.options.getString('service', true)?.trim().toLowerCase() ?? '';

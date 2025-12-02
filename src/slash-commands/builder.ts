@@ -18,4 +18,5 @@ export interface SlashCommand {
 export interface Subcommand {
   data: SlashCommandSubcommandBuilder | ((subcommandGroup: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder);
   execute: SlashCommandHandler;
+  autocomplete?: AutocompleteHandler;
 }

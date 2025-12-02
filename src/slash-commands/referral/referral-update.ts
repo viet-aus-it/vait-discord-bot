@@ -6,6 +6,8 @@ import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { updateReferralCode } from './utils';
 
+export { autocomplete } from './referral-autocomplete';
+
 export const data = new SlashCommandSubcommandBuilder()
   .setName('update')
   .setDescription('Update an existing referral code')

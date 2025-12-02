@@ -4,6 +4,8 @@ import { logger } from '../../utils/logger';
 import type { SlashCommandHandler } from '../builder';
 import { deleteReferralCode } from './utils';
 
+export { autocomplete } from './referral-autocomplete';
+
 export const data = new SlashCommandSubcommandBuilder()
   .setName('delete')
   .setDescription('Delete a referral code')
