@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { describe, expect, vi } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
-import { execute } from './referral-list';
+import { execute, MAX_REFERRAL_CODE_LENGTH } from './referral-list';
 import { getUserReferralCodes } from './utils';
 
 vi.mock('./utils');
@@ -97,6 +97,33 @@ describe('List referral codes', () => {
 | ---------------- | ---------- | ----------- |
 | american express | AMEX456789 | 31/12/2024  |
 | powershop        | POWER123   | 15/06/2025  |
+\`\`\``);
+  });
+
+  chatInputCommandInteractionTest('Should trim long URL or code into the max length', async ({ interaction }) => {
+    interaction.user.id = userId;
+    interaction.guildId = guildId;
+    const expiryDate1 = new Date('2024-12-31');
+    const code = faker.string.alphanumeric({ length: MAX_REFERRAL_CODE_LENGTH + 10 });
+    mockGetUserReferralCodes.mockResolvedValueOnce([
+      {
+        id: faker.string.uuid(),
+        userId,
+        guildId,
+        service: 'american express',
+        code,
+        expiry_date: expiryDate1,
+      },
+    ]);
+
+    await execute(interaction);
+
+    expect(mockGetUserReferralCodes).toHaveBeenCalled();
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(`\`\`\`
+| service          | ${'code'.padEnd(MAX_REFERRAL_CODE_LENGTH, ' ')} | expiry date |
+| ---------------- | ${`-`.repeat(MAX_REFERRAL_CODE_LENGTH)} | ----------- |
+| american express | ${code.slice(0, MAX_REFERRAL_CODE_LENGTH)} | 31/12/2024  |
 \`\`\``);
   });
 });
