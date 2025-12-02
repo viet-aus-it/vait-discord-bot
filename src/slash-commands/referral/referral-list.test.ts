@@ -100,7 +100,7 @@ describe('List referral codes', () => {
 \`\`\``);
   });
 
-  chatInputCommandInteractionTest('Should trim long URL or code into the max length', async ({ interaction }) => {
+  chatInputCommandInteractionTest('Should trim long URL or code to the max length', async ({ interaction }) => {
     interaction.user.id = userId;
     interaction.guildId = guildId;
     const expiryDate1 = new Date('2024-12-31');
