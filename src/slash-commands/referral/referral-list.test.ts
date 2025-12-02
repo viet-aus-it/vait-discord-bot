@@ -104,14 +104,32 @@ describe('List referral codes', () => {
     interaction.user.id = userId;
     interaction.guildId = guildId;
     const expiryDate1 = new Date('2024-12-31');
-    const code = faker.string.alphanumeric({ length: MAX_REFERRAL_CODE_LENGTH + 10 });
+    const code1 = faker.string.alphanumeric({ length: MAX_REFERRAL_CODE_LENGTH + 10 });
+    const code2 = faker.string.alphanumeric({ length: MAX_REFERRAL_CODE_LENGTH });
+    const code3 = faker.string.alphanumeric({ length: MAX_REFERRAL_CODE_LENGTH - 10 });
     mockGetUserReferralCodes.mockResolvedValueOnce([
       {
         id: faker.string.uuid(),
         userId,
         guildId,
         service: 'american express',
-        code,
+        code: code1,
+        expiry_date: expiryDate1,
+      },
+      {
+        id: faker.string.uuid(),
+        userId,
+        guildId,
+        service: 'american express 2',
+        code: code2,
+        expiry_date: expiryDate1,
+      },
+      {
+        id: faker.string.uuid(),
+        userId,
+        guildId,
+        service: 'american express 3',
+        code: code3,
         expiry_date: expiryDate1,
       },
     ]);
@@ -121,9 +139,11 @@ describe('List referral codes', () => {
     expect(mockGetUserReferralCodes).toHaveBeenCalled();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith(`\`\`\`
-| service          | ${'code'.padEnd(MAX_REFERRAL_CODE_LENGTH, ' ')} | expiry date |
-| ---------------- | ${`-`.repeat(MAX_REFERRAL_CODE_LENGTH)} | ----------- |
-| american express | ${code.slice(0, MAX_REFERRAL_CODE_LENGTH)} | 31/12/2024  |
+| service            | ${'code'.padEnd(MAX_REFERRAL_CODE_LENGTH, ' ')} | expiry date |
+| ------------------ | ${`-`.repeat(MAX_REFERRAL_CODE_LENGTH)} | ----------- |
+| american express   | ${code1.slice(0, MAX_REFERRAL_CODE_LENGTH - 3)}... | 31/12/2024  |
+| american express 2 | ${code2} | 31/12/2024  |
+| american express 3 | ${code3.padEnd(MAX_REFERRAL_CODE_LENGTH, ' ')} | 31/12/2024  |
 \`\`\``);
   });
 });

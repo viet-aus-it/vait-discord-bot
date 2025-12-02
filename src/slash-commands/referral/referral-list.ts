@@ -18,7 +18,10 @@ export const buildReferralList = (referrals: ReferralCode[]) => {
   const header = `| ${'service'.padEnd(serviceLength, ' ')} | ${'code'.padEnd(codeLength, ' ')} | ${'expiry date'.padEnd(expiryLength, ' ')} |\n| ${'-'.repeat(serviceLength)} | ${'-'.repeat(codeLength)} | ${'-'.repeat(expiryLength)} |\n`;
   return referrals.reduce((accum, { service, code, expiry_date }) => {
     const paddedService = service.padEnd(serviceLength, ' ');
-    const paddedCode = code.slice(0, MAX_REFERRAL_CODE_LENGTH).padEnd(codeLength, ' ');
+
+    const formattedCode = code.length <= MAX_REFERRAL_CODE_LENGTH ? code : `${code.slice(0, MAX_REFERRAL_CODE_LENGTH - 3)}...`;
+    const paddedCode = formattedCode.padEnd(codeLength, ' ');
+
     const formattedExpiry = format(expiry_date, 'dd/MM/yyyy');
     const paddedExpiry = formattedExpiry.padEnd(expiryLength, ' ');
     return `${accum}| ${paddedService} | ${paddedCode} | ${paddedExpiry} |\n`;
