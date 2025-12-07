@@ -13,6 +13,7 @@ services:
     image: ghcr.io/viet-aus-it/prisma-migrate-service
     volumes:
       - ./prisma:/src/prisma
+      - ./prisma.config.ts:/prisma.config.ts
     env_file: ".env.production"
     container_name: discord_bot_db_migrate_prod
 
