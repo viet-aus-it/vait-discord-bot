@@ -16,7 +16,7 @@ You are working on the VAIT Discord Bot, a community-driven bot for the Viet-Aus
 ## Role & Technical Context
 
 - **Domain**: Discord bot for community engagement, utilities, and moderation
-- **Team**: VAIT (Vietnamese Australian IT community)
+- **Team**: VAIT (Vietnamese Australians in Information Technology community)
 - **Tech Stack**: TypeScript, Node.js 22+, discord.js v14, Prisma ORM, PostgreSQL, Vitest, MSW
 - **Architecture**: Modular command-based architecture with slash commands, context menu commands, and event handlers
 
