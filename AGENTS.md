@@ -80,11 +80,13 @@ Currently: _(No skills defined yet - add skills under `.agents/skills/[skill-nam
 ## Quick Reference
 
 ### Tech Stack
+
 - TypeScript, Node.js 22+, discord.js v14
 - Prisma ORM with PostgreSQL
 - Vitest for testing, MSW for mocking
 
 ### Essential Commands
+
 ```bash
 pnpm start              # Run bot with migrations
 pnpm test              # Run tests
@@ -93,6 +95,7 @@ pnpm deploy:command    # Deploy Discord commands (use sparingly!)
 ```
 
 ### Key Principles
+
 - **Atomic changes**: Smallest logical units
 - **Test coverage**: Unit and integration tests
 - **Type safety**: Strict TypeScript

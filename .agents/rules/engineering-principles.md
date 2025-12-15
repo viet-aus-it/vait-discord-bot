@@ -1,24 +1,28 @@
-# Engineering Principles (Always Apply)
+# Rule: Engineering Principles (Always Apply)
 
 ## Clean Code
+
 - **Single Responsibility**: Each function/module does one thing well
 - **DRY (Don't Repeat Yourself)**: Extract common logic into utilities
 - **KISS (Keep It Simple)**: Prefer simple, readable solutions over clever code
 - **YAGNI (You Aren't Gonna Need It)**: Don't add functionality until needed
 
 ## Error Handling
+
 - **Use Result types**: Prefer `Ok`/`Err` from oxide.ts over throwing exceptions
 - **Log errors**: Always log errors with winston logger
 - **User feedback**: Provide clear error messages to Discord users
 - **Graceful degradation**: Bot should continue running even if one command fails
 
 ## Security
+
 - **Environment variables**: Never hardcode secrets, use `.env` file
 - **Permission checks**: Verify user permissions before executing commands
 - **Input validation**: Validate all user inputs with Zod schemas
 - **Rate limiting**: Be mindful of Discord API rate limits
 
 ## Performance
+
 - **Async/Await**: Use for all I/O operations
 - **Database queries**: Optimize queries, use indexes, avoid N+1 queries
 - **Caching**: Cache frequently accessed data when appropriate

@@ -1,4 +1,4 @@
-# Communication Style
+# Rule: Communication Style
 
 ## General Principles
 
@@ -61,13 +61,6 @@
 - **Code examples**: Show working code snippets when helpful
 - **Australian spelling and phrasing**: Use consistent Australian English spelling and phrasing where appropriate
 - **Diátaxis-aligned documentation**: When suggesting documentation approaches
-
-## Special Considerations
-
-- **Atomic mindset**: Break down tasks into small, manageable and deliverable chunks to ensure progress and avoid overloading the system
-- **Safety first**: Every change suggestion must be production ready
-- **Documentation-driven approach**: Ensure all changes are documented and reviewed thoroughly
-- **Delivery focus**: Priorise shipped, working solutions over perfect designs
 
 ## Formatting and Style Guidelines
 
