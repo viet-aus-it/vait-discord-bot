@@ -1,5 +1,8 @@
+import { faker } from '@faker-js/faker';
+import { format } from 'date-fns';
 import { describe, expect, vi } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { DAY_MONTH_YEAR_FORMAT } from '../../utils/date';
 import { execute } from './referral-update';
 import { updateReferralCode } from './utils';
 
@@ -87,7 +90,7 @@ describe('Update referral code', () => {
   chatInputCommandInteractionTest('Should update expiry date successfully', async ({ interaction }) => {
     interaction.user.id = userId;
     interaction.guildId = guildId;
-    const expiryDateString = '31/12/2025';
+    const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
       if (name === 'expiry_date') return expiryDateString;
@@ -112,7 +115,7 @@ describe('Update referral code', () => {
   chatInputCommandInteractionTest('Should update both code and expiry date', async ({ interaction }) => {
     interaction.user.id = userId;
     interaction.guildId = guildId;
-    const expiryDateString = '31/12/2025';
+    const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
       if (name === 'link_or_code') return newCode;
