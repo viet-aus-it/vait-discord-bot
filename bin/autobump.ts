@@ -5,6 +5,29 @@ import { listAllThreads } from '../src/slash-commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 
+const DEFAULT_AUTOBUMP_MESSAGE = '👋 Thread auto-bumped to keep it active!';
+
+const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
+  try {
+    const messages = await thread.messages.fetch({ limit: 100 });
+
+    if (clientId) {
+      const botMessages = messages.filter((m) => m.author.bot && m.author.id === clientId);
+
+      if (botMessages.size === 0) {
+        logger.warn(`[autobump]: No existing bot message found in thread ${thread.id}`);
+      } else {
+        await Promise.all(botMessages.map((m) => m.delete()));
+      }
+    }
+
+    await thread.setArchived(false);
+    await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
+  } catch (error) {
+    logger.error(`[autobump]: Failed to bump thread ${thread.id}`, error);
+  }
+};
+
 const autobump = async () => {
   loadEnv();
   logger.info('AUTOBUMPING THREADS');
@@ -23,6 +46,7 @@ const autobump = async () => {
 
   const token = process.env.TOKEN;
   const client = await getDiscordClient({ token });
+  const clientId = client.user?.id;
 
   const jobs = await data.reduce(
     async (accumulator, { guildId, autobumpThreads }) => {
@@ -36,10 +60,11 @@ const autobump = async () => {
       logger.info(`[autobump]: Bumping ${autobumpThreads.length} threads in guild ${guild.name} (${guild.id})`);
       const bumpPromises = autobumpThreads.map(async (id) => {
         const thread = (await guild.channels.fetch(id)) as ThreadChannel;
-        return thread.setArchived(false);
+        await bumpThread(thread, clientId);
+        return { threadId: id, success: true };
       });
       const results = await Promise.all(bumpPromises);
-      logger.info(`[autobump]: Bumped ${results.length} threads in guild ${guild.name} (${guild.id})`);
+      logger.info(`[autobump]: Bumped ${results.filter((r) => r.success).length} threads in guild ${guild.name} (${guild.id})`);
       return [...prev, ...results];
     },
     Promise.resolve([] as unknown[])
