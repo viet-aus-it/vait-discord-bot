@@ -21,16 +21,16 @@ services:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: reminder_broadcaster_prod
     env_file: ".env.production"
-    command: ["--enable-source-maps", "build/server/broadcast-reminder.js"]
+    command: ["--enable-source-maps", "build/server/broadcast-reminder.cjs"]
 
   autobump:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: autobump_prod
     env_file: ".env.production"
-    command: ["--enable-source-maps", "build/server/autobump.js"]
+    command: ["--enable-source-maps", "build/server/autobump.cjs"]
 
   cleanup-referrals:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: cleanup_referrals_prod
     env_file: ".env.production"
-    command: ["--enable-source-maps", "build/server/cleanup-expired-referrals.js"]
+    command: ["--enable-source-maps", "build/server/cleanup-expired-referrals.cjs"]
