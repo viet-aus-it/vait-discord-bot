@@ -29,5 +29,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Local db for testing
-db
+# Local docker container persistence data for testing
+.docker/volume
