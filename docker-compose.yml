@@ -9,3 +9,17 @@ services:
       - 5432:5432
     volumes:
       - ./.docker/volume/db/data:/var/lib/postgresql/data
+
+  # OpenTelemetry Backend (LGTM Stack)
+  lgtm:
+    image: grafana/otel-lgtm:latest
+    container_name: vait_lgtm
+    ports:
+      - "3000:3000"   # Grafana
+      - "4318:4318"   # OTLP HTTP
+      - "4317:4317"   # OTLP gRPC
+      - "9090:9090"   # Prometheus
+    volumes:
+      - ./.docker/volume/lgtm-data:/data
+    environment:
+      - ENABLE_LOGS_ALL=true
