@@ -14,6 +14,12 @@ const configSchema = z.object({
   AXIOM_DATASET: z.string().optional(),
   AXIOM_ORG_ID: z.string().optional(),
 
+  // OpenTelemetry config
+  OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
+  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: z.string().optional(),
+  OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: z.string().optional(),
+  OTEL_EXPORTER_OTLP_HEADERS: z.string().optional(),
+
   // Database config
   DATABASE_URL: z.string(),
 });
