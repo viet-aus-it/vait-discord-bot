@@ -11,6 +11,11 @@ loadEnv();
 const serviceName = process.env.OTEL_SERVICE_NAME ?? 'vait-discord-bot';
 const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
 
+console.log({
+  serviceName,
+  otelEndpoint,
+});
+
 const resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: serviceName,
   [ATTR_SERVICE_VERSION]: '1.0.0',
@@ -18,9 +23,8 @@ const resource = resourceFromAttributes({
 
 const instrumentations = getNodeAutoInstrumentations();
 
-function getSpanProcessor(): SpanProcessor {
+function getTraceExporter(): OTLPTraceExporter {
   const localTraceExporter = new OTLPTraceExporter({ url: otelEndpoint });
-  const localSpanProcessor = new SimpleSpanProcessor(localTraceExporter);
 
   const productionTraceExporter = new OTLPTraceExporter({
     url: otelEndpoint,
@@ -29,23 +33,22 @@ function getSpanProcessor(): SpanProcessor {
       'X-Axiom-Dataset': process.env.AXIOM_DATASET || '',
     },
   });
-  const productionSpanProcessor = new BatchSpanProcessor(productionTraceExporter);
 
-  return process.env.NODE_ENV === 'production' ? productionSpanProcessor : localSpanProcessor;
+  return process.env.NODE_ENV === 'production' ? productionTraceExporter : localTraceExporter;
 }
-const spanProcessor = getSpanProcessor();
+const traceExporter = getTraceExporter();
 
 const sdk = new NodeSDK({
   resource,
   instrumentations: [instrumentations],
-  spanProcessors: [getSpanProcessor()],
+  traceExporter,
 });
 
 sdk.start();
 
 process.on('SIGTERM', () => {
-  spanProcessor.forceFlush();
-  spanProcessor.shutdown();
+  traceExporter.forceFlush();
+  traceExporter.shutdown();
 
   sdk
     .shutdown()
