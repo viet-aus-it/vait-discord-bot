@@ -14,7 +14,8 @@
       "!**/node_modules",
       "!**/build",
       "!**/coverage",
-      "!**/generated"
+      "!**/generated",
+      "!.docker"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
