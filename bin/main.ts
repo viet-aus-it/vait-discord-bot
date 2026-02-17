@@ -40,7 +40,7 @@ const main = async () => {
   if (!client.user) throw new Error('Something went wrong!');
   logger.info(`[main]: Logged in as ${client.user.tag}!`);
 
-  await deployCommands({ token, clientId: client.user.id });
+  // await deployCommands({ token, clientId: client.user.id });
 
   const configs = getConfigs();
   client.on('messageCreate', (msg) => {
