@@ -1,7 +1,10 @@
+import { trace } from '@opentelemetry/api';
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
+
+const tracer = trace.getTracer('discord-bot');
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
   const regex = new RegExp(`\\b${keyword}\\b`, 'i');
@@ -36,20 +39,34 @@ export interface CommandConfig {
 }
 
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
-  const honeypotChannelId = getHoneypotChannelId(message.guildId);
-  if (honeypotChannelId && message.channelId === honeypotChannelId) {
-    const result = await Result.safe(handleHoneypotTrigger(message));
-    if (result.isErr()) {
-      logger.error('[honeypot]: Error processing honeypot trigger', { error: result.unwrapErr() });
+  return tracer.startActiveSpan('processMessage', async (span) => {
+    try {
+      span.setAttribute('discord.channel.id', message.channelId);
+      span.setAttribute('discord.guild.id', message.guildId);
+      span.setAttribute('discord.message.id', message.id);
+
+      const honeypotChannelId = getHoneypotChannelId(message.guildId);
+      if (honeypotChannelId && message.channelId === honeypotChannelId) {
+        const result = await Result.safe(handleHoneypotTrigger(message));
+        if (result.isErr()) {
+          span.setAttribute('error', true);
+          span.setAttribute('error.message', String(result.unwrapErr()));
+          logger.error('[honeypot]: Error processing honeypot trigger', { error: result.unwrapErr() });
+        }
+        return;
+      }
+
+      const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
+
+      try {
+        await Promise.all(keywordPromises);
+      } catch (error) {
+        span.setAttribute('error', true);
+        span.setAttribute('error.message', String(error));
+        logger.error('ERROR PROCESSING MESSAGE', error);
+      }
+    } finally {
+      span.end();
     }
-    return;
-  }
-
-  const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
-
-  try {
-    await Promise.all(keywordPromises);
-  } catch (error) {
-    logger.error('ERROR PROCESSING MESSAGE', error);
-  }
+  });
 };
