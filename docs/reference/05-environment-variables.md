@@ -25,7 +25,18 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 | `DATABASE_URL` | Yes | Composed | Full connection URL (auto-composed from above) |
 | `DIRECT_DATABASE_URL` | Yes | Composed | Direct connection URL (same as DATABASE_URL locally) |
 
-## Observability (Production Only)
+## Observability
+
+### OpenTelemetry (Local Development)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `OTEL_SERVICE_NAME` | No | `vait-discord-bot` | Service name for OTEL traces |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | No | `http://localhost:4318` | OTLP exporter endpoint (local Grafana LGTM stack) |
+
+> These defaults work with the local `lgtm` Docker Compose service (`docker compose up -d db lgtm`).
+
+### Axiom (Production Only)
 
 | Variable | Required | Description |
 |----------|----------|-------------|

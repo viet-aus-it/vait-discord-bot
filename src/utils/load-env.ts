@@ -16,7 +16,7 @@ const configSchema = z.object({
 
   // OpenTelemetry config
   OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
-  OTEL_EXPORTER_OTLP_ENDPOINT: z.string(),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.url(),
 
   // Database config
   DATABASE_URL: z.string(),
