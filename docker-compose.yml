@@ -9,3 +9,98 @@ services:
       - 5432:5432
     volumes:
       - ./.docker/volume/db/data:/var/lib/postgresql/data
+
+  # Observability Setup - LOCAL only.
+  tinyolly-redis:
+    image: redis:7-alpine
+    container_name: tinyolly-redis
+    ports:
+      - "6579:6579"
+    command: redis-server --port 6579 --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6579", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  tinyolly-otlp-receiver:
+    image: tinyolly/otlp-receiver:latest
+    container_name: tinyolly-otlp-receiver
+    ports:
+      - "4343:4343"
+    depends_on:
+      tinyolly-redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=tinyolly-redis
+      - REDIS_PORT=6579
+      - PORT=4343
+      - OTEL_SERVICE_NAME=tinyolly-otlp-receiver
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://otel-collector:4318/v1/logs
+      - OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
+
+  tinyolly-opamp-server:
+    image: tinyolly/opamp-server:latest
+    container_name: tinyolly-opamp-server
+    ports:
+      - "4320:4320"  # OpAMP WebSocket port
+      - "4321:4321"  # HTTP REST API port
+    volumes:
+      - ./.docker/otelcol-configs/config.yaml:/etc/otel-collector-config.yaml:ro
+    environment:
+      - OPAMP_PORT=4320
+      - HTTP_PORT=4321
+      - COLLECTOR_CONFIG_PATH=/etc/otel-collector-config.yaml
+      - OTEL_SERVICE_NAME=tinyolly-opamp-server
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://otel-collector:4318/v1/logs
+
+  # OpenTelemetry Collector managed by OpAMP Supervisor
+  # The supervisor accepts remote configuration from tinyolly-opamp-server
+  # and automatically restarts the collector when config changes
+  otel-collector:
+    image: tinyolly/otel-supervisor:latest
+    container_name: otel-collector
+    volumes:
+      # Supervisor config
+      - ./.docker/otelcol-configs/supervisor.yaml:/etc/otelcol/supervisor.yaml:ro
+      # Default collector config (used as base, can be overridden by remote config)
+      - ./.docker/otelcol-configs/config.yaml:/etc/otelcol/config.yaml:ro
+      # Persistent storage for supervisor state
+      - ./.docker/volume/otel-collector:/var/lib/otelcol/supervisor
+    ports:
+      - "4317:4317"  # OTLP gRPC receiver (external access)
+      - "4318:4318"  # OTLP HTTP receiver (external access)
+      - "19291:19291"  # Prometheus Remote Write receiver
+    depends_on:
+      - tinyolly-otlp-receiver
+      - tinyolly-opamp-server
+
+  tinyolly-ui:
+    image: tinyolly/ui:latest
+    container_name: tinyolly-ui
+    ports:
+      - "5005:5002"  # Changed to 5005 to avoid conflict with K8s (which uses 5002)
+    depends_on:
+      tinyolly-redis:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    volumes:
+      - ./.docker/otelcol-configs/config.yaml:/app/otelcol-config.yaml:ro
+    environment:
+      - REDIS_HOST=tinyolly-redis
+      - REDIS_PORT=6579
+      - DEPLOYMENT_ENV=docker
+      - OPAMP_SERVER_URL=http://tinyolly-opamp-server:4321
+      - OTELCOL_DEFAULT_CONFIG=/app/otelcol-config.yaml
+      - OTEL_SERVICE_NAME=tinyolly-ui
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=http://otel-collector:4318/v1/metrics
+      - OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=http://otel-collector:4318/v1/logs
+      - OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
