@@ -40,4 +40,4 @@ COPY --chown=node:node --from=build /app/node_modules node_modules
 
 USER node
 ENV NODE_ENV=production
-CMD ["--enable-source-maps", "build/server/main.cjs"]
+CMD ["--import", "/app/build/server/telemetry.cjs", "--enable-source-maps", "/app/build/server/main.cjs"]
