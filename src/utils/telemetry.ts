@@ -2,17 +2,15 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { SEMRESATTRS_DEPLOYMENT_ENVIRONMENT, SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
 const serviceName = process.env.OTEL_SERVICE_NAME ?? 'vait-discord-bot';
-const isProduction = process.env.NODE_ENV === 'production';
 
 const traceEndpoint = process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT;
 
 const resource = resourceFromAttributes({
-  [SEMRESATTRS_SERVICE_NAME]: serviceName,
-  [SEMRESATTRS_SERVICE_VERSION]: '1.0.0',
-  [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: isProduction ? 'production' : 'development',
+  [ATTR_SERVICE_NAME]: serviceName,
+  [ATTR_SERVICE_VERSION]: '1.0.0',
 });
 
 const instrumentations = getNodeAutoInstrumentations({
