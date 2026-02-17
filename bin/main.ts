@@ -1,3 +1,4 @@
+import { trace } from '@opentelemetry/api';
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -27,6 +28,8 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
   logger.info('[deploy-commands]: Successfully deployed global commands');
 };
 
+const tracer = trace.getTracer('discord-bot');
+
 const main = async () => {
   loadEnv();
   logger.info('[main]: STARTING BOT');
@@ -41,11 +44,19 @@ const main = async () => {
 
   const configs = getConfigs();
   client.on('messageCreate', (msg) => {
-    return processMessage(msg as Message<true>, configs);
+    return tracer.startActiveSpan('messageCreate', (span) => {
+      processMessage(msg as Message<true>, configs).finally(() => span.end());
+    });
   });
 
   client.on('interactionCreate', async (interaction) => {
-    return processInteraction(interaction);
+    return tracer.startActiveSpan('interactionCreate', async (span) => {
+      try {
+        await processInteraction(interaction);
+      } finally {
+        span.end();
+      }
+    });
   });
 };
 

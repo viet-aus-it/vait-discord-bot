@@ -1,5 +1,8 @@
+import { trace } from '@opentelemetry/api';
 import type { Message } from 'discord.js';
 import { logger } from './logger';
+
+const tracer = trace.getTracer('discord-bot');
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
   const regex = new RegExp(`\\b${keyword}\\b`, 'i');
@@ -34,11 +37,23 @@ export interface CommandConfig {
 }
 
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
-  const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
+  return tracer.startActiveSpan('processMessage', async (span) => {
+    try {
+      span.setAttribute('discord.channel.id', message.channelId);
+      span.setAttribute('discord.guild.id', message.guildId);
+      span.setAttribute('discord.message.id', message.id);
 
-  try {
-    await Promise.all(keywordPromises);
-  } catch (error) {
-    logger.error('ERROR PROCESSING MESSAGE', error);
-  }
+      const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
+
+      try {
+        await Promise.all(keywordPromises);
+      } catch (error) {
+        span.setAttribute('error', true);
+        span.setAttribute('error.message', String(error));
+        logger.error('ERROR PROCESSING MESSAGE', error);
+      }
+    } finally {
+      span.end();
+    }
+  });
 };
