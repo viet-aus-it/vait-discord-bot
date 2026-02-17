@@ -36,7 +36,7 @@
     "deploy:command": "dotenvx run -- tsx scripts/deploy-guild-commands.ts",
     "delete:command": "dotenvx run -- tsx scripts/delete-guild-commands.ts",
     "delete:command-global": "dotenvx run -- tsx scripts/delete-global-commands.ts",
-    "start:only": "dotenvx run -- tsx --import ./src/utils/telemetry.ts --watch ./bin/main.ts",
+    "start:only": "dotenvx run -- tsx --import ./bin/telemetry.ts --watch ./bin/main.ts",
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only",
     "build:referrals": "tsx scripts/build-referral-list.ts"
   },
