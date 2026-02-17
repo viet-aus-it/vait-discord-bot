@@ -110,6 +110,9 @@ cp .env.dist .env
       you like with these or just leave it with default value, since it only affects
       your local dev environment. But please keep it consistent since if you lose it,
       you will lose access to your local database and will need to re-create it.
+  - OTEL Values: We already fill in some defaults for this to work in a local environment.
+    - `OTEL_SERVICE_NAME`: Should be the default.
+    - `OTEL_EXPORTER_OTLP_ENDPOINT`: Default should be for local host.
 
 **Note:** **DO NOT** commit the `.env` file to Git.
 
@@ -118,7 +121,7 @@ cp .env.dist .env
 Run these commands at the root of the project
 
 ```bash
-docker compose up -d db
+docker compose up -d db lgtm
 
 pnpm install
 pnpm run prisma:gen

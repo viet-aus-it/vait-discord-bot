@@ -3,8 +3,11 @@ import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { loadEnv } from '../src/utils/load-env';
 
-const serviceName = 'vait-discord-bot';
+loadEnv();
+
+const serviceName = process.env.OTEL_SERVICE_NAME ?? 'vait-discord-bot';
 
 const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
 console.log({ otelEndpoint });
