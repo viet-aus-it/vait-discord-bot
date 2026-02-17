@@ -11,6 +11,8 @@ const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
   try {
     const messages = await thread.messages.fetch({ limit: 100 });
 
+    await thread.setArchived(false);
+
     if (clientId) {
       const botMessages = messages.filter((m) => m.author.bot && m.author.id === clientId);
 
@@ -21,7 +23,6 @@ const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
       }
     }
 
-    await thread.setArchived(false);
     await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
   } catch (error) {
     logger.error(`[autobump]: Failed to bump thread ${thread.id}`, error);
