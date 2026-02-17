@@ -1,4 +1,5 @@
 services:
+  # Main App Database
   db:
     image: postgres:17-alpine
     restart: on-failure
@@ -7,4 +8,4 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./db/data:/var/lib/postgresql/data
+      - ./.docker/volume/db/data:/var/lib/postgresql/data
