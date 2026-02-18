@@ -18,6 +18,8 @@ const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
 console.log({
   serviceName,
   otelEndpoint,
+  token: process.env.AXIOM_TOKEN || '',
+  env: process.env.NODE_ENV,
 });
 
 const resource = resourceFromAttributes({
@@ -46,6 +48,8 @@ const sdk = new NodeSDK({
   resource,
   instrumentations: [instrumentations],
   traceExporter,
+  metricReaders: [],
+  logRecordProcessors: [],
 });
 
 sdk.start();
