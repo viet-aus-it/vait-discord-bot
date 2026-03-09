@@ -1,4 +1,4 @@
-import type { Message } from 'discord.js';
+import { Events, type Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
 import { getConfigs } from '../src/config';
@@ -40,11 +40,11 @@ const main = async () => {
   await deployCommands({ token, clientId: client.user.id });
 
   const configs = getConfigs();
-  client.on('messageCreate', (msg) => {
+  client.on(Events.MessageCreate, (msg) => {
     return processMessage(msg as Message<true>, configs);
   });
 
-  client.on('interactionCreate', async (interaction) => {
+  client.on(Events.InteractionCreate, async (interaction) => {
     return processInteraction(interaction);
   });
 };

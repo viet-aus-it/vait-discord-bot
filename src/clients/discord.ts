@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Partials } from 'discord.js';
+import { Client, Events, GatewayIntentBits, Partials } from 'discord.js';
 
 export type ClientOptions = {
   token?: string;
@@ -19,8 +19,8 @@ export const getDiscordClient = (options: ClientOptions): Promise<Client> => {
       partials: [Partials.Channel, Partials.Message, Partials.Reaction],
     });
     client
-      .on('clientReady', () => resolve(client))
-      .on('error', reject)
+      .on(Events.ClientReady, () => resolve(client))
+      .on(Events.Error, reject)
       .login(options.token);
   });
 };
