@@ -46,3 +46,30 @@ export const setAocSettings = async (guildId: string, aocKey: string, aocLeaderb
     },
   });
 };
+
+export const setHoneypotChannel = async (guildId: string, channelId: string) => {
+  const db = getDbClient();
+  const settings = await db.serverChannelsSettings.upsert({
+    where: {
+      guildId,
+    },
+    update: {
+      honeypotChannel: channelId,
+    },
+    create: {
+      guildId,
+      honeypotChannel: channelId,
+    },
+  });
+
+  return settings.honeypotChannel as string;
+};
+
+export const getHoneypotChannel = async (guildId: string) => {
+  const db = getDbClient();
+  const serverSettings = await db.serverChannelsSettings.findFirst({
+    where: { guildId },
+  });
+
+  return serverSettings?.honeypotChannel ?? null;
+};
