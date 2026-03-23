@@ -28,18 +28,19 @@ export const loadHoneypotChannels = async (): Promise<void> => {
 };
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
+const BULK_DELETE_THRESHOLD_MS = 14 * 24 * 60 * 60 * 1000;
+const MESSAGE_FETCH_LIMIT = 100;
 
 const deleteMessagesByUser = async (channel: TextChannel, userId: string, since: number): Promise<number> => {
-  const fetched = await channel.messages.fetch({ limit: 100 });
+  const fetched = await channel.messages.fetch({ limit: MESSAGE_FETCH_LIMIT });
   const userMessages = fetched.filter((msg) => msg.author.id === userId && msg.createdTimestamp >= since);
 
   if (userMessages.size === 0) {
     return 0;
   }
 
-  const bulkDeletable = userMessages.filter((msg) => Date.now() - msg.createdTimestamp < 14 * 24 * 60 * 60 * 1000);
-
-  const notBulkDeletable = userMessages.filter((msg) => Date.now() - msg.createdTimestamp >= 14 * 24 * 60 * 60 * 1000);
+  const now = Date.now();
+  const [bulkDeletable, notBulkDeletable] = userMessages.partition((msg) => now - msg.createdTimestamp < BULK_DELETE_THRESHOLD_MS);
 
   let deletedCount = 0;
 
@@ -62,18 +63,11 @@ const deleteMessagesByUser = async (channel: TextChannel, userId: string, since:
 
 const cleanupUserMessages = async (guild: Guild, userId: string): Promise<number> => {
   const since = Date.now() - ONE_HOUR_MS;
-  let totalDeleted = 0;
-
   const channels = guild.channels.cache.filter((ch): ch is TextChannel => ch.isTextBased() && 'messages' in ch);
 
-  for (const channel of channels.values()) {
-    const result = await Result.safe(deleteMessagesByUser(channel, userId, since));
-    if (result.isOk()) {
-      totalDeleted += result.unwrap();
-    }
-  }
+  const results = await Promise.allSettled([...channels.values()].map((channel) => deleteMessagesByUser(channel, userId, since)));
 
-  return totalDeleted;
+  return results.reduce((total, result) => (result.status === 'fulfilled' ? total + result.value : total), 0);
 };
 
 export const handleHoneypotTrigger = async (message: Message<true>): Promise<void> => {
@@ -89,18 +83,20 @@ export const handleHoneypotTrigger = async (message: Message<true>): Promise<voi
 
   logger.info(`[honeypot]: User ${author.username} (${author.id}) triggered honeypot in guild ${guild.name}`);
 
-  const cleanupResult = await Result.safe(cleanupUserMessages(guild, author.id));
-  if (cleanupResult.isOk()) {
-    const deletedCount = cleanupResult.unwrap();
-    logger.info(`[honeypot]: Deleted ${deletedCount} messages from ${author.username}`);
+  const [cleanupResult, kickResult] = await Promise.allSettled([
+    cleanupUserMessages(guild, author.id),
+    member.kick('Honeypot triggered - detected as malicious user'),
+  ]);
+
+  if (cleanupResult.status === 'fulfilled') {
+    logger.info(`[honeypot]: Deleted ${cleanupResult.value} messages from ${author.username}`);
   } else {
-    logger.error(`[honeypot]: Failed to cleanup messages for ${author.username}`, cleanupResult.unwrapErr());
+    logger.error(`[honeypot]: Failed to cleanup messages for ${author.username}`, cleanupResult.reason);
   }
 
-  const kickResult = await Result.safe(member.kick('Honeypot triggered - detected as malicious user'));
-  if (kickResult.isOk()) {
+  if (kickResult.status === 'fulfilled') {
     logger.info(`[honeypot]: Kicked ${author.username} from guild ${guild.name}`);
   } else {
-    logger.error(`[honeypot]: Failed to kick ${author.username}`, kickResult.unwrapErr());
+    logger.error(`[honeypot]: Failed to kick ${author.username}`, kickResult.reason);
   }
 };
