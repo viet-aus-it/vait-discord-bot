@@ -1,6 +1,31 @@
 import type { Guild, Message, TextChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
+import { getDbClient } from '../clients';
 import { logger } from './logger';
+
+const honeypotChannels = new Map<string, string>();
+
+export const getHoneypotChannelId = (guildId: string): string | undefined => {
+  return honeypotChannels.get(guildId);
+};
+
+export const setHoneypotChannelId = (guildId: string, channelId: string): void => {
+  honeypotChannels.set(guildId, channelId);
+};
+
+export const loadHoneypotChannels = async (): Promise<void> => {
+  const db = getDbClient();
+  const settings = await db.serverChannelsSettings.findMany({
+    where: { honeypotChannel: { not: null } },
+    select: { guildId: true, honeypotChannel: true },
+  });
+
+  for (const setting of settings) {
+    if (setting.honeypotChannel) {
+      honeypotChannels.set(setting.guildId, setting.honeypotChannel);
+    }
+  }
+};
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
