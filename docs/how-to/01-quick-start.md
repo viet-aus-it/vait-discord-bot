@@ -6,7 +6,7 @@ Set up a local development environment for the VAIT Discord Bot.
 
 - [Node.js](https://nodejs.org/en/) 22+
 - [PNPM](https://pnpm.io/) 10+
-- [Docker](https://www.docker.com/) 20+ and Docker Compose 1.28+ (for the local database), **or** a PostgreSQL DBaaS account (e.g. [Neon](https://neon.tech))
+- [Docker](https://www.docker.com/) 20+ and Docker Compose 1.28+ (for the local database), **or** a [PostgreSQL](https://www.postgresql.org/) DBaaS account (e.g. [Neon](https://neon.tech))
 
 > If you prefer using a DBaaS instead of Docker, fill in your `.env` file with the connection values from your provider and skip any `docker compose up db` steps below.
 
