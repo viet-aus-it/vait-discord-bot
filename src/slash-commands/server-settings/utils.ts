@@ -64,12 +64,3 @@ export const setHoneypotChannel = async (guildId: string, channelId: string) => 
 
   return settings.honeypotChannel as string;
 };
-
-export const getHoneypotChannel = async (guildId: string) => {
-  const db = getDbClient();
-  const serverSettings = await db.serverChannelsSettings.findFirst({
-    where: { guildId },
-  });
-
-  return serverSettings?.honeypotChannel ?? null;
-};
