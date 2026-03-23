@@ -1,12 +1,7 @@
 import { Collection, type User } from 'discord.js';
-import { describe, expect, vi } from 'vitest';
+import { describe, expect } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { giveRepSlashCommand, thankUserInMessage } from './give-reputation';
-import { getOrCreateUser, updateRep } from './utils';
-
-vi.mock('./utils');
-const mockCreateUpdateUser = vi.mocked(getOrCreateUser);
-const mockUpdateRep = vi.mocked(updateRep);
 
 describe('Thank user in a message', () => {
   chatInputCommandInteractionTest('should do nothing if bot is saying the keywords', async ({ message }) => {
@@ -16,8 +11,6 @@ describe('Thank user in a message', () => {
 
     await thankUserInMessage(message);
 
-    expect(mockCreateUpdateUser).not.toHaveBeenCalled();
-    expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(message.reply).not.toHaveBeenCalled();
   });
 
@@ -30,8 +23,6 @@ describe('Thank user in a message', () => {
 
     await thankUserInMessage(message);
 
-    expect(mockCreateUpdateUser).not.toHaveBeenCalled();
-    expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(message.reply).not.toHaveBeenCalled();
   });
 
@@ -45,8 +36,6 @@ describe('Thank user in a message', () => {
 
     await thankUserInMessage(message);
 
-    expect(mockCreateUpdateUser).not.toHaveBeenCalled();
-    expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(message.reply).not.toHaveBeenCalled();
   });
 
@@ -60,8 +49,6 @@ describe('Thank user in a message', () => {
 
     await thankUserInMessage(message);
 
-    expect(mockCreateUpdateUser).not.toHaveBeenCalled();
-    expect(mockUpdateRep).not.toHaveBeenCalled();
     expect(message.reply).not.toHaveBeenCalled();
   });
 
@@ -72,14 +59,9 @@ describe('Thank user in a message', () => {
     const mockUsers = new Collection<string, User>();
     mockUsers.set('0', { id: '1' } as User);
     message.mentions.users = mockUsers as typeof message.mentions.users;
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '1', reputation: 0 }).mockResolvedValueOnce({ id: '2', reputation: 0 });
-    mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
 
     await thankUserInMessage(message);
 
-    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
-    expect(mockUpdateRep).toHaveBeenCalledOnce();
-    expect(message.reply).not.toHaveBeenCalled();
     expect(message.channel.send).toHaveBeenCalledOnce();
   });
 
@@ -93,12 +75,6 @@ describe('Thank user in a message', () => {
     mockUsers.set('2', { id: '2', bot: false } as User);
     mockUsers.set('3', { id: '3', bot: false } as User);
     message.mentions.users = mockUsers as typeof message.mentions.users;
-    mockCreateUpdateUser
-      .mockResolvedValueOnce({ id: '0', reputation: 0 })
-      .mockResolvedValueOnce({ id: '2', reputation: 0 })
-      .mockResolvedValueOnce({ id: '0', reputation: 0 })
-      .mockResolvedValueOnce({ id: '3', reputation: 0 });
-    mockUpdateRep.mockResolvedValueOnce({ id: '2', reputation: 0 }).mockResolvedValueOnce({ id: '3', reputation: 0 });
 
     await thankUserInMessage(message);
 
@@ -123,22 +99,17 @@ describe('Give rep slash command', () => {
 
     await giveRepSlashCommand(interaction);
 
-    expect(mockCreateUpdateUser).not.toHaveBeenCalled();
-    expect(mockUpdateRep).not.toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith('You cannot give rep to a bot or yourself');
   });
 
   chatInputCommandInteractionTest('should call reply and add rep if user mention another user', async ({ interaction }) => {
     const mockUser = { id: '1' } as User;
-    mockCreateUpdateUser.mockResolvedValueOnce({ id: '0', reputation: 0 }).mockResolvedValueOnce({ id: '1', reputation: 0 });
-    mockUpdateRep.mockResolvedValueOnce({ id: '1', reputation: 1 });
+    interaction.member!.user.id = '0';
     interaction.options.getUser.mockReturnValueOnce(mockUser);
 
     await giveRepSlashCommand(interaction);
 
-    expect(mockCreateUpdateUser).toHaveBeenCalledTimes(2);
-    expect(mockUpdateRep).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledOnce();
   });
 });

@@ -35,7 +35,9 @@
 - **Utilities**: `/src/utils/` (shared helper functions)
 - **Clients**: `/src/clients/` (database, discord client initialization)
 - **Tests**: Co-located with source files (e.g., `index.test.ts` next to `index.ts`)
-- **Fixtures**: `/test/fixtures/` (test data and mock builders)
+- **Fixtures**: `/test/fixtures/` (test data, mock builders, DB seed helpers)
+- **Database Mocks**: `/test/mocks/database/` (testcontainer globalSetup, per-file DB isolation)
+- **MSW Mocks**: `/test/mocks/msw/` (HTTP mock server setup and handlers)
 - **Scripts**: `/scripts/` (build and deployment scripts)
 - **Bin**: `/bin/` (executable entry points)
 

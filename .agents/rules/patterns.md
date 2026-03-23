@@ -21,8 +21,13 @@
 ## Testing
 
 - **Framework**: Vitest with coverage
-- **Mocking**: MSW for HTTP mocking, vitest-mock-extended for TypeScript mocks
-- **Database Tests**: Use testcontainers for PostgreSQL
+- **Mocking**: MSW for HTTP mocking, vitest-mock-extended for TypeScript mocks (Discord interactions)
+- **Database Tests**: Use testcontainers for PostgreSQL with per-file DB isolation
+  - Global setup (`test/mocks/database/globalSetup.ts`): starts a PostgreSQL container, runs migrations (creates template DB)
+  - Per-file setup (`test/mocks/database/per-file-db.ts`): creates a unique DB per test file from the template, cleans data before each test via `beforeEach(cleanDb)`
+  - Tests hit the real database — do NOT mock `./utils` functions that wrap DB calls
+  - Use `vi.spyOn` only for error-path tests where DB errors cannot be triggered naturally
+  - Seed test data using helpers from `test/fixtures/db-seed.ts` (`seedUser`, `seedServerSettings`, `seedReferralCode`, `seedReminder`)
 - **Test Structure**: Arrange-Act-Assert pattern
 - **Test Data**: Use fixtures from `/test/fixtures/`
 - **Coverage**: Aim for high coverage but prioritize meaningful tests over 100% coverage

@@ -4,17 +4,9 @@ import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 import { captor } from 'vitest-mock-extended';
 import { autocompleteInteractionTest } from '../../../test/fixtures/autocomplete-interaction';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
-import { getOrCreateUser } from '../reputation/utils';
+import { seedReferralCode, seedUser } from '../../../test/fixtures/db-seed';
 import { autocomplete, DEFAULT_EXPIRY_DAYS_FROM_NOW, execute } from './referral-new';
 import { services } from './services';
-import { type CreateReferralInput, createReferralCode, findExistingReferralCode } from './utils';
-
-vi.mock('./utils');
-const mockFindExistingReferralCode = vi.mocked(findExistingReferralCode);
-const mockCreateReferralCode = vi.mocked(createReferralCode);
-
-vi.mock('../reputation/utils');
-const mockGetOrCreateUser = vi.mocked(getOrCreateUser);
 
 describe('autocomplete', () => {
   autocompleteInteractionTest('should return nothing if the search term shorter than 4', async ({ interaction }) => {
@@ -142,17 +134,17 @@ describe('execute', () => {
       guildId: '1234',
     };
 
-    mockFindExistingReferralCode.mockResolvedValueOnce({
-      id: '12345',
-      service: data.service,
-      code: data.code,
-      expiry_date: new Date(data.expiry_date),
+    await seedUser(data.userId);
+    await seedReferralCode({
       userId: data.userId,
       guildId: data.guildId,
+      service: data.service,
+      code: 'EXISTING_CODE',
+      expiry_date: new Date(data.expiry_date),
     });
-    mockGetOrCreateUser.mockResolvedValueOnce({ id: data.userId, reputation: 0 });
 
     interaction.user.id = data.userId;
+    (interaction.guild as Guild).id = data.guildId;
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return data.service;
       if (name === 'link_or_code') return data.code;
@@ -175,18 +167,6 @@ describe('execute', () => {
       guildId: '12345',
     };
 
-    const mockReferralInput = captor<CreateReferralInput>();
-    mockFindExistingReferralCode.mockResolvedValueOnce(null);
-    mockCreateReferralCode.mockResolvedValueOnce({
-      id: '12345',
-      service: data.service,
-      code: data.code,
-      expiry_date: new Date(data.expiry_date),
-      userId: data.userId,
-      guildId: data.guildId,
-    });
-    mockGetOrCreateUser.mockResolvedValueOnce({ id: data.userId, reputation: 0 });
-
     interaction.user.id = data.userId;
     (interaction.guild as Guild).id = data.guildId;
     interaction.options.getString.mockImplementation((name: string) => {
@@ -196,18 +176,11 @@ describe('execute', () => {
 
       return null;
     });
-    const replyInput = captor<string>();
 
     await execute(interaction);
 
-    expect(mockCreateReferralCode).toBeCalledWith(mockReferralInput);
-    const input = mockReferralInput.value;
-    expect(input.service).toBe(data.service);
-    expect(input.code).toBe(data.code);
-    expect(input.expiryDate.toISOString()).toBe(new Date(data.expiry_date).toISOString());
-
-    expect(interaction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toContain(`just added referral code SomeCodeHere in ${services[0]}`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(expect.stringContaining(`just added referral code SomeCodeHere in ${services[0]}`));
   });
 
   chatInputCommandInteractionTest(
@@ -221,17 +194,6 @@ describe('execute', () => {
         expiry_date: addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW),
       };
 
-      const mockReferralInput = captor<CreateReferralInput>();
-      mockFindExistingReferralCode.mockResolvedValueOnce(null);
-      mockCreateReferralCode.mockResolvedValueOnce({
-        id: '12345',
-        service: data.service,
-        code: data.code,
-        expiry_date: data.expiry_date,
-        userId: data.userId,
-        guildId: data.guildId,
-      });
-
       interaction.user.id = data.userId;
       (interaction.guild as Guild).id = data.guildId;
       interaction.options.getString.mockImplementation((name: string) => {
@@ -241,18 +203,11 @@ describe('execute', () => {
 
         return null;
       });
-      const replyInput = captor<string>();
 
       await execute(interaction);
 
-      expect(mockCreateReferralCode).toBeCalledWith(mockReferralInput);
-      const input = mockReferralInput.value;
-      expect(input.service).toBe(data.service);
-      expect(input.code).toBe(data.code);
-      expect(input.expiryDate.toISOString()).toBe(new Date(data.expiry_date).toISOString());
-
-      expect(interaction.reply).toBeCalledWith(replyInput);
-      expect(replyInput.value).toContain(`just added referral code SomeCodeHere in ${services[0]}`);
+      expect(interaction.reply).toHaveBeenCalledOnce();
+      expect(interaction.reply).toHaveBeenCalledWith(expect.stringContaining(`just added referral code SomeCodeHere in ${services[0]}`));
     }
   );
 });

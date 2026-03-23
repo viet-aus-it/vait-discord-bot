@@ -19,6 +19,7 @@ const threadId = `thread_${faker.string.nanoid()}`;
 export const chatInputCommandInteractionTest = test.extend<ChatInputCommandInteractionTest>({
   interaction: async ({}, use) => {
     interaction.guildId = guildId;
+    interaction.guild!.id = guildId;
 
     await use(interaction);
 

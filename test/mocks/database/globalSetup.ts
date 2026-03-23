@@ -3,11 +3,11 @@ import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import { loadEnv } from '../../../src/utils/load-env';
 
 function setupDb(databaseUrl?: string) {
-  console.log('Running Prisma Migrate');
+  console.log('Running Prisma Push');
   if (databaseUrl) {
     process.env.DATABASE_URL = databaseUrl;
   }
-  childProcess.execSync('pnpm run prisma:migrate', {
+  childProcess.execSync('pnpm run prisma:push', {
     env: {
       ...process.env,
       DATABASE_URL: process.env.DATABASE_URL,

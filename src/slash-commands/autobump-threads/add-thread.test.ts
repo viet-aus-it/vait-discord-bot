@@ -3,10 +3,7 @@ import { describe, expect, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { addAutobumpThreadCommand } from './add-thread';
-import { addAutobumpThread } from './utils';
-
-vi.mock('./utils');
-const mockAddAutobumpThread = vi.mocked(addAutobumpThread);
+import * as utils from './utils';
 
 const threadId = 'thread_1234';
 
@@ -27,11 +24,10 @@ describe('Add autobump thread', () => {
     mockChannel.id = threadId;
     mockChannel.type = ChannelType.PublicThread;
     interaction.options.getChannel.mockReturnValueOnce(mockChannel);
-    mockAddAutobumpThread.mockRejectedValueOnce(new Error('Synthetic Error'));
+    vi.spyOn(utils, 'addAutobumpThread').mockRejectedValueOnce(new Error('Synthetic Error'));
 
     await addAutobumpThreadCommand(interaction);
     expect(interaction.reply).toBeCalledWith('ERROR: Cannot save this thread to be autobumped for this server. Please try again.');
-    expect(mockAddAutobumpThread).toBeCalled();
   });
 
   chatInputCommandInteractionTest('Should reply with success message if it can be saved into the database', async ({ interaction }) => {
@@ -40,7 +36,6 @@ describe('Add autobump thread', () => {
     mockChannel.type = ChannelType.PublicThread;
     mockChannel.guildId = interaction.guildId!;
     interaction.options.getChannel.mockReturnValueOnce(mockChannel);
-    mockAddAutobumpThread.mockResolvedValueOnce([threadId]);
 
     await addAutobumpThreadCommand(interaction);
     expect(interaction.reply).toBeCalledWith(`Successfully saved setting. Thread <#${threadId}> will be autobumped.`);

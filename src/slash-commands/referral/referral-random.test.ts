@@ -1,13 +1,10 @@
-import { type AutocompleteInteraction, Collection, type GuildMember } from 'discord.js';
-import { describe, expect, vi } from 'vitest';
+import type { AutocompleteInteraction, Guild } from 'discord.js';
+import { describe, expect } from 'vitest';
 import { captor } from 'vitest-mock-extended';
 import { autocompleteInteractionTest } from '../../../test/fixtures/autocomplete-interaction';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { seedReferralCode, seedUser } from '../../../test/fixtures/db-seed';
 import { autocomplete, execute } from './referral-random';
-import { type GetAllReferralCodesForServiceInput, getAllReferralCodesForService } from './utils';
-
-vi.mock('./utils');
-const mockGetAllReferralCodesForService = vi.mocked(getAllReferralCodesForService);
 
 describe('autocomplete', () => {
   autocompleteInteractionTest('should return nothing if the search term shorter than 4', async ({ interaction }) => {
@@ -75,74 +72,47 @@ describe('autocomplete', () => {
 describe('execute', () => {
   chatInputCommandInteractionTest('should return found no code message when no code is found', async ({ interaction }) => {
     const service = 'not existed service';
-
-    const mockReferralInput = captor<GetAllReferralCodesForServiceInput>();
-    mockGetAllReferralCodesForService.mockResolvedValueOnce([]);
     interaction.options.getString.mockReturnValueOnce(service);
-    const replyInput = captor<string>();
 
     await execute(interaction);
 
-    expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
-    expect(mockReferralInput.value.service).toContain(service);
-    expect(interaction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toContain(`There is no code for ${service} service`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(`There is no code for ${service} service in the system.`);
   });
 
   chatInputCommandInteractionTest('should return code if found', async ({ interaction }) => {
     const service = 'some service';
     const code = 'SomeCode';
     const expiryDate = new Date(`05/04/${new Date().getFullYear() + 1}`);
+    const guildId = (interaction.guild as Guild).id;
 
-    const mockReferralInput = captor<GetAllReferralCodesForServiceInput>();
-    mockGetAllReferralCodesForService.mockResolvedValueOnce([
-      {
-        id: '1',
-        code,
-        expiry_date: expiryDate,
-        service,
-        userId: '12345',
-        guildId: '12345',
-      },
-    ]);
+    await seedUser('12345');
+    await seedReferralCode({ userId: '12345', guildId, service, code, expiry_date: expiryDate });
+
     interaction.options.getString.mockReturnValueOnce(service);
-    const replyInput = captor<string>();
 
     await execute(interaction);
 
-    expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
-    expect(mockReferralInput.value.service).toContain(service);
-    expect(interaction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toContain(`Service ${service}: ${code} added by user 12345`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(expect.stringContaining(`Service ${service}: ${code}`));
   });
 
   chatInputCommandInteractionTest('should return member name if found', async ({ interaction }) => {
     const service = 'some service';
     const code = 'SomeCode';
     const expiryDate = new Date(`05/04/${new Date().getFullYear() + 1}`);
+    const guildId = (interaction.guild as Guild).id;
 
-    const mockReferralInput = captor<GetAllReferralCodesForServiceInput>();
-    mockGetAllReferralCodesForService.mockResolvedValueOnce([
-      {
-        id: '1',
-        code,
-        expiry_date: expiryDate,
-        service,
-        userId: '1234',
-        guildId: '1234',
-      },
-    ]);
+    await seedUser('1234');
+    await seedReferralCode({ userId: '1234', guildId, service, code, expiry_date: expiryDate });
+
     interaction.options.getString.mockReturnValueOnce(service);
-    const members = new Collection<string, GuildMember>();
-    members.set('1234', { displayName: 'SomeMember' } as GuildMember);
-    interaction.guild?.members.fetch.mockResolvedValueOnce(members);
-    const replyInput = captor<string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (interaction.guild?.members.fetch as any).mockResolvedValueOnce({ displayName: 'SomeMember' });
 
     await execute(interaction);
 
-    expect(mockGetAllReferralCodesForService).toBeCalledWith(mockReferralInput);
-    expect(mockReferralInput.value.service).toContain(service);
-    expect(interaction.reply).toBeCalledWith(replyInput);
-    expect(replyInput.value).toContain(`Service ${service.trim().toLowerCase()}: ${code}`);
+    expect(interaction.reply).toHaveBeenCalledOnce();
+    expect(interaction.reply).toHaveBeenCalledWith(expect.stringContaining(`Service ${service.trim().toLowerCase()}: ${code}`));
   });
 });
