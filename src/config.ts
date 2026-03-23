@@ -1,7 +1,30 @@
+import { getDbClient } from './clients';
 import { thankUserInMessage } from './slash-commands/reputation/give-reputation';
 import type { CommandConfig } from './utils/message-processor';
 
-export const getConfigs = (): CommandConfig => {
+const honeypotChannels = new Map<string, string>();
+
+export const getHoneypotChannelId = (guildId: string): string | undefined => {
+  return honeypotChannels.get(guildId);
+};
+
+export const setHoneypotChannelId = (guildId: string, channelId: string): void => {
+  honeypotChannels.set(guildId, channelId);
+};
+
+export const getConfigs = async (): Promise<CommandConfig> => {
+  const db = getDbClient();
+  const settings = await db.serverChannelsSettings.findMany({
+    where: { honeypotChannel: { not: null } },
+    select: { guildId: true, honeypotChannel: true },
+  });
+
+  for (const setting of settings) {
+    if (setting.honeypotChannel) {
+      honeypotChannels.set(setting.guildId, setting.honeypotChannel);
+    }
+  }
+
   return {
     keywordMatchCommands: [
       {

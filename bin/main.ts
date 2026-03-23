@@ -39,7 +39,7 @@ const main = async () => {
 
   await deployCommands({ token, clientId: client.user.id });
 
-  const configs = getConfigs();
+  const configs = await getConfigs();
   client.on(Events.MessageCreate, (msg) => {
     return processMessage(msg as Message<true>, configs);
   });
