@@ -1,20 +1,27 @@
 import { PrismaPg } from '@prisma/adapter-pg';
-import { loadEnv } from '../utils/load-env';
 import { PrismaClient } from './prisma/generated/client/client';
 
-loadEnv();
+let prisma: InstanceType<typeof PrismaClient> | undefined;
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+export function getDbClient() {
+  if (!prisma) {
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+    prisma = new PrismaClient({
+      adapter,
+      omit: {
+        serverChannelsSettings: {
+          aocKey: true,
+        },
+      },
+    });
+  }
 
-const prisma = new PrismaClient({
-  adapter,
-  omit: {
-    serverChannelsSettings: {
-      aocKey: true,
-    },
-  },
-});
+  return prisma;
+}
 
-export const getDbClient = () => prisma;
+export async function disconnectDb() {
+  if (prisma) {
+    await prisma.$disconnect();
+    prisma = undefined;
+  }
+}

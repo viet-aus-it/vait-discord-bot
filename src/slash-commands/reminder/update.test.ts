@@ -1,23 +1,20 @@
-import { getYear } from 'date-fns';
+import { getUnixTime, getYear } from 'date-fns';
 import { describe, expect, vi } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { seedReminder, seedUser } from '../../../test/fixtures/db-seed';
 import { convertDateToEpoch } from '../../utils/date';
 import { execute } from './update';
-import { updateReminder } from './utils';
-
-vi.mock('./utils');
-const mockUpdateReminder = vi.mocked(updateReminder);
+import * as utils from './utils';
 
 const dateString = `31/12/${getYear(new Date())} 00:00`;
 const message = 'blah';
 const userId = 'user_12345';
 const guildId = 'guild_12345';
-const reminderId = '1';
 
 const mockGetString = (param: string, _required?: boolean) => {
   switch (param) {
     case 'id':
-      return reminderId;
+      return 'reminder-id';
     case 'date':
       return dateString;
     case 'message':
@@ -33,12 +30,11 @@ describe('update reminder', () => {
     interaction.guildId = guildId;
     interaction.member!.user.id = userId;
     interaction.options.getString.mockImplementation((param: string) => {
-      return param === 'id' ? reminderId : null;
+      return param === 'id' ? 'reminder-id' : null;
     });
 
     await execute(interaction);
 
-    expect(mockUpdateReminder).not.toHaveBeenCalled();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith('Nothing to update. Skipping...');
   });
@@ -46,33 +42,43 @@ describe('update reminder', () => {
   chatInputCommandInteractionTest('Should send error reply if it cannot update reminder', async ({ interaction }) => {
     interaction.guildId = guildId;
     interaction.member!.user.id = userId;
-    mockUpdateReminder.mockRejectedValueOnce(new Error('Synthetic Error'));
+    vi.spyOn(utils, 'updateReminder').mockRejectedValueOnce(new Error('Synthetic Error'));
     interaction.options.getString.mockImplementation(mockGetString);
 
     await execute(interaction);
 
-    expect(mockUpdateReminder).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledOnce();
-    expect(interaction.reply).toHaveBeenCalledWith(`Cannot update reminder for <@${userId}> and reminder id ${reminderId}. Please try again later.`);
+    expect(interaction.reply).toHaveBeenCalledWith(`Cannot update reminder for <@${userId}> and reminder id reminder-id. Please try again later.`);
   });
 
   chatInputCommandInteractionTest('Should send reply with default timezone if no timezone given', async ({ interaction }) => {
+    await seedUser(userId);
+    const futureTimestamp = getUnixTime(new Date()) + 86400;
+    const reminder = await seedReminder({ userId, guildId, message: 'old message', onTimestamp: futureTimestamp });
+
     interaction.guildId = guildId;
     interaction.member!.user.id = userId;
     const unixTimestamp = convertDateToEpoch(dateString);
-    mockUpdateReminder.mockResolvedValueOnce({
-      id: reminderId,
-      userId,
-      guildId,
-      onTimestamp: unixTimestamp,
-      message,
-    });
-    interaction.options.getString.mockImplementation(mockGetString);
+
+    const mockGetStringWithReminderId = (param: string, _required?: boolean) => {
+      switch (param) {
+        case 'id':
+          return reminder.id;
+        case 'date':
+          return dateString;
+        case 'message':
+          return message;
+        default:
+          return null;
+      }
+    };
+    interaction.options.getString.mockImplementation(mockGetStringWithReminderId);
 
     await execute(interaction);
 
-    expect(mockUpdateReminder).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledOnce();
-    expect(interaction.reply).toHaveBeenCalledWith(`Reminder ${reminderId} has been updated to remind on <t:${unixTimestamp}> with the message: "${message}".`);
+    expect(interaction.reply).toHaveBeenCalledWith(
+      `Reminder ${reminder.id} has been updated to remind on <t:${unixTimestamp}> with the message: "${message}".`
+    );
   });
 });

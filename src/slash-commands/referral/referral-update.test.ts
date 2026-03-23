@@ -2,12 +2,10 @@ import { faker } from '@faker-js/faker';
 import { format } from 'date-fns';
 import { describe, expect, vi } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { seedReferralCode, seedUser } from '../../../test/fixtures/db-seed';
 import { DAY_MONTH_YEAR_FORMAT } from '../../utils/date';
 import { execute } from './referral-update';
-import { updateReferralCode } from './utils';
-
-vi.mock('./utils');
-const mockUpdateReferralCode = vi.mocked(updateReferralCode);
+import * as utils from './utils';
 
 const userId = 'user_12345';
 const guildId = 'guild_12345';
@@ -25,7 +23,6 @@ describe('Update referral code', () => {
 
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).not.toHaveBeenCalled();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith('Nothing to update. Please provide either a new link/code or expiry date.');
   });
@@ -41,7 +38,6 @@ describe('Update referral code', () => {
 
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).not.toHaveBeenCalled();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
   });
@@ -57,12 +53,14 @@ describe('Update referral code', () => {
 
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).not.toHaveBeenCalled();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith('expiry_date has already expired');
   });
 
   chatInputCommandInteractionTest('Should update code successfully', async ({ interaction }) => {
+    await seedUser(userId);
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+
     interaction.user.id = userId;
     interaction.guildId = guildId;
     interaction.options.getString.mockImplementation((name: string) => {
@@ -71,51 +69,38 @@ describe('Update referral code', () => {
       return null;
     });
 
-    mockUpdateReferralCode.mockResolvedValueOnce({ count: 1 });
-
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).toHaveBeenCalledOnce();
-    expect(mockUpdateReferralCode).toHaveBeenCalledWith({
-      service,
-      userId,
-      guildId,
-      code: newCode,
-      expiryDate: undefined,
-    });
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith(`Referral code for service "${service}" has been updated with code: ${newCode}.`);
   });
 
   chatInputCommandInteractionTest('Should update expiry date successfully', async ({ interaction }) => {
+    await seedUser(userId);
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+
+    const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.user.id = userId;
     interaction.guildId = guildId;
-    const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
       if (name === 'expiry_date') return expiryDateString;
       return null;
     });
 
-    mockUpdateReferralCode.mockResolvedValueOnce({ count: 1 });
-
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).toHaveBeenCalledOnce();
-    const callArgs = mockUpdateReferralCode.mock.calls[0][0];
-    expect(callArgs.service).toBe(service);
-    expect(callArgs.userId).toBe(userId);
-    expect(callArgs.guildId).toBe(guildId);
-    expect(callArgs.code).toBeUndefined();
-    expect(callArgs.expiryDate).toBeInstanceOf(Date);
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith(expect.stringContaining(`Referral code for service "${service}" has been updated with expires:`));
   });
 
   chatInputCommandInteractionTest('Should update both code and expiry date', async ({ interaction }) => {
+    await seedUser(userId);
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+
+    const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.user.id = userId;
     interaction.guildId = guildId;
-    const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
       if (name === 'link_or_code') return newCode;
@@ -123,15 +108,8 @@ describe('Update referral code', () => {
       return null;
     });
 
-    mockUpdateReferralCode.mockResolvedValueOnce({ count: 1 });
-
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).toHaveBeenCalledOnce();
-    const callArgs = mockUpdateReferralCode.mock.calls[0][0];
-    expect(callArgs.service).toBe(service);
-    expect(callArgs.code).toBe(newCode);
-    expect(callArgs.expiryDate).toBeInstanceOf(Date);
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith(expect.stringContaining('code:'));
     expect(interaction.reply).toHaveBeenCalledWith(expect.stringContaining('expires:'));
@@ -146,11 +124,8 @@ describe('Update referral code', () => {
       return null;
     });
 
-    mockUpdateReferralCode.mockResolvedValueOnce({ count: 0 });
-
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith(`Cannot find referral code for service "${service}". Please check the service name and try again.`);
   });
@@ -164,11 +139,10 @@ describe('Update referral code', () => {
       return null;
     });
 
-    mockUpdateReferralCode.mockRejectedValueOnce(new Error('Synthetic error'));
+    vi.spyOn(utils, 'updateReferralCode').mockRejectedValueOnce(new Error('Synthetic error'));
 
     await execute(interaction);
 
-    expect(mockUpdateReferralCode).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledOnce();
     expect(interaction.reply).toHaveBeenCalledWith('Failed to update referral code. Please try again later.');
   });
