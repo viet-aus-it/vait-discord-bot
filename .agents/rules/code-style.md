@@ -27,13 +27,14 @@
 
 ## Project Structure
 
+- **Documentation**: `/docs/` (Diataxis framework: tutorials, how-to, reference, explanation)
 - **Slash Commands**: `/src/slash-commands/[command-name]/index.ts`
   - Each command in its own directory
   - Main export is the command definition
   - Helper functions in same directory or utilities
 - **Context Menu Commands**: `/src/context-menu-commands/[command-name]/index.ts`
 - **Utilities**: `/src/utils/` (shared helper functions)
-- **Clients**: `/src/clients/` (database, discord client initialization)
+- **Clients**: `/src/clients/` (database, discord client initialisation)
 - **Tests**: Co-located with source files (e.g., `index.test.ts` next to `index.ts`)
 - **Fixtures**: `/test/fixtures/` (test data, mock builders, DB seed helpers)
 - **Database Mocks**: `/test/mocks/database/` (testcontainer globalSetup, per-file DB isolation)

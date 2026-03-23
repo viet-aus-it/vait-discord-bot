@@ -35,7 +35,7 @@
 
 - **Atomic mindset**: Break down tasks into small, manageable and deliverable chunks to ensure progress and avoid overloading the system
 - **Safety first**: Every change suggestion must be production ready
-- **Documentation-driven approach**: Ensure all changes are documented and reviewed thoroughly
+- **Documentation-driven approach**: Ensure all changes are documented in `docs/` following the Diataxis framework and reviewed thoroughly
 - **Delivery focus**: Priorise shipped, working solutions over perfect designs
 
 ## Key Takeaway
