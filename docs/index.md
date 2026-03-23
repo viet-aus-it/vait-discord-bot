@@ -9,11 +9,16 @@ Welcome to the VAIT Discord Bot documentation, organised following the [Diataxis
 - [Build Your First Slash Command](./tutorials/developers/01-your-first-slash-command.md) — Create a simple command from scratch
 - [Add a Database-Backed Feature](./tutorials/developers/02-database-backed-feature.md) — Build a feature with Prisma and PostgreSQL
 - [Test Your Command](./tutorials/developers/03-testing-your-command.md) — Write tests with Vitest, testcontainers, and MSW
+- [Add Autocomplete to a Slash Command](./tutorials/developers/04-autocomplete-handlers.md) — Dynamic suggestions as users type
+- [Fetch from an External API](./tutorials/developers/05-external-api-integration.md) — HTTP calls, deferred replies, and error handling
+- [Build a Scheduled Background Task](./tutorials/developers/06-scheduled-background-tasks.md) — Standalone scripts that run on a schedule
+- [Restrict a Command to Admins](./tutorials/developers/07-permission-based-access.md) — Permission checks and access control
 
 ### For Users
 
 - [Getting Started](./tutorials/users/01-getting-started.md) — Invite the bot and learn the basics
 - [Using Bot Commands](./tutorials/users/02-using-bot-commands.md) — Walkthrough of key command categories
+- [Server Admin Guide](./tutorials/users/03-admin-guide.md) — Set up and manage admin features
 
 ## How-to Guides
 
