@@ -1,7 +1,6 @@
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
-import { getHoneypotChannelId } from '../config';
-import { handleHoneypotTrigger } from './honeypot-handler';
+import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {

@@ -5,6 +5,7 @@ import { getConfigs } from '../src/config';
 import { commands as contextMenuCommandList } from '../src/context-menu-commands';
 import { type DiscordRequestConfig, deployGlobalCommands } from '../src/deploy-command';
 import { commands as slashCommandList } from '../src/slash-commands';
+import { loadHoneypotChannels } from '../src/utils/honeypot-handler';
 import { processInteraction } from '../src/utils/interaction-processor';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
@@ -39,7 +40,8 @@ const main = async () => {
 
   await deployCommands({ token, clientId: client.user.id });
 
-  const configs = await getConfigs();
+  await loadHoneypotChannels();
+  const configs = getConfigs();
   client.on(Events.MessageCreate, (msg) => {
     return processMessage(msg as Message<true>, configs);
   });

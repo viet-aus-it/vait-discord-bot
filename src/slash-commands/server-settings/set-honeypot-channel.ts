@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
-import { setHoneypotChannelId } from '../../config';
+import { setHoneypotChannelId } from '../../utils/honeypot-handler';
 import { logger } from '../../utils/logger';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setHoneypotChannel } from './utils';
