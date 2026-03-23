@@ -22,13 +22,21 @@
 
 ## For Documentation
 
-- Use the Diátaxis framework (Tutorials, How-to guides, Technical Reference, Explanation)
+- **Mandatory**: All project documentation MUST follow the [Diataxis](https://diataxis.fr/) framework
+  - **Tutorials** (`docs/tutorials/`): Learning-oriented, step-by-step walkthroughs for newcomers
+  - **How-to guides** (`docs/how-to/`): Task-oriented, practical recipes for specific goals
+  - **Reference** (`docs/reference/`): Information-oriented, factual lookup material
+  - **Explanation** (`docs/explanation/`): Understanding-oriented, context and design rationale
+- Each document serves ONE Diataxis purpose, never mix categories
+- Documentation lives in `docs/` under the appropriate category directory
 - Lead with context and audience awareness
 - Keep it concise and actionable
-- Focus on "how" and "why", not just the what
 - Use code examples where helpful
-- Update README when adding new features
-- Use Markdown and/or clean formatting
+- Cross-reference related docs using relative markdown paths
+- Every external tool or framework mentioned must include a hyperlink on first mention per document
+- When adding a new feature, update the relevant docs in `docs/`
+- Update `docs/index.md` when adding new doc files
+- Use Markdown with clean formatting
 
 ## For Issue Tracking
 
