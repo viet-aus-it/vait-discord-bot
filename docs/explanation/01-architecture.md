@@ -1,78 +1,49 @@
 # Architecture
 
-How the VAIT Discord Bot is structured and why.
+Design decisions and rationale behind the VAIT Discord Bot's structure.
 
-## Overview
+## Why Modular Commands
 
-The bot is a [Node.js](https://nodejs.org/) application built with [discord.js](https://discord.js.org/) v14, [Prisma](https://www.prisma.io/) ORM, and [PostgreSQL](https://www.postgresql.org/). It follows a modular, command-based architecture where each slash command is a self-contained unit.
+The bot uses a modular, command-based architecture where each slash command is a self-contained directory. This was chosen over a monolithic handler because:
 
-## Startup Flow
+- **Isolation** — each command can be developed, tested, and reviewed independently
+- **Discoverability** — new contributors can find and understand a command by looking at one directory
+- **Scalability** — adding a command does not require modifying shared logic, only registering it in the index
 
-1. **Entry point** (`bin/`) loads environment variables and initialises the Discord client
-2. **Discord client** (`src/clients/discord.ts`) connects to the Discord gateway with required intents (Guilds, GuildMessages, MessageContent) and partial message support
-3. **Database client** (`src/clients/db.ts`) provides a lazy-initialised Prisma singleton using the `PrismaPg` adapter
-4. **Command registration** — slash commands and context menu commands are registered in their respective `index.ts` files and deployed via `pnpm deploy:command`
-5. **Event handling** — the bot listens for interaction events and routes them to the appropriate command handler
+See [Project Structure](../reference/03-project-structure.md) and [Command Interfaces](../reference/06-command-interfaces.md) for the factual layout and API reference.
 
-## Command Architecture
+## Why the Subcommand Pattern
 
-Commands follow a consistent pattern defined by the `SlashCommand` interface in `src/slash-commands/builder.ts`:
+Complex features like `reputation` (5 operations) and `reminder` (5 operations) use [discord.js](https://discord.js.org/) subcommands rather than separate top-level commands. This keeps the Discord command namespace clean and groups related functionality under a single entry point for users.
 
-```typescript
-interface SlashCommand {
-  data: SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder;
-  execute: SlashCommandHandler;
-  autocomplete?: AutocompleteHandler;
-}
-```
+The trade-off is that the parent command needs a routing function to dispatch to subcommands, but this is a small cost compared to polluting the global command list.
 
-Each command lives in its own directory under `src/slash-commands/[command-name]/` with:
-- `index.ts` — command definition, builder configuration, and execute handler
-- `index.test.ts` — co-located tests
-- `utils.ts` — command-specific helper functions (when needed)
+See [Bot Commands Design](./02-bot-commands-design.md) for the full categorisation of commands.
 
-### Simple Commands
+## Why Prisma with PrismaPg
 
-Commands like `8ball` or `cowsay` are stateless. They receive an interaction, process it, and reply. No database needed.
+[Prisma](https://www.prisma.io/) was chosen as the ORM for type-safe database queries that integrate well with TypeScript. The `PrismaPg` adapter connects directly to [PostgreSQL](https://www.postgresql.org/) without an intermediate query engine binary.
 
-### Database-Backed Commands
+The database client uses a singleton pattern with lazy initialisation. This means the Prisma instance is only created when the first database query is made, avoiding unnecessary connections during bot startup for commands that do not use the database.
 
-Commands like `reputation`, `referral`, and `reminder` interact with PostgreSQL via Prisma. They follow this flow:
+## Why Result Types Over Exceptions
 
-1. Receive the interaction
-2. Extract options from the interaction
-3. Call the database via `getDbClient()`
-4. Return a result using `Ok`/`Err` from [oxide.ts](https://www.npmjs.com/package/oxide.ts)
-5. Reply to the user based on the result
+The codebase prefers `Ok`/`Err` from [oxide.ts](https://www.npmjs.com/package/oxide.ts) over thrown exceptions. This makes error paths explicit in the type system — a function returning `Result<User, string>` clearly communicates that it can fail, unlike a function that silently throws.
 
-### Subcommand Pattern
+The trade-off is more verbose call sites (checking `isOk()`/`isErr()`), but this is preferable to unhandled exceptions crashing the bot process. Errors are logged via [Winston](https://www.npmjs.com/package/winston), and user-facing error messages are sent as ephemeral Discord replies.
 
-Complex features use subcommands. The parent command routes to the correct subcommand based on `interaction.options.getSubcommand(true)`:
+See [Error Handling](../reference/08-error-handling.md) for the API reference.
 
-```typescript
-const subcommands = [checkRep, giveRep, takeRep, setRep, leaderboard];
+## Why Lazy User Creation
 
-const execute = async (interaction) => {
-  const requested = interaction.options.getSubcommand(true);
-  const subcommand = subcommands.find((cmd) => cmd.data.name === requested);
-  return subcommand?.execute(interaction);
-};
-```
+Database-backed commands (reputation, referral, reminder) create user records on first interaction rather than requiring pre-registration. This was chosen because Discord does not provide a reliable "user joined" event for all cases, and requiring users to register before using the bot would add friction.
 
-## Database Layer
+The `getOrCreateUser` pattern (find or create) trades a potential extra database read for a simpler user experience.
 
-The database client uses a singleton pattern with lazy initialisation:
-- `getDbClient()` returns a shared Prisma instance
-- The `PrismaPg` adapter connects directly to PostgreSQL
-- Sensitive fields (e.g. `aocKey`) are omitted from default queries
-- `disconnectDb()` handles cleanup on shutdown
+## Why Winston with Axiom
 
-## Error Handling Philosophy
+Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
 
-The codebase prefers Result types (`Ok`/`Err`) from oxide.ts over thrown exceptions. This makes error paths explicit and type-safe. Errors are logged via [Winston](https://www.npmjs.com/package/winston) and user-facing error messages are sent as ephemeral Discord replies.
+## Deployment Model
 
-## Deployment Pipeline
-
-1. **Command deployment** (`pnpm deploy:command`) registers slash commands with the Discord API for a specific guild (development) or globally (production)
-2. **Bot process** (`pnpm start`) runs database migrations and starts the bot
-3. **Production** uses Docker Compose to orchestrate the bot and database containers
+The bot runs as a single [Node.js](https://nodejs.org/) process in a [Docker](https://www.docker.com/) container alongside a PostgreSQL container. Command registration is a separate step (`pnpm deploy:command`) because the Discord API rate-limits registration calls, so commands should only be deployed when their definition changes, not on every bot restart.

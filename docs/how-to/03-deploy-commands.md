@@ -4,10 +4,7 @@ Deploy slash commands and context menu commands to a test Discord server.
 
 ## Prerequisites
 
-Ensure your `.env` file has these values filled in:
-- `GUILD_ID`
-- `TOKEN`
-- `CLIENT_ID`
+Ensure your `.env` file has `GUILD_ID`, `TOKEN`, and `CLIENT_ID` filled in.
 
 ## Register Your Commands
 
@@ -33,13 +30,11 @@ Then run:
 pnpm run deploy:command
 ```
 
-> **Warning:** Only deploy commands **once** after changing command registrations (adding a new command, editing options of an existing one). Running this too often in a short period will cause the Discord API to **rate-limit your bot**.
+Run this command only once per registration change.
 
-## Troubleshooting
+## Fix "Error: Cannot deploy commands"
 
-### "Error: Cannot deploy commands"
-
-Your bot likely lacks the required permissions. Authorise it with the `bot` and `applications.commands` scopes:
+Authorise the bot with the `bot` and `applications.commands` scopes:
 
 ```
 https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scope=bot%20applications.commands
@@ -47,10 +42,10 @@ https://discord.com/api/oauth2/authorize?client_id=$CLIENT_ID&permissions=0&scop
 
 Replace `$CLIENT_ID` with your actual client ID.
 
-### Authentication Failure
+## Fix Authentication Failure
 
-Open your `.env` file and verify that your `TOKEN`, `PUBLIC_KEY`, and `CLIENT_ID` are correct.
+Open your `.env` file and verify `TOKEN`, `PUBLIC_KEY`, and `CLIENT_ID`.
 
-### Bot Cannot Read Message Content
+## Fix "Bot Cannot Read Message Content"
 
 In the [Discord Developer Portal](https://discord.com/developers/applications), go to **Bot** and enable **Privileged Gateway Intents > Message Content Intent**.

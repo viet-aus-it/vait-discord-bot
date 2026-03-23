@@ -1,10 +1,6 @@
 # Build Your First Slash Command
 
-In this tutorial, you will create a simple slash command from scratch, register it, and test it in your Discord server.
-
-## What You Will Build
-
-A `/ping` command that replies with "Pong!" when a user runs it. This covers the core pattern used by every command in the bot.
+Create a `/ping` command from scratch, register it, deploy it, and write a test for it.
 
 ## Prerequisites
 
@@ -44,11 +40,7 @@ const command: SlashCommand = {
 export default command;
 ```
 
-Let's break this down:
-
-1. **`data`** — uses [discord.js](https://discord.js.org/) `SlashCommandBuilder` to define the command name, description, and where it can be used (guild only)
-2. **`execute`** — the async function that handles the interaction. It receives a `ChatInputCommandInteraction` and must reply to the user
-3. **`command`** — the exported `SlashCommand` object that the bot uses to register and route the command
+For details on the `SlashCommand` interface and builder types, see [Command Interfaces](../../reference/06-command-interfaces.md).
 
 ## Step 3: Register the Command
 
@@ -65,7 +57,7 @@ export const commands: SlashCommand[] = [
 
 ## Step 4: Add an Option
 
-Let's make the command more interesting by adding a `message` option:
+Update the command to accept an optional message:
 
 ```typescript
 const data = new SlashCommandBuilder()
@@ -83,12 +75,6 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
 };
 ```
 
-Options are added via builder methods:
-- `.addStringOption()` — text input
-- `.addUserOption()` — user mention
-- `.addNumberOption()` — numeric input
-- `.addBooleanOption()` — true/false toggle
-
 See the [discord.js builder docs](https://discord.js.org/docs/packages/builders/main) for all available option types.
 
 ## Step 5: Deploy and Test
@@ -99,9 +85,9 @@ Deploy the command to your test server:
 pnpm run deploy:command
 ```
 
-> Remember: only run this once per command registration change. See [Deploy Commands](../../how-to/03-deploy-commands.md).
+Open Discord and type `/ping`. You should see your command in the autocomplete. Run it — the bot replies with "Pong!".
 
-Open Discord, type `/ping`, and you should see your command in the autocomplete. Run it to see the response.
+Try `/ping message: hello` — you should see "Pong! You said: hello".
 
 ## Step 6: Write a Test
 
@@ -110,8 +96,6 @@ Create `src/slash-commands/ping/index.test.ts`:
 ```typescript
 import { describe, expect } from 'vitest';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
-
-// Import your execute function directly
 import { execute } from './index';
 
 describe('ping', () => {
@@ -138,12 +122,10 @@ Run the test:
 pnpm test src/slash-commands/ping/index.test.ts
 ```
 
+You should see both tests pass.
+
 ## What's Next
 
-- [Add a Database-Backed Feature](./02-database-backed-feature.md) — learn how to persist data with Prisma
-- [Test Your Command](./03-testing-your-command.md) — deeper dive into the testing patterns
-- [Bot Commands Design](../../explanation/02-bot-commands-design.md) — understand the design rationale
-
-## Reference: The 8ball Command
-
-The `8ball` command (`src/slash-commands/8ball/index.ts`) is the real-world example of this pattern. It adds a required string option, picks a random reply, logs the interaction, and responds. Study it as a model for simple stateless commands.
+- [Add a Database-Backed Feature](./02-database-backed-feature.md)
+- [Test Your Command](./03-testing-your-command.md)
+- The `8ball` command (`src/slash-commands/8ball/index.ts`) is the production example of this pattern

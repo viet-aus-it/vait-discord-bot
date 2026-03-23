@@ -1,44 +1,31 @@
 # Add a Database-Backed Feature
 
-In this tutorial, you will build a slash command with subcommands that reads from and writes to the PostgreSQL database using [Prisma](https://www.prisma.io/).
+Build a `/kudos` command with two subcommands that reads from and writes to [PostgreSQL](https://www.postgresql.org/) using [Prisma](https://www.prisma.io/).
 
-## What You Will Build
-
-A `/kudos` command with two subcommands:
+The finished command has:
 - `/kudos give @user` — give kudos to someone (writes to DB)
 - `/kudos check @user` — check someone's kudos count (reads from DB)
-
-This tutorial uses the same patterns as the `reputation` command.
 
 ## Prerequisites
 
 - Completed [Build Your First Slash Command](./01-your-first-slash-command.md)
-- Docker running (for the local database)
+- [Docker](https://www.docker.com/) running (for the local database)
 - Bot running with `pnpm start`
 
-## Step 1: Update the Schema (Optional)
+## Step 1: Update the Schema
 
-If your feature needs a new database model, edit `prisma/schema.prisma`. For this tutorial, we will reuse the existing `User` model and its `reputation` field.
-
-When you do need to add a model:
-
-```prisma
-model YourModel {
-  id     String @id @default(cuid())
-  // ... fields
-}
-```
-
-Then run:
+For this tutorial, reuse the existing `User` model and its `reputation` field. If your feature needs a new model, edit `prisma/schema.prisma` and run:
 
 ```bash
 pnpm prisma:migrate
 pnpm prisma:gen
 ```
 
+See [Database Schema](../../reference/04-database-schema.md) for the full model reference.
+
 ## Step 2: Create Utility Functions
 
-Create `src/slash-commands/kudos/utils.ts` with database helpers:
+Create `src/slash-commands/kudos/utils.ts`:
 
 ```typescript
 import { getDbClient } from '../../clients';
@@ -55,12 +42,7 @@ export const getOrCreateUser = async (userId: string) => {
 };
 ```
 
-Key points:
-- `getDbClient()` returns the Prisma singleton (see [Architecture](../../explanation/01-architecture.md))
-- Users are lazily created on first interaction, no pre-registration needed
-- Prisma provides type-safe queries, your IDE will autocomplete model fields
-
-## Step 3: Create Subcommands
+## Step 3: Create the Check Subcommand
 
 Create `src/slash-commands/kudos/check.ts`:
 
@@ -84,6 +66,8 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
 const subcommand: Subcommand = { data, execute };
 export default subcommand;
 ```
+
+## Step 4: Create the Give Subcommand
 
 Create `src/slash-commands/kudos/give.ts`:
 
@@ -122,13 +106,7 @@ const subcommand: Subcommand = { data, execute };
 export default subcommand;
 ```
 
-Note the patterns:
-- **Ephemeral replies** for error messages (only the user sees them)
-- **Self-action prevention** — users cannot give kudos to themselves
-- **Lazy user creation** — both users are created if they do not exist
-- **Prisma `increment`** — atomic database operation, no read-then-write race condition
-
-## Step 4: Create the Parent Command
+## Step 5: Create the Parent Command
 
 Create `src/slash-commands/kudos/index.ts`:
 
@@ -161,12 +139,9 @@ const command: SlashCommand = {
 export default command;
 ```
 
-The parent command:
-1. Registers all subcommands via `.addSubcommand()`
-2. Routes to the correct subcommand based on the user's selection
-3. Exports the combined `SlashCommand` object
+For details on the `Subcommand` interface and routing pattern, see [Command Interfaces](../../reference/06-command-interfaces.md).
 
-## Step 5: Register and Deploy
+## Step 6: Register and Deploy
 
 Add to `src/slash-commands/index.ts`:
 
@@ -185,9 +160,13 @@ Deploy:
 pnpm run deploy:command
 ```
 
-## Step 6: Test It
+Open Discord and run `/kudos check`. You should see "YourName has 0 kudos."
 
-Test the database interaction with real testcontainers. Create `src/slash-commands/kudos/check.test.ts`:
+Run `/kudos give @someone`. You should see "Gave kudos to someone! They now have 1."
+
+## Step 7: Write a Test
+
+Create `src/slash-commands/kudos/check.test.ts`:
 
 ```typescript
 import { describe, expect } from 'vitest';
@@ -215,12 +194,9 @@ Run:
 pnpm test src/slash-commands/kudos/
 ```
 
+You should see the test pass.
+
 ## What's Next
 
-- [Test Your Command](./03-testing-your-command.md) — comprehensive testing patterns
-- [Database Schema](../../reference/04-database-schema.md) — all available models
-- [Testing Strategy](../../explanation/03-testing-strategy.md) — why testcontainers over mocks
-
-## Reference: The Reputation Command
-
-The `reputation` command (`src/slash-commands/reputation/`) is the production version of this pattern with 5 subcommands, admin permission checks, a leaderboard with table formatting, and a full audit log via `ReputationLog`. Study it as the canonical database-backed command.
+- [Test Your Command](./03-testing-your-command.md)
+- The `reputation` command (`src/slash-commands/reputation/`) is the production version of this pattern with 5 subcommands and admin permission checks

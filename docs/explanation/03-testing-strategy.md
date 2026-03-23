@@ -1,85 +1,37 @@
 # Testing Strategy
 
-Why the VAIT Discord Bot tests the way it does.
-
-## Tooling
-
-- **[Vitest](https://vitest.dev/)** — test runner with native TypeScript support and ESM
-- **[Testcontainers](https://node.testcontainers.org/)** — spins up real PostgreSQL containers for database tests
-- **[MSW](https://mswjs.io/)** (Mock Service Worker) — intercepts HTTP requests for external API mocking
-- **[vitest-mock-extended](https://www.npmjs.com/package/vitest-mock-extended)** — deep mocking for complex TypeScript interfaces (Discord interactions)
+Design decisions behind the VAIT Discord Bot's testing approach.
 
 ## Why Testcontainers Over Mocked Databases
 
-The project previously used mocked database calls, but this approach had a critical flaw: mocked tests could pass while the actual database queries failed in production. By using testcontainers, every database test runs against a real PostgreSQL instance with the actual Prisma schema applied.
+The project previously used mocked database calls, but this approach had a critical flaw: mocked tests could pass while the actual database queries failed in production. Mocks cannot catch query errors, constraint violations, or migration issues.
 
-**Trade-offs:**
-- Slower than mocks (container startup adds ~5-10 seconds to the first test run)
-- Requires Docker to be running locally
-- More realistic: catches query errors, constraint violations, and migration issues that mocks would miss
+By using [testcontainers](https://node.testcontainers.org/), every database test runs against a real [PostgreSQL](https://www.postgresql.org/) instance with the actual [Prisma](https://www.prisma.io/) schema applied. The trade-off is speed — container startup adds ~5-10 seconds to the first test run and requires [Docker](https://www.docker.com/) to be running locally. The reliability gain is worth it.
 
-## Database Test Isolation
+## Why Template Database Isolation
 
-The testing infrastructure uses a template database pattern for isolation without redundant schema setup:
+Running all tests against a single shared database would cause test interference. Running full schema migrations per test file would be slow.
 
-### Global Setup (`test/mocks/database/globalSetup.ts`)
+The template database pattern solves both problems: the schema is applied once to a template database during global setup, then each test file gets its own database cloned from the template via `CREATE DATABASE ... TEMPLATE`. This gives full isolation without redundant migration runs.
 
-Runs once before all tests:
-1. Starts a PostgreSQL container via testcontainers (or uses a GitHub Actions service container in CI)
-2. Runs `pnpm run prisma:push` to apply the schema, creating a **template database**
-3. Returns a teardown function that stops the container
+Each test within a file starts with a clean slate because `cleanDb()` truncates all tables before each test.
 
-### Per-File Setup (`test/mocks/database/per-file-db.ts`)
+See [Testing Utilities](../reference/07-testing-utilities.md) for the API reference of seed helpers and fixtures.
 
-Runs for each test file:
-1. Creates a unique database for the test worker by cloning the template: `CREATE DATABASE "test_<worker_id>" TEMPLATE "test"`
-2. Registers a `beforeEach` hook that calls `cleanDb()` to truncate all tables
-3. Registers an `afterAll` hook that disconnects Prisma and drops the worker database
+## Why Deep Mocks for Discord Interactions
 
-This means each test file gets its own isolated database, and each test within a file starts with a clean slate. Tests can run in parallel without interfering with each other.
+[Discord.js](https://discord.js.org/) interaction objects are deeply nested interfaces with dozens of properties and methods. Manually stubbing each one would be fragile and verbose.
 
-## Mocking Discord Interactions
+[vitest-mock-extended](https://www.npmjs.com/package/vitest-mock-extended)'s `mockDeep` creates a complete mock object where every property and method is a mock function by default. The `chatInputCommandInteractionTest` fixture wraps this in a [Vitest](https://vitest.dev/) test extension that pre-sets `guildId` and auto-resets between tests.
 
-Discord.js interaction objects are complex, deeply nested interfaces. The project uses `vitest-mock-extended`'s `mockDeep` to create full mock objects without manually stubbing every property.
+This approach trades some type safety (mocked properties may not match runtime behaviour) for developer ergonomics. It works well because the tests focus on verifying command logic, not Discord.js internals.
 
-The `chatInputCommandInteractionTest` fixture (`test/fixtures/chat-input-command-interaction.ts`) is a Vitest test extension that provides:
-- A pre-configured `interaction` mock with `guildId` set
-- A `message` mock
-- A `thread` mock
-- Automatic mock reset between tests
+## Why MSW Over Mocking Fetch
 
-Usage:
+External API calls (weather, Advent of Code) are intercepted by [MSW](https://mswjs.io/) at the network level rather than mocking `fetch` directly. MSW catches issues with URL construction, headers, and request/response serialisation that direct mocking would miss.
 
-```typescript
-chatInputCommandInteractionTest('should reply with result', async ({ interaction }) => {
-  await myCommand(interaction);
-  expect(interaction.reply).toHaveBeenCalledWith('expected response');
-});
-```
+The trade-off is a slightly more complex setup (mock server lifecycle), but the MSW server is managed automatically by the test infrastructure.
 
-## MSW for HTTP Mocking
+## The Guiding Principle
 
-External API calls (weather, Advent of Code) are intercepted by MSW at the network level. The setup (`test/mocks/msw/setup.ts`) starts a mock server before all tests, resets handlers after each test, and shuts down after all tests.
-
-This approach is preferable to mocking `fetch` directly because it catches issues with URL construction, headers, and request/response serialisation.
-
-## Test Data Seeding
-
-The `test/fixtures/db-seed.ts` module provides helper functions for creating test data:
-
-- `seedUser(id, reputation?)` — create a user with optional reputation
-- `seedServerSettings(guildId, overrides?)` — create server configuration
-- `seedReferralCode(data)` — create a referral code
-- `seedReminder(data)` — create a reminder
-- `cleanDb()` — delete all records from all tables (called before each test)
-
-## When to Mock vs When to Use Real Dependencies
-
-| Scenario | Approach |
-|----------|----------|
-| Database queries | Real database via testcontainers |
-| Discord interactions | `mockDeep` via vitest-mock-extended |
-| External HTTP APIs | MSW request interception |
-| Error paths that cannot be triggered naturally | `vi.spyOn` on the specific function |
-
-The guiding principle: use real dependencies when possible, mock only at the boundary where the real dependency is impractical (Discord gateway) or unreliable (external APIs).
+Use real dependencies when possible, mock only at the boundary where the real dependency is impractical (Discord gateway) or unreliable (external APIs). This gives the highest confidence that tests reflect production behaviour.

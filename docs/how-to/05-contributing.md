@@ -1,31 +1,28 @@
 # Contributing
 
-We welcome contributions to the VAIT Discord Bot! Whether it's reporting bugs, discussing improvements, submitting fixes, or proposing new features.
+How to contribute to the VAIT Discord Bot.
 
-## How We Work
+## Set Up
 
-- We use [GitHub Issues](https://github.com/viet-aus-it/vait-discord-bot/issues) to track bugs and feature requests.
-- We use [Pull Requests](https://github.com/viet-aus-it/vait-discord-bot/pulls) for all code changes.
-- Direct pushes to `master` are not permitted.
+1. Fork the repo.
+2. Follow the [Quick Start](./01-quick-start.md) guide.
+3. Create a branch following the [Development Workflow](./02-development-workflow.md).
 
-## Getting Started
+## Make Changes
 
-1. Fork the repo and follow the [Quick Start](./01-quick-start.md) guide.
-2. Create a branch following the [Development Workflow](./02-development-workflow.md).
-3. Make your changes, add tests, and ensure linting passes.
+1. Implement your changes.
+2. Add tests for new features.
+3. Run `pnpm lint` and `pnpm test`.
 4. Submit a pull request.
 
-## Reporting Bugs
+## Report a Bug
 
-Open a [new issue](https://github.com/viet-aus-it/vait-discord-bot/issues/new) with:
-- Clear reproduction steps
-- Expected vs actual behaviour
-- Any relevant logs or screenshots
+Open a [new issue](https://github.com/viet-aus-it/vait-discord-bot/issues/new) with clear reproduction steps, expected vs actual behaviour, and any relevant logs.
 
 ## Code of Conduct
 
-Please read our [Code of Conduct](../.github/CODE_OF_CONDUCT.md) before contributing.
+Read our [Code of Conduct](../../.github/CODE_OF_CONDUCT.md) before contributing.
 
 ## Licence
 
-Any contributions you make will be under the [MIT Licence](http://choosealicense.com/licenses/mit/) that covers the project.
+Contributions are under the [MIT Licence](http://choosealicense.com/licenses/mit/).

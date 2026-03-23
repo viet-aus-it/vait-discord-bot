@@ -6,9 +6,8 @@ Set up a local development environment for the VAIT Discord Bot.
 
 - [Node.js](https://nodejs.org/en/) 22+
 - [PNPM](https://pnpm.io/) 10+
-- [Docker](https://www.docker.com/) 20+ and Docker Compose 1.28+ (for the local database), **or** a [PostgreSQL](https://www.postgresql.org/) DBaaS account (e.g. [Neon](https://neon.tech))
-
-> If you prefer using a DBaaS instead of Docker, fill in your `.env` file with the connection values from your provider and skip any `docker compose up db` steps below.
+- [Docker](https://www.docker.com/) 20+ and Docker Compose 1.28+
+- A Discord application and bot (see Step 1)
 
 ## Step 1: Create a Discord Application and Bot
 
@@ -21,9 +20,7 @@ Set up a local development environment for the VAIT Discord Bot.
    - **CLIENT ID** — from OAuth2
    - **GUILD ID** — right-click your server title in Discord (with Developer Mode enabled in Settings > Advanced) and select "Copy ID"
 
-## Step 2: Create the Config Files
-
-### Option A: Onboarding Script (recommended)
+## Step 2: Run the Onboarding Script
 
 On macOS, Linux, or WSL:
 
@@ -31,9 +28,7 @@ On macOS, Linux, or WSL:
 ./scripts/onboarding.sh
 ```
 
-This creates a local `.env` file, installs dependencies, sets up a pre-commit hook, and starts a local database via Docker.
-
-### Option B: Manual Setup
+If the script does not work, create the config file manually:
 
 ```bash
 cp .env.dist .env
@@ -45,17 +40,14 @@ Fill in the `.env` file with the values from Step 1. See [Environment Variables]
 
 ```bash
 docker compose up -d db
-
 pnpm install
 pnpm run prisma:gen
 pnpm run deploy:command
 pnpm run start
 ```
 
-> **Important:** Only run `pnpm run deploy:command` once after changing command registrations. Running it too often will cause Discord API rate limits. See [Deploy Commands](./03-deploy-commands.md) for details.
-
 ## Next Steps
 
-- [Development Workflow](./02-development-workflow.md) — Branching, commits, and PRs
-- [Build Your First Slash Command](../tutorials/developers/01-your-first-slash-command.md) — Create a command from scratch
-- [pnpm Scripts](../reference/02-pnpm-scripts.md) — All available scripts
+- [Development Workflow](./02-development-workflow.md)
+- [Build Your First Slash Command](../tutorials/developers/01-your-first-slash-command.md)
+- [pnpm Scripts](../reference/02-pnpm-scripts.md)
