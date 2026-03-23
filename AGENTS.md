@@ -34,9 +34,19 @@ All changes must be:
 ## Project Structure
 
 ```
+docs/                            # Project documentation (Diataxis framework)
+  tutorials/                     # Learning-oriented guides
+    developers/                  # For contributors
+    users/                       # For bot users
+  how-to/                        # Task-oriented guides
+  reference/                     # Information-oriented lookup
+  explanation/                   # Understanding-oriented discussion
+  index.md                       # Documentation hub
+
 .agents/
-  skills/          # Task-specific toolkits with proven workflows
-  rules/           # Domain-specific guidelines and constraints
+  skills/                        # Task-specific toolkits with proven workflows
+    update-docs/SKILL.md         # Documentation audit and update workflow
+  rules/                         # Domain-specific guidelines and constraints
     commands.md
     code-style.md
     patterns.md
@@ -73,9 +83,9 @@ Load these rules when working on relevant domains:
 
 ## Available Skills
 
-Skills will be added as needed for specific task types (e.g., code review, feature implementation, refactoring).
+Load a skill when its trigger condition matches the task:
 
-Currently: _(No skills defined yet - add skills under `.agents/skills/[skill-name]/SKILL.md`)_
+- **[update-docs](.agents/skills/update-docs/SKILL.md)** - Audit and update documentation after code changes. Trigger: feature additions, schema changes, new commands, dependency updates, or when docs may have drifted.
 
 ## Quick Reference
 
