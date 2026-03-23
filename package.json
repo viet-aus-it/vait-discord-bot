@@ -33,6 +33,7 @@
     "prisma:migrate": "dotenvx run -- prisma migrate dev",
     "prisma:gen": "dotenvx run -- prisma generate",
     "prisma:studio": "dotenvx run -- prisma studio",
+    "prisma:push": "dotenvx run -- prisma db push",
     "deploy:command": "dotenvx run -- tsx scripts/deploy-guild-commands.ts",
     "delete:command": "dotenvx run -- tsx scripts/delete-guild-commands.ts",
     "delete:command-global": "dotenvx run -- tsx scripts/delete-global-commands.ts",
