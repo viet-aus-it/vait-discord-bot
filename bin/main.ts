@@ -40,7 +40,10 @@ const main = async () => {
 
   await deployCommands({ token, clientId: client.user.id });
 
-  await loadHoneypotChannels();
+  const honeypotOp = await Result.safe(loadHoneypotChannels());
+  if (honeypotOp.isErr()) {
+    logger.error('[honeypot]: Failed to load honeypot channels', honeypotOp.unwrapErr());
+  }
   const configs = getConfigs();
   client.on(Events.MessageCreate, (msg) => {
     return processMessage(msg as Message<true>, configs);
