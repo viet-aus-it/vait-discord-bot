@@ -1,26 +1,14 @@
-import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
-import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { loadEnv } from '../src/utils/load-env';
 
 loadEnv();
 
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.VERBOSE);
-
 const serviceName = process.env.OTEL_SERVICE_NAME ?? 'vait-discord-bot';
 const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
-
-console.log({
-  serviceName,
-  otelEndpoint,
-  token: process.env.AXIOM_TOKEN || '',
-  env: process.env.NODE_ENV,
-});
 
 const resource = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: serviceName,
@@ -30,7 +18,10 @@ const resource = resourceFromAttributes({
 const instrumentations = getNodeAutoInstrumentations();
 
 function getTraceExporter(): OTLPTraceExporter {
-  const localTraceExporter = new OTLPTraceExporter({ url: otelEndpoint });
+  const localTraceExporter = new OTLPTraceExporter({
+    url: otelEndpoint,
+    headers: process.env.OPENOBSERVE_AUTH_TOKEN ? { Authorization: process.env.OPENOBSERVE_AUTH_TOKEN } : {},
+  });
 
   const productionTraceExporter = new OTLPTraceExporter({
     url: otelEndpoint,
