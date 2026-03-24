@@ -20,7 +20,7 @@ These commands persist state across sessions. The reputation system encourages p
 
 ### Moderation
 
-Admin-only commands for server management: `moderate-users` (removeuserbyrole), `server-settings`, `autobump-threads`.
+Admin-only commands for server management: `moderate-users` (removeuserbyrole), `server-settings` (reminder channel, honeypot channel, AoC settings), `autobump-threads`.
 
 These require permission checks before execution and affect server-wide configuration.
 

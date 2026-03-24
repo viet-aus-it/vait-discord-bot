@@ -1,4 +1,6 @@
 import type { Message } from 'discord.js';
+import { Result } from 'oxide.ts';
+import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
@@ -34,6 +36,15 @@ export interface CommandConfig {
 }
 
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
+  const honeypotChannelId = getHoneypotChannelId(message.guildId);
+  if (honeypotChannelId && message.channelId === honeypotChannelId) {
+    const result = await Result.safe(handleHoneypotTrigger(message));
+    if (result.isErr()) {
+      logger.error('[honeypot]: Error processing honeypot trigger', result.unwrapErr());
+    }
+    return;
+  }
+
   const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
 
   try {

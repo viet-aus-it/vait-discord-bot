@@ -57,6 +57,7 @@ model Reminder {
 model ServerChannelsSettings {
   guildId          String   @unique
   reminderChannel  String?  @unique
+  honeypotChannel  String?
   autobumpThreads  String[] @default([])
   aocKey           String?
   aocLeaderboardId String?
