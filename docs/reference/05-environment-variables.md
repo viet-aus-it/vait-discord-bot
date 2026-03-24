@@ -27,14 +27,25 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 
 ## Observability
 
-### OpenTelemetry (Local Development)
+### OpenTelemetry
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `OTEL_SERVICE_NAME` | No | `vait-discord-bot` | Service name for OTEL traces |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | No | `http://localhost:4318` | OTLP exporter endpoint (local Grafana LGTM stack) |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | No | `http://localhost:5080/api/default` | OTLP exporter endpoint |
 
-> These defaults work with the local `lgtm` Docker Compose service (`docker compose up -d db lgtm`).
+### OpenObserve (Local Development)
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENOBSERVE_AUTH_TOKEN` | Dev only | API key from [OpenObserve](https://openobserve.ai/) console (format: `Basic <key>`) |
+
+**Local setup:**
+
+1. Start the OpenObserve container: `docker compose up -d openobserve`
+2. Open `http://localhost:5080` and login with `root@example.com` / `Complexpass#123`
+3. Navigate to **Ingestion** → **Custom** → **OTEL Collector** and copy the `Authorization` header value
+4. Set `OPENOBSERVE_AUTH_TOKEN` in your `.env` file with the copied value
 
 ### Axiom (Production Only)
 

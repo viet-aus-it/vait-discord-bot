@@ -44,6 +44,8 @@ The `getOrCreateUser` pattern (find or create) trades a potential extra database
 
 Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
 
+For local trace observability, [OpenObserve](https://openobserve.ai/) replaces the previous Grafana LGTM stack, providing a single-binary solution for viewing traces, logs, and metrics via its built-in UI at `http://localhost:5080`.
+
 ## Why In-Memory Caching for Honeypot
 
 The honeypot feature checks every incoming message to see if it was posted in a honeypot channel. Querying the database on every message would be expensive, so honeypot channels are loaded from the database into an in-memory `Map<guildId, channelId>` at startup. The map is updated immediately when an admin sets a new honeypot channel via the slash command, so changes take effect without a bot restart.
