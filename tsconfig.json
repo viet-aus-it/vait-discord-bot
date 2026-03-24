@@ -15,8 +15,7 @@
     "resolveJsonModule": true,
     "isolatedModules": false,
     "outDir": "build",
-    "noEmit": true,
-    "baseUrl": "."
+    "noEmit": true
   },
   "include": ["bin", "src", "scripts", "test", "*.config.*", "*.setup.*"],
   "exclude": ["node_modules", "build", "**/generated/**"]
