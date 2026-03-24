@@ -62,6 +62,7 @@ Per-server configuration.
 |-------|------|-------------|
 | `guildId` | String (unique) | Discord server ID |
 | `reminderChannel` | String? | Channel ID for reminder notifications |
+| `honeypotChannel` | String? | Channel ID for the honeypot trap |
 | `autobumpThreads` | String[] | Thread IDs to automatically bump |
 | `aocKey` | String? | Advent of Code session key |
 | `aocLeaderboardId` | String? | Advent of Code leaderboard ID |

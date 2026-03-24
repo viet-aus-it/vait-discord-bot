@@ -44,6 +44,12 @@ The `getOrCreateUser` pattern (find or create) trades a potential extra database
 
 Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
 
+## Why In-Memory Caching for Honeypot
+
+The honeypot feature checks every incoming message to see if it was posted in a honeypot channel. Querying the database on every message would be expensive, so honeypot channels are loaded from the database into an in-memory `Map<guildId, channelId>` at startup. The map is updated immediately when an admin sets a new honeypot channel via the slash command, so changes take effect without a bot restart.
+
+The trade-off is that the in-memory state can drift if the database is modified outside the bot process, but this is acceptable because the only writer is the bot's own slash command.
+
 ## Deployment Model
 
 The bot runs as a single [Node.js](https://nodejs.org/) process in a [Docker](https://www.docker.com/) container alongside a PostgreSQL container. Command registration is a separate step (`pnpm deploy:command`) because the Discord API rate-limits registration calls, so commands should only be deployed when their definition changes, not on every bot restart.

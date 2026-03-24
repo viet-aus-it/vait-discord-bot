@@ -19,6 +19,16 @@ Pick a text channel where the bot sends reminder notifications:
 
 You should see a confirmation message. From now on, all reminders broadcast to that channel.
 
+### Set Up a Honeypot Channel
+
+Designate a channel as a honeypot trap. Any user who posts in the honeypot channel is automatically kicked and has their messages from the past hour deleted across all channels.
+
+```
+/server-settings honeypot-channel channel: #honeypot
+```
+
+You should see a confirmation message. The honeypot is active immediately — no bot restart required.
+
 ### Set Up Advent of Code Tracking
 
 Configure your server's [Advent of Code](https://adventofcode.com/) leaderboard:

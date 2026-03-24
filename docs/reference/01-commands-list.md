@@ -56,7 +56,9 @@ Complete reference of all VAIT Discord Bot commands.
 |---------|-------------|
 | `/rep take @user` | Remove 1 reputation point from a user |
 | `/rep set @user <amount>` | Set a user's reputation to a specific number |
-| `/server-settings` | Configure reminder channels and Advent of Code settings |
+| `/server-settings honeypot-channel <channel>` | Set a honeypot channel — users who post in it are kicked and cleaned up |
+| `/server-settings reminder-channel <channel>` | Set the channel for reminder notifications |
+| `/server-settings aoc-settings <key> <id>` | Configure Advent of Code leaderboard tracking |
 | `/autobump-threads` | Manage automatic thread bumping |
 | `/removeuserbyrole <role>` | Remove users by role from threads |
 
