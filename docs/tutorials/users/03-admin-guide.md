@@ -21,7 +21,7 @@ You should see a confirmation message. From now on, all reminders broadcast to t
 
 ### Set Up a Honeypot Channel
 
-Designate a channel as a honeypot trap. Any user who posts in the honeypot channel is automatically kicked and has their messages from the past hour deleted across all channels.
+Designate a channel as a honeypot trap. Any user who posts in the honeypot channel is automatically banned and has their messages from the past hour deleted.
 
 ```
 /server-settings honeypot-channel channel: #honeypot
