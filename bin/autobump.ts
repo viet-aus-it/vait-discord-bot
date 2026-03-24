@@ -35,7 +35,7 @@ const autobump = async () => {
 
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
-    logger.error('[autobump]: Cannot retrieve autobump thread lists');
+    logger.error('[autobump]: Cannot retrieve autobump thread lists', { error: settings.unwrapErr() });
     process.exit(1);
   }
 

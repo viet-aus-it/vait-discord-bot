@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { Reminder } from '../../clients/prisma/generated/client/client';
+import { logger } from '../../utils/logger';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { getUserReminders } from './utils';
 
@@ -18,6 +19,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const op = await Result.safe(getUserReminders(user.id, guildId));
   if (op.isErr()) {
+    logger.error('[reminder-list]: Error while retrieving reminders', { error: op.unwrapErr() });
     await interaction.reply('There is some error retrieving your reminders. Please try again later.');
     return;
   }

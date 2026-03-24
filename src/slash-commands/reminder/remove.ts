@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+import { logger } from '../../utils/logger';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { removeReminder } from './utils';
 
@@ -21,6 +22,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
+    logger.error('[reminder-delete]: Error while deleting reminder', { error: op.unwrapErr() });
     await interaction.reply(`Cannot delete reminder id ${reminderId}. Please try again later.`);
     return;
   }

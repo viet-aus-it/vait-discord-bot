@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { convertDateToEpoch } from '../../utils/date';
+import { logger } from '../../utils/logger';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './utils';
 
@@ -26,6 +27,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
+    logger.error('[reminder-on]: Error while saving reminder', { error: op.unwrapErr() });
     await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
     return;
   }

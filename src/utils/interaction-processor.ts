@@ -17,7 +17,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
     const op = await Result.safe(command.execute(interaction));
     if (op.isErr()) {
-      logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
+      logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}`, { error: op.unwrapErr() });
       return;
     }
 
@@ -37,7 +37,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
     const op = await Result.safe(command.execute(interaction));
     if (op.isErr()) {
-      logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
+      logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}`, { error: op.unwrapErr() });
       return;
     }
 
@@ -57,7 +57,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
     const op = await Result.safe(command.autocomplete(interaction));
     if (op.isErr()) {
-      logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}, ERROR: ${op.unwrapErr()}`);
+      logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}`, { error: op.unwrapErr() });
       return;
     }
 

@@ -30,7 +30,7 @@ const deploy = async () => {
     process.exit(0);
   }
 
-  logger.error(`[deploy-guild-commands]: Cannot deploy guild commands. Timestamp ${getCurrentUnixTime()}`, op.unwrapErr());
+  logger.error(`[deploy-guild-commands]: Cannot deploy guild commands. Timestamp ${getCurrentUnixTime()}`, { error: op.unwrapErr() });
   process.exit(1);
 };
 

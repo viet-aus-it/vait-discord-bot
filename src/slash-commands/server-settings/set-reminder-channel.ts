@@ -15,7 +15,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   logger.info(`[set-reminder-channel]: ${interaction.member!.user.username} is setting reminder channel to ${channel.name}`);
   const op = await Result.safe(setReminderChannel(guildId, channel.id));
   if (op.isErr()) {
-    logger.info(`[set-reminder-channel]: ${interaction.member!.user.username} failed to set reminder channel to ${channel.name}`);
+    logger.error(`[set-reminder-channel]: ${interaction.member!.user.username} failed to set reminder channel to ${channel.name}`, { error: op.unwrapErr() });
     await interaction.reply('Cannot save this reminder channel for this server. Please try again.');
     return;
   }

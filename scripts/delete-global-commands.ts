@@ -20,7 +20,7 @@ const deploy = async () => {
     process.exit(0);
   }
 
-  logger.error('[delete-global-commands]: Cannot delete global commands', op.unwrapErr());
+  logger.error('[delete-global-commands]: Cannot delete global commands', { error: op.unwrapErr() });
   process.exit(1);
 };
 

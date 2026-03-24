@@ -40,7 +40,7 @@ export const processMessage = async (message: Message<true>, config: CommandConf
   if (honeypotChannelId && message.channelId === honeypotChannelId) {
     const result = await Result.safe(handleHoneypotTrigger(message));
     if (result.isErr()) {
-      logger.error('[honeypot]: Error processing honeypot trigger', result.unwrapErr());
+      logger.error('[honeypot]: Error processing honeypot trigger', { error: result.unwrapErr() });
     }
     return;
   }

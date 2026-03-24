@@ -35,7 +35,7 @@ export const allCapExpandText = async (interaction: ChatInputCommandInteraction)
 
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
-    logger.error('[allcap]: Cannot fetch message to allcap.', fetchedMessage.unwrapErr());
+    logger.error('[allcap]: Cannot fetch message to allcap', { error: fetchedMessage.unwrapErr() });
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }

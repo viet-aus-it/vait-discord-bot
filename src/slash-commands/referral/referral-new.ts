@@ -64,7 +64,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const findOp = await Result.safe(findExistingReferralCode({ userId, guildId, service }));
   if (findOp.isErr()) {
-    logger.error('[referral-new]: Error while searching for referral code', findOp.unwrapErr());
+    logger.error('[referral-new]: Error while searching for referral code', { error: findOp.unwrapErr() });
     await interaction.reply('This might be an error with the database. Please try again later.');
     return;
   }
@@ -78,7 +78,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const createOp = await Result.safe(createReferralCode({ userId, guildId, service, code, expiryDate }));
   if (createOp.isErr()) {
-    logger.error('[referral-new]: Error while creating referral code', createOp.unwrapErr());
+    logger.error('[referral-new]: Error while creating referral code', { error: createOp.unwrapErr() });
     await interaction.reply('Failed to add referral code. This might be an error with the database. Please try again later.');
     return;
   }

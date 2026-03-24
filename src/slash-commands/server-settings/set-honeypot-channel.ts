@@ -16,7 +16,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   logger.info(`[set-honeypot-channel]: ${interaction.member!.user.username} is setting honeypot channel to ${channel.name}`);
   const op = await Result.safe(setHoneypotChannel(guildId, channel.id));
   if (op.isErr()) {
-    logger.info(`[set-honeypot-channel]: ${interaction.member!.user.username} failed to set honeypot channel to ${channel.name}`);
+    logger.error(`[set-honeypot-channel]: ${interaction.member!.user.username} failed to set honeypot channel to ${channel.name}, ERROR: ${op.unwrapErr()}`);
     await interaction.reply('Cannot save this honeypot channel for this server. Please try again.');
     return;
   }

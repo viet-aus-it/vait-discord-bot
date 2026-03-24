@@ -21,7 +21,7 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
   const commands = [...slashCommandList, ...contextMenuCommandList];
   const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
   if (op.isErr()) {
-    logger.error('[deploy-commands]: Cannot deploy global commands', op.unwrapErr());
+    logger.error('[deploy-commands]: Cannot deploy global commands', { error: op.unwrapErr() });
     process.exit(1);
   }
 
@@ -42,7 +42,7 @@ const main = async () => {
 
   const honeypotOp = await Result.safe(loadHoneypotChannels());
   if (honeypotOp.isErr()) {
-    logger.error('[honeypot]: Failed to load honeypot channels', honeypotOp.unwrapErr());
+    logger.error('[honeypot]: Failed to load honeypot channels', { error: honeypotOp.unwrapErr() });
   }
   const configs = getConfigs();
   client.on(Events.MessageCreate, (msg) => {

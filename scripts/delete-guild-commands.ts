@@ -27,7 +27,7 @@ const deploy = async () => {
     process.exit(0);
   }
 
-  logger.error(`[delete-guild-commands]: Cannot delete guild commands. Timestamp ${getCurrentUnixTime()}`, op.unwrapErr());
+  logger.error(`[delete-guild-commands]: Cannot delete guild commands. Timestamp ${getCurrentUnixTime()}`, { error: op.unwrapErr() });
   process.exit(1);
 };
 

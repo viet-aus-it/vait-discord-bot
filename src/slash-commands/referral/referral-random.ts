@@ -20,7 +20,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const op = await Result.safe(getAllReferralCodesForService({ guildId, service }));
   if (op.isErr()) {
-    logger.error(`[referral-random]: Error getting referral codes for ${service} service`, op.unwrapErr());
+    logger.error(`[referral-random]: Error getting referral codes for ${service} service`, { error: op.unwrapErr() });
     await interaction.reply(`Error getting referral codes for ${service} service. Please try again later.`);
     return;
   }

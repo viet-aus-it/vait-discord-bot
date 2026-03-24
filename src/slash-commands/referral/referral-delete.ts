@@ -27,7 +27,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
-    logger.error('[referral-delete]: Error while deleting referral code', op.unwrapErr());
+    logger.error('[referral-delete]: Error while deleting referral code', { error: op.unwrapErr() });
     await interaction.reply('Failed to delete referral code. Please try again later.');
     return;
   }
