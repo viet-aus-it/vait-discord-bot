@@ -9,10 +9,13 @@ const configSchema = z.object({
   CLIENT_ID: z.string(),
   GUILD_ID: z.string().optional(),
 
-  // Axiom config
+  // Axiom config (production only)
   AXIOM_TOKEN: z.string().optional(),
   AXIOM_DATASET: z.string().optional(),
   AXIOM_ORG_ID: z.string().optional(),
+
+  // OpenObserve config (local dev only)
+  OPENOBSERVE_AUTH_TOKEN: z.string().optional(),
 
   // OpenTelemetry config
   OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
