@@ -12,7 +12,7 @@ import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
 
-const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
+const _deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
   if (process.env.NODE_ENV !== 'production') {
     logger.info('[deploy-commands]: Skipping command deployment in development mode');
     return;
