@@ -10,16 +10,16 @@ services:
     volumes:
       - ./.docker/volume/db/data:/var/lib/postgresql/data
 
-  # OpenTelemetry Backend (LGTM Stack)
-  lgtm:
-    image: grafana/otel-lgtm:latest
-    container_name: vait_lgtm
+  # OpenTelemetry Backend (OpenObserve)
+  openobserve:
+    image: public.ecr.aws/zinclabs/openobserve:latest
+    container_name: vait_openobserve
     ports:
-      - "3000:3000"   # Grafana
-      - "4318:4318"   # OTLP HTTP
-      - "4317:4317"   # OTLP gRPC
-      - "9090:9090"   # Prometheus
+      - "5080:5080"   # HTTP UI + OTLP HTTP
+      - "5081:5081"   # gRPC
     volumes:
-      - ./.docker/volume/lgtm-data:/data
+      - ./.docker/volume/openobserve-data:/data
     environment:
-      - ENABLE_LOGS_ALL=true
+      - ZO_ROOT_USER_EMAIL=root@example.com
+      - ZO_ROOT_USER_PASSWORD=Complexpass#123
+      - ZO_DATA_DIR=/data
