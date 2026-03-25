@@ -32,6 +32,7 @@ vait-discord-bot/
 │   │       └── utils.ts         # Command-specific helpers (if needed)
 │   └── utils/                   # Shared helper functions
 │       ├── logger.ts            # Winston logger
+│       ├── tracer.ts            # OpenTelemetry tracer singleton
 │       └── ...
 ├── test/
 │   ├── fixtures/                # Test data and mock builders

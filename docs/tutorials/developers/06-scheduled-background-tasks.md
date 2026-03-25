@@ -47,6 +47,8 @@ Key parts:
 - `process.exit(0)` on success, `process.exit(1)` on failure
 - Wrap the operation in `Result.safe()` for error handling
 
+> **Tracing note:** Bin scripts run outside the bot process and have no parent span, so wrap the main function body with `tracer.startActiveSpan('bin.<script-name>', ...)` to create a root span. This makes scheduled task executions visible in the tracing backend alongside bot command traces.
+
 See [Error Handling](../../reference/08-error-handling.md) for the Result type API reference.
 
 ## Step 2: Add a pnpm Script

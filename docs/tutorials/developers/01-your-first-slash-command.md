@@ -21,6 +21,7 @@ Create `src/slash-commands/ping/index.ts`:
 
 ```typescript
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
+import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -29,7 +30,13 @@ const data = new SlashCommandBuilder()
   .setContexts(InteractionContextType.Guild);
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
-  await interaction.reply('Pong!');
+  return tracer.startActiveSpan('command.ping', async (span) => {
+    try {
+      await interaction.reply('Pong!');
+    } finally {
+      span.end();
+    }
+  });
 };
 
 const command: SlashCommand = {
@@ -39,6 +46,8 @@ const command: SlashCommand = {
 
 export default command;
 ```
+
+Every command wraps its `execute` body in `tracer.startActiveSpan('command.<name>', ...)` so the span appears in distributed traces. Always call `span.end()` in a `finally` block to ensure the span closes even if the handler throws.
 
 For details on the `SlashCommand` interface and builder types, see [Command Interfaces](../../reference/06-command-interfaces.md).
 
@@ -69,9 +78,15 @@ const data = new SlashCommandBuilder()
   .setContexts(InteractionContextType.Guild);
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
-  const message = interaction.options.getString('message');
-  const reply = message ? `Pong! You said: ${message}` : 'Pong!';
-  await interaction.reply(reply);
+  return tracer.startActiveSpan('command.ping', async (span) => {
+    try {
+      const message = interaction.options.getString('message');
+      const reply = message ? `Pong! You said: ${message}` : 'Pong!';
+      await interaction.reply(reply);
+    } finally {
+      span.end();
+    }
+  });
 };
 ```
 

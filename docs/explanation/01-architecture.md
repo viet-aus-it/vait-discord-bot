@@ -46,6 +46,27 @@ Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console w
 
 For local trace observability, [OpenObserve](https://openobserve.ai/) replaces the previous Grafana LGTM stack, providing a single-binary solution for viewing traces, logs, and metrics via its built-in UI at `http://localhost:5080`.
 
+## Why OpenTelemetry Tracing
+
+The app uses [OpenTelemetry](https://opentelemetry.io/) for distributed tracing with a shared tracer utility (`src/utils/tracer.ts`). This provides visibility into request flows across the entire application, from Discord interaction receipt through command execution to database queries and external HTTP calls.
+
+**Span naming convention** — spans follow a dot-delimited hierarchy:
+
+- `command.<name>` — slash and context menu command handlers
+- `db.<entity>.<operation>` — database utility functions
+- `http.<service>` — external HTTP calls
+- `honeypot.<action>` — honeypot message processing
+
+**3-layer instrumentation depth:**
+
+1. **Entry points** — processors (`InteractionCreate`, `MessageCreate`) and bin scripts create root spans
+2. **Command handlers** — each command's `execute` function wraps its work in a child span
+3. **Utility functions** — DB helpers, HTTP fetchers, and other shared utilities create the innermost spans
+
+Prisma/PostgreSQL queries are auto-captured by `@opentelemetry/auto-instrumentations-node`, so manual spans are only needed for application-level context.
+
+Unprocessed Discord messages (those that do not match a honeypot channel) are sampled down to 1:10,000 using `TraceIdRatioBasedSampler` to avoid overwhelming the tracing backend with noise.
+
 ## Why In-Memory Caching for Honeypot
 
 The honeypot feature checks every incoming message to see if it was posted in a honeypot channel. Querying the database on every message would be expensive, so honeypot channels are loaded from the database into an in-memory `Map<guildId, channelId>` at startup. The map is updated immediately when an admin sets a new honeypot channel via the slash command, so changes take effect without a bot restart.
