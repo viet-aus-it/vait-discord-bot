@@ -4,6 +4,7 @@ import { resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { BatchSpanProcessor, SimpleSpanProcessor, type SpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { PrismaInstrumentation } from '@prisma/instrumentation';
 import { loadEnv } from '../src/utils/load-env';
 
 loadEnv();
@@ -16,6 +17,7 @@ const resource = resourceFromAttributes({
 });
 
 const instrumentations = getNodeAutoInstrumentations();
+const prismaInstrumentation = new PrismaInstrumentation();
 
 function getTraceExporter(): OTLPTraceExporter {
   const localTraceExporter = new OTLPTraceExporter({
@@ -44,7 +46,7 @@ const spanProcessor = getSpanProcessor(traceExporter);
 
 const sdk = new NodeSDK({
   resource,
-  instrumentations: [instrumentations],
+  instrumentations: [instrumentations, prismaInstrumentation],
   spanProcessors: [spanProcessor],
   metricReaders: [],
   logRecordProcessors: [],

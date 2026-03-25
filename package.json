@@ -58,6 +58,7 @@
     "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@prisma/client-runtime-utils": "^7.5.0",
+    "@prisma/instrumentation": "^7.5.0",
     "cowsay": "^1.6.0",
     "date-fns": "^4.1.0",
     "discord-api-types": "^0.38.42",
