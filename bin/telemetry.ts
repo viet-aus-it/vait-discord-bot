@@ -20,7 +20,7 @@ function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
   const productionTraceExporter = new OTLPTraceExporter({
     url: otelEndpoint,
     headers: {
-      Authorization: process.env.AXIOM_TOKEN || '',
+      Authorization: `Bearer ${process.env.AXIOM_TOKEN || ''}`,
       'X-Axiom-Dataset': process.env.AXIOM_DATASET || '',
     },
   });
@@ -29,13 +29,13 @@ function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
 }
 
 function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
-  if (process.env.NODE_ENV === 'production') {
-    return new FilteringSpanProcessor({
-      delegate: new BatchSpanProcessor(exporter),
-      unprocessedRate: 0.0001, // 1:10,000
-      successRate: 0.01, // 1%
-    });
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   return new FilteringSpanProcessor({
+  //     delegate: new BatchSpanProcessor(exporter),
+  //     unprocessedRate: 0.0001, // 1:10,000
+  //     successRate: 0.01, // 1%
+  //   });
+  // }
 
   return new SimpleSpanProcessor(exporter);
 }
