@@ -1,3 +1,4 @@
+import { performance } from 'node:perf_hooks';
 import { Events, type Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -19,6 +20,10 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
   }
 
   return tracer.startActiveSpan('deployCommands', async (span) => {
+    const start = performance.now();
+    span.setAttribute('service.version', '1.0.0');
+    span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
+
     try {
       logger.info('[deploy-commands]: Deploying global commands in production mode');
       const commands = [...slashCommandList, ...contextMenuCommandList];
@@ -26,10 +31,12 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
       if (op.isErr()) {
         span.setAttribute('error', true);
         span.setAttribute('error.message', String(op.unwrapErr()));
+        span.setAttribute('error.slug', 'err-deploy-commands-failed');
         logger.error('[deploy-commands]: Cannot deploy global commands', { error: op.unwrapErr() });
         process.exit(1);
       }
 
+      span.setAttribute('job.duration_ms', performance.now() - start);
       logger.info('[deploy-commands]: Successfully deployed global commands');
     } finally {
       span.end();

@@ -1,3 +1,4 @@
+import { performance } from 'node:perf_hooks';
 import { type Interaction, InteractionType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { commands as contextMenuCommandList } from '../context-menu-commands';
@@ -8,6 +9,15 @@ import { tracer } from './tracer';
 export const processInteraction = async (interaction: Interaction): Promise<void> => {
   return tracer.startActiveSpan('processInteraction', async (span) => {
     try {
+      // Wide event: service metadata
+      span.setAttribute('service.version', '1.0.0');
+      span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
+
+      // Wide event: discord context
+      if (interaction.guildId) span.setAttribute('discord.guild.id', interaction.guildId);
+      if (interaction.channelId) span.setAttribute('discord.channel.id', interaction.channelId);
+      span.setAttribute('discord.user.id', interaction.user.id);
+
       const isCommand = interaction.isChatInputCommand();
       if (isCommand) {
         const { commandName } = interaction;
@@ -20,10 +30,14 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           return;
         }
 
+        const start = performance.now();
         const op = await Result.safe(command.execute(interaction));
+        span.setAttribute('command.duration_ms', performance.now() - start);
+
         if (op.isErr()) {
           span.setAttribute('error', true);
           span.setAttribute('error.message', String(op.unwrapErr()));
+          span.setAttribute('error.slug', `err-command-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
           return;
         }
@@ -44,10 +58,14 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           return;
         }
 
+        const start = performance.now();
         const op = await Result.safe(command.execute(interaction));
+        span.setAttribute('command.duration_ms', performance.now() - start);
+
         if (op.isErr()) {
           span.setAttribute('error', true);
           span.setAttribute('error.message', String(op.unwrapErr()));
+          span.setAttribute('error.slug', `err-contextmenu-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
           return;
         }
@@ -68,10 +86,14 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           return;
         }
 
+        const start = performance.now();
         const op = await Result.safe(command.autocomplete(interaction));
+        span.setAttribute('command.duration_ms', performance.now() - start);
+
         if (op.isErr()) {
           span.setAttribute('error', true);
           span.setAttribute('error.message', String(op.unwrapErr()));
+          span.setAttribute('error.slug', `err-autocomplete-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}, ERROR: ${op.unwrapErr()}`);
           return;
         }

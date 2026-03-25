@@ -1,3 +1,4 @@
+import { performance } from 'node:perf_hooks';
 import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -9,33 +10,25 @@ import { tracer } from '../src/utils/tracer';
 const DEFAULT_AUTOBUMP_MESSAGE = '👋 Thread auto-bumped to keep it active!';
 
 const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
-  return tracer.startActiveSpan('autobump.bumpThread', async (span) => {
-    try {
-      span.setAttribute('thread.id', thread.id);
+  try {
+    const messages = await thread.messages.fetch({ limit: 100 });
 
-      const messages = await thread.messages.fetch({ limit: 100 });
+    await thread.setArchived(false);
 
-      await thread.setArchived(false);
+    if (clientId) {
+      const botMessages = messages.filter((m) => m.author.bot && m.author.id === clientId);
 
-      if (clientId) {
-        const botMessages = messages.filter((m) => m.author.bot && m.author.id === clientId);
-
-        if (botMessages.size === 0) {
-          logger.warn(`[autobump]: No existing bot message found in thread ${thread.id}`);
-        } else {
-          await Promise.all(botMessages.map((m) => m.delete()));
-        }
+      if (botMessages.size === 0) {
+        logger.warn(`[autobump]: No existing bot message found in thread ${thread.id}`);
+      } else {
+        await Promise.all(botMessages.map((m) => m.delete()));
       }
-
-      await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
-    } catch (error) {
-      span.setAttribute('error', true);
-      span.setAttribute('error.message', String(error));
-      logger.error(`[autobump]: Failed to bump thread ${thread.id}`, error);
-    } finally {
-      span.end();
     }
-  });
+
+    await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
+  } catch (error) {
+    logger.error(`[autobump]: Failed to bump thread ${thread.id}`, error);
+  }
 };
 
 const autobump = async () => {
@@ -43,11 +36,16 @@ const autobump = async () => {
   logger.info('AUTOBUMPING THREADS');
 
   return tracer.startActiveSpan('autobump', async (span) => {
+    const start = performance.now();
+    span.setAttribute('service.version', '1.0.0');
+    span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
+
     try {
       const settings = await Result.safe(listAllThreads());
       if (settings.isErr()) {
         span.setAttribute('error', true);
         span.setAttribute('error.message', String(settings.unwrapErr()));
+        span.setAttribute('error.slug', 'err-autobump-list-failed');
         logger.error('[autobump]: Cannot retrieve autobump thread lists', { error: settings.unwrapErr() });
         process.exit(1);
       }
@@ -90,6 +88,7 @@ const autobump = async () => {
       );
 
       logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
+      span.setAttribute('job.duration_ms', performance.now() - start);
       process.exit(0);
     } finally {
       span.end();
