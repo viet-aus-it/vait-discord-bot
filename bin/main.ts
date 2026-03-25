@@ -33,7 +33,7 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
         process.exit(1);
       }
 
-      span.setAttribute('job.duration_ms', performance.now() - start);
+      span.setAttribute('app.job.duration_ms', performance.now() - start);
       logger.info('[deploy-commands]: Successfully deployed global commands');
     } finally {
       span.end();

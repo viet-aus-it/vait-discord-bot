@@ -42,27 +42,27 @@ export const processMessage = async (message: Message<true>, config: CommandConf
     try {
       const start = performance.now();
 
-      span.setAttribute('discord.channel.id', message.channelId);
-      span.setAttribute('discord.guild.id', message.guildId);
-      span.setAttribute('discord.message.id', message.id);
-      span.setAttribute('discord.user.id', message.author.id);
+      span.setAttribute('app.discord.channel.id', message.channelId);
+      span.setAttribute('app.discord.guild.id', message.guildId);
+      span.setAttribute('app.discord.message.id', message.id);
+      span.setAttribute('app.discord.user.id', message.author.id);
 
       const honeypotChannelId = getHoneypotChannelId(message.guildId);
       if (honeypotChannelId && message.channelId === honeypotChannelId) {
-        span.setAttribute('message.processed', true);
-        span.setAttribute('message.honeypot', true);
+        span.setAttribute('app.message.processed', true);
+        span.setAttribute('app.message.honeypot', true);
         const result = await Result.safe(handleHoneypotTrigger(message));
         if (result.isErr()) {
           recordSpanError(span, result.unwrapErr(), 'err-honeypot-trigger-failed');
           logger.error('[honeypot]: Error processing honeypot trigger', { error: result.unwrapErr() });
         }
-        span.setAttribute('process.duration_ms', performance.now() - start);
+        span.setAttribute('app.process.duration_ms', performance.now() - start);
         return;
       }
 
       const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
       const hasKeywordMatch = keywordPromises.some((p) => p !== undefined);
-      span.setAttribute('message.processed', hasKeywordMatch);
+      span.setAttribute('app.message.processed', hasKeywordMatch);
 
       try {
         await Promise.all(keywordPromises);
@@ -71,7 +71,7 @@ export const processMessage = async (message: Message<true>, config: CommandConf
         logger.error('ERROR PROCESSING MESSAGE', { error });
       }
 
-      span.setAttribute('process.duration_ms', performance.now() - start);
+      span.setAttribute('app.process.duration_ms', performance.now() - start);
     } finally {
       span.end();
     }

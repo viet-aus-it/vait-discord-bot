@@ -18,7 +18,7 @@ const broadcastReminder = async () => {
       const start = performance.now();
 
       const queryTime = getCurrentUnixTime();
-      span.setAttribute('reminder.queryTime', queryTime);
+      span.setAttribute('app.reminder.queryTime', queryTime);
 
       const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
       if (reminders.isErr()) {
@@ -29,7 +29,7 @@ const broadcastReminder = async () => {
       }
 
       const remindersData = reminders.unwrap();
-      span.setAttribute('reminder.count', remindersData.length);
+      span.setAttribute('app.reminder.count', remindersData.length);
 
       if (remindersData.length === 0) {
         logger.info(`[broadcast-reminder]: No reminders to broadcast. Query Time: ${queryTime}`);
@@ -83,7 +83,7 @@ const broadcastReminder = async () => {
 
       await removeReminders(remindersData);
 
-      span.setAttribute('job.duration_ms', performance.now() - start);
+      span.setAttribute('app.job.duration_ms', performance.now() - start);
       logger.info(`[broadcast-reminder]: Reminders fan out complete. Jobs: ${jobs.length}`);
       span.end();
       process.exit(0);

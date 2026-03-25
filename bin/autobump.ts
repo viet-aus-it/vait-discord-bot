@@ -54,7 +54,7 @@ const autobump = async () => {
       }
 
       span.setAttribute(
-        'autobump.threadCount',
+        'app.autobump.threadCount',
         data.reduce((sum, d) => sum + d.autobumpThreads.length, 0)
       );
 
@@ -85,7 +85,7 @@ const autobump = async () => {
       );
 
       logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
-      span.setAttribute('job.duration_ms', performance.now() - start);
+      span.setAttribute('app.job.duration_ms', performance.now() - start);
       span.end();
       process.exit(0);
     } finally {

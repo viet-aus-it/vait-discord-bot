@@ -24,7 +24,7 @@ describe('FilteringSpanProcessor', () => {
       const delegate = mockDeep<SpanProcessor>();
       const processor = new FilteringSpanProcessor({ delegate, successRate: 0 });
 
-      const span = createMockSpan({ attributes: { error: true } });
+      const span = createMockSpan({ attributes: { 'app.error': true } });
       processor.onEnd(span);
 
       expect(delegate.onEnd).toHaveBeenCalledWith(span);
@@ -46,7 +46,7 @@ describe('FilteringSpanProcessor', () => {
       const delegate = mockDeep<SpanProcessor>();
       const processor = new FilteringSpanProcessor({ delegate, unprocessedRate: 0 });
 
-      const span = createMockSpan({ attributes: { 'message.processed': false } });
+      const span = createMockSpan({ attributes: { 'app.message.processed': false } });
       processor.onEnd(span);
 
       expect(delegate.onEnd).not.toHaveBeenCalled();
@@ -56,7 +56,7 @@ describe('FilteringSpanProcessor', () => {
       const delegate = mockDeep<SpanProcessor>();
       const processor = new FilteringSpanProcessor({ delegate, unprocessedRate: 1 });
 
-      const span = createMockSpan({ attributes: { 'message.processed': false } });
+      const span = createMockSpan({ attributes: { 'app.message.processed': false } });
       processor.onEnd(span);
 
       expect(delegate.onEnd).toHaveBeenCalledWith(span);

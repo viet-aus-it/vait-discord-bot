@@ -22,7 +22,7 @@ const cleanup = async () => {
       }
 
       logger.info('[cleanup-expired-referrals]: Removed expired referrals');
-      span.setAttribute('job.duration_ms', performance.now() - start);
+      span.setAttribute('app.job.duration_ms', performance.now() - start);
       span.end();
       process.exit(0);
     } finally {

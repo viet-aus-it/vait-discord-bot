@@ -9,15 +9,15 @@ import { recordSpanError, tracer } from './tracer';
 export const processInteraction = async (interaction: Interaction): Promise<void> => {
   return tracer.startActiveSpan('processInteraction', async (span) => {
     try {
-      if (interaction.guildId) span.setAttribute('discord.guild.id', interaction.guildId);
-      if (interaction.channelId) span.setAttribute('discord.channel.id', interaction.channelId);
-      span.setAttribute('discord.user.id', interaction.user.id);
+      if (interaction.guildId) span.setAttribute('app.discord.guild.id', interaction.guildId);
+      if (interaction.channelId) span.setAttribute('app.discord.channel.id', interaction.channelId);
+      span.setAttribute('app.discord.user.id', interaction.user.id);
 
       const isCommand = interaction.isChatInputCommand();
       if (isCommand) {
         const { commandName } = interaction;
-        span.setAttribute('discord.command.name', commandName);
-        span.setAttribute('discord.interaction.type', 'chatInputCommand');
+        span.setAttribute('app.discord.command.name', commandName);
+        span.setAttribute('app.discord.interaction.type', 'chatInputCommand');
         logger.info(`[process-interaction]: RECEIVED COMMAND. COMMAND: ${commandName}`);
         const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
         if (!command) {
@@ -27,7 +27,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
         const start = performance.now();
         const op = await Result.safe(command.execute(interaction));
-        span.setAttribute('command.duration_ms', performance.now() - start);
+        span.setAttribute('app.command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
           recordSpanError(span, op.unwrapErr(), `err-command-${commandName}-failed`);
@@ -42,8 +42,8 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       const isContextMenuCommand = interaction.isContextMenuCommand();
       if (isContextMenuCommand) {
         const { commandName } = interaction;
-        span.setAttribute('discord.command.name', commandName);
-        span.setAttribute('discord.interaction.type', 'contextMenuCommand');
+        span.setAttribute('app.discord.command.name', commandName);
+        span.setAttribute('app.discord.interaction.type', 'contextMenuCommand');
         logger.info(`[process-interaction]: RECEIVED CONTEXT MENU COMMAND. COMMAND: ${commandName}`);
         const command = contextMenuCommandList.find((cmd) => cmd.data.name === commandName);
         if (!command) {
@@ -53,7 +53,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
         const start = performance.now();
         const op = await Result.safe(command.execute(interaction));
-        span.setAttribute('command.duration_ms', performance.now() - start);
+        span.setAttribute('app.command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
           recordSpanError(span, op.unwrapErr(), `err-contextmenu-${commandName}-failed`);
@@ -68,8 +68,8 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       const isAutocomplete = interaction.type === InteractionType.ApplicationCommandAutocomplete;
       if (isAutocomplete) {
         const { commandName } = interaction;
-        span.setAttribute('discord.command.name', commandName);
-        span.setAttribute('discord.interaction.type', 'autocomplete');
+        span.setAttribute('app.discord.command.name', commandName);
+        span.setAttribute('app.discord.interaction.type', 'autocomplete');
         logger.info(`[process-interaction]: RECEIVED AUTOCOMPLETE. COMMAND: ${commandName}`);
         const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
         if (!command || !command.autocomplete) {
@@ -79,7 +79,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
         const start = performance.now();
         const op = await Result.safe(command.autocomplete(interaction));
-        span.setAttribute('command.duration_ms', performance.now() - start);
+        span.setAttribute('app.command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
           recordSpanError(span, op.unwrapErr(), `err-autocomplete-${commandName}-failed`);
