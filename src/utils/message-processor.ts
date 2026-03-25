@@ -37,15 +37,7 @@ export interface CommandConfig {
   keywordMatchCommands: KeywordMatchCommands;
 }
 
-const willProcess = (message: Message<true>, config: CommandConfig): boolean => {
-  const honeypotChannelId = getHoneypotChannelId(message.guildId);
-  if (honeypotChannelId && message.channelId === honeypotChannelId) return true;
-  return config.keywordMatchCommands.some((conf) => conf.matchers.some((keyword) => keywordMatched(message.content, keyword)));
-};
-
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
-  const shouldProcess = willProcess(message, config);
-
   return tracer.startActiveSpan('processMessage', async (span) => {
     try {
       const start = performance.now();
@@ -59,10 +51,10 @@ export const processMessage = async (message: Message<true>, config: CommandConf
       span.setAttribute('discord.guild.id', message.guildId);
       span.setAttribute('discord.message.id', message.id);
       span.setAttribute('discord.user.id', message.author.id);
-      span.setAttribute('message.processed', shouldProcess);
 
       const honeypotChannelId = getHoneypotChannelId(message.guildId);
       if (honeypotChannelId && message.channelId === honeypotChannelId) {
+        span.setAttribute('message.processed', true);
         span.setAttribute('message.honeypot', true);
         const result = await Result.safe(handleHoneypotTrigger(message));
         if (result.isErr()) {
@@ -75,11 +67,11 @@ export const processMessage = async (message: Message<true>, config: CommandConf
         return;
       }
 
+      // Single pass: compute keyword matches and derive processed state
       const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
-      span.setAttribute(
-        'message.keyword_matched',
-        keywordPromises.some((p) => p !== undefined)
-      );
+      const hasKeywordMatch = keywordPromises.some((p) => p !== undefined);
+      span.setAttribute('message.processed', hasKeywordMatch);
+      span.setAttribute('message.keyword_matched', hasKeywordMatch);
 
       try {
         await Promise.all(keywordPromises);
