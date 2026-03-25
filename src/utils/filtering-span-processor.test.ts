@@ -19,26 +19,14 @@ const createMockSpan = (overrides: { attributes?: ReadableSpan['attributes']; st
 };
 
 describe('FilteringSpanProcessor', () => {
-  describe('error spans are always exported', () => {
-    it('exports spans with error attribute', () => {
-      const delegate = mockDeep<SpanProcessor>();
-      const processor = new FilteringSpanProcessor({ delegate, successRate: 0 });
+  it('always exports spans with ERROR status code', () => {
+    const delegate = mockDeep<SpanProcessor>();
+    const processor = new FilteringSpanProcessor({ delegate, successRate: 0 });
 
-      const span = createMockSpan({ attributes: { 'app.error': true } });
-      processor.onEnd(span);
+    const span = createMockSpan({ statusCode: SpanStatusCode.ERROR });
+    processor.onEnd(span);
 
-      expect(delegate.onEnd).toHaveBeenCalledWith(span);
-    });
-
-    it('exports spans with ERROR status code', () => {
-      const delegate = mockDeep<SpanProcessor>();
-      const processor = new FilteringSpanProcessor({ delegate, successRate: 0 });
-
-      const span = createMockSpan({ statusCode: SpanStatusCode.ERROR });
-      processor.onEnd(span);
-
-      expect(delegate.onEnd).toHaveBeenCalledWith(span);
-    });
+    expect(delegate.onEnd).toHaveBeenCalledWith(span);
   });
 
   describe('unprocessed messages are sampled at unprocessedRate', () => {
@@ -46,7 +34,7 @@ describe('FilteringSpanProcessor', () => {
       const delegate = mockDeep<SpanProcessor>();
       const processor = new FilteringSpanProcessor({ delegate, unprocessedRate: 0 });
 
-      const span = createMockSpan({ attributes: { 'app.message.processed': false } });
+      const span = createMockSpan({ attributes: { 'discord.message.processed': false } });
       processor.onEnd(span);
 
       expect(delegate.onEnd).not.toHaveBeenCalled();
@@ -56,7 +44,7 @@ describe('FilteringSpanProcessor', () => {
       const delegate = mockDeep<SpanProcessor>();
       const processor = new FilteringSpanProcessor({ delegate, unprocessedRate: 1 });
 
-      const span = createMockSpan({ attributes: { 'app.message.processed': false } });
+      const span = createMockSpan({ attributes: { 'discord.message.processed': false } });
       processor.onEnd(span);
 
       expect(delegate.onEnd).toHaveBeenCalledWith(span);

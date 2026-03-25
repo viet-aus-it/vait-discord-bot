@@ -42,14 +42,14 @@ export class FilteringSpanProcessor implements SpanProcessor {
 
   private shouldExport(span: ReadableSpan): boolean {
     // Rule 1: Always keep error spans (100%)
-    if (span.attributes['app.error'] === true || span.status.code === SpanStatusCode.ERROR) {
+    if (span.status.code === SpanStatusCode.ERROR) {
       return true;
     }
 
     const ratio = this.traceIdToRatio(span.spanContext().traceId);
 
     // Rule 2: Sample unprocessed messages at unprocessedRate
-    if (span.attributes['app.message.processed'] === false) {
+    if (span.attributes['discord.message.processed'] === false) {
       return ratio < this.unprocessedRate;
     }
 
