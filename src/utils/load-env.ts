@@ -22,7 +22,6 @@ const configSchema = z
     // Axiom config (production only)
     AXIOM_TOKEN: z.string().optional(),
     AXIOM_DATASET: z.string().optional(),
-    AXIOM_ORG_ID: z.string().optional(),
 
     // Database config
     DATABASE_URL: z.string(),

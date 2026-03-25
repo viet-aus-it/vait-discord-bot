@@ -57,7 +57,6 @@ OpenTelemetry integration is optional. To enable, set the `ENABLE_OTEL` environm
 | --------------- | --------- | ------------------------------------ |
 | `AXIOM_TOKEN`   | Prod only | [Axiom](https://axiom.co/) API token |
 | `AXIOM_DATASET` | Prod only | Axiom dataset name                   |
-| `AXIOM_ORG_ID`  | Prod only | Axiom organisation ID                |
 
 ## System
 
