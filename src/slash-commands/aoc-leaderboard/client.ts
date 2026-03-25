@@ -1,6 +1,5 @@
 import wretch from 'wretch';
 import { logger } from '../../utils/logger';
-import { tracer } from '../../utils/tracer';
 import { AocLeaderboard } from './schema';
 
 function getAocClient(aocKey: string) {
@@ -13,21 +12,13 @@ function getAocClient(aocKey: string) {
 }
 
 export async function fetchLeaderboard(aocKey: string, leaderboardId: string, year: number) {
-  return tracer.startActiveSpan('http.aoc', async (span) => {
-    span.setAttribute('aoc.leaderboardId', leaderboardId);
-    span.setAttribute('aoc.year', year);
-    try {
-      const result = await getAocClient(aocKey).url(`/${year}/leaderboard/private/view/${leaderboardId}.json`).get().json();
+  const result = await getAocClient(aocKey).url(`/${year}/leaderboard/private/view/${leaderboardId}.json`).get().json();
 
-      const parsedResult = AocLeaderboard.safeParse(result);
-      if (!parsedResult.success) {
-        logger.error('ERROR: Cannot get leaderboard format.', parsedResult.error);
-        throw new Error(parsedResult.error.stack);
-      }
+  const parsedResult = AocLeaderboard.safeParse(result);
+  if (!parsedResult.success) {
+    logger.error('ERROR: Cannot get leaderboard format.', parsedResult.error);
+    throw new Error(parsedResult.error.stack);
+  }
 
-      return parsedResult.data;
-    } finally {
-      span.end();
-    }
-  });
+  return parsedResult.data;
 }
