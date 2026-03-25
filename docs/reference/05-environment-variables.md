@@ -36,7 +36,7 @@ OpenTelemetry integration is optional. To enable, set the `ENABLE_OTEL` environm
 | `ENABLE_OTEL`                 | No       | 'false'                             | Enable OpenTelemetry Instrumentation |
 | `OTEL_DEBUG`                  | No       | 'false'                             | Enable OpenTelemetry Debug logs      |
 | `OTEL_SERVICE_NAME`           | No       | `vait-discord-bot`                  | Service name for OTEL traces         |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | No       | `http://localhost:5080/api/default` | OTLP exporter endpoint               |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTEL enabled | —                | OTLP exporter endpoint               |
 
 ### OpenObserve (Local Development)
 

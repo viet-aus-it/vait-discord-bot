@@ -13,13 +13,13 @@ interface FilteringProcessorConfig {
 
 export class FilteringSpanProcessor implements SpanProcessor {
   private readonly delegate: SpanProcessor;
-  private readonly unprocessedUpperBound: number;
-  private readonly successUpperBound: number;
+  private readonly unprocessedRate: number;
+  private readonly successRate: number;
 
   constructor(config: FilteringProcessorConfig) {
     this.delegate = config.delegate;
-    this.unprocessedUpperBound = Math.floor((config.unprocessedRate ?? 0.0001) * 0xffffffff);
-    this.successUpperBound = Math.floor((config.successRate ?? 0.01) * 0xffffffff);
+    this.unprocessedRate = config.unprocessedRate ?? 0.0001;
+    this.successRate = config.successRate ?? 0.01;
   }
 
   onStart(span: Span, parentContext: Context): void {
@@ -46,24 +46,20 @@ export class FilteringSpanProcessor implements SpanProcessor {
       return true;
     }
 
-    const hash = this.hashTraceId(span.spanContext().traceId);
+    const ratio = this.traceIdToRatio(span.spanContext().traceId);
 
     // Rule 2: Sample unprocessed messages at unprocessedRate
     if (span.attributes['message.processed'] === false) {
-      return hash < this.unprocessedUpperBound;
+      return ratio < this.unprocessedRate;
     }
 
     // Rule 3: Sample success spans at successRate
-    return hash < this.successUpperBound;
+    return ratio < this.successRate;
   }
 
-  /** Deterministic hash matching TraceIdRatioBasedSampler's approach */
-  private hashTraceId(traceId: string): number {
-    let acc = 0;
-    for (let i = 0; i < traceId.length / 8; i++) {
-      const part = Number.parseInt(traceId.slice(i * 8, i * 8 + 8), 16);
-      acc = (acc ^ part) >>> 0;
-    }
-    return acc;
+  /** Convert a 32-char hex traceId to a deterministic ratio in [0, 1) */
+  private traceIdToRatio(traceId: string): number {
+    const last8 = traceId.slice(-8);
+    return Number.parseInt(last8, 16) / 0x100000000;
   }
 }

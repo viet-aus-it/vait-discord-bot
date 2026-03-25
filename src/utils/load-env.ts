@@ -1,31 +1,36 @@
 import { z } from 'zod';
 
-const configSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  TZ: z.string().default('Australia/Brisbane'),
+const configSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+    TZ: z.string().default('Australia/Brisbane'),
 
-  // Discord config
-  TOKEN: z.string(),
-  CLIENT_ID: z.string(),
-  GUILD_ID: z.string().optional(),
+    // Discord config
+    TOKEN: z.string(),
+    CLIENT_ID: z.string(),
+    GUILD_ID: z.string().optional(),
 
-  // OpenTelemetry config
-  ENABLE_OTEL: z.enum(['true', 'false']).default('false'),
-  OTEL_DEBUG: z.enum(['true', 'false']).default('false'),
-  OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
-  OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
+    // OpenTelemetry config
+    ENABLE_OTEL: z.enum(['true', 'false']).default('false'),
+    OTEL_DEBUG: z.enum(['true', 'false']).default('false'),
+    OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
+    OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 
-  // OpenObserve config (local dev only)
-  OPENOBSERVE_AUTH_TOKEN: z.string().optional(),
+    // OpenObserve config (local dev only)
+    OPENOBSERVE_AUTH_TOKEN: z.string().optional(),
 
-  // Axiom config (production only)
-  AXIOM_TOKEN: z.string().optional(),
-  AXIOM_DATASET: z.string().optional(),
-  AXIOM_ORG_ID: z.string().optional(),
+    // Axiom config (production only)
+    AXIOM_TOKEN: z.string().optional(),
+    AXIOM_DATASET: z.string().optional(),
+    AXIOM_ORG_ID: z.string().optional(),
 
-  // Database config
-  DATABASE_URL: z.string(),
-});
+    // Database config
+    DATABASE_URL: z.string(),
+  })
+  .refine((env) => env.ENABLE_OTEL !== 'true' || !!env.OTEL_EXPORTER_OTLP_ENDPOINT, {
+    message: 'OTEL_EXPORTER_OTLP_ENDPOINT is required when ENABLE_OTEL is true',
+    path: ['OTEL_EXPORTER_OTLP_ENDPOINT'],
+  });
 type ConfigSchema = z.infer<typeof configSchema>;
 
 declare global {
