@@ -18,15 +18,23 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
     return;
   }
 
-  logger.info('[deploy-commands]: Deploying global commands in production mode');
-  const commands = [...slashCommandList, ...contextMenuCommandList];
-  const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
-  if (op.isErr()) {
-    logger.error('[deploy-commands]: Cannot deploy global commands', { error: op.unwrapErr() });
-    process.exit(1);
-  }
+  return tracer.startActiveSpan('deployCommands', async (span) => {
+    try {
+      logger.info('[deploy-commands]: Deploying global commands in production mode');
+      const commands = [...slashCommandList, ...contextMenuCommandList];
+      const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
+      if (op.isErr()) {
+        span.setAttribute('error', true);
+        span.setAttribute('error.message', String(op.unwrapErr()));
+        logger.error('[deploy-commands]: Cannot deploy global commands', { error: op.unwrapErr() });
+        process.exit(1);
+      }
 
-  logger.info('[deploy-commands]: Successfully deployed global commands');
+      logger.info('[deploy-commands]: Successfully deployed global commands');
+    } finally {
+      span.end();
+    }
+  });
 };
 
 const main = async () => {
