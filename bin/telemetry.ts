@@ -13,38 +13,22 @@ import { loadEnv } from '../src/utils/load-env';
 
 loadEnv();
 
-function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
-  const localTraceExporter = new OTLPTraceExporter({
-    url: otelEndpoint,
-    headers: { Authorization: process.env.OPENOBSERVE_AUTH_TOKEN ?? '' },
-  });
-
-  const productionTraceExporter = new OTLPTraceExporter({
-    url: otelEndpoint,
-    headers: {
+function getExporterHeaders(): Record<string, string> {
+  if (process.env.NODE_ENV === 'production') {
+    return {
       Authorization: `Bearer ${process.env.AXIOM_TOKEN || ''}`,
       'X-Axiom-Dataset': process.env.AXIOM_DATASET || '',
-    },
-  });
+    };
+  }
+  return { Authorization: process.env.OPENOBSERVE_AUTH_TOKEN ?? '' };
+}
 
-  return process.env.NODE_ENV === 'production' ? productionTraceExporter : localTraceExporter;
+function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
+  return new OTLPTraceExporter({ url: otelEndpoint, headers: getExporterHeaders() });
 }
 
 function getLogExporter(otelEndpoint: string): OTLPLogExporter {
-  const localLogExporter = new OTLPLogExporter({
-    url: otelEndpoint,
-    headers: { Authorization: process.env.OPENOBSERVE_AUTH_TOKEN ?? '' },
-  });
-
-  const productionLogExporter = new OTLPLogExporter({
-    url: otelEndpoint,
-    headers: {
-      Authorization: `Bearer ${process.env.AXIOM_TOKEN || ''}`,
-      'X-Axiom-Dataset': process.env.AXIOM_DATASET || '',
-    },
-  });
-
-  return process.env.NODE_ENV === 'production' ? productionLogExporter : localLogExporter;
+  return new OTLPLogExporter({ url: otelEndpoint, headers: getExporterHeaders() });
 }
 
 function getLogRecordProcessor(exporter: OTLPLogExporter) {
