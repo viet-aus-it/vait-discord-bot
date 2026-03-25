@@ -2,6 +2,7 @@ import { addDays, getUnixTime } from 'date-fns';
 import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { tracer } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { services } from './services';
@@ -25,66 +26,72 @@ export const data = new SlashCommandSubcommandBuilder()
   );
 
 export const execute: SlashCommandHandler = async (interaction) => {
-  const code = interaction.options.getString('link_or_code', true);
-  const service = interaction.options.getString('service', true).toLowerCase();
-  logger.info(`[referral-new]: Adding new referral code for ${service} with code/link: ${code}`);
+  return tracer.startActiveSpan('command.referral.new', async (span) => {
+    try {
+      const code = interaction.options.getString('link_or_code', true);
+      const service = interaction.options.getString('service', true).toLowerCase();
+      logger.info(`[referral-new]: Adding new referral code for ${service} with code/link: ${code}`);
 
-  const hasService = services.find((option) => option.toLowerCase() === service);
-  if (!hasService) {
-    logger.info(`[referral-new]: No service named ${service}.`);
-    await interaction.reply(`No service named ${service}, ask the admin to add it`);
-    return;
-  }
+      const hasService = services.find((option) => option.toLowerCase() === service);
+      if (!hasService) {
+        logger.info(`[referral-new]: No service named ${service}.`);
+        await interaction.reply(`No service named ${service}, ask the admin to add it`);
+        return;
+      }
 
-  const expiryDateInput = interaction.options.getString('expiry_date', false);
-  let expiryDate: Date;
+      const expiryDateInput = interaction.options.getString('expiry_date', false);
+      let expiryDate: Date;
 
-  if (expiryDateInput) {
-    const [parseDateCase, parsedExpiryDate] = parseDate(expiryDateInput);
+      if (expiryDateInput) {
+        const [parseDateCase, parsedExpiryDate] = parseDate(expiryDateInput);
 
-    if (parseDateCase === 'INVALID_DATE') {
-      logger.info(`[referral-new]: expiry_date is invalid date format input:${expiryDateInput}`);
-      await interaction.reply('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
-      return;
+        if (parseDateCase === 'INVALID_DATE') {
+          logger.info(`[referral-new]: expiry_date is invalid date format input:${expiryDateInput}`);
+          await interaction.reply('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
+          return;
+        }
+        if (parseDateCase === 'EXPIRED_DATE') {
+          logger.info(`[referral-new]: expiry_date is already expired input:${expiryDateInput}`);
+          await interaction.reply('expiry_date has already expired');
+          return;
+        }
+
+        expiryDate = parsedExpiryDate;
+      } else {
+        expiryDate = addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW);
+      }
+
+      const guildId = (interaction.guild as Guild).id;
+      const userId = interaction.user.id;
+      const nickname = interaction.user.displayName;
+
+      const findOp = await Result.safe(findExistingReferralCode({ userId, guildId, service }));
+      if (findOp.isErr()) {
+        logger.error('[referral-new]: Error while searching for referral code', { error: findOp.unwrapErr() });
+        await interaction.reply('This might be an error with the database. Please try again later.');
+        return;
+      }
+
+      const existingReferralCode = findOp.unwrap();
+      if (existingReferralCode) {
+        logger.error(`[referral-new]: Referral code for ${service} by ${nickname} already exists.`);
+        await interaction.reply(`You have already entered the referral code for ${service}.`);
+        return;
+      }
+
+      const createOp = await Result.safe(createReferralCode({ userId, guildId, service, code, expiryDate }));
+      if (createOp.isErr()) {
+        logger.error('[referral-new]: Error while creating referral code', { error: createOp.unwrapErr() });
+        await interaction.reply('Failed to add referral code. This might be an error with the database. Please try again later.');
+        return;
+      }
+
+      const newReferralCode = createOp.unwrap();
+      await interaction.reply(
+        `${nickname} just added referral code ${newReferralCode.code} in ${newReferralCode.service} expired on <t:${getUnixTime(newReferralCode.expiry_date)}:D>`
+      );
+    } finally {
+      span.end();
     }
-    if (parseDateCase === 'EXPIRED_DATE') {
-      logger.info(`[referral-new]: expiry_date is already expired input:${expiryDateInput}`);
-      await interaction.reply('expiry_date has already expired');
-      return;
-    }
-
-    expiryDate = parsedExpiryDate;
-  } else {
-    expiryDate = addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW);
-  }
-
-  const guildId = (interaction.guild as Guild).id;
-  const userId = interaction.user.id;
-  const nickname = interaction.user.displayName;
-
-  const findOp = await Result.safe(findExistingReferralCode({ userId, guildId, service }));
-  if (findOp.isErr()) {
-    logger.error('[referral-new]: Error while searching for referral code', { error: findOp.unwrapErr() });
-    await interaction.reply('This might be an error with the database. Please try again later.');
-    return;
-  }
-
-  const existingReferralCode = findOp.unwrap();
-  if (existingReferralCode) {
-    logger.error(`[referral-new]: Referral code for ${service} by ${nickname} already exists.`);
-    await interaction.reply(`You have already entered the referral code for ${service}.`);
-    return;
-  }
-
-  const createOp = await Result.safe(createReferralCode({ userId, guildId, service, code, expiryDate }));
-  if (createOp.isErr()) {
-    logger.error('[referral-new]: Error while creating referral code', { error: createOp.unwrapErr() });
-    await interaction.reply('Failed to add referral code. This might be an error with the database. Please try again later.');
-    return;
-  }
-
-  const newReferralCode = createOp.unwrap();
-  await interaction.reply(
-    `${nickname} just added referral code ${newReferralCode.code} in ${newReferralCode.service} expired on <t:${getUnixTime(newReferralCode.expiry_date)}:D>`
-  );
+  });
 };
