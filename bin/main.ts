@@ -11,7 +11,7 @@ import { processInteraction } from '../src/utils/interaction-processor';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
-import { tracer } from '../src/utils/tracer';
+import { recordSpanError, tracer } from '../src/utils/tracer';
 
 const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
   if (process.env.NODE_ENV !== 'production') {
@@ -21,18 +21,15 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
 
   return tracer.startActiveSpan('deployCommands', async (span) => {
     const start = performance.now();
-    span.setAttribute('service.version', '1.0.0');
-    span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
 
     try {
       logger.info('[deploy-commands]: Deploying global commands in production mode');
       const commands = [...slashCommandList, ...contextMenuCommandList];
       const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
       if (op.isErr()) {
-        span.setAttribute('error', true);
-        span.setAttribute('error.message', String(op.unwrapErr()));
-        span.setAttribute('error.slug', 'err-deploy-commands-failed');
+        recordSpanError(span, op.unwrapErr(), 'err-deploy-commands-failed');
         logger.error('[deploy-commands]: Cannot deploy global commands', { error: op.unwrapErr() });
+        span.end();
         process.exit(1);
       }
 
@@ -61,21 +58,8 @@ const main = async () => {
     logger.error('[honeypot]: Failed to load honeypot channels', { error: honeypotOp.unwrapErr() });
   }
   const configs = getConfigs();
-  client.on(Events.MessageCreate, (msg) => {
-    return tracer.startActiveSpan(Events.MessageCreate, (span) => {
-      processMessage(msg as Message<true>, configs).finally(() => span.end());
-    });
-  });
-
-  client.on(Events.InteractionCreate, async (interaction) => {
-    return tracer.startActiveSpan(Events.InteractionCreate, async (span) => {
-      try {
-        await processInteraction(interaction);
-      } finally {
-        span.end();
-      }
-    });
-  });
+  client.on(Events.MessageCreate, (msg) => processMessage(msg as Message<true>, configs));
+  client.on(Events.InteractionCreate, (interaction) => processInteraction(interaction));
 };
 
 main();
