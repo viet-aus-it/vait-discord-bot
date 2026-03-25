@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { convertDateToEpoch } from '../../utils/date';
 import { logger } from '../../utils/logger';
+import { tracer } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { updateReminder } from './utils';
 
@@ -13,32 +14,38 @@ export const data = new SlashCommandSubcommandBuilder()
   .addStringOption((option) => option.setName('message').setDescription('The message to get reminded for').setRequired(false));
 
 export const execute: SlashCommandHandler = async (interaction) => {
-  const { user } = interaction.member!;
-  const guildId = interaction.guildId!;
-  const reminderId = interaction.options.getString('id', true);
-  const message = interaction.options.getString('message');
-  const dateString = interaction.options.getString('date');
-  if (!message && !dateString) {
-    await interaction.reply('Nothing to update. Skipping...');
-    return;
-  }
+  return tracer.startActiveSpan('command.reminder.update', async (span) => {
+    try {
+      const { user } = interaction.member!;
+      const guildId = interaction.guildId!;
+      const reminderId = interaction.options.getString('id', true);
+      const message = interaction.options.getString('message');
+      const dateString = interaction.options.getString('date');
+      if (!message && !dateString) {
+        await interaction.reply('Nothing to update. Skipping...');
+        return;
+      }
 
-  const op = await Result.safe(
-    updateReminder({
-      userId: user.id,
-      guildId,
-      reminderId,
-      message: message ?? undefined,
-      timestamp: dateString ? convertDateToEpoch(dateString) : undefined,
-    })
-  );
-  if (op.isErr()) {
-    logger.error('[reminder-update]: Error while updating reminder', { error: op.unwrapErr() });
-    await interaction.reply(`Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`);
-    return;
-  }
+      const op = await Result.safe(
+        updateReminder({
+          userId: user.id,
+          guildId,
+          reminderId,
+          message: message ?? undefined,
+          timestamp: dateString ? convertDateToEpoch(dateString) : undefined,
+        })
+      );
+      if (op.isErr()) {
+        logger.error('[reminder-update]: Error while updating reminder', { error: op.unwrapErr() });
+        await interaction.reply(`Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`);
+        return;
+      }
 
-  await interaction.reply(`Reminder ${reminderId} has been updated to remind on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
+      await interaction.reply(`Reminder ${reminderId} has been updated to remind on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
+    } finally {
+      span.end();
+    }
+  });
 };
 
 const command: Subcommand = {

@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { convertDateToEpoch } from '../../utils/date';
 import { logger } from '../../utils/logger';
+import { tracer } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './utils';
 
@@ -12,27 +13,33 @@ export const data = new SlashCommandSubcommandBuilder()
   .addStringOption((option) => option.setName('message').setDescription('The message to get reminded for').setRequired(true));
 
 export const execute: SlashCommandHandler = async (interaction) => {
-  const { user } = interaction.member!;
-  const guildId = interaction.guildId!;
-  const message = interaction.options.getString('message', true);
-  const dateString = interaction.options.getString('date', true);
-  const unixTimestamp = convertDateToEpoch(dateString);
+  return tracer.startActiveSpan('command.reminder.on', async (span) => {
+    try {
+      const { user } = interaction.member!;
+      const guildId = interaction.guildId!;
+      const message = interaction.options.getString('message', true);
+      const dateString = interaction.options.getString('date', true);
+      const unixTimestamp = convertDateToEpoch(dateString);
 
-  const op = await Result.safe(
-    saveReminder({
-      userId: user.id,
-      guildId,
-      message,
-      timestamp: unixTimestamp,
-    })
-  );
-  if (op.isErr()) {
-    logger.error('[reminder-on]: Error while saving reminder', { error: op.unwrapErr() });
-    await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
-    return;
-  }
+      const op = await Result.safe(
+        saveReminder({
+          userId: user.id,
+          guildId,
+          message,
+          timestamp: unixTimestamp,
+        })
+      );
+      if (op.isErr()) {
+        logger.error('[reminder-on]: Error while saving reminder', { error: op.unwrapErr() });
+        await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
+        return;
+      }
 
-  await interaction.reply(`New Reminder for <@${user.id}> set on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
+      await interaction.reply(`New Reminder for <@${user.id}> set on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
+    } finally {
+      span.end();
+    }
+  });
 };
 
 const command: Subcommand = {

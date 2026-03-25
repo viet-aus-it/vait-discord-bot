@@ -3,6 +3,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import parseDuration from 'parse-duration';
 import { logger } from '../../utils/logger';
+import { tracer } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './utils';
 
@@ -13,33 +14,39 @@ export const data = new SlashCommandSubcommandBuilder()
   .addStringOption((option) => option.setName('message').setDescription('The message to get reminded for').setRequired(true));
 
 export const execute: SlashCommandHandler = async (interaction) => {
-  const { user } = interaction.member!;
-  const guildId = interaction.guildId!;
-  const message = interaction.options.getString('message', true);
-  const duration = interaction.options.getString('duration', true);
-  const parsedDuration = parseDuration(duration, 'second');
-  if (!parsedDuration) {
-    await interaction.reply('Invalid duration. Please specify a duration to get reminded.');
-    return;
-  }
+  return tracer.startActiveSpan('command.reminder.in', async (span) => {
+    try {
+      const { user } = interaction.member!;
+      const guildId = interaction.guildId!;
+      const message = interaction.options.getString('message', true);
+      const duration = interaction.options.getString('duration', true);
+      const parsedDuration = parseDuration(duration, 'second');
+      if (!parsedDuration) {
+        await interaction.reply('Invalid duration. Please specify a duration to get reminded.');
+        return;
+      }
 
-  const unixTimestamp = getUnixTime(addSeconds(new Date(), parsedDuration));
-  const op = await Result.safe(
-    saveReminder({
-      userId: user.id,
-      guildId,
-      message,
-      timestamp: unixTimestamp,
-    })
-  );
+      const unixTimestamp = getUnixTime(addSeconds(new Date(), parsedDuration));
+      const op = await Result.safe(
+        saveReminder({
+          userId: user.id,
+          guildId,
+          message,
+          timestamp: unixTimestamp,
+        })
+      );
 
-  if (op.isErr()) {
-    logger.error('[reminder-in]: Error while saving reminder', { error: op.unwrapErr() });
-    await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
-    return;
-  }
+      if (op.isErr()) {
+        logger.error('[reminder-in]: Error while saving reminder', { error: op.unwrapErr() });
+        await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
+        return;
+      }
 
-  await interaction.reply(`New Reminder for <@${user.id}> set on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
+      await interaction.reply(`New Reminder for <@${user.id}> set on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
+    } finally {
+      span.end();
+    }
+  });
 };
 
 const command: Subcommand = {
