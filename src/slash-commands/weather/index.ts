@@ -2,6 +2,7 @@ import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandB
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
+import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import { fetchWeather } from './fetch-weather';
 
@@ -14,24 +15,30 @@ const data = new SlashCommandBuilder()
   .setContexts(InteractionContextType.Guild);
 
 export const weather = async (interaction: ChatInputCommandInteraction) => {
-  await interaction.deferReply();
+  return tracer.startActiveSpan('command.weather', async (span) => {
+    try {
+      await interaction.deferReply();
 
-  let location = interaction.options.getString('location');
+      let location = interaction.options.getString('location');
 
-  if (!location || isBlank(location)) {
-    location = DEFAULT_LOCATION;
-  }
-  logger.info(`[weather]: ${interaction.user.tag} is getting the weather for location ${location}`);
+      if (!location || isBlank(location)) {
+        location = DEFAULT_LOCATION;
+      }
+      logger.info(`[weather]: ${interaction.user.tag} is getting the weather for location ${location}`);
 
-  const weatherData = await Result.safe(fetchWeather(location));
-  if (weatherData.isErr()) {
-    logger.info('[weather]: Error getting weather data', { error: weatherData.unwrapErr() });
-    await interaction.editReply('Error getting weather data for location.');
-    return;
-  }
+      const weatherData = await Result.safe(fetchWeather(location));
+      if (weatherData.isErr()) {
+        logger.info('[weather]: Error getting weather data', { error: weatherData.unwrapErr() });
+        await interaction.editReply('Error getting weather data for location.');
+        return;
+      }
 
-  logger.info('[weather]: Weather data received');
-  await interaction.editReply(`\`\`\`\n${weatherData.unwrap()}\n\`\`\``);
+      logger.info('[weather]: Weather data received');
+      await interaction.editReply(`\`\`\`\n${weatherData.unwrap()}\n\`\`\``);
+    } finally {
+      span.end();
+    }
+  });
 };
 
 const command: SlashCommand = {
