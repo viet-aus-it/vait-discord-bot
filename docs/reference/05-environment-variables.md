@@ -33,7 +33,6 @@ OpenTelemetry integration is optional. To enable, set the `ENABLE_OTEL` environm
 
 | Variable                      | Required | Default                             | Description                          |
 | ----------------------------- | -------- | ----------------------------------- | ------------------------------------ |
-| -                             | -        | -                                   | -                                    |
 | `ENABLE_OTEL`                 | No       | 'false'                             | Enable OpenTelemetry Instrumentation |
 | `OTEL_DEBUG`                  | No       | 'false'                             | Enable OpenTelemetry Debug logs      |
 | `OTEL_SERVICE_NAME`           | No       | `vait-discord-bot`                  | Service name for OTEL traces         |
