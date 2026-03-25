@@ -31,6 +31,7 @@ vait-discord-bot/
 │   │       ├── index.test.ts    # Co-located tests
 │   │       └── utils.ts         # Command-specific helpers (if needed)
 │   └── utils/                   # Shared helper functions
+│       ├── filtering-span-processor.ts  # Tail-based span sampling
 │       ├── logger.ts            # Winston logger
 │       ├── tracer.ts            # OpenTelemetry tracer singleton
 │       └── ...

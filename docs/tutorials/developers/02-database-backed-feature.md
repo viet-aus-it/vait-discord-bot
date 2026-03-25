@@ -42,8 +42,6 @@ export const getOrCreateUser = async (userId: string) => {
 };
 ```
 
-> **Tracing note:** Wrap DB utility functions with `tracer.startActiveSpan('db.<entity>.<operation>', ...)` to create spans that appear as children of the calling command's span. For example, `getOrCreateUser` would use `tracer.startActiveSpan('db.user.getOrCreate', async (span) => { try { ... } finally { span.end(); } })`. Prisma queries within the span are auto-instrumented, but the application-level span adds context about _why_ the query ran.
-
 ## Step 3: Create the Check Subcommand
 
 Create `src/slash-commands/kudos/check.ts`:

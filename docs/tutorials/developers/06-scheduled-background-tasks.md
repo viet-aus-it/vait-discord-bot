@@ -47,7 +47,7 @@ Key parts:
 - `process.exit(0)` on success, `process.exit(1)` on failure
 - Wrap the operation in `Result.safe()` for error handling
 
-> **Tracing note:** Bin scripts run outside the bot process and have no parent span, so wrap the main function body with `tracer.startActiveSpan('bin.<script-name>', ...)` to create a root span. This makes scheduled task executions visible in the tracing backend alongside bot command traces.
+> **Tracing note:** Bin scripts create ONE wide root span (e.g. `bin.cleanup-old-logs`) that covers the entire execution. All context — timing, record counts, errors — is attached as attributes on that single span. Do not create child spans for individual operations within the script; the wide event approach means one span carries everything needed for debugging.
 
 See [Error Handling](../../reference/08-error-handling.md) for the Result type API reference.
 

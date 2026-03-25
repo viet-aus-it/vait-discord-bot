@@ -21,7 +21,6 @@ Create `src/slash-commands/ping/index.ts`:
 
 ```typescript
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -30,13 +29,7 @@ const data = new SlashCommandBuilder()
   .setContexts(InteractionContextType.Guild);
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.ping', async (span) => {
-    try {
-      await interaction.reply('Pong!');
-    } finally {
-      span.end();
-    }
-  });
+  await interaction.reply('Pong!');
 };
 
 const command: SlashCommand = {
@@ -47,7 +40,7 @@ const command: SlashCommand = {
 export default command;
 ```
 
-Every command wraps its `execute` body in `tracer.startActiveSpan('command.<name>', ...)` so the span appears in distributed traces. Always call `span.end()` in a `finally` block to ensure the span closes even if the handler throws.
+Commands are plain async functions — no tracing imports or span wrapping needed. The `processInteraction` handler creates a single wide event span that captures all context (user, guild, command name, timing, errors) automatically.
 
 For details on the `SlashCommand` interface and builder types, see [Command Interfaces](../../reference/06-command-interfaces.md).
 
@@ -78,15 +71,9 @@ const data = new SlashCommandBuilder()
   .setContexts(InteractionContextType.Guild);
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.ping', async (span) => {
-    try {
-      const message = interaction.options.getString('message');
-      const reply = message ? `Pong! You said: ${message}` : 'Pong!';
-      await interaction.reply(reply);
-    } finally {
-      span.end();
-    }
-  });
+  const message = interaction.options.getString('message');
+  const reply = message ? `Pong! You said: ${message}` : 'Pong!';
+  await interaction.reply(reply);
 };
 ```
 

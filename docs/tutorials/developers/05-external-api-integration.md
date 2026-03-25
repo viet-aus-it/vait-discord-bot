@@ -27,8 +27,6 @@ export const fetchJoke = async () => {
 
 The project uses [wretch](https://github.com/elbywan/wretch) as the HTTP client.
 
-> **Tracing note:** Wrap HTTP fetch functions with `tracer.startActiveSpan('http.<service>', ...)` to create spans for external API calls. For example, `fetchJoke` would use `tracer.startActiveSpan('http.joke-api', async (span) => { try { ... } finally { span.end(); } })`. This makes slow or failing third-party calls visible in traces.
-
 ## Step 2: Create the Command with Deferred Reply
 
 Create `src/slash-commands/joke/index.ts`:

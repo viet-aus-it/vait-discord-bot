@@ -46,26 +46,38 @@ Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console w
 
 For local trace observability, [OpenObserve](https://openobserve.ai/) replaces the previous Grafana LGTM stack, providing a single-binary solution for viewing traces, logs, and metrics via its built-in UI at `http://localhost:5080`.
 
-## Why OpenTelemetry Tracing
+## Why Wide Events Over Deep Traces
 
-The app uses [OpenTelemetry](https://opentelemetry.io/) for distributed tracing with a shared tracer utility (`src/utils/tracer.ts`). This provides visibility into request flows across the entire application, from Discord interaction receipt through command execution to database queries and external HTTP calls.
+The app uses [OpenTelemetry](https://opentelemetry.io/) following a **wide events** philosophy: one rich span per unit of work, packed with all the context needed for debugging, rather than a deep tree of narrow child spans.
 
-**Span naming convention** — spans follow a dot-delimited hierarchy:
+Each entry point — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span and attaches all relevant attributes to it. Command handlers and utility functions are plain async functions with no tracing code; the root span is the only manually created span.
 
-- `command.<name>` — slash and context menu command handlers
-- `db.<entity>.<operation>` — database utility functions
-- `http.<service>` — external HTTP calls
-- `honeypot.<action>` — honeypot message processing
+**What goes on each span:**
 
-**3-layer instrumentation depth:**
+| Category | Attributes |
+|----------|-----------|
+| Discord context | `discord.guild.id`, `discord.channel.id`, `discord.user.id`, `discord.command.name` |
+| Service metadata | `service.version`, `service.environment` |
+| Outcome | `command.duration_ms`, `error`, `error.message`, `error.slug` |
 
-1. **Entry points** — processors (`InteractionCreate`, `MessageCreate`) and bin scripts create root spans
-2. **Command handlers** — each command's `execute` function wraps its work in a child span
-3. **Utility functions** — DB helpers, HTTP fetchers, and other shared utilities create the innermost spans
+This means any single span in the tracing backend contains enough information to understand what happened, who triggered it, where it ran, and whether it succeeded — without clicking through a span waterfall.
 
-Prisma/PostgreSQL queries are auto-captured by `@opentelemetry/auto-instrumentations-node`, so manual spans are only needed for application-level context.
+**FilteringSpanProcessor** (`src/utils/filtering-span-processor.ts`) implements tail-based sampling, deciding _after_ a span ends whether to export it:
 
-Unprocessed Discord messages (those that do not match a honeypot channel) are sampled down to 1:10,000 using `TraceIdRatioBasedSampler` to avoid overwhelming the tracing backend with noise.
+- **Errors** — always exported (100%). Every failed request reaches the backend.
+- **Unprocessed messages** — Discord messages that do not match a honeypot channel are sampled at 1:10,000 to avoid noise.
+- **Success spans** — sampled at 1% to keep costs manageable while still providing a statistical picture of normal traffic.
+
+**Auto-instrumentation** — Prisma/PostgreSQL queries and Node.js HTTP calls are automatically captured by `@opentelemetry/auto-instrumentations-node`. These appear as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
+
+### References
+
+- [A Practitioner's Guide to Wide Events](https://jeremymorrell.dev/blog/a-practitioners-guide-to-wide-events/)
+- [All You Need Is Wide Events, Not Metrics](https://isburmistrov.substack.com/p/all-you-need-is-wide-events-not-metrics)
+- [Observability Wide Events 101](https://boristane.com/blog/observability-wide-events-101/)
+- [Is It Time to Version Observability?](https://charity.wtf/2024/08/07/is-it-time-to-version-observability-signs-point-to-yes/)
+- [One Key Difference: Observability 1.0 vs 2.0](https://www.honeycomb.io/blog/one-key-difference-observability1dot0-2dot0)
+- [AWS: Instrumenting Distributed Systems](https://aws.amazon.com/builders-library/instrumenting-distributed-systems-for-operational-visibility/)
 
 ## Why In-Memory Caching for Honeypot
 
