@@ -1,8 +1,12 @@
+import { context, SpanKind, trace } from '@opentelemetry/api';
+import { SamplingDecision, TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-base';
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
 import { tracer } from './tracer';
+
+const unprocessedSampler = new TraceIdRatioBasedSampler(0.0001);
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
   const regex = new RegExp(`\\b${keyword}\\b`, 'i');
@@ -36,12 +40,27 @@ export interface CommandConfig {
   keywordMatchCommands: KeywordMatchCommands;
 }
 
+const willProcess = (message: Message<true>, config: CommandConfig): boolean => {
+  const honeypotChannelId = getHoneypotChannelId(message.guildId);
+  if (honeypotChannelId && message.channelId === honeypotChannelId) return true;
+  return config.keywordMatchCommands.some((conf) => conf.matchers.some((keyword) => keywordMatched(message.content, keyword)));
+};
+
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
+  const shouldProcess = willProcess(message, config);
+
+  if (!shouldProcess) {
+    const traceId = trace.getSpan(context.active())?.spanContext()?.traceId ?? '';
+    const samplingResult = unprocessedSampler.shouldSample(context.active(), traceId, 'processMessage.unprocessed', SpanKind.INTERNAL, {}, []);
+    if (samplingResult.decision === SamplingDecision.NOT_RECORD) return;
+  }
+
   return tracer.startActiveSpan('processMessage', async (span) => {
     try {
       span.setAttribute('discord.channel.id', message.channelId);
       span.setAttribute('discord.guild.id', message.guildId);
       span.setAttribute('discord.message.id', message.id);
+      span.setAttribute('message.processed', shouldProcess);
 
       const honeypotChannelId = getHoneypotChannelId(message.guildId);
       if (honeypotChannelId && message.channelId === honeypotChannelId) {
