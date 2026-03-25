@@ -8,7 +8,7 @@ describe('Remove autobump thread', () => {
     interaction.options.getChannel.mockReturnValueOnce(thread);
 
     await removeAutobumpThreadCommand(interaction);
-    expect(interaction.reply).toBeCalledWith(`ERROR: Cannot remove thread id <#${thread.id}> from the bump list for this server. Please try again.`);
+    expect(interaction.reply).toHaveBeenCalledWith(`ERROR: Cannot remove thread id <#${thread.id}> from the bump list for this server. Please try again.`);
   });
 
   chatInputCommandInteractionTest('Should reply with success message if it can be saved into the database', async ({ interaction, thread }) => {

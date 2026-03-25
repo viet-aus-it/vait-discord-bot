@@ -38,7 +38,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           span.setAttribute('error', true);
           span.setAttribute('error.message', String(op.unwrapErr()));
           span.setAttribute('error.slug', `err-command-${commandName}-failed`);
-          logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
+          logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}`, { error: op.unwrapErr() });
           return;
         }
 
@@ -66,7 +66,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           span.setAttribute('error', true);
           span.setAttribute('error.message', String(op.unwrapErr()));
           span.setAttribute('error.slug', `err-contextmenu-${commandName}-failed`);
-          logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}, ERROR: ${op.unwrapErr()}`);
+          logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}`, { error: op.unwrapErr() });
           return;
         }
 
@@ -94,7 +94,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           span.setAttribute('error', true);
           span.setAttribute('error.message', String(op.unwrapErr()));
           span.setAttribute('error.slug', `err-autocomplete-${commandName}-failed`);
-          logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}, ERROR: ${op.unwrapErr()}`);
+          logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}`, { error: op.unwrapErr() });
           return;
         }
 
