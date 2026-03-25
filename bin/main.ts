@@ -1,4 +1,3 @@
-import { trace } from '@opentelemetry/api';
 import { Events, type Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -11,8 +10,9 @@ import { processInteraction } from '../src/utils/interaction-processor';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
+import { tracer } from '../src/utils/tracer';
 
-const _deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
+const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
   if (process.env.NODE_ENV !== 'production') {
     logger.info('[deploy-commands]: Skipping command deployment in development mode');
     return;
@@ -29,8 +29,6 @@ const _deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, '
   logger.info('[deploy-commands]: Successfully deployed global commands');
 };
 
-const tracer = trace.getTracer('discord-bot');
-
 const main = async () => {
   loadEnv();
   logger.info('[main]: STARTING BOT');
@@ -41,7 +39,7 @@ const main = async () => {
   if (!client.user) throw new Error('Something went wrong!');
   logger.info(`[main]: Logged in as ${client.user.tag}!`);
 
-  // await deployCommands({ token, clientId: client.user.id });
+  await deployCommands({ token, clientId: client.user.id });
 
   const honeypotOp = await Result.safe(loadHoneypotChannels());
   if (honeypotOp.isErr()) {

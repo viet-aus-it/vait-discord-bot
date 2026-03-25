@@ -1,11 +1,9 @@
-import { trace } from '@opentelemetry/api';
 import { type Interaction, InteractionType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { commands as contextMenuCommandList } from '../context-menu-commands';
 import { commands as slashCommandList } from '../slash-commands';
 import { logger } from './logger';
-
-const tracer = trace.getTracer('discord-bot');
+import { tracer } from './tracer';
 
 export const processInteraction = async (interaction: Interaction): Promise<void> => {
   return tracer.startActiveSpan('processInteraction', async (span) => {

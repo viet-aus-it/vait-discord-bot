@@ -1,10 +1,8 @@
-import { trace } from '@opentelemetry/api';
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
-
-const tracer = trace.getTracer('discord-bot');
+import { tracer } from './tracer';
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
   const regex = new RegExp(`\\b${keyword}\\b`, 'i');
