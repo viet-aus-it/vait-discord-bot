@@ -4,7 +4,6 @@ import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
 import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
 import { getRandomBoolean } from '../../utils/random';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -26,41 +25,35 @@ const generateMockText = (message: string) =>
     }, '');
 
 export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.mock', async (span) => {
-    try {
-      const sentence = interaction.options.getString('sentence');
+  const sentence = interaction.options.getString('sentence');
 
-      if (sentence && !isBlank(sentence)) {
-        logger.info(`[mock]: Received message: ${sentence}`);
-        const reply = generateMockText(sentence);
-        await interaction.reply(reply);
-        return;
-      }
+  if (sentence && !isBlank(sentence)) {
+    logger.info(`[mock]: Received message: ${sentence}`);
+    const reply = generateMockText(sentence);
+    await interaction.reply(reply);
+    return;
+  }
 
-      // If /mock is detected but content is blank, fetch the latest message in channel
-      const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
+  // If /mock is detected but content is blank, fetch the latest message in channel
+  const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
 
-      // If it's still blank at this point, then exit
-      if (fetchedMessage.isErr()) {
-        logger.info('[mock]: Cannot fetch latest message.');
-        await interaction.reply('Cannot fetch latest message. Please try again later.');
-        return;
-      }
+  // If it's still blank at this point, then exit
+  if (fetchedMessage.isErr()) {
+    logger.info('[mock]: Cannot fetch latest message.');
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
+    return;
+  }
 
-      const { content } = fetchedMessage.unwrap();
-      if (isBlank(content)) {
-        logger.error('[mock]: Cannot fetch message to mock');
-        await interaction.reply('Cannot fetch latest message. Please try again later.');
-        return;
-      }
+  const { content } = fetchedMessage.unwrap();
+  if (isBlank(content)) {
+    logger.error('[mock]: Cannot fetch message to mock');
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
+    return;
+  }
 
-      logger.info(`[mock]: Fetched message: ${content}`);
-      const reply = generateMockText(content);
-      await interaction.reply(reply);
-    } finally {
-      span.end();
-    }
-  });
+  logger.info(`[mock]: Fetched message: ${content}`);
+  const reply = generateMockText(content);
+  await interaction.reply(reply);
 };
 
 const command: SlashCommand = {

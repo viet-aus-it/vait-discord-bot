@@ -4,7 +4,6 @@ import { Result } from 'oxide.ts';
 import type { AocLeaderboard as AocLeaderboardModel } from '../../clients/prisma/generated/client/client';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { logger } from '../../utils/logger';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import type { AocLeaderboard as AocLeaderboardSchema } from './schema';
 import { fetchAndSaveLeaderboard, getAocSettings, getSavedLeaderboard } from './utils';
@@ -54,55 +53,49 @@ Last updated at: ${timestamp}
 }
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.aocLeaderboard', async (span) => {
-    try {
-      await interaction.deferReply();
+  await interaction.deferReply();
 
-      const guildId = interaction.guildId!;
+  const guildId = interaction.guildId!;
 
-      const getSavedleaderboardOp = await Result.safe(getSavedLeaderboard(guildId));
-      const savedResult = getSavedleaderboardOp.unwrap();
-      if (!getSavedleaderboardOp.isErr() && savedResult && differenceInMinutes(new Date(), savedResult.updatedAt) <= 15) {
-        logger.info('[get-aoc-leaderboard]: Returning saved leaderboard data');
-        const formattedLeaderboard = formatLeaderboard(savedResult);
-        await interaction.editReply(formattedLeaderboard);
-        return;
-      }
+  const getSavedleaderboardOp = await Result.safe(getSavedLeaderboard(guildId));
+  const savedResult = getSavedleaderboardOp.unwrap();
+  if (!getSavedleaderboardOp.isErr() && savedResult && differenceInMinutes(new Date(), savedResult.updatedAt) <= 15) {
+    logger.info('[get-aoc-leaderboard]: Returning saved leaderboard data');
+    const formattedLeaderboard = formatLeaderboard(savedResult);
+    await interaction.editReply(formattedLeaderboard);
+    return;
+  }
 
-      logger.info('[get-aoc-leaderboard]: Cannot find saved leaderboard, fetching new results');
+  logger.info('[get-aoc-leaderboard]: Cannot find saved leaderboard, fetching new results');
 
-      const settingsOp = await Result.safe(getAocSettings(guildId));
-      if (settingsOp.isErr()) {
-        const errorMessage = settingsOp.unwrapErr();
-        logger.error(`[get-aoc-leaderboard]: Error getting AOC settings: ${errorMessage}`);
-        await interaction.editReply(`ERROR: ${errorMessage}`);
-        return;
-      }
+  const settingsOp = await Result.safe(getAocSettings(guildId));
+  if (settingsOp.isErr()) {
+    const errorMessage = settingsOp.unwrapErr();
+    logger.error(`[get-aoc-leaderboard]: Error getting AOC settings: ${errorMessage}`);
+    await interaction.editReply(`ERROR: ${errorMessage}`);
+    return;
+  }
 
-      const settings = settingsOp.unwrap();
-      if (!settings || !settings.aocKey || !settings.aocLeaderboardId) {
-        const errorMessage = 'Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.';
-        logger.error(`[get-aoc-leaderboard]: ${errorMessage}`);
-        await interaction.editReply(`ERROR: ${errorMessage}`);
-        return;
-      }
+  const settings = settingsOp.unwrap();
+  if (!settings || !settings.aocKey || !settings.aocLeaderboardId) {
+    const errorMessage = 'Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.';
+    logger.error(`[get-aoc-leaderboard]: ${errorMessage}`);
+    await interaction.editReply(`ERROR: ${errorMessage}`);
+    return;
+  }
 
-      const year = getAocYear();
-      const fetchAndSaveOp = await Result.safe(fetchAndSaveLeaderboard(year, settings));
-      if (fetchAndSaveOp.isErr()) {
-        const errorMessage = `Error fetching and/or saving new leaderboard result: ${fetchAndSaveOp.unwrapErr()}`;
-        logger.error(`[get-aoc-leaderboard]: ${errorMessage}`);
-        await interaction.editReply(`ERROR: ${errorMessage}`);
-        return;
-      }
+  const year = getAocYear();
+  const fetchAndSaveOp = await Result.safe(fetchAndSaveLeaderboard(year, settings));
+  if (fetchAndSaveOp.isErr()) {
+    const errorMessage = `Error fetching and/or saving new leaderboard result: ${fetchAndSaveOp.unwrapErr()}`;
+    logger.error(`[get-aoc-leaderboard]: ${errorMessage}`);
+    await interaction.editReply(`ERROR: ${errorMessage}`);
+    return;
+  }
 
-      const leaderboardData = fetchAndSaveOp.unwrap();
-      const message = formatLeaderboard(leaderboardData);
-      await interaction.editReply(message);
-    } finally {
-      span.end();
-    }
-  });
+  const leaderboardData = fetchAndSaveOp.unwrap();
+  const message = formatLeaderboard(leaderboardData);
+  await interaction.editReply(message);
 };
 
 const command: SlashCommand = {

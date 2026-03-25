@@ -3,7 +3,6 @@ import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
 import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -22,34 +21,28 @@ const generateAllCapText = (message: string) =>
     }, '');
 
 export const allCapExpandText = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.allCap', async (span) => {
-    try {
-      const content = interaction.options.getString('sentence');
+  const content = interaction.options.getString('sentence');
 
-      if (content && !isBlank(content)) {
-        logger.info(`[allcap]: Received message: ${content}`);
-        const reply = generateAllCapText(content);
-        await interaction.reply(reply);
-        return;
-      }
+  if (content && !isBlank(content)) {
+    logger.info(`[allcap]: Received message: ${content}`);
+    const reply = generateAllCapText(content);
+    await interaction.reply(reply);
+    return;
+  }
 
-      // If /allcap is detected but content is blank, fetch the latest message in channel
-      const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
+  // If /allcap is detected but content is blank, fetch the latest message in channel
+  const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
 
-      // If it's still blank at this point, then exit
-      if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
-        logger.error('[allcap]: Cannot fetch message to allcap', { error: fetchedMessage.unwrapErr() });
-        await interaction.reply('Cannot fetch latest message. Please try again later.');
-        return;
-      }
+  // If it's still blank at this point, then exit
+  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
+    logger.error('[allcap]: Cannot fetch message to allcap', { error: fetchedMessage.unwrapErr() });
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
+    return;
+  }
 
-      logger.info(`[allcap]: Fetched message: ${fetchedMessage.unwrap().content}`);
-      const reply = generateAllCapText(fetchedMessage.unwrap().content);
-      await interaction.reply(reply);
-    } finally {
-      span.end();
-    }
-  });
+  logger.info(`[allcap]: Fetched message: ${fetchedMessage.unwrap().content}`);
+  const reply = generateAllCapText(fetchedMessage.unwrap().content);
+  await interaction.reply(reply);
 };
 
 const command: SlashCommand = {

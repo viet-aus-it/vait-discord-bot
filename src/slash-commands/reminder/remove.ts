@@ -1,7 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { removeReminder } from './utils';
 
@@ -11,30 +10,24 @@ export const data = new SlashCommandSubcommandBuilder()
   .addStringOption((option) => option.setName('id').setDescription('Reminder ID. This must be provided').setRequired(true));
 
 export const execute: SlashCommandHandler = async (interaction) => {
-  return tracer.startActiveSpan('command.reminder.delete', async (span) => {
-    try {
-      const { user } = interaction.member!;
-      const guildId = interaction.guildId!;
-      const reminderId = interaction.options.getString('id', true);
+  const { user } = interaction.member!;
+  const guildId = interaction.guildId!;
+  const reminderId = interaction.options.getString('id', true);
 
-      const op = await Result.safe(
-        removeReminder({
-          userId: user.id,
-          guildId,
-          reminderId,
-        })
-      );
-      if (op.isErr()) {
-        logger.error('[reminder-delete]: Error while deleting reminder', { error: op.unwrapErr() });
-        await interaction.reply(`Cannot delete reminder id ${reminderId}. Please try again later.`);
-        return;
-      }
+  const op = await Result.safe(
+    removeReminder({
+      userId: user.id,
+      guildId,
+      reminderId,
+    })
+  );
+  if (op.isErr()) {
+    logger.error('[reminder-delete]: Error while deleting reminder', { error: op.unwrapErr() });
+    await interaction.reply(`Cannot delete reminder id ${reminderId}. Please try again later.`);
+    return;
+  }
 
-      await interaction.reply(`Reminder ${reminderId} has been deleted.`);
-    } finally {
-      span.end();
-    }
-  });
+  await interaction.reply(`Reminder ${reminderId} has been deleted.`);
 };
 
 const command: Subcommand = {

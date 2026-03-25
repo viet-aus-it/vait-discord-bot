@@ -1,7 +1,6 @@
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import { randomInsultGenerator } from './insult-generator';
 
@@ -12,25 +11,19 @@ const data = new SlashCommandBuilder()
   .setContexts(InteractionContextType.Guild);
 
 export const insult = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.insult', async (span) => {
-    try {
-      const target = interaction.options.getString('target');
+  const target = interaction.options.getString('target');
 
-      const insultText = randomInsultGenerator();
+  const insultText = randomInsultGenerator();
 
-      if (target && !isBlank(target)) {
-        logger.info(`[insult]: Received insult target: ${target}`);
-        const replyText = `${target}, ${insultText.toLowerCase()}`;
-        await interaction.reply(replyText);
-        return;
-      }
+  if (target && !isBlank(target)) {
+    logger.info(`[insult]: Received insult target: ${target}`);
+    const replyText = `${target}, ${insultText.toLowerCase()}`;
+    await interaction.reply(replyText);
+    return;
+  }
 
-      logger.info('[insult]: Generating insult text');
-      await interaction.reply(insultText);
-    } finally {
-      span.end();
-    }
-  });
+  logger.info('[insult]: Generating insult text');
+  await interaction.reply(insultText);
 };
 
 const command: SlashCommand = {

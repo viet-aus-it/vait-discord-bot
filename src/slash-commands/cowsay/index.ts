@@ -4,7 +4,6 @@ import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
 import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 // Only 35 characters per line due to limitation in phone screen width
@@ -58,34 +57,28 @@ const generateCowsayText = (message: string) => {
 };
 
 export const cowsay = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.cowsay', async (span) => {
-    try {
-      const content = interaction.options.getString('sentence');
+  const content = interaction.options.getString('sentence');
 
-      if (content && !isBlank(content)) {
-        logger.info(`[cowsay] Received message: [${content}]`);
-        const reply = `\`\`\`${generateCowsayText(content)}\`\`\``;
-        await interaction.reply(reply);
-        return;
-      }
+  if (content && !isBlank(content)) {
+    logger.info(`[cowsay] Received message: [${content}]`);
+    const reply = `\`\`\`${generateCowsayText(content)}\`\`\``;
+    await interaction.reply(reply);
+    return;
+  }
 
-      // If /cowsay is detected but content is blank, fetch the latest message in channel
-      const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
+  // If /cowsay is detected but content is blank, fetch the latest message in channel
+  const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
 
-      // If it's still blank at this point, then exit
-      if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
-        await interaction.reply('Cannot fetch latest message. Please try again later.');
-        return;
-      }
+  // If it's still blank at this point, then exit
+  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
+    return;
+  }
 
-      logger.info(`[cowsay] Fetched message: [${fetchedMessage.unwrap().content}`);
-      const cowText = generateCowsayText(fetchedMessage.unwrap().content);
-      const reply = `\`\`\`${cowText}\`\`\``;
-      await interaction.reply(reply);
-    } finally {
-      span.end();
-    }
-  });
+  logger.info(`[cowsay] Fetched message: [${fetchedMessage.unwrap().content}`);
+  const cowText = generateCowsayText(fetchedMessage.unwrap().content);
+  const reply = `\`\`\`${cowText}\`\`\``;
+  await interaction.reply(reply);
 };
 
 const command: SlashCommand = {

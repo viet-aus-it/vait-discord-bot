@@ -1,7 +1,6 @@
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive, getUniqueRandomIntInclusive } from '../../utils/random';
-import { tracer } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -42,16 +41,10 @@ const getPowerBallGame = (count: number) => {
 };
 
 export const powerball = async (interaction: ChatInputCommandInteraction) => {
-  return tracer.startActiveSpan('command.powerball', async (span) => {
-    try {
-      logger.info(`[powerball]: ${interaction.user.tag} is getting some Powerball numbers.`);
-      const gameCount = interaction.options.getInteger('count', true);
-      const games = getPowerBallGame(gameCount);
-      interaction.reply(games);
-    } finally {
-      span.end();
-    }
-  });
+  logger.info(`[powerball]: ${interaction.user.tag} is getting some Powerball numbers.`);
+  const gameCount = interaction.options.getInteger('count', true);
+  const games = getPowerBallGame(gameCount);
+  interaction.reply(games);
 };
 
 const command: SlashCommand = {
