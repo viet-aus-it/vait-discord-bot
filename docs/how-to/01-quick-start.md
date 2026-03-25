@@ -39,7 +39,7 @@ Fill in the `.env` file with the values from Step 1. See [Environment Variables]
 ## Step 3: Build and Run
 
 ```bash
-docker compose up -d db lgtm
+docker compose up -d db openobserve
 pnpm install
 pnpm run prisma:gen
 pnpm run deploy:command

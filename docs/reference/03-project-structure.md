@@ -7,6 +7,7 @@ Overview of the VAIT Discord Bot directory layout and conventions.
 ```
 vait-discord-bot/
 ├── bin/                         # Executable entry points
+│   ├── telemetry.ts             # OpenTelemetry SDK initialisation (loaded via --import)
 ├── docs/                        # Project documentation (Diataxis framework)
 │   ├── tutorials/               # Learning-oriented guides
 │   ├── how-to/                  # Task-oriented guides

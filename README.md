@@ -15,7 +15,7 @@ A community-driven Discord bot for the [Vietnamese Australians in IT](https://di
 
 ```bash
 ./scripts/onboarding.sh    # or follow the manual steps below
-docker compose up -d db lgtm
+docker compose up -d db openobserve
 pnpm install
 pnpm run prisma:gen
 pnpm run deploy:command
