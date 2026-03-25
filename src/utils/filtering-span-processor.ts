@@ -57,7 +57,15 @@ export class FilteringSpanProcessor implements SpanProcessor {
     return ratio < this.successRate;
   }
 
-  /** Convert a 32-char hex traceId to a deterministic ratio in [0, 1) */
+  /**
+   * Convert a 32-char hex traceId to a deterministic ratio in [0, 1).
+   *
+   * Takes the last 8 hex characters (32 bits of entropy) and divides by 2^32
+   * to produce a uniformly distributed value. The same traceId always yields
+   * the same ratio, so a given trace is consistently sampled or dropped across
+   * restarts. Comparing this ratio against the configured rate threshold
+   * determines whether the span is exported.
+   */
   private traceIdToRatio(traceId: string): number {
     const last8 = traceId.slice(-8);
     return Number.parseInt(last8, 16) / 0x100000000;
