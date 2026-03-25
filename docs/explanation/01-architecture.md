@@ -65,7 +65,7 @@ This means any single span in the tracing backend contains enough information to
 **FilteringSpanProcessor** (`src/utils/filtering-span-processor.ts`) implements tail-based sampling, deciding _after_ a span ends whether to export it:
 
 - **Errors** — always exported (100%). Every failed request reaches the backend.
-- **Unprocessed messages** — Discord messages that do not match a honeypot channel are sampled at 1:10,000 to avoid noise.
+- **Unprocessed messages** — spans where `message.processed === false` (messages that did not trigger a honeypot and did not match any keyword) are sampled at 1:10,000 to avoid noise.
 - **Success spans** — sampled at 1% to keep costs manageable while still providing a statistical picture of normal traffic.
 
 **Auto-instrumentation** — Prisma/PostgreSQL queries and Node.js HTTP calls are automatically captured by `@opentelemetry/auto-instrumentations-node`. These appear as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
