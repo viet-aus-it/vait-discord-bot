@@ -68,7 +68,7 @@ export const processMessage = async (message: Message<true>, config: CommandConf
         await Promise.all(keywordPromises);
       } catch (error) {
         recordSpanError(span, error, 'err-keyword-processing-failed');
-        logger.error('ERROR PROCESSING MESSAGE', error);
+        logger.error('ERROR PROCESSING MESSAGE', { error });
       }
 
       span.setAttribute('process.duration_ms', performance.now() - start);
