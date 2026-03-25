@@ -4,16 +4,11 @@ import { Result } from 'oxide.ts';
 import { commands as contextMenuCommandList } from '../context-menu-commands';
 import { commands as slashCommandList } from '../slash-commands';
 import { logger } from './logger';
-import { tracer } from './tracer';
+import { recordSpanError, tracer } from './tracer';
 
 export const processInteraction = async (interaction: Interaction): Promise<void> => {
   return tracer.startActiveSpan('processInteraction', async (span) => {
     try {
-      // Wide event: service metadata
-      span.setAttribute('service.version', '1.0.0');
-      span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
-
-      // Wide event: discord context
       if (interaction.guildId) span.setAttribute('discord.guild.id', interaction.guildId);
       if (interaction.channelId) span.setAttribute('discord.channel.id', interaction.channelId);
       span.setAttribute('discord.user.id', interaction.user.id);
@@ -35,9 +30,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
         span.setAttribute('command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
-          span.setAttribute('error', true);
-          span.setAttribute('error.message', String(op.unwrapErr()));
-          span.setAttribute('error.slug', `err-command-${commandName}-failed`);
+          recordSpanError(span, op.unwrapErr(), `err-command-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}`, { error: op.unwrapErr() });
           return;
         }
@@ -63,9 +56,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
         span.setAttribute('command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
-          span.setAttribute('error', true);
-          span.setAttribute('error.message', String(op.unwrapErr()));
-          span.setAttribute('error.slug', `err-contextmenu-${commandName}-failed`);
+          recordSpanError(span, op.unwrapErr(), `err-contextmenu-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}`, { error: op.unwrapErr() });
           return;
         }
@@ -91,9 +82,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
         span.setAttribute('command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
-          span.setAttribute('error', true);
-          span.setAttribute('error.message', String(op.unwrapErr()));
-          span.setAttribute('error.slug', `err-autocomplete-${commandName}-failed`);
+          recordSpanError(span, op.unwrapErr(), `err-autocomplete-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}`, { error: op.unwrapErr() });
           return;
         }

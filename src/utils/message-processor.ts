@@ -3,7 +3,7 @@ import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
-import { tracer } from './tracer';
+import { recordSpanError, tracer } from './tracer';
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
   const regex = new RegExp(`\\b${keyword}\\b`, 'i');
@@ -42,11 +42,6 @@ export const processMessage = async (message: Message<true>, config: CommandConf
     try {
       const start = performance.now();
 
-      // Wide event: service metadata
-      span.setAttribute('service.version', '1.0.0');
-      span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
-
-      // Wide event: discord context
       span.setAttribute('discord.channel.id', message.channelId);
       span.setAttribute('discord.guild.id', message.guildId);
       span.setAttribute('discord.message.id', message.id);
@@ -58,27 +53,21 @@ export const processMessage = async (message: Message<true>, config: CommandConf
         span.setAttribute('message.honeypot', true);
         const result = await Result.safe(handleHoneypotTrigger(message));
         if (result.isErr()) {
-          span.setAttribute('error', true);
-          span.setAttribute('error.message', String(result.unwrapErr()));
-          span.setAttribute('error.slug', 'err-honeypot-trigger-failed');
+          recordSpanError(span, result.unwrapErr(), 'err-honeypot-trigger-failed');
           logger.error('[honeypot]: Error processing honeypot trigger', { error: result.unwrapErr() });
         }
         span.setAttribute('process.duration_ms', performance.now() - start);
         return;
       }
 
-      // Single pass: compute keyword matches and derive processed state
       const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
       const hasKeywordMatch = keywordPromises.some((p) => p !== undefined);
       span.setAttribute('message.processed', hasKeywordMatch);
-      span.setAttribute('message.keyword_matched', hasKeywordMatch);
 
       try {
         await Promise.all(keywordPromises);
       } catch (error) {
-        span.setAttribute('error', true);
-        span.setAttribute('error.message', String(error));
-        span.setAttribute('error.slug', 'err-keyword-processing-failed');
+        recordSpanError(span, error, 'err-keyword-processing-failed');
         logger.error('ERROR PROCESSING MESSAGE', error);
       }
 
