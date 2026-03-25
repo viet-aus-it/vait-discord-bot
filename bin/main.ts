@@ -1,4 +1,3 @@
-import { performance } from 'node:perf_hooks';
 import { Events, type Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -20,8 +19,6 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
   }
 
   return tracer.startActiveSpan('deployCommands', async (span) => {
-    const start = performance.now();
-
     try {
       logger.info('[deploy-commands]: Deploying global commands in production mode');
       const commands = [...slashCommandList, ...contextMenuCommandList];
@@ -33,7 +30,6 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
         process.exit(1);
       }
 
-      span.setAttribute('app.job.duration_ms', performance.now() - start);
       logger.info('[deploy-commands]: Successfully deployed global commands');
     } finally {
       span.end();

@@ -1,4 +1,3 @@
-import { performance } from 'node:perf_hooks';
 import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -36,8 +35,6 @@ const autobump = async () => {
   logger.info('AUTOBUMPING THREADS');
 
   return tracer.startActiveSpan('autobump', async (span) => {
-    const start = performance.now();
-
     try {
       const settings = await Result.safe(listAllThreads());
       if (settings.isErr()) {
@@ -54,7 +51,7 @@ const autobump = async () => {
       }
 
       span.setAttribute(
-        'app.autobump.threadCount',
+        'discord.autobump.thread_count',
         data.reduce((sum, d) => sum + d.autobumpThreads.length, 0)
       );
 
@@ -85,7 +82,6 @@ const autobump = async () => {
       );
 
       logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
-      span.setAttribute('app.job.duration_ms', performance.now() - start);
       span.end();
       process.exit(0);
     } finally {

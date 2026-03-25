@@ -1,4 +1,3 @@
-import { performance } from 'node:perf_hooks';
 import { ChannelType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -15,10 +14,8 @@ const broadcastReminder = async () => {
 
   return tracer.startActiveSpan('broadcastReminder', async (span) => {
     try {
-      const start = performance.now();
-
       const queryTime = getCurrentUnixTime();
-      span.setAttribute('app.reminder.queryTime', queryTime);
+      span.setAttribute('discord.reminder.query_time', queryTime);
 
       const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
       if (reminders.isErr()) {
@@ -29,7 +26,7 @@ const broadcastReminder = async () => {
       }
 
       const remindersData = reminders.unwrap();
-      span.setAttribute('app.reminder.count', remindersData.length);
+      span.setAttribute('discord.reminder.count', remindersData.length);
 
       if (remindersData.length === 0) {
         logger.info(`[broadcast-reminder]: No reminders to broadcast. Query Time: ${queryTime}`);
@@ -83,7 +80,6 @@ const broadcastReminder = async () => {
 
       await removeReminders(remindersData);
 
-      span.setAttribute('app.job.duration_ms', performance.now() - start);
       logger.info(`[broadcast-reminder]: Reminders fan out complete. Jobs: ${jobs.length}`);
       span.end();
       process.exit(0);

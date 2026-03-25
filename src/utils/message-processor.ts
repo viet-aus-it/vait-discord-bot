@@ -1,4 +1,3 @@
-import { performance } from 'node:perf_hooks';
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
@@ -40,29 +39,28 @@ export interface CommandConfig {
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
   return tracer.startActiveSpan('processMessage', async (span) => {
     try {
-      const start = performance.now();
-
-      span.setAttribute('app.discord.channel.id', message.channelId);
-      span.setAttribute('app.discord.guild.id', message.guildId);
-      span.setAttribute('app.discord.message.id', message.id);
-      span.setAttribute('app.discord.user.id', message.author.id);
+      span.setAttribute('messaging.system', 'discord');
+      span.setAttribute('messaging.operation.type', 'process');
+      span.setAttribute('messaging.destination.name', message.channelId);
+      span.setAttribute('messaging.message.id', message.id);
+      span.setAttribute('discord.guild.id', message.guildId);
+      span.setAttribute('enduser.id', message.author.id);
 
       const honeypotChannelId = getHoneypotChannelId(message.guildId);
       if (honeypotChannelId && message.channelId === honeypotChannelId) {
-        span.setAttribute('app.message.processed', true);
-        span.setAttribute('app.message.honeypot', true);
+        span.setAttribute('discord.message.processed', true);
+        span.setAttribute('discord.message.honeypot', true);
         const result = await Result.safe(handleHoneypotTrigger(message));
         if (result.isErr()) {
           recordSpanError(span, result.unwrapErr(), 'err-honeypot-trigger-failed');
           logger.error('[honeypot]: Error processing honeypot trigger', { error: result.unwrapErr() });
         }
-        span.setAttribute('app.process.duration_ms', performance.now() - start);
         return;
       }
 
       const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
       const hasKeywordMatch = keywordPromises.some((p) => p !== undefined);
-      span.setAttribute('app.message.processed', hasKeywordMatch);
+      span.setAttribute('discord.message.processed', hasKeywordMatch);
 
       try {
         await Promise.all(keywordPromises);
@@ -70,8 +68,6 @@ export const processMessage = async (message: Message<true>, config: CommandConf
         recordSpanError(span, error, 'err-keyword-processing-failed');
         logger.error('ERROR PROCESSING MESSAGE', { error });
       }
-
-      span.setAttribute('app.process.duration_ms', performance.now() - start);
     } finally {
       span.end();
     }

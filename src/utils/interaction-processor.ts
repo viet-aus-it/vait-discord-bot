@@ -1,4 +1,3 @@
-import { performance } from 'node:perf_hooks';
 import { type Interaction, InteractionType } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { commands as contextMenuCommandList } from '../context-menu-commands';
@@ -9,15 +8,17 @@ import { recordSpanError, tracer } from './tracer';
 export const processInteraction = async (interaction: Interaction): Promise<void> => {
   return tracer.startActiveSpan('processInteraction', async (span) => {
     try {
-      if (interaction.guildId) span.setAttribute('app.discord.guild.id', interaction.guildId);
-      if (interaction.channelId) span.setAttribute('app.discord.channel.id', interaction.channelId);
-      span.setAttribute('app.discord.user.id', interaction.user.id);
+      span.setAttribute('messaging.system', 'discord');
+      span.setAttribute('messaging.operation.type', 'process');
+      if (interaction.guildId) span.setAttribute('discord.guild.id', interaction.guildId);
+      if (interaction.channelId) span.setAttribute('messaging.destination.name', interaction.channelId);
+      span.setAttribute('enduser.id', interaction.user.id);
 
       const isCommand = interaction.isChatInputCommand();
       if (isCommand) {
         const { commandName } = interaction;
-        span.setAttribute('app.discord.command.name', commandName);
-        span.setAttribute('app.discord.interaction.type', 'chatInputCommand');
+        span.setAttribute('messaging.operation.name', commandName);
+        span.setAttribute('discord.interaction.type', 'chatInputCommand');
         logger.info(`[process-interaction]: RECEIVED COMMAND. COMMAND: ${commandName}`);
         const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
         if (!command) {
@@ -25,9 +26,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           return;
         }
 
-        const start = performance.now();
         const op = await Result.safe(command.execute(interaction));
-        span.setAttribute('app.command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
           recordSpanError(span, op.unwrapErr(), `err-command-${commandName}-failed`);
@@ -42,8 +41,8 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       const isContextMenuCommand = interaction.isContextMenuCommand();
       if (isContextMenuCommand) {
         const { commandName } = interaction;
-        span.setAttribute('app.discord.command.name', commandName);
-        span.setAttribute('app.discord.interaction.type', 'contextMenuCommand');
+        span.setAttribute('messaging.operation.name', commandName);
+        span.setAttribute('discord.interaction.type', 'contextMenuCommand');
         logger.info(`[process-interaction]: RECEIVED CONTEXT MENU COMMAND. COMMAND: ${commandName}`);
         const command = contextMenuCommandList.find((cmd) => cmd.data.name === commandName);
         if (!command) {
@@ -51,9 +50,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           return;
         }
 
-        const start = performance.now();
         const op = await Result.safe(command.execute(interaction));
-        span.setAttribute('app.command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
           recordSpanError(span, op.unwrapErr(), `err-contextmenu-${commandName}-failed`);
@@ -68,8 +65,8 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       const isAutocomplete = interaction.type === InteractionType.ApplicationCommandAutocomplete;
       if (isAutocomplete) {
         const { commandName } = interaction;
-        span.setAttribute('app.discord.command.name', commandName);
-        span.setAttribute('app.discord.interaction.type', 'autocomplete');
+        span.setAttribute('messaging.operation.name', commandName);
+        span.setAttribute('discord.interaction.type', 'autocomplete');
         logger.info(`[process-interaction]: RECEIVED AUTOCOMPLETE. COMMAND: ${commandName}`);
         const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
         if (!command || !command.autocomplete) {
@@ -77,9 +74,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
           return;
         }
 
-        const start = performance.now();
         const op = await Result.safe(command.autocomplete(interaction));
-        span.setAttribute('app.command.duration_ms', performance.now() - start);
 
         if (op.isErr()) {
           recordSpanError(span, op.unwrapErr(), `err-autocomplete-${commandName}-failed`);
