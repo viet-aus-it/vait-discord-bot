@@ -29,20 +29,20 @@ function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
 }
 
 function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
-  // if (process.env.NODE_ENV === 'production') {
-  //   return new FilteringSpanProcessor({
-  //     delegate: new BatchSpanProcessor(exporter),
-  //     unprocessedRate: 0.0001, // 1:10,000
-  //     successRate: 0.01, // 1%
-  //   });
-  // }
+  if (process.env.NODE_ENV === 'production') {
+    return new FilteringSpanProcessor({
+      delegate: new BatchSpanProcessor(exporter),
+      unprocessedRate: 0.0001, // 1:10,000
+      successRate: 0.01, // 1%
+    });
+  }
 
   return new SimpleSpanProcessor(exporter);
 }
 
 function startTelemetry() {
   const serviceName = process.env.OTEL_SERVICE_NAME ?? 'vait-discord-bot';
-  const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
+  const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? '';
   const resource = resourceFromAttributes({
     [ATTR_SERVICE_NAME]: serviceName,
     [ATTR_SERVICE_VERSION]: '1.0.0',
