@@ -40,11 +40,11 @@ Database-backed commands (reputation, referral, reminder) create user records on
 
 The `getOrCreateUser` pattern (find or create) trades a potential extra database read for a simpler user experience.
 
-## Why Winston with Axiom
+## Why Winston with OpenTelemetry
 
-Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
+Logging uses [Winston](https://www.npmjs.com/package/winston) with an [OpenTelemetry log bridge](https://www.npmjs.com/package/@opentelemetry/winston-transport). In development, logs go to console only (pretty-printed for readability). In production with OpenTelemetry enabled, logs are routed through the OTEL pipeline to [Axiom](https://axiom.co/) alongside traces, giving automatic trace-log correlation. When OpenTelemetry is disabled, production falls back to console-only.
 
-For local trace observability, [OpenObserve](https://openobserve.ai/) provides a single-binary solution for viewing traces, logs, and metrics via its built-in UI at `http://localhost:5080`.
+For local observability, [OpenObserve](https://openobserve.ai/) provides a single-binary solution for viewing traces, logs, and metrics via its built-in UI at `http://localhost:5080`.
 
 ## Why Wide Events Over Deep Traces
 

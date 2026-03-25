@@ -17,29 +17,10 @@ const devOptions: winston.LoggerOptions = {
 const prodOptions: winston.LoggerOptions = {
   level: 'info',
   defaultMeta: { service: 'vait-chatbot', timestamp: Date.now() },
-  transports: [consoleTransport],
-  format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
-};
-
-const prodOptionsWithTelemetry: winston.LoggerOptions = {
-  level: 'info',
-  defaultMeta: { service: 'vait-chatbot', timestamp: Date.now() },
   transports: [consoleTransport, otelTransport],
   exceptionHandlers: [otelTransport],
   rejectionHandlers: [otelTransport],
   format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
 };
 
-function getLoggerOptions(): winston.LoggerOptions {
-  if (process.env.NODE_ENV !== 'production') {
-    return devOptions;
-  }
-
-  if (process.env.ENABLE_OTEL === 'true') {
-    return prodOptionsWithTelemetry;
-  }
-
-  return prodOptions;
-}
-
-export const logger = winston.createLogger(getLoggerOptions());
+export const logger = winston.createLogger(process.env.NODE_ENV === 'production' ? prodOptions : devOptions);

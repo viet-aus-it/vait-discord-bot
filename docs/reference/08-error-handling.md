@@ -60,7 +60,8 @@ import { logger } from '../../utils/logger';
 | Environment | Transports |
 |-------------|------------|
 | Development | Console with pretty-printing and colours |
-| Production | Console + [Axiom](https://axiom.co/) (including exception and rejection handlers) |
+| Production (OTEL enabled) | Console + [OpenTelemetry log bridge](https://www.npmjs.com/package/@opentelemetry/winston-transport) to [Axiom](https://axiom.co/) (including exception and rejection handlers) |
+| Production (OTEL disabled) | Console only |
 
 ## Discord Error Replies
 
