@@ -7,7 +7,7 @@ import { getReminderChannel } from '../src/slash-commands/server-settings/utils'
 import { getCurrentUnixTime } from '../src/utils/date';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
-import { tracer } from '../src/utils/tracer';
+import { recordSpanError, tracer } from '../src/utils/tracer';
 
 const broadcastReminder = async () => {
   loadEnv();
@@ -17,19 +17,14 @@ const broadcastReminder = async () => {
     try {
       const start = performance.now();
 
-      // Wide event: service metadata
-      span.setAttribute('service.version', '1.0.0');
-      span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
-
       const queryTime = getCurrentUnixTime();
       span.setAttribute('reminder.queryTime', queryTime);
 
       const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
       if (reminders.isErr()) {
-        span.setAttribute('error', true);
-        span.setAttribute('error.message', String(reminders.unwrapErr()));
-        span.setAttribute('error.slug', 'err-broadcast-reminder-query-failed');
+        recordSpanError(span, reminders.unwrapErr(), 'err-broadcast-reminder-query-failed');
         logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Query Time: ${queryTime}`, { error: reminders.unwrapErr() });
+        span.end();
         process.exit(1);
       }
 
@@ -38,6 +33,7 @@ const broadcastReminder = async () => {
 
       if (remindersData.length === 0) {
         logger.info(`[broadcast-reminder]: No reminders to broadcast. Query Time: ${queryTime}`);
+        span.end();
         process.exit(0);
       }
 
@@ -89,6 +85,7 @@ const broadcastReminder = async () => {
 
       span.setAttribute('job.duration_ms', performance.now() - start);
       logger.info(`[broadcast-reminder]: Reminders fan out complete. Jobs: ${jobs.length}`);
+      span.end();
       process.exit(0);
     } finally {
       span.end();

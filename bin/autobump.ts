@@ -5,7 +5,7 @@ import { getDiscordClient } from '../src/clients';
 import { listAllThreads } from '../src/slash-commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
-import { tracer } from '../src/utils/tracer';
+import { recordSpanError, tracer } from '../src/utils/tracer';
 
 const DEFAULT_AUTOBUMP_MESSAGE = '👋 Thread auto-bumped to keep it active!';
 
@@ -37,16 +37,13 @@ const autobump = async () => {
 
   return tracer.startActiveSpan('autobump', async (span) => {
     const start = performance.now();
-    span.setAttribute('service.version', '1.0.0');
-    span.setAttribute('service.environment', process.env.NODE_ENV ?? 'development');
 
     try {
       const settings = await Result.safe(listAllThreads());
       if (settings.isErr()) {
-        span.setAttribute('error', true);
-        span.setAttribute('error.message', String(settings.unwrapErr()));
-        span.setAttribute('error.slug', 'err-autobump-list-failed');
+        recordSpanError(span, settings.unwrapErr(), 'err-autobump-list-failed');
         logger.error('[autobump]: Cannot retrieve autobump thread lists', { error: settings.unwrapErr() });
+        span.end();
         process.exit(1);
       }
 
@@ -89,6 +86,7 @@ const autobump = async () => {
 
       logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
       span.setAttribute('job.duration_ms', performance.now() - start);
+      span.end();
       process.exit(0);
     } finally {
       span.end();
