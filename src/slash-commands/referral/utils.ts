@@ -1,5 +1,4 @@
 import { getDbClient } from '../../clients';
-import { tracer } from '../../utils/tracer';
 import { getOrCreateUser } from '../reputation/utils';
 
 export type CreateReferralInput = {
@@ -10,22 +9,16 @@ export type CreateReferralInput = {
   expiryDate: Date;
 };
 export const createReferralCode = async ({ userId, guildId, service, code, expiryDate }: CreateReferralInput) => {
-  return tracer.startActiveSpan('db.referral.create', async (span) => {
-    try {
-      const db = getDbClient();
-      await getOrCreateUser(userId);
-      return db.referralCode.create({
-        data: {
-          userId,
-          guildId,
-          service,
-          code,
-          expiry_date: expiryDate,
-        },
-      });
-    } finally {
-      span.end();
-    }
+  const db = getDbClient();
+  await getOrCreateUser(userId);
+  return db.referralCode.create({
+    data: {
+      userId,
+      guildId,
+      service,
+      code,
+      expiry_date: expiryDate,
+    },
   });
 };
 
@@ -35,19 +28,13 @@ export type FindExistingReferralCodeInput = {
   service: string;
 };
 export const findExistingReferralCode = async ({ userId, guildId, service }: FindExistingReferralCodeInput) => {
-  return tracer.startActiveSpan('db.referral.findExisting', async (span) => {
-    try {
-      const db = getDbClient();
-      return db.referralCode.findFirst({
-        where: {
-          userId,
-          guildId,
-          service,
-        },
-      });
-    } finally {
-      span.end();
-    }
+  const db = getDbClient();
+  return db.referralCode.findFirst({
+    where: {
+      userId,
+      guildId,
+      service,
+    },
   });
 };
 
@@ -56,39 +43,27 @@ export type GetAllReferralCodesForServiceInput = {
   service: string;
 };
 export const getAllReferralCodesForService = async ({ guildId, service }: GetAllReferralCodesForServiceInput) => {
-  return tracer.startActiveSpan('db.referral.getAllForService', async (span) => {
-    try {
-      const db = getDbClient();
-      return db.referralCode.findMany({
-        where: {
-          guildId,
-          service,
-          expiry_date: {
-            gte: new Date(),
-          },
-        },
-      });
-    } finally {
-      span.end();
-    }
+  const db = getDbClient();
+  return db.referralCode.findMany({
+    where: {
+      guildId,
+      service,
+      expiry_date: {
+        gte: new Date(),
+      },
+    },
   });
 };
 
 export const cleanupExpiredCode = async () => {
-  return tracer.startActiveSpan('db.referral.cleanupExpired', async (span) => {
-    try {
-      const db = getDbClient();
-      const currentDate = new Date();
-      return db.referralCode.deleteMany({
-        where: {
-          expiry_date: {
-            lt: currentDate,
-          },
-        },
-      });
-    } finally {
-      span.end();
-    }
+  const db = getDbClient();
+  const currentDate = new Date();
+  return db.referralCode.deleteMany({
+    where: {
+      expiry_date: {
+        lt: currentDate,
+      },
+    },
   });
 };
 
@@ -97,24 +72,18 @@ export type GetUserReferralCodesInput = {
   guildId: string;
 };
 export const getUserReferralCodes = async ({ userId, guildId }: GetUserReferralCodesInput) => {
-  return tracer.startActiveSpan('db.referral.getUserCodes', async (span) => {
-    try {
-      const db = getDbClient();
-      return db.referralCode.findMany({
-        where: {
-          userId,
-          guildId,
-          expiry_date: {
-            gte: new Date(),
-          },
-        },
-        orderBy: {
-          service: 'asc',
-        },
-      });
-    } finally {
-      span.end();
-    }
+  const db = getDbClient();
+  return db.referralCode.findMany({
+    where: {
+      userId,
+      guildId,
+      expiry_date: {
+        gte: new Date(),
+      },
+    },
+    orderBy: {
+      service: 'asc',
+    },
   });
 };
 
@@ -126,23 +95,17 @@ export type UpdateReferralCodeInput = {
   expiryDate?: Date;
 };
 export const updateReferralCode = async ({ service, userId, guildId, code, expiryDate }: UpdateReferralCodeInput) => {
-  return tracer.startActiveSpan('db.referral.update', async (span) => {
-    try {
-      const db = getDbClient();
-      return db.referralCode.updateMany({
-        where: {
-          service,
-          userId,
-          guildId,
-        },
-        data: {
-          ...(code && { code }),
-          ...(expiryDate && { expiry_date: expiryDate }),
-        },
-      });
-    } finally {
-      span.end();
-    }
+  const db = getDbClient();
+  return db.referralCode.updateMany({
+    where: {
+      service,
+      userId,
+      guildId,
+    },
+    data: {
+      ...(code && { code }),
+      ...(expiryDate && { expiry_date: expiryDate }),
+    },
   });
 };
 
@@ -152,18 +115,12 @@ export type DeleteReferralCodeInput = {
   guildId: string;
 };
 export const deleteReferralCode = async ({ service, userId, guildId }: DeleteReferralCodeInput) => {
-  return tracer.startActiveSpan('db.referral.delete', async (span) => {
-    try {
-      const db = getDbClient();
-      return db.referralCode.deleteMany({
-        where: {
-          service,
-          userId,
-          guildId,
-        },
-      });
-    } finally {
-      span.end();
-    }
+  const db = getDbClient();
+  return db.referralCode.deleteMany({
+    where: {
+      service,
+      userId,
+      guildId,
+    },
   });
 };
