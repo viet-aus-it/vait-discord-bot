@@ -44,7 +44,7 @@ The `getOrCreateUser` pattern (find or create) trades a potential extra database
 
 Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
 
-For local trace observability, [OpenObserve](https://openobserve.ai/) replaces the previous Grafana LGTM stack, providing a single-binary solution for viewing traces, logs, and metrics via its built-in UI at `http://localhost:5080`.
+For local trace observability, [OpenObserve](https://openobserve.ai/) provides a single-binary solution for viewing traces, logs, and metrics via its built-in UI at `http://localhost:5080`.
 
 ## Why Wide Events Over Deep Traces
 
