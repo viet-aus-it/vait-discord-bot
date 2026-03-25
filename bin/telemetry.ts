@@ -11,19 +11,7 @@ import { loadEnv } from '../src/utils/load-env';
 
 loadEnv();
 
-const serviceName = process.env.OTEL_SERVICE_NAME ?? 'vait-discord-bot';
-const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
-const resource = resourceFromAttributes({
-  [ATTR_SERVICE_NAME]: serviceName,
-  [ATTR_SERVICE_VERSION]: '1.0.0',
-});
-
-const instrumentations = getNodeAutoInstrumentations();
-const prismaInstrumentation = new PrismaInstrumentation();
-
-diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
-
-function getTraceExporter(): OTLPTraceExporter {
+function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
   const localTraceExporter = new OTLPTraceExporter({
     url: otelEndpoint,
     headers: { Authorization: process.env.OPENOBSERVE_AUTH_TOKEN ?? '' },
@@ -39,7 +27,6 @@ function getTraceExporter(): OTLPTraceExporter {
 
   return process.env.NODE_ENV === 'production' ? productionTraceExporter : localTraceExporter;
 }
-const traceExporter = getTraceExporter();
 
 function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
   if (process.env.NODE_ENV === 'production') {
@@ -52,24 +39,47 @@ function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
 
   return new SimpleSpanProcessor(exporter);
 }
-const spanProcessor = getSpanProcessor(traceExporter);
 
-const sdk = new NodeSDK({
-  resource,
-  instrumentations: [instrumentations, prismaInstrumentation],
-  spanProcessors: [spanProcessor],
-  metricReaders: [],
-  logRecordProcessors: [],
-});
+function startTelemetry() {
+  const serviceName = process.env.OTEL_SERVICE_NAME ?? 'vait-discord-bot';
+  const otelEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT;
+  const resource = resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: serviceName,
+    [ATTR_SERVICE_VERSION]: '1.0.0',
+  });
 
-sdk.start();
+  const instrumentations = getNodeAutoInstrumentations();
+  const prismaInstrumentation = new PrismaInstrumentation();
 
-process.on('SIGTERM', () => {
-  traceExporter.forceFlush();
-  traceExporter.shutdown();
+  if (process.env.OTEL_DEBUG === 'true') {
+    diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
+  }
 
-  sdk
-    .shutdown()
-    .then(() => console.log('Telemetry SDK shut down gracefully'))
-    .catch((error) => console.error('Error shutting down telemetry SDK', error));
-});
+  const traceExporter = getTraceExporter(otelEndpoint);
+  const spanProcessor = getSpanProcessor(traceExporter);
+
+  const sdk = new NodeSDK({
+    resource,
+    instrumentations: [instrumentations, prismaInstrumentation],
+    spanProcessors: [spanProcessor],
+  });
+
+  sdk.start();
+
+  process.on('SIGTERM', () => {
+    traceExporter.forceFlush();
+    traceExporter.shutdown();
+
+    sdk
+      .shutdown()
+      .then(() => console.log('Telemetry SDK shut down gracefully'))
+      .catch((error) => console.error('Error shutting down telemetry SDK', error));
+  });
+}
+
+if (process.env.ENABLE_OTEL === 'true') {
+  console.log('Starting OpenTelemetry');
+  startTelemetry();
+} else {
+  console.log('Skip enabling OpenTelemetry');
+}

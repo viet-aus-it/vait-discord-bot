@@ -9,17 +9,19 @@ const configSchema = z.object({
   CLIENT_ID: z.string(),
   GUILD_ID: z.string().optional(),
 
-  // Axiom config (production only)
-  AXIOM_TOKEN: z.string().optional(),
-  AXIOM_DATASET: z.string().optional(),
-  AXIOM_ORG_ID: z.string().optional(),
+  // OpenTelemetry config
+  ENABLE_OTEL: z.enum(['true', 'false']).default('false'),
+  OTEL_DEBUG: z.enum(['true', 'false']).default('false'),
+  OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 
   // OpenObserve config (local dev only)
   OPENOBSERVE_AUTH_TOKEN: z.string().optional(),
 
-  // OpenTelemetry config
-  OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
-  OTEL_EXPORTER_OTLP_ENDPOINT: z.url(),
+  // Axiom config (production only)
+  AXIOM_TOKEN: z.string().optional(),
+  AXIOM_DATASET: z.string().optional(),
+  AXIOM_ORG_ID: z.string().optional(),
 
   // Database config
   DATABASE_URL: z.string(),
