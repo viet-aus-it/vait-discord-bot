@@ -11,18 +11,18 @@ import { loadEnv } from '../src/utils/load-env';
 
 const env = loadEnv();
 
-function getExporterHeaders(): Record<string, string> {
-  if (env.NODE_ENV === 'production') {
-    return {
-      Authorization: `Bearer ${env.AXIOM_TOKEN || ''}`,
-      'X-Axiom-Dataset': env.AXIOM_DATASET || '',
-    };
-  }
-  return { Authorization: env.OPENOBSERVE_AUTH_TOKEN ?? '' };
-}
-
 function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
-  return new OTLPTraceExporter({ url: otelEndpoint, headers: getExporterHeaders() });
+  const headers: Record<string, string> =
+    env.NODE_ENV === 'production'
+      ? {
+          Authorization: `Bearer ${env.AXIOM_TOKEN || ''}`,
+          'X-Axiom-Dataset': env.AXIOM_DATASET || '',
+        }
+      : {
+          Authorization: env.OPENOBSERVE_AUTH_TOKEN ?? '',
+        };
+
+  return new OTLPTraceExporter({ url: otelEndpoint, headers });
 }
 
 function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
