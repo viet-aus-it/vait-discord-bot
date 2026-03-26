@@ -38,9 +38,9 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `ENABLE_OTEL` | No | `false` | Enable OpenTelemetry trace collection (`true` or `false`) |
-| `OTel_DEBUG` | No | `false` | Enable OTel SDK diagnostic logging |
-| `OTel_SERVICE_NAME` | No | `vait-discord-bot` | Service name for trace attribution |
-| `OTel_EXPORTER_OTLP_ENDPOINT` | When OTel enabled | — | OTLP HTTP base endpoint URL. The SDK appends signal-specific paths (`/v1/traces`, `/v1/logs`) automatically. Local dev: `http://localhost:4318` (Jaeger). |
+| `OTEL_DEBUG` | No | `false` | Enable OTel SDK diagnostic logging |
+| `OTEL_SERVICE_NAME` | No | `vait-discord-bot` | Service name for trace attribution |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTel enabled | — | OTLP HTTP base endpoint URL. The SDK appends signal-specific paths (`/v1/traces`, `/v1/logs`) automatically. Local dev: `http://localhost:4318` (Jaeger). |
 
 When `ENABLE_OTEL=true` in production, `AXIOM_TOKEN` and `AXIOM_DATASET` are also required (traces and logs are exported to Axiom via the OTel pipeline). When `ENABLE_OTEL=false`, logs fall back to the direct `@axiomhq/winston` transport.
 
@@ -48,5 +48,5 @@ When `ENABLE_OTEL=true` in production, `AXIOM_TOKEN` and `AXIOM_DATASET` are als
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `NODE_ENV` | No | `development` | Environment mode (`development`, `production`, or `test`). Drives environment-specific validation: `GUILD_ID` is required in development, Axiom variables are required in production, and `OTel_EXPORTER_OTLP_ENDPOINT` is required when OTel is enabled. |
+| `NODE_ENV` | No | `development` | Environment mode (`development`, `production`, or `test`). Drives environment-specific validation: `GUILD_ID` is required in development, Axiom variables are required in production, and `OTEL_EXPORTER_OTLP_ENDPOINT` is required when OTel is enabled. |
 | `TZ` | No | `Australia/Brisbane` | Timezone for the bot process |
