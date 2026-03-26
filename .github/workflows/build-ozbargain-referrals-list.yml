@@ -34,7 +34,7 @@ jobs:
           AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
           AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
           ENABLE_OTEL: 'true'
-          OTEL_EXPORTER_OTLP_ENDPOINT: https://us-east-1.aws.edge.axiom.co/v1/traces
+          OTEL_EXPORTER_OTLP_ENDPOINT: https://us-east-1.aws.edge.axiom.co
           CLIENT_ID: blank
           TOKEN: blank
           DATABASE_URL: blank
