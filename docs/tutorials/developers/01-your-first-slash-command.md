@@ -124,17 +124,21 @@ pnpm test src/slash-commands/ping/index.test.ts
 
 You should see both tests pass.
 
-## Optional: Add Span Attributes
+## Optional: Record Span Errors
 
-If your command has useful context worth tracking (database results, external API calls, user options), you can enrich the active OTel span from your command handler using `setSpanAttributes`. This is a no-op when OTel is disabled.
+If your command encounters an error, you can record it on the active OTel span using `recordSpanError`. This is a no-op when OTel is disabled.
 
 ```typescript
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError } from '../../utils/tracer';
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
-  const message = interaction.options.getString('message');
-  setSpanAttributes({ 'app.ping.has_message': !!message });
-  await interaction.reply(message ? `Pong! You said: ${message}` : 'Pong!');
+  const op = await Result.safe(fetchSomething());
+  if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-ping-fetch-failed');
+    await interaction.reply('Something went wrong.');
+    return;
+  }
+  await interaction.reply('Pong!');
 };
 ```
 
@@ -144,4 +148,3 @@ See [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) 
 
 - [Add a Database-Backed Feature](./02-database-backed-feature.md)
 - [Test Your Command](./03-testing-your-command.md)
-- The `8ball` command (`src/slash-commands/8ball/index.ts`) is the production example of this pattern
