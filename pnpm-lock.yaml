@@ -44,9 +44,6 @@ importers:
       '@opentelemetry/semantic-conventions':
         specifier: ^1.40.0
         version: 1.40.0
-      '@opentelemetry/winston-transport':
-        specifier: ^0.24.0
-        version: 0.24.0
       '@prisma/adapter-pg':
         specifier: ^7.5.0
         version: 7.5.0
@@ -1264,10 +1261,6 @@ packages:
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
-
-  '@opentelemetry/winston-transport@0.24.0':
-    resolution: {integrity: sha512-xlvEAqJRP8RlghjvAEVCEf1tGJsoJfgp4YBBJVSTXEb5hK+Nk94rJaDzBZg5JxWjyRDhWxJ41jCS+lfa3RBKZQ==}
-    engines: {node: ^18.19.0 || >=20.6.0}
 
   '@oxc-project/runtime@0.77.3':
     resolution: {integrity: sha512-vsC/ewcGJ7xXnnwZkku7rpPH5Lxb5g4J+V6lD9eBTnRLmXVXM7Qu50y+ozD+UD5IXaSoVOvVMGTT4YSNCz2MQQ==}
@@ -5033,11 +5026,6 @@ snapshots:
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/core': 2.6.1(@opentelemetry/api@1.9.1)
-
-  '@opentelemetry/winston-transport@0.24.0':
-    dependencies:
-      '@opentelemetry/api-logs': 0.214.0
-      winston-transport: 4.9.0
 
   '@oxc-project/runtime@0.77.3': {}
 
