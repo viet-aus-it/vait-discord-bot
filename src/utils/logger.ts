@@ -1,4 +1,5 @@
 import { WinstonTransport as AxiomTransport } from '@axiomhq/winston';
+import { OpenTelemetryTransportV3 } from '@opentelemetry/winston-transport';
 import winston from 'winston';
 import { loadEnv } from './load-env';
 
@@ -10,6 +11,7 @@ const axiomTransport = new AxiomTransport({
   token: env.AXIOM_TOKEN || '',
   orgId: env.AXIOM_ORG_ID,
 });
+const otelTransport = new OpenTelemetryTransportV3();
 
 const devOptions: winston.LoggerOptions = {
   level: 'debug',
@@ -27,4 +29,19 @@ const prodOptions: winston.LoggerOptions = {
   format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
 };
 
-export const logger = winston.createLogger(env.NODE_ENV === 'production' ? prodOptions : devOptions);
+const prodOptionsWithTelemetry: winston.LoggerOptions = {
+  level: 'info',
+  defaultMeta: { service: 'vait-chatbot', timestamp: Date.now() },
+  transports: [consoleTransport, otelTransport],
+  exceptionHandlers: [otelTransport],
+  rejectionHandlers: [otelTransport],
+  format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
+};
+
+function getLoggerOptions(): winston.LoggerOptions {
+  if (env.NODE_ENV !== 'production') return devOptions;
+  if (env.ENABLE_OTEL) return prodOptionsWithTelemetry;
+  return prodOptions;
+}
+
+export const logger = winston.createLogger(getLoggerOptions());
