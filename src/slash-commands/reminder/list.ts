@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { Reminder } from '../../clients/prisma/generated/client/client';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { getUserReminders } from './utils';
 
@@ -25,6 +26,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   }
 
   const data = op.unwrap();
+  setSpanAttributes({ 'discord.reminder.result_count': data.length });
   if (data.length === 0) {
     await interaction.reply("You currently don't have any reminder set up.");
     return;

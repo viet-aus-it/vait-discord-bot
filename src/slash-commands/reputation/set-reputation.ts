@@ -1,6 +1,7 @@
 import { type ChatInputCommandInteraction, type GuildMember, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
 import { isAdmin, isModerator } from '../../utils/permission';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { Subcommand } from '../builder';
 import { getOrCreateUser, updateRep } from './utils';
 
@@ -21,6 +22,7 @@ export const setReputation = async (interaction: ChatInputCommandInteraction) =>
   const repNumber = interaction.options.getInteger('rep', true);
   const discordUser = interaction.options.getUser('user', true);
   const author = interaction.member!.user;
+  setSpanAttributes({ 'discord.rep.target_user_id': discordUser.id, 'discord.rep.set_value': repNumber });
   logger.info(`[set-reputation]: ${guildMember.user.tag} is setting ${discordUser.tag}'s rep to ${repNumber}`);
 
   const authorUser = await getOrCreateUser(author.id);

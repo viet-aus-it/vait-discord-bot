@@ -7,6 +7,7 @@ import {
   type ThreadChannel,
 } from 'discord.js';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -33,6 +34,7 @@ export const removeUserByRole = async (interaction: ChatInputCommandInteraction)
   const removeMemberPromises = memberList.map((user) => channel.members.remove(user.id));
 
   await Promise.all(removeMemberPromises);
+  setSpanAttributes({ 'discord.moderate.role_id': role.id, 'discord.moderate.members_removed': memberList.size });
   logger.info(`[remove-user-by-role]: Removed ${memberList.size} users from thread ${channel.id}.`);
   await interaction.editReply('Done');
 };

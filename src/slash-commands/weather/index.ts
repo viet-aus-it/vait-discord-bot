@@ -2,6 +2,7 @@ import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandB
 import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import { fetchWeather } from './fetch-weather';
 
@@ -21,6 +22,7 @@ export const weather = async (interaction: ChatInputCommandInteraction) => {
   if (!location || isBlank(location)) {
     location = DEFAULT_LOCATION;
   }
+  setSpanAttributes({ 'discord.weather.location': location });
   logger.info(`[weather]: ${interaction.user.tag} is getting the weather for location ${location}`);
 
   const weatherData = await Result.safe(fetchWeather(location));

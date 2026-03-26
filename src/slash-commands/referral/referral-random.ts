@@ -2,6 +2,7 @@ import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive } from '../../utils/random';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { getAllReferralCodesForService } from './utils';
 
@@ -26,6 +27,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   }
 
   const referrals = op.unwrap();
+  setSpanAttributes({ 'discord.referral.service': service, 'discord.referral.result_count': referrals.length });
   if (referrals.length === 0) {
     logger.info(`[referral-random]: There is no code for ${service} service in the system.`);
     await interaction.reply(`There is no code for ${service} service in the system.`);

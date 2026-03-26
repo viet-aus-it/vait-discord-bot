@@ -1,6 +1,7 @@
 import { ChannelType, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { addAutobumpThread } from './utils';
 
@@ -12,6 +13,7 @@ const data = new SlashCommandSubcommandBuilder()
 export const addAutobumpThreadCommand: SlashCommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const thread = interaction.options.getChannel('thread', true);
+  setSpanAttributes({ 'discord.autobump.thread_id': thread.id });
   logger.info(`[add-autobump-thread]: Adding thread ${thread.id} to autobump list for guild ${guildId}`);
 
   const isThread = thread.type === ChannelType.PublicThread || thread.type === ChannelType.PrivateThread;

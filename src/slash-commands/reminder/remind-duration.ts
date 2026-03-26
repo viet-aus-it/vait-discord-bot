@@ -3,6 +3,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import parseDuration from 'parse-duration';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './utils';
 
@@ -24,6 +25,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   }
 
   const unixTimestamp = getUnixTime(addSeconds(new Date(), parsedDuration));
+  setSpanAttributes({ 'discord.reminder.duration_text': duration, 'discord.reminder.target_timestamp': unixTimestamp });
   const op = await Result.safe(
     saveReminder({
       userId: user.id,

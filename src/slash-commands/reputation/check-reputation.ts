@@ -1,5 +1,6 @@
 import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { Subcommand } from '../builder';
 import { getOrCreateUser } from './utils';
 
@@ -9,6 +10,7 @@ export const checkReputation = async (interaction: ChatInputCommandInteraction) 
   const discordUser = interaction.member!.user;
   logger.info(`[reputation]: ${discordUser.username} is checking their reputation`);
   const user = await getOrCreateUser(discordUser.id);
+  setSpanAttributes({ 'discord.rep.value': user.reputation });
   await interaction.reply(`<@${discordUser.id}>: ${user.reputation} Rep`);
 };
 

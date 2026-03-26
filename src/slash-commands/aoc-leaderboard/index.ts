@@ -4,6 +4,7 @@ import { Result } from 'oxide.ts';
 import type { AocLeaderboard as AocLeaderboardModel } from '../../clients/prisma/generated/client/client';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import type { AocLeaderboard as AocLeaderboardSchema } from './schema';
 import { fetchAndSaveLeaderboard, getAocSettings, getSavedLeaderboard } from './utils';
@@ -56,6 +57,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
 
   const guildId = interaction.guildId!;
+  setSpanAttributes({ 'discord.aoc.leaderboard_size': DEFAULT_LEADERBOARD });
 
   const getSavedleaderboardOp = await Result.safe(getSavedLeaderboard(guildId));
   const savedResult = getSavedleaderboardOp.unwrap();

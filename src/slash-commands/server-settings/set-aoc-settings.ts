@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setAocSettings } from './utils';
 
@@ -14,6 +15,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const key = interaction.options.getString('key', true);
   const leaderboardId = interaction.options.getString('leaderboard-id', true);
+  setSpanAttributes({ 'discord.settings.leaderboard_id': leaderboardId });
   logger.info(`[set-aoc-key]: ${interaction.member!.user.username} is setting the Advent of Code key.`);
 
   const op = await Result.safe(setAocSettings(guildId, key, leaderboardId));

@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { convertDateToEpoch } from '../../utils/date';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { updateReminder } from './utils';
 
@@ -16,6 +17,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const { user } = interaction.member!;
   const guildId = interaction.guildId!;
   const reminderId = interaction.options.getString('id', true);
+  setSpanAttributes({ 'discord.reminder.id': reminderId });
   const message = interaction.options.getString('message');
   const dateString = interaction.options.getString('date');
   if (!message && !dateString) {

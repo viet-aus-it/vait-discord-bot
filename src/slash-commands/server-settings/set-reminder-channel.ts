@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setReminderChannel } from './utils';
 
@@ -12,6 +13,7 @@ export const data = new SlashCommandSubcommandBuilder()
 export const execute: SlashCommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const channel = interaction.options.getChannel('channel', true);
+  setSpanAttributes({ 'discord.settings.channel_id': channel.id });
   logger.info(`[set-reminder-channel]: ${interaction.member!.user.username} is setting reminder channel to ${channel.name}`);
   const op = await Result.safe(setReminderChannel(guildId, channel.id));
   if (op.isErr()) {

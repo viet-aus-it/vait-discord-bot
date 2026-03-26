@@ -1,5 +1,6 @@
 import { type ChatInputCommandInteraction, type Message, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { Subcommand } from '../builder';
 import { getOrCreateUser, updateRep } from './utils';
 
@@ -59,6 +60,7 @@ export const giveRepSlashCommand = async (interaction: ChatInputCommandInteracti
   }
 
   const updatedUser = await plusRep(author.id, discordUser.id);
+  setSpanAttributes({ 'discord.rep.target_user_id': discordUser.id, 'discord.rep.new_value': updatedUser.reputation });
   const receiver = interaction.guild?.members.cache.get(discordUser.id);
   const giver = interaction.guild?.members.cache.get(author.id);
   const message = `${giver?.displayName} gave 1 rep to ${receiver?.displayName}.\n${receiver?.displayName} → ${updatedUser.reputation} reps`;

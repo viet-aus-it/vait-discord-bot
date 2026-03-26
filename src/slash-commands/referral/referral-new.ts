@@ -2,6 +2,7 @@ import { addDays, getUnixTime } from 'date-fns';
 import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { services } from './services';
@@ -27,6 +28,7 @@ export const data = new SlashCommandSubcommandBuilder()
 export const execute: SlashCommandHandler = async (interaction) => {
   const code = interaction.options.getString('link_or_code', true);
   const service = interaction.options.getString('service', true).toLowerCase();
+  setSpanAttributes({ 'discord.referral.service': service });
   logger.info(`[referral-new]: Adding new referral code for ${service} with code/link: ${code}`);
 
   const hasService = services.find((option) => option.toLowerCase() === service);
