@@ -30,7 +30,7 @@ const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
 };
 
 const autobump = async () => {
-  loadEnv();
+  const env = loadEnv();
   logger.info('AUTOBUMPING THREADS');
 
   const settings = await Result.safe(listAllThreads());
@@ -45,8 +45,7 @@ const autobump = async () => {
     process.exit(0);
   }
 
-  const token = process.env.TOKEN;
-  const client = await getDiscordClient({ token });
+  const client = await getDiscordClient({ token: env.TOKEN });
   const clientId = client.user?.id;
 
   const jobs = await data.reduce(

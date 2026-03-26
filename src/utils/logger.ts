@@ -2,13 +2,13 @@ import { WinstonTransport as AxiomTransport } from '@axiomhq/winston';
 import winston from 'winston';
 import { loadEnv } from './load-env';
 
-loadEnv();
+const env = loadEnv();
 
 const consoleTransport = new winston.transports.Console();
 const axiomTransport = new AxiomTransport({
-  dataset: process.env.AXIOM_DATASET,
-  token: process.env.AXIOM_TOKEN || '',
-  orgId: process.env.AXIOM_ORG_ID,
+  dataset: env.AXIOM_DATASET,
+  token: env.AXIOM_TOKEN || '',
+  orgId: env.AXIOM_ORG_ID,
 });
 
 const devOptions: winston.LoggerOptions = {
@@ -27,4 +27,4 @@ const prodOptions: winston.LoggerOptions = {
   format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
 };
 
-export const logger = winston.createLogger(process.env.NODE_ENV === 'production' ? prodOptions : devOptions);
+export const logger = winston.createLogger(env.NODE_ENV === 'production' ? prodOptions : devOptions);

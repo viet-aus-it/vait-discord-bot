@@ -4,15 +4,13 @@ import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 
 const deploy = async () => {
-  loadEnv();
-  const token = process.env.TOKEN;
-  const clientId = process.env.CLIENT_ID;
+  const env = loadEnv();
 
   logger.info('[delete-global-commands]: Deleting global commands');
   const op = await Result.safe(
     deployGlobalCommands([], {
-      token,
-      clientId,
+      token: env.TOKEN,
+      clientId: env.CLIENT_ID,
     })
   );
   if (op.isOk()) {
