@@ -8,16 +8,14 @@ import { recordSpanError, tracer } from './tracer';
 export const processInteraction = async (interaction: Interaction): Promise<void> => {
   return tracer.startActiveSpan('processInteraction', async (span) => {
     try {
-      span.setAttribute('messaging.system', 'discord');
-      span.setAttribute('messaging.operation.type', 'process');
       if (interaction.guildId) span.setAttribute('discord.guild.id', interaction.guildId);
-      if (interaction.channelId) span.setAttribute('messaging.destination.name', interaction.channelId);
+      if (interaction.channelId) span.setAttribute('discord.channel.id', interaction.channelId);
       span.setAttribute('enduser.id', interaction.user.id);
 
       const isCommand = interaction.isChatInputCommand();
       if (isCommand) {
         const { commandName } = interaction;
-        span.setAttribute('messaging.operation.name', commandName);
+        span.setAttribute('discord.command.name', commandName);
         span.setAttribute('discord.interaction.type', 'chatInputCommand');
         logger.info(`[process-interaction]: RECEIVED COMMAND. COMMAND: ${commandName}`);
         const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
@@ -40,7 +38,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       const isContextMenuCommand = interaction.isContextMenuCommand();
       if (isContextMenuCommand) {
         const { commandName } = interaction;
-        span.setAttribute('messaging.operation.name', commandName);
+        span.setAttribute('discord.command.name', commandName);
         span.setAttribute('discord.interaction.type', 'contextMenuCommand');
         logger.info(`[process-interaction]: RECEIVED CONTEXT MENU COMMAND. COMMAND: ${commandName}`);
         const command = contextMenuCommandList.find((cmd) => cmd.data.name === commandName);
@@ -63,7 +61,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
       const isAutocomplete = interaction.type === InteractionType.ApplicationCommandAutocomplete;
       if (isAutocomplete) {
         const { commandName } = interaction;
-        span.setAttribute('messaging.operation.name', commandName);
+        span.setAttribute('discord.command.name', commandName);
         span.setAttribute('discord.interaction.type', 'autocomplete');
         logger.info(`[process-interaction]: RECEIVED AUTOCOMPLETE. COMMAND: ${commandName}`);
         const command = slashCommandList.find((cmd) => cmd.data.name === commandName);

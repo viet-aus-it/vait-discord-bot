@@ -39,10 +39,8 @@ export interface CommandConfig {
 export const processMessage = async (message: Message<true>, config: CommandConfig): Promise<void> => {
   return tracer.startActiveSpan('processMessage', async (span) => {
     try {
-      span.setAttribute('messaging.system', 'discord');
-      span.setAttribute('messaging.operation.type', 'process');
-      span.setAttribute('messaging.destination.name', message.channelId);
-      span.setAttribute('messaging.message.id', message.id);
+      span.setAttribute('discord.channel.id', message.channelId);
+      span.setAttribute('discord.message.id', message.id);
       span.setAttribute('discord.guild.id', message.guildId);
       span.setAttribute('enduser.id', message.author.id);
 

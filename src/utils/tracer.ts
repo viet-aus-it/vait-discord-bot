@@ -1,4 +1,5 @@
 import { SpanStatusCode, trace } from '@opentelemetry/api';
+import { ATTR_ERROR_TYPE } from '@opentelemetry/semantic-conventions';
 
 export const tracer = trace.getTracer('discord-bot');
 
@@ -7,5 +8,5 @@ export function recordSpanError(error: unknown, slug: string): void {
   if (!span) return;
   span.setStatus({ code: SpanStatusCode.ERROR, message: String(error) });
   span.recordException(error instanceof Error ? error : new Error(String(error)));
-  span.setAttribute('error.type', slug);
+  span.setAttribute(ATTR_ERROR_TYPE, slug);
 }
