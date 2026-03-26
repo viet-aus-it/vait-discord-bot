@@ -50,6 +50,6 @@ export const processMessage = async (message: Message<true>, config: CommandConf
   try {
     await Promise.all(keywordPromises);
   } catch (error) {
-    logger.error('ERROR PROCESSING MESSAGE', error);
+    logger.error('ERROR PROCESSING MESSAGE', { error });
   }
 };
