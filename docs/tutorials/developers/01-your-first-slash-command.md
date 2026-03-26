@@ -124,9 +124,9 @@ pnpm test src/slash-commands/ping/index.test.ts
 
 You should see both tests pass.
 
-## Optional: Record Span Errors
+## Step 7: Record Span Errors
 
-If your command encounters an error, you can record it on the active OTel span using `recordSpanError`. This is a no-op when OTel is disabled.
+Record errors on the active OTel span using `recordSpanError` so they appear in traces. This is a no-op when OTel is disabled, so it has no impact on regular operation.
 
 ```typescript
 import { recordSpanError } from '../../utils/tracer';
