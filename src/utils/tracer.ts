@@ -7,11 +7,3 @@ export function recordSpanError(span: Span, error: unknown, slug: string): void 
   span.recordException(error instanceof Error ? error : new Error(String(error)));
   span.setAttribute('error.type', slug);
 }
-
-export function setSpanAttributes(attributes: Record<string, string | number | boolean>): void {
-  const span = trace.getActiveSpan();
-  if (!span) return;
-  for (const [key, value] of Object.entries(attributes)) {
-    span.setAttribute(key, value);
-  }
-}
