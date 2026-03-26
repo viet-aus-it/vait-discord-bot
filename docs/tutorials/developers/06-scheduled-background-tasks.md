@@ -113,7 +113,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 ```
 
-## Optional: Add Span Tracing
+## Step 5: Add Span Tracing
 
 Wrap your task's main logic in a span to track execution in the OTel pipeline:
 
