@@ -10,6 +10,7 @@ import { processInteraction } from '../src/utils/interaction-processor';
 import { type ConfigSchema, loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
+import { recordSpanError, tracer } from '../src/utils/tracer';
 
 const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestConfig, 'guildId'> & { nodeEnv: ConfigSchema['NODE_ENV'] }) => {
   if (nodeEnv !== 'production') {
@@ -17,15 +18,22 @@ const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestC
     return;
   }
 
-  logger.info('[deploy-commands]: Deploying global commands in production mode');
-  const commands = [...slashCommandList, ...contextMenuCommandList];
-  const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
-  if (op.isErr()) {
-    logger.error('[deploy-commands]: Cannot deploy global commands', op.unwrapErr());
-    process.exit(1);
-  }
+  return tracer.startActiveSpan('deployCommands', async (span) => {
+    try {
+      logger.info('[deploy-commands]: Deploying global commands in production mode');
+      const commands = [...slashCommandList, ...contextMenuCommandList];
+      const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
+      if (op.isErr()) {
+        recordSpanError(span, op.unwrapErr(), 'err-deploy-commands-failed');
+        logger.error('[deploy-commands]: Cannot deploy global commands', op.unwrapErr());
+        process.exit(1);
+      }
 
-  logger.info('[deploy-commands]: Successfully deployed global commands');
+      logger.info('[deploy-commands]: Successfully deployed global commands');
+    } finally {
+      span.end();
+    }
+  });
 };
 
 const main = async () => {
