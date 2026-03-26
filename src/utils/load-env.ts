@@ -31,7 +31,7 @@ export const ConfigSchema = z
     },
     {
       message: 'GUILD_ID is required in development for command deployment',
-      path: ['NODE_ENV', 'GUILD_ID'],
+      path: ['GUILD_ID'],
     }
   )
   .refine(
@@ -41,7 +41,7 @@ export const ConfigSchema = z
     },
     {
       message: 'AXIOM_TOKEN, AXIOM_DATASET, and AXIOM_ORG_ID are required in production',
-      path: ['NODE_ENV', 'AXIOM_TOKEN', 'AXIOM_DATASET', 'AXIOM_ORG_ID'],
+      path: ['AXIOM_TOKEN'],
     }
   )
   .refine(
@@ -51,7 +51,7 @@ export const ConfigSchema = z
     },
     {
       message: 'OTEL_EXPORTER_OTLP_ENDPOINT is required when ENABLE_OTEL is true',
-      path: ['ENABLE_OTEL', 'OTEL_EXPORTER_OTLP_ENDPOINT'],
+      path: ['OTEL_EXPORTER_OTLP_ENDPOINT'],
     }
   );
 export type ConfigSchema = z.infer<typeof ConfigSchema>;
