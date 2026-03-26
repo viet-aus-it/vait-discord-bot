@@ -34,7 +34,7 @@ vait-discord-bot/
 │   └── utils/                   # Shared helper functions
 │       ├── filtering-span-processor.ts  # Tail-based span sampling
 │       ├── logger.ts            # Winston logger
-│       ├── tracer.ts            # OTel tracer, recordSpanError, setSpanAttributes
+│       ├── tracer.ts            # OTel tracer, recordSpanError
 │       └── ...
 ├── test/
 │   ├── fixtures/                # Test data and mock builders

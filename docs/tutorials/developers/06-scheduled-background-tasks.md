@@ -126,8 +126,9 @@ const cleanup = async () => {
   return tracer.startActiveSpan('cleanupOldLogs', async (span) => {
     try {
       // ... task logic
-      span.end();
-      process.exit(0);
+    } catch (error) {
+      recordSpanError(error, 'err-cleanup-old-logs-failed');
+      throw error;
     } finally {
       span.end();
     }

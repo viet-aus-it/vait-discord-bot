@@ -52,8 +52,8 @@ The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTel) for instrumenting
 
 This was chosen over vendor-specific SDKs (e.g., Axiom's own SDK) because:
 
-- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a complete code rewrite, as long as the provider accepts the [OpenTelemtry Protocol](https://opentelemetry.io/docs/specs/otlp/) (or OTLP)
-- **Standardised semantic conventions** — attributes like `messaging.system`, `enduser.id`, and `error.type` follow an industry standard, making traces readable by anyone familiar with OTel
+- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a complete code rewrite, as long as the provider accepts the [OpenTelemetry Protocol](https://opentelemetry.io/docs/specs/otlp/) (or OTLP)
+- **Standardised semantic conventions** — attributes like `enduser.id` and `error.type` follow an industry standard, making traces readable by anyone familiar with OTel
 
 Locally, [Jaeger](https://www.jaegertracing.io/) provides a lightweight trace viewer with span graph visualisation. In production, traces export to [Axiom](https://axiom.co/) for centralised observability. The `FilteringSpanProcessor` reduces production costs by dropping unprocessed messages entirely and sampling success spans at 1%, while always exporting error spans.
 
@@ -62,8 +62,6 @@ OTel is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behav
 ### Wide Events Pattern
 
 The bot follows the "wide events" approach to tracing — one rich span per unit of work (command execution, message processing, background task) rather than deep span hierarchies with many child spans. Each span is enriched with [OTel Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/) where applicable (e.g., `enduser.id`, `error.type`) and Discord-specific attributes under the `discord.*` namespace (e.g., `discord.guild.id`, `discord.command.name`, `discord.message.processed`).
-
-Command handlers enrich the active span from anywhere in the call stack using `setSpanAttributes()`, which is a no-op when OTel is disabled. This keeps trace volume low while capturing all the context needed for debugging.
 
 ## Why In-Memory Caching for Honeypot
 
