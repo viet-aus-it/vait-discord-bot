@@ -37,4 +37,5 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
+| `NODE_ENV` | No | `development` | Environment mode (`development`, `production`, or `test`). Drives environment-specific validation: `GUILD_ID` is required in development, Axiom variables are required in production. |
 | `TZ` | No | `Australia/Brisbane` | Timezone for the bot process |

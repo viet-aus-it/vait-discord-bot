@@ -8,7 +8,7 @@ import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 
 const broadcastReminder = async () => {
-  loadEnv();
+  const env = loadEnv();
   logger.info('BROADCASTING REMINDERS');
 
   const queryTime = getCurrentUnixTime();
@@ -24,8 +24,7 @@ const broadcastReminder = async () => {
     process.exit(0);
   }
 
-  const token = process.env.TOKEN;
-  const client = await getDiscordClient({ token });
+  const client = await getDiscordClient({ token: env.TOKEN });
 
   const jobs = await remindersData.reduce(
     async (accumulator, reminder) => {

@@ -7,12 +7,12 @@ import { type DiscordRequestConfig, deployGlobalCommands } from '../src/deploy-c
 import { commands as slashCommandList } from '../src/slash-commands';
 import { loadHoneypotChannels } from '../src/utils/honeypot-handler';
 import { processInteraction } from '../src/utils/interaction-processor';
-import { loadEnv } from '../src/utils/load-env';
+import { type ConfigSchema, loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
 
-const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
-  if (process.env.NODE_ENV !== 'production') {
+const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestConfig, 'guildId'> & { nodeEnv: ConfigSchema['NODE_ENV'] }) => {
+  if (nodeEnv !== 'production') {
     logger.info('[deploy-commands]: Skipping command deployment in development mode');
     return;
   }
@@ -29,16 +29,15 @@ const deployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'g
 };
 
 const main = async () => {
-  loadEnv();
+  const env = loadEnv();
   logger.info('[main]: STARTING BOT');
 
-  const token = process.env.TOKEN;
-  const client = await getDiscordClient({ token });
+  const client = await getDiscordClient({ token: env.TOKEN });
 
   if (!client.user) throw new Error('Something went wrong!');
   logger.info(`[main]: Logged in as ${client.user.tag}!`);
 
-  await deployCommands({ token, clientId: client.user.id });
+  await deployCommands({ token: env.TOKEN, clientId: client.user.id, nodeEnv: env.NODE_ENV });
 
   const honeypotOp = await Result.safe(loadHoneypotChannels());
   if (honeypotOp.isErr()) {

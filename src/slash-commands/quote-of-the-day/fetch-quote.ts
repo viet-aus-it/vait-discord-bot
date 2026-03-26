@@ -1,15 +1,15 @@
 import wretch from 'wretch';
 import { z } from 'zod';
 
-const ZenQuoteSchema = z.object({
+export const ZenQuoteSchema = z.object({
   q: z.string(),
   a: z.string(),
   h: z.string(),
 });
 
-const ZenQuoteResponse = z.array(ZenQuoteSchema).min(1).max(1);
+export const ZenQuoteResponse = z.array(ZenQuoteSchema).min(1).max(1);
 
-type ZenQuote = z.infer<typeof ZenQuoteSchema>;
+export type ZenQuote = z.infer<typeof ZenQuoteSchema>;
 
 export interface Quote {
   quote: string;

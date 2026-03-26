@@ -7,12 +7,9 @@ import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 
 const deploy = async () => {
-  loadEnv();
-  const token = process.env.TOKEN;
-  const clientId = process.env.CLIENT_ID;
-  const guildId = process.env.GUILD_ID;
+  const env = loadEnv();
 
-  if (!guildId) {
+  if (!env.GUILD_ID) {
     throw new Error('GUILD_ID is not provided');
   }
 
@@ -20,9 +17,9 @@ const deploy = async () => {
   const commands = [...slashCommandList, ...contextMenuCommandList];
   const op = await Result.safe(
     deployGuildCommands(commands, {
-      token,
-      clientId,
-      guildId,
+      token: env.TOKEN,
+      clientId: env.CLIENT_ID,
+      guildId: env.GUILD_ID,
     })
   );
   if (op.isOk()) {
