@@ -7,11 +7,11 @@ import { type DiscordRequestConfig, deployGlobalCommands } from '../src/deploy-c
 import { commands as slashCommandList } from '../src/slash-commands';
 import { loadHoneypotChannels } from '../src/utils/honeypot-handler';
 import { processInteraction } from '../src/utils/interaction-processor';
-import { loadEnv } from '../src/utils/load-env';
+import { type ConfigSchema, loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
 
-const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestConfig, 'guildId'> & { nodeEnv: string }) => {
+const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestConfig, 'guildId'> & { nodeEnv: ConfigSchema['NODE_ENV'] }) => {
   if (nodeEnv !== 'production') {
     logger.info('[deploy-commands]: Skipping command deployment in development mode');
     return;
