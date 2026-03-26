@@ -37,14 +37,14 @@ export class FilteringSpanProcessor implements SpanProcessor {
   }
 
   private shouldExport(span: ReadableSpan): boolean {
-    // Rule 1: Always keep error spans (100%)
-    if (span.status.code === SpanStatusCode.ERROR) {
-      return true;
-    }
-
-    // Rule 2: Drop unprocessed messages entirely
+    // Rule 1: Drop unprocessed messages entirely
     if (span.attributes['discord.message.processed'] === false) {
       return false;
+    }
+
+    // Rule 2: Always keep error spans (100%)
+    if (span.status.code === SpanStatusCode.ERROR) {
+      return true;
     }
 
     // Rule 3: Sample success spans at successRate
