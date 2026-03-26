@@ -26,10 +26,27 @@ const configSchema = z
     // Database config
     DATABASE_URL: z.string(),
   })
-  .refine((env) => env.ENABLE_OTEL !== 'true' || !!env.OTEL_EXPORTER_OTLP_ENDPOINT, {
-    message: 'OTEL_EXPORTER_OTLP_ENDPOINT is required when ENABLE_OTEL is true',
-    path: ['OTEL_EXPORTER_OTLP_ENDPOINT'],
-  });
+  .refine(
+    (env) => {
+      if (env.ENABLE_OTEL !== 'true') return true;
+      return !!env.OTEL_EXPORTER_OTLP_ENDPOINT;
+    },
+    {
+      message: 'OTEL_EXPORTER_OTLP_ENDPOINT is required when ENABLE_OTEL is true',
+      path: ['OTEL_EXPORTER_OTLP_ENDPOINT'],
+    }
+  )
+  .refine(
+    (env) => {
+      const otelEnabledInProd = env.ENABLE_OTEL === 'true' && env.NODE_ENV === 'production';
+      if (!otelEnabledInProd) return true;
+      return !!env.AXIOM_TOKEN && !!env.AXIOM_DATASET;
+    },
+    {
+      message: 'AXIOM_TOKEN and AXIOM_DATASET are required when ENABLE_OTEL is true in production',
+      path: ['AXIOM_TOKEN'],
+    }
+  );
 type ConfigSchema = z.infer<typeof configSchema>;
 
 declare global {
