@@ -73,3 +73,4 @@
 ## Formatting and Style Guidelines
 
 - Use dashes for lists in markdown documents instead of literal dots, especially in commit messages
+- When referring to OpenTelemetry, always use the abbreviation `OTel` (not `OTEL`). The only time `OTEL` appears in full caps is in environment variable names (e.g., `ENABLE_OTEL`, `OTEL_DEBUG`). This follows the [official OpenTelemetry glossary](https://opentelemetry.io/docs/concepts/glossary/#otel).
