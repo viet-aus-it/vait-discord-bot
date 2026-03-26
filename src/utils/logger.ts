@@ -13,7 +13,7 @@ const axiomTransport = new AxiomTransport({
 
 const devOptions: winston.LoggerOptions = {
   level: 'debug',
-  defaultMeta: { service: 'vait-chatbot-dev', timestamp: Date.now() },
+  defaultMeta: { service: 'vait-chatbot-dev' },
   transports: [consoleTransport],
   format: winston.format.combine(winston.format.timestamp(), winston.format.prettyPrint({ colorize: true })),
 };
@@ -21,19 +21,19 @@ const devOptions: winston.LoggerOptions = {
 // Production without OTEL — fallback to direct Axiom transport
 const prodOptions: winston.LoggerOptions = {
   level: 'info',
-  defaultMeta: { service: 'vait-chatbot', timestamp: Date.now() },
+  defaultMeta: { service: 'vait-chatbot' },
   transports: [consoleTransport, axiomTransport],
   exceptionHandlers: [axiomTransport],
   rejectionHandlers: [axiomTransport],
-  format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.errors({ stack: true }), winston.format.json()),
 };
 
 // Production with OTEL — auto-instrumentation patches Winston to send logs via OTEL pipeline
 const prodOptionsWithTelemetry: winston.LoggerOptions = {
   level: 'info',
-  defaultMeta: { service: 'vait-chatbot', timestamp: Date.now() },
+  defaultMeta: { service: 'vait-chatbot' },
   transports: [consoleTransport],
-  format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
+  format: winston.format.combine(winston.format.timestamp(), winston.format.errors({ stack: true }), winston.format.json()),
 };
 
 function getLoggerOptions(): winston.LoggerOptions {
