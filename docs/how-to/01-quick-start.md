@@ -39,12 +39,22 @@ Fill in the `.env` file with the values from Step 1. See [Environment Variables]
 ## Step 3: Build and Run
 
 ```bash
-docker compose up -d db openobserve
+docker compose up -d db
 pnpm install
 pnpm run prisma:gen
 pnpm run deploy:command
 pnpm run start
 ```
+
+### Optional: Enable OpenTelemetry
+
+If you want local trace and log observability, start the [OpenObserve](https://openobserve.ai/) container and enable OTEL:
+
+```bash
+docker compose up -d openobserve
+```
+
+Then in your `.env`, set `ENABLE_OTEL=true` and add the `OPENOBSERVE_AUTH_TOKEN` from the OpenObserve console (http://localhost:5080) under **API Keys**. See [Environment Variables](../reference/05-environment-variables.md) for details.
 
 ## Next Steps
 
