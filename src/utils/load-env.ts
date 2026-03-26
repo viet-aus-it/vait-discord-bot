@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const configSchema = z
+export const ConfigSchema = z
   .object({
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     TZ: z.string().default('Australia/Brisbane'),
@@ -38,7 +38,7 @@ const configSchema = z
       path: ['AXIOM_TOKEN'],
     }
   );
-type ConfigSchema = z.infer<typeof configSchema>;
+export type ConfigSchema = z.infer<typeof ConfigSchema>;
 
 declare global {
   namespace NodeJS {
@@ -47,7 +47,7 @@ declare global {
 }
 
 export const loadEnv = () => {
-  const validatedEnv = configSchema.safeParse(process.env);
+  const validatedEnv = ConfigSchema.safeParse(process.env);
   if (!validatedEnv.success) {
     console.error(`Error loading environment details. ${validatedEnv.error.message}`);
     throw new Error('INVALID CONFIG!', { cause: validatedEnv.error.issues });
