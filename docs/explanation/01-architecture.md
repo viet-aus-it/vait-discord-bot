@@ -50,22 +50,41 @@ For local observability, [OpenObserve](https://openobserve.ai/) provides a singl
 
 The app uses [OpenTelemetry](https://opentelemetry.io/) following a **wide events** philosophy: one rich span per unit of work, packed with all the context needed for debugging, rather than a deep tree of narrow child spans.
 
-Each entry point — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span and attaches all relevant attributes to it. Command handlers and utility functions are plain async functions with no tracing code; the root span is the only manually created span.
+Each entry point — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span and attaches all relevant attributes to it. Downstream command handlers enrich the same span with domain-specific attributes using `setSpanAttributes()` from `src/utils/tracer.ts`, which grabs the active span via `trace.getActiveSpan()`. No child spans are created manually.
 
-**What goes on each span:**
+**Attribute naming follows [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/):**
 
-| Category | Attributes |
-|----------|-----------|
-| Discord context | `discord.guild.id`, `discord.channel.id`, `discord.user.id`, `discord.command.name` |
-| Service metadata | `service.version`, `service.environment` |
-| Outcome | `command.duration_ms`, `error`, `error.message`, `error.slug` |
+| Category | Attributes | Source |
+|----------|-----------|--------|
+| OTEL Messaging | `messaging.system` (`"discord"`), `messaging.operation.type`, `messaging.operation.name`, `messaging.destination.name`, `messaging.message.id` | [Messaging Conventions](https://opentelemetry.io/docs/specs/semconv/messaging/) |
+| OTEL EndUser | `enduser.id` | [General Conventions](https://opentelemetry.io/docs/specs/semconv/general/attributes/) |
+| OTEL Error | `error.type` (low-cardinality slug like `err-command-rep-failed`) | [Error Conventions](https://opentelemetry.io/docs/specs/semconv/general/attributes/) |
+| Discord custom | `discord.guild.id`, `discord.interaction.type`, `discord.message.processed`, `discord.message.honeypot` | Custom, `discord.*` namespace |
+| Command custom | `discord.rep.*`, `discord.referral.*`, `discord.reminder.*`, `discord.weather.*`, etc. | Custom, set by command handlers via `setSpanAttributes()` |
+| Service (resource) | `service.name`, `service.version` | Set once on the OTEL resource in `bin/telemetry.ts`, auto-attached to all spans |
 
 This means any single span in the tracing backend contains enough information to understand what happened, who triggered it, where it ran, and whether it succeeded — without clicking through a span waterfall.
+
+**Enriching spans from command handlers:**
+
+Any function called within a span's scope can enrich it:
+
+```typescript
+import { setSpanAttributes } from '../../utils/tracer';
+
+// Inside a command handler — the active span is the processInteraction wide event
+setSpanAttributes({
+  'discord.rep.target_user_id': targetUser.id,
+  'discord.rep.new_value': updatedUser.reputation,
+});
+```
+
+`setSpanAttributes()` is a no-op when OTEL is disabled (no active span), so command handlers don't need any conditional checks.
 
 **FilteringSpanProcessor** (`src/utils/filtering-span-processor.ts`) implements tail-based sampling, deciding _after_ a span ends whether to export it:
 
 - **Errors** — always exported (100%). Every failed request reaches the backend.
-- **Unprocessed messages** — spans where `message.processed === false` (messages that did not trigger a honeypot and did not match any keyword) are sampled at 1:10,000 to avoid noise.
+- **Unprocessed messages** — spans where `discord.message.processed === false` (messages that did not trigger a honeypot and did not match any keyword) are sampled at 1:10,000 to avoid noise.
 - **Success spans** — sampled at 1% to keep costs manageable while still providing a statistical picture of normal traffic.
 
 **Auto-instrumentation** — Prisma/PostgreSQL queries and Node.js HTTP calls are automatically captured by `@opentelemetry/auto-instrumentations-node`. These appear as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.

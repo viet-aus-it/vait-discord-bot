@@ -40,7 +40,21 @@ const command: SlashCommand = {
 export default command;
 ```
 
-Commands are plain async functions — no tracing imports or span wrapping needed. The `processInteraction` handler creates a single wide event span that captures all context (user, guild, command name, timing, errors) automatically.
+Commands are plain async functions — no tracing imports or span wrapping needed. The `processInteraction` handler creates a single wide event span that captures all context (user, guild, command name, errors) automatically.
+
+If your command does external work (DB queries, API calls), you can enrich the span with domain-specific attributes:
+
+```typescript
+import { setSpanAttributes } from '../../utils/tracer';
+
+const execute = async (interaction: ChatInputCommandInteraction) => {
+  const message = interaction.options.getString('message');
+  setSpanAttributes({ 'discord.ping.has_message': !!message });
+  await interaction.reply(message ? `Pong! You said: ${message}` : 'Pong!');
+};
+```
+
+`setSpanAttributes()` grabs the active span from the call stack and is a no-op when OTEL is disabled. Use the `discord.*` namespace for custom attributes. See [Architecture — Wide Events](../../explanation/01-architecture.md#why-wide-events-over-deep-traces) for the full attribute naming conventions.
 
 For details on the `SlashCommand` interface and builder types, see [Command Interfaces](../../reference/06-command-interfaces.md).
 
