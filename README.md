@@ -4,25 +4,16 @@ A community-driven Discord bot for the [Vietnamese Australians in IT](https://di
 
 ## Tech Stack
 
-- [TypeScript](https://www.typescriptlang.org/), [Node.js](https://nodejs.org/) 22+
+- [TypeScript](https://www.typescriptlang.org/), [Node.js](https://nodejs.org/) 24+
 - [discord.js](https://discord.js.org/) v14
 - [Prisma](https://www.prisma.io/) ORM with [PostgreSQL](https://www.postgresql.org/)
 - [Vitest](https://vitest.dev/) for testing
 
 ## Quick Start
 
-> Prerequisites: [Node.js](https://nodejs.org/) 22+, [PNPM](https://pnpm.io/) 10+, [Docker](https://www.docker.com/) 20+
+> Prerequisites: [Node.js](https://nodejs.org/) 24+, [PNPM](https://pnpm.io/) 10+, [Docker](https://www.docker.com/) 20+
 
-```bash
-./scripts/onboarding.sh    # or follow the manual steps below
-docker compose up -d db
-pnpm install
-pnpm run prisma:gen
-pnpm run deploy:command
-pnpm run start
-```
-
-For the full setup guide, see [Quick Start](docs/how-to/01-quick-start.md).
+See the [Quick Start Guide](docs/how-to/01-quick-start.md) for setup instructions.
 
 ## Documentation
 

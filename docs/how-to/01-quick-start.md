@@ -4,7 +4,7 @@ Set up a local development environment for the VAIT Discord Bot.
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/en/) 22+
+- [Node.js](https://nodejs.org/en/) 24+
 - [PNPM](https://pnpm.io/) 10+
 - [Docker](https://www.docker.com/) 20+ and Docker Compose 1.28+
 - A Discord application and bot (see Step 1)
