@@ -48,7 +48,7 @@ When OpenTelemetry is enabled (`ENABLE_OTEL=true`), `@opentelemetry/instrumentat
 
 ## Why OpenTelemetry
 
-The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTel) for instrumenting, generating, collecting and exporting telemetry data (like traces, metrics and logs).OTel is a vendor-neutral observability standard — telemetry data can be exported to any compatible backend without changing application code.
+The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTel) for instrumenting, generating, collecting and exporting telemetry data (like traces, metrics and logs). OTel is a vendor-neutral observability standard — telemetry data can be exported to any compatible backend without changing application code.
 
 This was chosen over vendor-specific SDKs (e.g., Axiom's own SDK) because:
 
