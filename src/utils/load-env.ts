@@ -15,6 +15,15 @@ export const ConfigSchema = z
     AXIOM_DATASET: z.string().optional(),
     AXIOM_ORG_ID: z.string().optional(),
 
+    // OpenTelemetry config
+    ENABLE_OTEL: z.enum(['true', 'false']).default('false'),
+    OTEL_DEBUG: z.enum(['true', 'false']).default('false'),
+    OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
+    OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
+
+    // OpenObserve config (local dev only)
+    OPENOBSERVE_AUTH_TOKEN: z.string().optional(),
+
     // Database config
     DATABASE_URL: z.string(),
   })
@@ -35,6 +44,26 @@ export const ConfigSchema = z
     },
     {
       message: 'AXIOM_TOKEN, AXIOM_DATASET, and AXIOM_ORG_ID are required in production',
+      path: ['AXIOM_TOKEN'],
+    }
+  )
+  .refine(
+    (env) => {
+      if (env.ENABLE_OTEL !== 'true') return true;
+      return !!env.OTEL_EXPORTER_OTLP_ENDPOINT;
+    },
+    {
+      message: 'OTEL_EXPORTER_OTLP_ENDPOINT is required when ENABLE_OTEL is true',
+      path: ['OTEL_EXPORTER_OTLP_ENDPOINT'],
+    }
+  )
+  .refine(
+    (env) => {
+      if (env.ENABLE_OTEL !== 'true' || env.NODE_ENV !== 'production') return true;
+      return !!env.AXIOM_TOKEN && !!env.AXIOM_DATASET;
+    },
+    {
+      message: 'AXIOM_TOKEN and AXIOM_DATASET are required when ENABLE_OTEL is true in production',
       path: ['AXIOM_TOKEN'],
     }
   );
