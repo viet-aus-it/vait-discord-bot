@@ -16,7 +16,7 @@ export async function fetchLeaderboard(aocKey: string, leaderboardId: string, ye
 
   const parsedResult = AocLeaderboard.safeParse(result);
   if (!parsedResult.success) {
-    logger.error('ERROR: Cannot get leaderboard format.', parsedResult.error);
+    logger.error('ERROR: Cannot get leaderboard format.', { error: parsedResult.error });
     throw new Error(parsedResult.error.stack);
   }
 

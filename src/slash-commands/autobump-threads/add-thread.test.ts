@@ -16,7 +16,7 @@ describe('Add autobump thread', () => {
     interaction.options.getChannel.mockReturnValueOnce(mockChannel);
 
     await addAutobumpThreadCommand(interaction);
-    expect(interaction.reply).toBeCalledWith(`ERROR: The channel <#${mockChannel.id}> is not a thread.`);
+    expect(interaction.reply).toHaveBeenCalledWith(`ERROR: The channel <#${mockChannel.id}> is not a thread.`);
   });
 
   chatInputCommandInteractionTest('Should reply with error if it cannot be saved into the database', async ({ interaction }) => {
@@ -27,7 +27,7 @@ describe('Add autobump thread', () => {
     vi.spyOn(utils, 'addAutobumpThread').mockRejectedValueOnce(new Error('Synthetic Error'));
 
     await addAutobumpThreadCommand(interaction);
-    expect(interaction.reply).toBeCalledWith('ERROR: Cannot save this thread to be autobumped for this server. Please try again.');
+    expect(interaction.reply).toHaveBeenCalledWith('ERROR: Cannot save this thread to be autobumped for this server. Please try again.');
   });
 
   chatInputCommandInteractionTest('Should reply with success message if it can be saved into the database', async ({ interaction }) => {
@@ -38,6 +38,6 @@ describe('Add autobump thread', () => {
     interaction.options.getChannel.mockReturnValueOnce(mockChannel);
 
     await addAutobumpThreadCommand(interaction);
-    expect(interaction.reply).toBeCalledWith(`Successfully saved setting. Thread <#${threadId}> will be autobumped.`);
+    expect(interaction.reply).toHaveBeenCalledWith(`Successfully saved setting. Thread <#${threadId}> will be autobumped.`);
   });
 });
