@@ -30,14 +30,6 @@ function getExporterHeaders(): Record<string, string> {
   return {};
 }
 
-function getTraceExporter(): OTLPTraceExporter {
-  return new OTLPTraceExporter({ headers: getExporterHeaders() });
-}
-
-function getLogExporter(): OTLPLogExporter {
-  return new OTLPLogExporter({ headers: getExporterHeaders() });
-}
-
 function getLogRecordProcessor(exporter: OTLPLogExporter) {
   if (env.NODE_ENV === 'production') {
     return new BatchLogRecordProcessor(exporter);
@@ -69,9 +61,10 @@ function startTelemetry() {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
   }
 
-  const traceExporter = getTraceExporter();
+  const headers = getExporterHeaders();
+  const traceExporter = new OTLPTraceExporter({ headers });
   const spanProcessor = getSpanProcessor(traceExporter);
-  const logExporter = getLogExporter();
+  const logExporter = new OTLPLogExporter({ headers });
   const logRecordProcessor = getLogRecordProcessor(logExporter);
 
   const sdk = new NodeSDK({
