@@ -11,6 +11,13 @@ import { loadEnv } from '../src/utils/load-env';
 
 const env = loadEnv();
 
+if (env.ENABLE_OTEL) {
+  console.log('Starting OpenTelemetry');
+  startTelemetry();
+} else {
+  console.log('Skip enabling OpenTelemetry');
+}
+
 function getTraceExporter(): OTLPTraceExporter {
   const headers: Record<string, string> =
     env.NODE_ENV === 'production'
@@ -67,11 +74,4 @@ function startTelemetry() {
       .then(() => console.log('Telemetry SDK shut down gracefully'))
       .catch((error) => console.error('Error shutting down telemetry SDK', error));
   });
-}
-
-if (env.ENABLE_OTEL) {
-  console.log('Starting OpenTelemetry');
-  startTelemetry();
-} else {
-  console.log('Skip enabling OpenTelemetry');
 }
