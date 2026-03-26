@@ -40,12 +40,12 @@ export class FilteringSpanProcessor implements SpanProcessor {
    * Determining if we should export a span or not
    *
    * The rules:
-   * - if the span is of a chat message, and it is unprocessed, we should just drop it since that's not
-   * relevant to our bot. We don't want to record every message that our bot can capture.
+   * - if the span is of a Discord message, and it is unprocessed, we should just drop it since that's not
+   *   relevant to our bot. We don't want to record every message that our bot can capture.
    * - if the span has an error, we ALWAYS report that, so we can attach triggers to it specifically.
-   * - otherwise, if it's an success, then it's business as usual. We will sample it out
-   * to the set `successRate` so that they won't add too much noise and we save on ingress cost
-   * and stay within the free tier.
+   * - otherwise, for successful spans (not an error), then it's business as usual. We will sample it out
+   *   to the set `successRate` to reduce excessive noise and most importantly ingress cost
+   *   to stay within the free tier.
    */
   private shouldExport(span: ReadableSpan): boolean {
     // Rule 1: Drop unprocessed messages entirely
