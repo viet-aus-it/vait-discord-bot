@@ -70,8 +70,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const settingsOp = await Result.safe(getAocSettings(guildId));
   if (settingsOp.isErr()) {
-    const errorMessage = settingsOp.unwrapErr();
-    logger.error(`[get-aoc-leaderboard]: Error getting AOC settings: ${errorMessage}`);
+    const errorMessage = 'Error getting AOC settings';
+    logger.error(`[get-aoc-leaderboard]: : ${errorMessage}`, settingsOp.unwrapErr());
     await interaction.editReply(`ERROR: ${errorMessage}`);
     return;
   }
