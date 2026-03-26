@@ -33,6 +33,7 @@ jobs:
           AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
           AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
           AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
+          ENABLE_OTEL: 'false'
           CLIENT_ID: blank
           TOKEN: blank
           DATABASE_URL: blank
