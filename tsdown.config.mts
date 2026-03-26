@@ -12,7 +12,7 @@ const cowPath = path.resolve('node_modules', 'cowsay', 'cows', 'default.cow');
 
 export default defineConfig({
   platform: 'node',
-  target: 'node22',
+  target: 'node24',
   unbundle: false,
   minify: true,
   entry: [
