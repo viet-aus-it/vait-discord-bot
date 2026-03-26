@@ -8,9 +8,6 @@ services:
     env_file: ".env.production"
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: discord_bot_prod
-    depends_on:
-      db-migrate:
-        condition: service_completed_successfully
 
   db-migrate:
     image: ghcr.io/viet-aus-it/prisma-migrate-service
