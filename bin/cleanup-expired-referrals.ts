@@ -12,7 +12,7 @@ const cleanup = async () => {
     try {
       const op = await Result.safe(cleanupExpiredCode());
       if (op.isErr()) {
-        recordSpanError(span, op.unwrapErr(), 'err-cleanup-referrals-failed');
+        recordSpanError(op.unwrapErr(), 'err-cleanup-referrals-failed');
         logger.error('[cleanup-expired-referrals]: Error cleaning up expired referrals', op.unwrapErr());
         span.end();
         process.exit(1);

@@ -28,7 +28,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
         const op = await Result.safe(command.execute(interaction));
         if (op.isErr()) {
-          recordSpanError(span, op.unwrapErr(), `err-command-${commandName}-failed`);
+          recordSpanError(op.unwrapErr(), `err-command-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}`, op.unwrapErr());
           return;
         }
@@ -51,7 +51,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
         const op = await Result.safe(command.execute(interaction));
         if (op.isErr()) {
-          recordSpanError(span, op.unwrapErr(), `err-contextmenu-${commandName}-failed`);
+          recordSpanError(op.unwrapErr(), `err-contextmenu-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}`, op.unwrapErr());
           return;
         }
@@ -74,7 +74,7 @@ export const processInteraction = async (interaction: Interaction): Promise<void
 
         const op = await Result.safe(command.autocomplete(interaction));
         if (op.isErr()) {
-          recordSpanError(span, op.unwrapErr(), `err-autocomplete-${commandName}-failed`);
+          recordSpanError(op.unwrapErr(), `err-autocomplete-${commandName}-failed`);
           logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}`, op.unwrapErr());
           return;
         }

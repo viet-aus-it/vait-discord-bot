@@ -24,7 +24,7 @@ const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestC
       const commands = [...slashCommandList, ...contextMenuCommandList];
       const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
       if (op.isErr()) {
-        recordSpanError(span, op.unwrapErr(), 'err-deploy-commands-failed');
+        recordSpanError(op.unwrapErr(), 'err-deploy-commands-failed');
         logger.error('[deploy-commands]: Cannot deploy global commands', op.unwrapErr());
         process.exit(1);
       }

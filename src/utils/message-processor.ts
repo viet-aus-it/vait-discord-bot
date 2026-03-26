@@ -52,7 +52,7 @@ export const processMessage = async (message: Message<true>, config: CommandConf
         span.setAttribute('discord.message.honeypot', true);
         const result = await Result.safe(handleHoneypotTrigger(message));
         if (result.isErr()) {
-          recordSpanError(span, result.unwrapErr(), 'err-honeypot-trigger-failed');
+          recordSpanError(result.unwrapErr(), 'err-honeypot-trigger-failed');
           logger.error('[honeypot]: Error processing honeypot trigger', result.unwrapErr());
         }
         return;
@@ -65,7 +65,7 @@ export const processMessage = async (message: Message<true>, config: CommandConf
       try {
         await Promise.all(keywordPromises);
       } catch (error) {
-        recordSpanError(span, error, 'err-keyword-processing-failed');
+        recordSpanError(error, 'err-keyword-processing-failed');
         logger.error('ERROR PROCESSING MESSAGE', error);
       }
     } finally {
