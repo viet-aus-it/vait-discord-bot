@@ -16,8 +16,14 @@ export const ConfigSchema = z
     AXIOM_ORG_ID: z.string().optional(),
 
     // OpenTelemetry config
-    ENABLE_OTEL: z.enum(['true', 'false']).default('false'),
-    OTEL_DEBUG: z.enum(['true', 'false']).default('false'),
+    ENABLE_OTEL: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
+    OTEL_DEBUG: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
     OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
     OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 
@@ -49,7 +55,7 @@ export const ConfigSchema = z
   )
   .refine(
     (env) => {
-      if (env.ENABLE_OTEL !== 'true') return true;
+      if (!env.ENABLE_OTEL) return true;
       return !!env.OTEL_EXPORTER_OTLP_ENDPOINT;
     },
     {
@@ -58,12 +64,6 @@ export const ConfigSchema = z
     }
   );
 export type ConfigSchema = z.infer<typeof ConfigSchema>;
-
-declare global {
-  namespace NodeJS {
-    interface ProcessEnv extends ConfigSchema {}
-  }
-}
 
 export const loadEnv = () => {
   const validatedEnv = ConfigSchema.safeParse(process.env);

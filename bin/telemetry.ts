@@ -46,7 +46,7 @@ function startTelemetry() {
   const instrumentations = getNodeAutoInstrumentations();
   const prismaInstrumentation = new PrismaInstrumentation();
 
-  if (env.OTEL_DEBUG === 'true') {
+  if (env.OTEL_DEBUG) {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
   }
 
@@ -72,7 +72,7 @@ function startTelemetry() {
   });
 }
 
-if (env.ENABLE_OTEL === 'true') {
+if (env.ENABLE_OTEL) {
   console.log('Starting OpenTelemetry');
   startTelemetry();
 } else {
