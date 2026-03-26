@@ -115,7 +115,7 @@ jobs:
 
 ## Optional: Add Span Tracing
 
-Wrap your task's main logic in a span to track execution in the OTEL pipeline:
+Wrap your task's main logic in a span to track execution in the OTel pipeline:
 
 ```typescript
 import { recordSpanError, tracer } from '../src/utils/tracer';

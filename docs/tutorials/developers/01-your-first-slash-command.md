@@ -126,7 +126,7 @@ You should see both tests pass.
 
 ## Optional: Add Span Attributes
 
-If your command has useful context worth tracking (database results, external API calls, user options), you can enrich the active OTEL span from your command handler using `setSpanAttributes`. This is a no-op when OTEL is disabled.
+If your command has useful context worth tracking (database results, external API calls, user options), you can enrich the active OTel span from your command handler using `setSpanAttributes`. This is a no-op when OTel is disabled.
 
 ```typescript
 import { setSpanAttributes } from '../../utils/tracer';

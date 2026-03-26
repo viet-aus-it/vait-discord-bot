@@ -44,26 +44,26 @@ The `getOrCreateUser` pattern (find or create) trades a potential extra database
 
 Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
 
-When OpenTelemetry is enabled (`ENABLE_OTEL=true`), `@opentelemetry/instrumentation-winston` (bundled in auto-instrumentations) automatically patches Winston to send logs through the OTEL pipeline. The direct `@axiomhq/winston` transport is kept as a fallback when OTEL is disabled, ensuring production log aggregation is never lost. Once OTEL is stable in production, the `@axiomhq/winston` fallback will be removed.
+When OpenTelemetry is enabled (`ENABLE_OTEL=true`), `@opentelemetry/instrumentation-winston` (bundled in auto-instrumentations) automatically patches Winston to send logs through the OTel pipeline. The direct `@axiomhq/winston` transport is kept as a fallback when OTel is disabled, ensuring production log aggregation is never lost. Once OTel is stable in production, the `@axiomhq/winston` fallback will be removed.
 
 ## Why OpenTelemetry
 
-The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTEL) for distributed tracing. OTEL is a vendor-neutral observability standard — traces can be exported to any compatible backend without changing application code.
+The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTel) for instrumenting, generating, collecting and exporting telemetry data (like traces, metrics and logs).OTel is a vendor-neutral observability standard — telemetry data can be exported to any compatible backend without changing application code.
 
 This was chosen over vendor-specific SDKs (e.g., Axiom's own SDK) because:
 
-- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a code rewrite
-- **Standardised semantic conventions** — attributes like `messaging.system`, `enduser.id`, and `error.type` follow an industry standard, making traces readable by anyone familiar with OTEL
+- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a complete code rewrite, as long as the provider accepts the [OpenTelemtry Protocol](https://opentelemetry.io/docs/specs/otlp/) (or OTLP)
+- **Standardised semantic conventions** — attributes like `messaging.system`, `enduser.id`, and `error.type` follow an industry standard, making traces readable by anyone familiar with OTel
 
 Locally, [Jaeger](https://www.jaegertracing.io/) provides a lightweight trace viewer with span graph visualisation. In production, traces export to [Axiom](https://axiom.co/) for centralised observability. The `FilteringSpanProcessor` reduces production costs by dropping unprocessed messages entirely and sampling success spans at 1%, while always exporting error spans.
 
-OTEL is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behaviour when off.
+OTel is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behaviour when off.
 
 ### Wide Events Pattern
 
-The bot follows the "wide events" approach to tracing — one rich span per unit of work (command execution, message processing, background task) rather than deep span hierarchies with many child spans. Each span is enriched with OTEL semantic conventions (`messaging.system`, `messaging.operation.name`, `enduser.id`) and Discord-specific attributes (`discord.guild.id`, `discord.interaction.type`, `discord.message.processed`).
+The bot follows the "wide events" approach to tracing — one rich span per unit of work (command execution, message processing, background task) rather than deep span hierarchies with many child spans. Each span is enriched with OTel semantic conventions (`messaging.system`, `messaging.operation.name`, `enduser.id`) and Discord-specific attributes (`discord.guild.id`, `discord.interaction.type`, `discord.message.processed`).
 
-Command handlers enrich the active span from anywhere in the call stack using `setSpanAttributes()`, which is a no-op when OTEL is disabled. This keeps trace volume low while capturing all the context needed for debugging.
+Command handlers enrich the active span from anywhere in the call stack using `setSpanAttributes()`, which is a no-op when OTel is disabled. This keeps trace volume low while capturing all the context needed for debugging.
 
 ## Why In-Memory Caching for Honeypot
 
