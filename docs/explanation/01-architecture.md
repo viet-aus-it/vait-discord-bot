@@ -44,7 +44,7 @@ The `getOrCreateUser` pattern (find or create) trades a potential extra database
 
 Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
 
-When OpenTelemetry is enabled (`ENABLE_OTEL=true`), logs route through the OTEL pipeline via `@opentelemetry/winston-transport` instead of the direct `@axiomhq/winston` transport. This unifies traces and logs in the same backend. The direct Axiom transport is kept as a fallback when OTEL is disabled, ensuring production log aggregation is never lost. Once OTEL is stable in production, the `@axiomhq/winston` fallback will be removed.
+When OpenTelemetry is enabled (`ENABLE_OTEL=true`), `@opentelemetry/instrumentation-winston` (bundled in auto-instrumentations) automatically patches Winston to send logs through the OTEL pipeline. The direct `@axiomhq/winston` transport is kept as a fallback when OTEL is disabled, ensuring production log aggregation is never lost. Once OTEL is stable in production, the `@axiomhq/winston` fallback will be removed.
 
 ## Why OpenTelemetry
 
