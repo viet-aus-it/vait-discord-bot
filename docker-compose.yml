@@ -13,5 +13,10 @@ services:
     image: jaegertracing/all-in-one:latest
     container_name: vait_jaeger
     ports:
-      - "4318:4318"
-      - "16686:16686"
+      - 4317:4317
+      - 4318:4318
+      - 9411:9411
+      - 14250:14250
+      - 14268:14268
+      - 14269:14269
+      - 16686:16686
