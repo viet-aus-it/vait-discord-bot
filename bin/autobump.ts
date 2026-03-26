@@ -25,7 +25,7 @@ const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
 
     await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
   } catch (error) {
-    logger.error(`[autobump]: Failed to bump thread ${thread.id}`, error);
+    logger.error(`[autobump]: Failed to bump thread ${thread.id}`, { error });
   }
 };
 

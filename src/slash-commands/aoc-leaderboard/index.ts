@@ -71,7 +71,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const settingsOp = await Result.safe(getAocSettings(guildId));
   if (settingsOp.isErr()) {
     const errorMessage = settingsOp.unwrapErr();
-    logger.error(`[get-aoc-leaderboard]: Error getting AOC settings: ${errorMessage}`);
+    logger.error(`[get-aoc-leaderboard]: Error getting AOC settings`, { error: errorMessage });
     await interaction.editReply(`ERROR: ${errorMessage}`);
     return;
   }
@@ -87,8 +87,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const year = getAocYear();
   const fetchAndSaveOp = await Result.safe(fetchAndSaveLeaderboard(year, settings));
   if (fetchAndSaveOp.isErr()) {
-    const errorMessage = `Error fetching and/or saving new leaderboard result: ${fetchAndSaveOp.unwrapErr()}`;
-    logger.error(`[get-aoc-leaderboard]: ${errorMessage}`);
+    const errorMessage = `Error fetching and/or saving new leaderboard result`;
+    logger.error(`[get-aoc-leaderboard]: ${errorMessage}`, { error: fetchAndSaveOp.unwrapErr() });
     await interaction.editReply(`ERROR: ${errorMessage}`);
     return;
   }
