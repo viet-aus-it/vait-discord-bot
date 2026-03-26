@@ -61,7 +61,7 @@ OTel is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behav
 
 ### Wide Events Pattern
 
-The bot follows the "wide events" approach to tracing — one rich span per unit of work (command execution, message processing, background task) rather than deep span hierarchies with many child spans. Each span is enriched with OTel semantic conventions (`messaging.system`, `messaging.operation.name`, `enduser.id`) and Discord-specific attributes (`discord.guild.id`, `discord.interaction.type`, `discord.message.processed`).
+The bot follows the "wide events" approach to tracing — one rich span per unit of work (command execution, message processing, background task) rather than deep span hierarchies with many child spans. Each span is enriched with [OTel Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/) where applicable (e.g., `enduser.id`, `error.type`) and Discord-specific attributes under the `discord.*` namespace (e.g., `discord.guild.id`, `discord.command.name`, `discord.message.processed`).
 
 Command handlers enrich the active span from anywhere in the call stack using `setSpanAttributes()`, which is a no-op when OTel is disabled. This keeps trace volume low while capturing all the context needed for debugging.
 

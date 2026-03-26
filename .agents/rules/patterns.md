@@ -20,10 +20,8 @@
 
 ## OpenTelemetry
 
-- **Span attributes**: When setting span attributes, prefer using constants from `@opentelemetry/semantic-conventions` if the attribute matches an existing [OTel Semantic Convention](https://opentelemetry.io/docs/specs/semconv/). Only create custom attributes (e.g., `discord.*`) when no standard convention applies.
-- **Custom namespace**: All Discord-specific custom attributes use the `discord.*` prefix (e.g., `discord.guild.id`, `discord.channel.id`, `discord.command.name`)
-- **Error recording**: Use `recordSpanError(error, slug)` from `src/utils/tracer.ts`, which records on the active span automatically
-- **Wide events pattern**: One span per unit of work, enriched from inner layers via the active span, not deep span hierarchies
+- **Span attributes**: Prefer constants from `@opentelemetry/semantic-conventions` when the attribute matches an existing [OTel Semantic Convention](https://opentelemetry.io/docs/specs/semconv/). Only create custom `discord.*` attributes when no standard convention applies.
+- See [Why OpenTelemetry](../docs/explanation/01-architecture.md#why-opentelemetry) for architecture decisions, wide events pattern, and attribute conventions
 
 ## Testing
 
