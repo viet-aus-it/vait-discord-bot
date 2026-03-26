@@ -36,7 +36,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const op = await Result.safe(getUserReferralCodes({ userId, guildId }));
   if (op.isErr()) {
-    logger.error('[referral-list]: Error while retrieving referral codes', { error: op.unwrapErr() });
+    logger.error('[referral-list]: Error while retrieving referral codes', op.unwrapErr());
     await interaction.reply('There is some error retrieving your referral codes. Please try again later.');
     return;
   }

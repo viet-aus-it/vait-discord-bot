@@ -33,7 +33,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
-    logger.error('[reminder-update]: Error while updating reminder', { error: op.unwrapErr() });
+    logger.error('[reminder-update]: Error while updating reminder', op.unwrapErr());
     await interaction.reply(`Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`);
     return;
   }

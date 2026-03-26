@@ -48,7 +48,7 @@ export const joke = async (interaction: ChatInputCommandInteraction) => {
 
   const result = await Result.safe(fetchJoke());
   if (result.isErr()) {
-    logger.error('[joke]: Error fetching joke', { error: result.unwrapErr() });
+    logger.error('[joke]: Error fetching joke', result.unwrapErr());
     await interaction.editReply('Could not fetch a joke right now.');
     return;
   }
