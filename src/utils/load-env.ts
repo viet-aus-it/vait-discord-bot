@@ -56,16 +56,6 @@ export const ConfigSchema = z
       message: 'OTEL_EXPORTER_OTLP_ENDPOINT is required when ENABLE_OTEL is true',
       path: ['OTEL_EXPORTER_OTLP_ENDPOINT'],
     }
-  )
-  .refine(
-    (env) => {
-      if (env.ENABLE_OTEL !== 'true' || env.NODE_ENV !== 'production') return true;
-      return !!env.AXIOM_TOKEN && !!env.AXIOM_DATASET;
-    },
-    {
-      message: 'AXIOM_TOKEN and AXIOM_DATASET are required when ENABLE_OTEL is true in production',
-      path: ['AXIOM_TOKEN'],
-    }
   );
 export type ConfigSchema = z.infer<typeof ConfigSchema>;
 
