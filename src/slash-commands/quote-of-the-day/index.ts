@@ -12,7 +12,7 @@ export const getQuoteOfTheDay = async (interaction: ChatInputCommandInteraction)
   logger.info(`[quote-of-the-day]: ${interaction.user.tag} is getting a quote of the day`);
   const quote = await Result.safe(fetchQuote());
   if (quote.isErr()) {
-    logger.info('[quote-of-the-day]: Error getting quotes', { error: quote.unwrapErr() });
+    logger.info('[quote-of-the-day]: Error getting quotes', quote.unwrapErr());
     await interaction.editReply('Error getting quotes');
     return;
   }

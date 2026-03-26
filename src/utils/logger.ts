@@ -13,7 +13,7 @@ function getLoggerOptions(): winston.LoggerOptions {
       level: 'debug',
       defaultMeta: { service: 'vait-chatbot-dev' },
       transports: [consoleTransport],
-      format: winston.format.combine(winston.format.timestamp(), winston.format.prettyPrint({ colorize: true })),
+      format: winston.format.combine(winston.format.timestamp(), winston.format.errors({ stack: true }), winston.format.prettyPrint({ colorize: true })),
     };
   }
 

@@ -25,7 +25,7 @@ export const weather = async (interaction: ChatInputCommandInteraction) => {
 
   const weatherData = await Result.safe(fetchWeather(location));
   if (weatherData.isErr()) {
-    logger.info('[weather]: Error getting weather data', { error: weatherData.unwrapErr() });
+    logger.info('[weather]: Error getting weather data', weatherData.unwrapErr());
     await interaction.editReply('Error getting weather data for location.');
     return;
   }
