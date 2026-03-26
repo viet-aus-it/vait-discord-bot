@@ -16,14 +16,8 @@ export const ConfigSchema = z
     AXIOM_ORG_ID: z.string().optional(),
 
     // OpenTelemetry config
-    ENABLE_OTEL: z
-      .enum(['true', 'false'])
-      .default('false')
-      .transform((v) => v === 'true'),
-    OTEL_DEBUG: z
-      .enum(['true', 'false'])
-      .default('false')
-      .transform((v) => v === 'true'),
+    ENABLE_OTEL: z.stringbool().default(false),
+    OTEL_DEBUG: z.stringbool().default(false),
     OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
     OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 
