@@ -59,6 +59,12 @@ Locally, [Jaeger](https://www.jaegertracing.io/) provides a lightweight trace vi
 
 OTEL is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behaviour when off.
 
+### Wide Events Pattern
+
+The bot follows the "wide events" approach to tracing — one rich span per unit of work (command execution, message processing, background task) rather than deep span hierarchies with many child spans. Each span is enriched with OTEL semantic conventions (`messaging.system`, `messaging.operation.name`, `enduser.id`) and Discord-specific attributes (`discord.guild.id`, `discord.interaction.type`, `discord.message.processed`).
+
+Command handlers enrich the active span from anywhere in the call stack using `setSpanAttributes()`, which is a no-op when OTEL is disabled. This keeps trace volume low while capturing all the context needed for debugging.
+
 ## Why In-Memory Caching for Honeypot
 
 The honeypot feature checks every incoming message to see if it was posted in a honeypot channel. Querying the database on every message would be expensive, so honeypot channels are loaded from the database into an in-memory `Map<guildId, channelId>` at startup. The map is updated immediately when an admin sets a new honeypot channel via the slash command, so changes take effect without a bot restart.

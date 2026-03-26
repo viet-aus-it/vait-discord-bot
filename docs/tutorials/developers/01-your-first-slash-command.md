@@ -124,6 +124,22 @@ pnpm test src/slash-commands/ping/index.test.ts
 
 You should see both tests pass.
 
+## Optional: Add Span Attributes
+
+If your command has useful context worth tracking (database results, external API calls, user options), you can enrich the active OTEL span from your command handler using `setSpanAttributes`. This is a no-op when OTEL is disabled.
+
+```typescript
+import { setSpanAttributes } from '../../utils/tracer';
+
+const execute = async (interaction: ChatInputCommandInteraction) => {
+  const message = interaction.options.getString('message');
+  setSpanAttributes({ 'app.ping.has_message': !!message });
+  await interaction.reply(message ? `Pong! You said: ${message}` : 'Pong!');
+};
+```
+
+See [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) for the wide events pattern.
+
 ## What's Next
 
 - [Add a Database-Backed Feature](./02-database-backed-feature.md)

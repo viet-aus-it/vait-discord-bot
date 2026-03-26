@@ -113,6 +113,30 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 ```
 
+## Optional: Add Span Tracing
+
+Wrap your task's main logic in a span to track execution in the OTEL pipeline:
+
+```typescript
+import { recordSpanError, tracer } from '../src/utils/tracer';
+
+const cleanup = async () => {
+  loadEnv();
+
+  return tracer.startActiveSpan('cleanupOldLogs', async (span) => {
+    try {
+      // ... task logic
+      span.end();
+      process.exit(0);
+    } finally {
+      span.end();
+    }
+  });
+};
+```
+
+See [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) for the wide events pattern.
+
 ## What's Next
 
 - [Permission-Based Access Control](./07-permission-based-access.md)
