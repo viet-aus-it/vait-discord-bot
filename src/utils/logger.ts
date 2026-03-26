@@ -5,26 +5,41 @@ import { loadEnv } from './load-env';
 const env = loadEnv();
 
 const consoleTransport = new winston.transports.Console();
-const axiomTransport = new AxiomTransport({
-  dataset: env.AXIOM_DATASET,
-  token: env.AXIOM_TOKEN || '',
-  orgId: env.AXIOM_ORG_ID,
-});
+const prodFormat = winston.format.combine(winston.format.timestamp(), winston.format.errors({ stack: true }), winston.format.json());
 
-const devOptions: winston.LoggerOptions = {
-  level: 'debug',
-  defaultMeta: { service: 'vait-chatbot-dev', timestamp: Date.now() },
-  transports: [consoleTransport],
-  format: winston.format.combine(winston.format.timestamp(), winston.format.prettyPrint({ colorize: true })),
-};
+function getLoggerOptions(): winston.LoggerOptions {
+  if (env.NODE_ENV !== 'production') {
+    return {
+      level: 'debug',
+      defaultMeta: { service: 'vait-chatbot-dev' },
+      transports: [consoleTransport],
+      format: winston.format.combine(winston.format.timestamp(), winston.format.errors({ stack: true }), winston.format.prettyPrint({ colorize: true })),
+    };
+  }
 
-const prodOptions: winston.LoggerOptions = {
-  level: 'info',
-  defaultMeta: { service: 'vait-chatbot', timestamp: Date.now() },
-  transports: [consoleTransport, axiomTransport],
-  exceptionHandlers: [axiomTransport],
-  rejectionHandlers: [axiomTransport],
-  format: winston.format.combine(winston.format.errors({ stack: true }), winston.format.json()),
-};
+  if (env.ENABLE_OTEL) {
+    return {
+      level: 'info',
+      defaultMeta: { service: 'vait-chatbot' },
+      transports: [consoleTransport],
+      format: prodFormat,
+    };
+  }
 
-export const logger = winston.createLogger(env.NODE_ENV === 'production' ? prodOptions : devOptions);
+  const axiomTransport = new AxiomTransport({
+    dataset: env.AXIOM_DATASET,
+    token: env.AXIOM_TOKEN || '',
+    orgId: env.AXIOM_ORG_ID,
+  });
+
+  return {
+    level: 'info',
+    defaultMeta: { service: 'vait-chatbot' },
+    transports: [consoleTransport, axiomTransport],
+    exceptionHandlers: [axiomTransport],
+    rejectionHandlers: [axiomTransport],
+    format: prodFormat,
+  };
+}
+
+export const logger = winston.createLogger(getLoggerOptions());

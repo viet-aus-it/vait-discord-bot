@@ -31,7 +31,7 @@ const cleanup = async () => {
   );
 
   if (result.isErr()) {
-    logger.error('[cleanup-old-logs]: Failed to clean up', { error: result.unwrapErr() });
+    logger.error('[cleanup-old-logs]: Failed to clean up', result.unwrapErr());
     process.exit(1);
   }
 

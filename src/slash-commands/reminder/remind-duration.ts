@@ -34,7 +34,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
-    logger.error('[reminder-in]: Error while saving reminder', { error: op.unwrapErr() });
+    logger.error('[reminder-in]: Error while saving reminder', op.unwrapErr());
     await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
     return;
   }

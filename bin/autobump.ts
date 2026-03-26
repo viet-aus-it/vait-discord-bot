@@ -25,7 +25,7 @@ const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
 
     await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
   } catch (error) {
-    logger.error(`[autobump]: Failed to bump thread ${thread.id}`, { error });
+    logger.error(`[autobump]: Failed to bump thread ${thread.id}`, error);
   }
 };
 
@@ -35,7 +35,7 @@ const autobump = async () => {
 
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
-    logger.error('[autobump]: Cannot retrieve autobump thread lists', { error: settings.unwrapErr() });
+    logger.error('[autobump]: Cannot retrieve autobump thread lists', settings.unwrapErr());
     process.exit(1);
   }
 

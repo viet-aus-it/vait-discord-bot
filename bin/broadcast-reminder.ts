@@ -14,7 +14,7 @@ const broadcastReminder = async () => {
   const queryTime = getCurrentUnixTime();
   const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
   if (reminders.isErr()) {
-    logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Query Time: ${queryTime}`, { error: reminders.unwrapErr() });
+    logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Query Time: ${queryTime}`, reminders.unwrapErr());
     process.exit(1);
   }
 

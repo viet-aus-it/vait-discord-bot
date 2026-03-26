@@ -59,7 +59,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
-    logger.error('[referral-update]: Error while updating referral code', { error: op.unwrapErr() });
+    logger.error('[referral-update]: Error while updating referral code', op.unwrapErr());
     await interaction.reply('Failed to update referral code. Please try again later.');
     return;
   }

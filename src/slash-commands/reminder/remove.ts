@@ -22,7 +22,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
-    logger.error('[reminder-delete]: Error while deleting reminder', { error: op.unwrapErr() });
+    logger.error('[reminder-delete]: Error while deleting reminder', op.unwrapErr());
     await interaction.reply(`Cannot delete reminder id ${reminderId}. Please try again later.`);
     return;
   }

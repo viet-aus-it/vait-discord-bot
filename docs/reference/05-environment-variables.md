@@ -42,7 +42,7 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 | `OTEL_SERVICE_NAME` | No | `vait-discord-bot` | Service name for trace attribution |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTEL enabled | — | OTLP HTTP base endpoint URL. The SDK appends signal-specific paths (`/v1/traces`, `/v1/logs`) automatically. Local dev: `http://localhost:4318` (Jaeger). |
 
-When `ENABLE_OTEL=true` in production, `AXIOM_TOKEN` and `AXIOM_DATASET` are also required (traces are exported to Axiom).
+When `ENABLE_OTEL=true` in production, `AXIOM_TOKEN` and `AXIOM_DATASET` are also required (traces and logs are exported to Axiom via the OTEL pipeline). When `ENABLE_OTEL=false`, logs fall back to the direct `@axiomhq/winston` transport.
 
 ## System
 

@@ -19,7 +19,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const guildId = interaction.guildId!;
   const op = await Result.safe(getUserReminders(user.id, guildId));
   if (op.isErr()) {
-    logger.error('[reminder-list]: Error while retrieving reminders', { error: op.unwrapErr() });
+    logger.error('[reminder-list]: Error while retrieving reminders', op.unwrapErr());
     await interaction.reply('There is some error retrieving your reminders. Please try again later.');
     return;
   }

@@ -1,7 +1,9 @@
 import { DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
+import { BatchLogRecordProcessor, SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { BatchSpanProcessor, SimpleSpanProcessor, type SpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
@@ -18,16 +20,21 @@ if (env.ENABLE_OTEL) {
   console.log('Skip enabling OpenTelemetry');
 }
 
-function getTraceExporter(): OTLPTraceExporter {
-  const headers: Record<string, string> =
-    env.NODE_ENV === 'production'
-      ? {
-          Authorization: `Bearer ${env.AXIOM_TOKEN || ''}`,
-          'X-Axiom-Dataset': env.AXIOM_DATASET || '',
-        }
-      : {};
+function getExporterHeaders(): Record<string, string> {
+  if (env.NODE_ENV === 'production') {
+    return {
+      Authorization: `Bearer ${env.AXIOM_TOKEN || ''}`,
+      'X-Axiom-Dataset': env.AXIOM_DATASET || '',
+    };
+  }
+  return {};
+}
 
-  return new OTLPTraceExporter({ headers });
+function getLogRecordProcessor(exporter: OTLPLogExporter) {
+  if (env.NODE_ENV === 'production') {
+    return new BatchLogRecordProcessor(exporter);
+  }
+  return new SimpleLogRecordProcessor(exporter);
 }
 
 function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
@@ -54,13 +61,17 @@ function startTelemetry() {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
   }
 
-  const traceExporter = getTraceExporter();
+  const headers = getExporterHeaders();
+  const traceExporter = new OTLPTraceExporter({ headers });
   const spanProcessor = getSpanProcessor(traceExporter);
+  const logExporter = new OTLPLogExporter({ headers });
+  const logRecordProcessor = getLogRecordProcessor(logExporter);
 
   const sdk = new NodeSDK({
     resource,
     instrumentations: [instrumentations, prismaInstrumentation],
     spanProcessors: [spanProcessor],
+    logRecordProcessors: [logRecordProcessor],
   });
 
   sdk.start();
@@ -68,6 +79,8 @@ function startTelemetry() {
   process.on('SIGTERM', () => {
     traceExporter.forceFlush();
     traceExporter.shutdown();
+    logExporter.forceFlush();
+    logExporter.shutdown();
 
     sdk
       .shutdown()
