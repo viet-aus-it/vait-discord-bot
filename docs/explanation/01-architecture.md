@@ -50,6 +50,20 @@ The honeypot feature checks every incoming message to see if it was posted in a 
 
 The trade-off is that the in-memory state can drift if the database is modified outside the bot process, but this is acceptable because the only writer is the bot's own slash command.
 
+## Why OpenTelemetry
+
+The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTEL) for distributed tracing. OTEL is a vendor-neutral observability standard — traces can be exported to any compatible backend without changing application code.
+
+This was chosen over vendor-specific SDKs (e.g., Axiom's own SDK) because:
+
+- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a code rewrite
+- **Standardised semantic conventions** — attributes like `messaging.system`, `enduser.id`, and `error.type` follow an industry standard, making traces readable by anyone familiar with OTEL
+- **Wide events pattern** — the bot creates one rich span per unit of work (command execution, message processing, background task) rather than deep span hierarchies. This keeps trace volume low while capturing all the context needed for debugging.
+
+Locally, [Jaeger](https://www.jaegertracing.io/) provides a lightweight trace viewer with span graph visualisation. In production, traces export to [Axiom](https://axiom.co/) for centralised observability. The `FilteringSpanProcessor` reduces production costs by dropping unprocessed messages entirely and sampling success spans at 1%, while always exporting error spans.
+
+OTEL is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behaviour when off.
+
 ## Deployment Model
 
 The bot runs as a single [Node.js](https://nodejs.org/) process in a [Docker](https://www.docker.com/) container alongside a PostgreSQL container. Command registration is a separate step (`pnpm deploy:command`) because the Discord API rate-limits registration calls, so commands should only be deployed when their definition changes, not on every bot restart.

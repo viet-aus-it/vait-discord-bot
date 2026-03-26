@@ -48,7 +48,7 @@ pnpm run start
 
 ### Optional: Local Observability
 
-To enable OpenTelemetry tracing locally:
+The bot supports [OpenTelemetry](https://opentelemetry.io/) tracing for debugging and understanding request flows. Locally, [Jaeger](https://www.jaegertracing.io/) provides a trace viewer with span graph visualisation. See [Why OpenTelemetry](../explanation/01-architecture.md#why-opentelemetry) for the design rationale.
 
 ```bash
 docker compose up -d db jaeger
