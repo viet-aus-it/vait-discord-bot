@@ -11,7 +11,7 @@ import { loadEnv } from '../src/utils/load-env';
 
 const env = loadEnv();
 
-function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
+function getTraceExporter(): OTLPTraceExporter {
   const headers: Record<string, string> =
     env.NODE_ENV === 'production'
       ? {
@@ -20,7 +20,7 @@ function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
         }
       : {};
 
-  return new OTLPTraceExporter({ url: otelEndpoint, headers });
+  return new OTLPTraceExporter({ headers });
 }
 
 function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
@@ -35,7 +35,6 @@ function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
 }
 
 function startTelemetry() {
-  const otelEndpoint = env.OTEL_EXPORTER_OTLP_ENDPOINT ?? '';
   const resource = resourceFromAttributes({
     [ATTR_SERVICE_NAME]: env.OTEL_SERVICE_NAME,
     [ATTR_SERVICE_VERSION]: '1.0.0',
@@ -48,7 +47,7 @@ function startTelemetry() {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
   }
 
-  const traceExporter = getTraceExporter(otelEndpoint);
+  const traceExporter = getTraceExporter();
   const spanProcessor = getSpanProcessor(traceExporter);
 
   const sdk = new NodeSDK({
