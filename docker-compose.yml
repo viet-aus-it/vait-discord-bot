@@ -8,3 +8,15 @@ services:
       - 5432:5432
     volumes:
       - ./.docker/volume/db/data:/var/lib/postgresql/data
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: vait_jaeger
+    ports:
+      - 4317:4317
+      - 4318:4318
+      - 9411:9411
+      - 14250:14250
+      - 14268:14268
+      - 14269:14269
+      - 16686:16686

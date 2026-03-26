@@ -44,11 +44,27 @@ The `getOrCreateUser` pattern (find or create) trades a potential extra database
 
 Logging uses [Winston](https://www.npmjs.com/package/winston) locally (console with pretty-printing) and [Axiom](https://axiom.co/) in production (centralised log aggregation). This split allows development debugging without external dependencies while providing searchable, persistent logs in production.
 
+Another reason is Axiom also supports OpenTelemetry, which will be described in details in the next section.
+
+## Why OpenTelemetry
+
+The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTEL) for distributed tracing. OTEL is a vendor-neutral observability standard — traces can be exported to any compatible backend without changing application code.
+
+This was chosen over vendor-specific SDKs (e.g., Axiom's own SDK) because:
+
+- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a code rewrite
+- **Standardised semantic conventions** — attributes like `messaging.system`, `enduser.id`, and `error.type` follow an industry standard, making traces readable by anyone familiar with OTEL
+
+Locally, [Jaeger](https://www.jaegertracing.io/) provides a lightweight trace viewer with span graph visualisation. In production, traces export to [Axiom](https://axiom.co/) for centralised observability. The `FilteringSpanProcessor` reduces production costs by dropping unprocessed messages entirely and sampling success spans at 1%, while always exporting error spans.
+
+OTEL is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behaviour when off.
+
 ## Why In-Memory Caching for Honeypot
 
 The honeypot feature checks every incoming message to see if it was posted in a honeypot channel. Querying the database on every message would be expensive, so honeypot channels are loaded from the database into an in-memory `Map<guildId, channelId>` at startup. The map is updated immediately when an admin sets a new honeypot channel via the slash command, so changes take effect without a bot restart.
 
 The trade-off is that the in-memory state can drift if the database is modified outside the bot process, but this is acceptable because the only writer is the bot's own slash command.
+
 
 ## Deployment Model
 

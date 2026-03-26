@@ -10,6 +10,8 @@ function setupDb(databaseUrl?: string) {
   childProcess.execSync('pnpm run prisma:push', {
     env: {
       ...process.env,
+      ENABLE_OTEL: 'false',
+      OTEL_DEBUG: 'false',
       DATABASE_URL: process.env.DATABASE_URL,
       DIRECT_DATABASE_URL: process.env.DATABASE_URL,
     },

@@ -7,6 +7,7 @@ Overview of the VAIT Discord Bot directory layout and conventions.
 ```
 vait-discord-bot/
 ├── bin/                         # Executable entry points
+│   ├── telemetry.ts             # OpenTelemetry SDK bootstrap (loaded via --import)
 ├── docs/                        # Project documentation (Diataxis framework)
 │   ├── tutorials/               # Learning-oriented guides
 │   ├── how-to/                  # Task-oriented guides
@@ -31,6 +32,7 @@ vait-discord-bot/
 │   │       ├── index.test.ts    # Co-located tests
 │   │       └── utils.ts         # Command-specific helpers (if needed)
 │   └── utils/                   # Shared helper functions
+│       ├── filtering-span-processor.ts  # Tail-based span sampling
 │       ├── logger.ts            # Winston logger
 │       └── ...
 ├── test/
