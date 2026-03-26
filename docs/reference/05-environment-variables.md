@@ -40,8 +40,7 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 | `ENABLE_OTEL` | No | `false` | Enable OpenTelemetry trace collection (`true` or `false`) |
 | `OTEL_DEBUG` | No | `false` | Enable OTEL SDK diagnostic logging |
 | `OTEL_SERVICE_NAME` | No | `vait-discord-bot` | Service name for trace attribution |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTEL enabled | — | OTLP HTTP endpoint URL |
-| `OPENOBSERVE_AUTH_TOKEN` | Dev only | — | OpenObserve Basic auth token for local dev |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTEL enabled | — | OTLP HTTP endpoint URL (local dev: `http://localhost:4318` for Jaeger) |
 
 When `ENABLE_OTEL=true` in production, `AXIOM_TOKEN` and `AXIOM_DATASET` are also required (traces are exported to Axiom).
 

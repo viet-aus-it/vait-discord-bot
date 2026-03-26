@@ -51,10 +51,10 @@ pnpm run start
 To enable OpenTelemetry tracing locally:
 
 ```bash
-docker compose up -d db openobserve
+docker compose up -d db jaeger
 ```
 
-Set `ENABLE_OTEL=true` in your `.env` and generate an auth token from the OpenObserve UI at `http://localhost:5080` (default credentials: `root@example.com` / `Complexpass#123`). Set the token as `OPENOBSERVE_AUTH_TOKEN` in your `.env`.
+Set `ENABLE_OTEL=true` in your `.env`. View traces in the Jaeger UI at `http://localhost:16686`.
 
 ## Next Steps
 

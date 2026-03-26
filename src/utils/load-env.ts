@@ -21,9 +21,6 @@ export const ConfigSchema = z
     OTEL_SERVICE_NAME: z.string().default('vait-discord-bot'),
     OTEL_EXPORTER_OTLP_ENDPOINT: z.url().optional(),
 
-    // OpenObserve config (local dev only)
-    OPENOBSERVE_AUTH_TOKEN: z.string().optional(),
-
     // Database config
     DATABASE_URL: z.string(),
   })

@@ -18,9 +18,7 @@ function getTraceExporter(otelEndpoint: string): OTLPTraceExporter {
           Authorization: `Bearer ${env.AXIOM_TOKEN || ''}`,
           'X-Axiom-Dataset': env.AXIOM_DATASET || '',
         }
-      : {
-          Authorization: env.OPENOBSERVE_AUTH_TOKEN ?? '',
-        };
+      : {};
 
   return new OTLPTraceExporter({ url: otelEndpoint, headers });
 }
