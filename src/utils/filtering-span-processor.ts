@@ -36,6 +36,17 @@ export class FilteringSpanProcessor implements SpanProcessor {
     return this.delegate.shutdown();
   }
 
+  /**
+   * Determining if we should export a span or not
+   *
+   * The rules:
+   * - if a message is unprocessed, we should just drop it since that's not
+   * relevant to our bot.
+   * - if a message has an error, we ALWAYS report that.
+   * - otherwise, if it's an success, then it's business as usual. We will sample it out
+   * to the set `successRate` so that they won't add too much noise and we save on ingress cost
+   * and stay within the free tier.
+   */
   private shouldExport(span: ReadableSpan): boolean {
     // Rule 1: Drop unprocessed messages entirely
     if (span.attributes['discord.message.processed'] === false) {
