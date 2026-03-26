@@ -29,7 +29,6 @@ function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
   if (env.NODE_ENV === 'production') {
     return new FilteringSpanProcessor({
       delegate: new BatchSpanProcessor(exporter),
-      unprocessedRate: 0.0001, // 1:10,000
       successRate: 0.01, // 1%
     });
   }

@@ -29,26 +29,14 @@ describe('FilteringSpanProcessor', () => {
     expect(delegate.onEnd).toHaveBeenCalledWith(span);
   });
 
-  describe('unprocessed messages are sampled at unprocessedRate', () => {
-    it('drops unprocessed message spans when rate is 0', () => {
-      const delegate = mockDeep<SpanProcessor>();
-      const processor = new FilteringSpanProcessor({ delegate, unprocessedRate: 0 });
+  it('always drops unprocessed message spans', () => {
+    const delegate = mockDeep<SpanProcessor>();
+    const processor = new FilteringSpanProcessor({ delegate, successRate: 1 });
 
-      const span = createMockSpan({ attributes: { 'discord.message.processed': false } });
-      processor.onEnd(span);
+    const span = createMockSpan({ attributes: { 'discord.message.processed': false } });
+    processor.onEnd(span);
 
-      expect(delegate.onEnd).not.toHaveBeenCalled();
-    });
-
-    it('exports unprocessed message spans when rate is 1', () => {
-      const delegate = mockDeep<SpanProcessor>();
-      const processor = new FilteringSpanProcessor({ delegate, unprocessedRate: 1 });
-
-      const span = createMockSpan({ attributes: { 'discord.message.processed': false } });
-      processor.onEnd(span);
-
-      expect(delegate.onEnd).toHaveBeenCalledWith(span);
-    });
+    expect(delegate.onEnd).not.toHaveBeenCalled();
   });
 
   describe('success spans are sampled at successRate', () => {

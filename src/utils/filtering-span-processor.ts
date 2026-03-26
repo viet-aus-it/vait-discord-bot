@@ -5,20 +5,16 @@ import type { ReadableSpan, Span, SpanProcessor } from '@opentelemetry/sdk-trace
 interface FilteringProcessorConfig {
   /** The downstream processor (e.g., BatchSpanProcessor) */
   delegate: SpanProcessor;
-  /** Sampling rate for unprocessed messages (default: 0.0001 = 1:10,000) */
-  unprocessedRate?: number;
   /** Sampling rate for success (non-error) spans (default: 0.01 = 1%) */
   successRate?: number;
 }
 
 export class FilteringSpanProcessor implements SpanProcessor {
   private readonly delegate: SpanProcessor;
-  private readonly unprocessedRate: number;
   private readonly successRate: number;
 
   constructor(config: FilteringProcessorConfig) {
     this.delegate = config.delegate;
-    this.unprocessedRate = config.unprocessedRate ?? 0.0001;
     this.successRate = config.successRate ?? 0.01;
   }
 
@@ -46,14 +42,13 @@ export class FilteringSpanProcessor implements SpanProcessor {
       return true;
     }
 
-    const ratio = this.traceIdToRatio(span.spanContext().traceId);
-
-    // Rule 2: Sample unprocessed messages at unprocessedRate
+    // Rule 2: Drop unprocessed messages entirely
     if (span.attributes['discord.message.processed'] === false) {
-      return ratio < this.unprocessedRate;
+      return false;
     }
 
     // Rule 3: Sample success spans at successRate
+    const ratio = this.traceIdToRatio(span.spanContext().traceId);
     return ratio < this.successRate;
   }
 
