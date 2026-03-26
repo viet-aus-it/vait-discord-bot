@@ -24,16 +24,22 @@ services:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: reminder_broadcaster_prod
     env_file: ".env.production"
-    command: ["--enable-source-maps", "build/server/broadcast-reminder.cjs"]
+    command: ["--import", "build/server/telemetry.cjs", "--enable-source-maps", "build/server/broadcast-reminder.cjs"]
+    environment:
+      - OTEL_SERVICE_NAME=vait-discord-bot-broadcast-reminder
 
   autobump:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: autobump_prod
     env_file: ".env.production"
-    command: ["--enable-source-maps", "build/server/autobump.cjs"]
+    command: ["--import", "build/server/telemetry.cjs", "--enable-source-maps", "build/server/autobump.cjs"]
+    environment:
+      - OTEL_SERVICE_NAME=vait-discord-bot-autobump
 
   cleanup-referrals:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: cleanup_referrals_prod
     env_file: ".env.production"
-    command: ["--enable-source-maps", "build/server/cleanup-expired-referrals.cjs"]
+    command: ["--import", "build/server/telemetry.cjs", "--enable-source-maps", "build/server/cleanup-expired-referrals.cjs"]
+    environment:
+      - OTEL_SERVICE_NAME=vait-discord-bot-cleanup-referrals
