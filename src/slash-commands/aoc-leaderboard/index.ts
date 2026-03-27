@@ -4,6 +4,7 @@ import { Result } from 'oxide.ts';
 import type { AocLeaderboard as AocLeaderboardModel } from '../../clients/prisma/generated/client/client';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import type { AocLeaderboard as AocLeaderboardSchema } from './schema';
 import { fetchAndSaveLeaderboard, getAocSettings, getSavedLeaderboard } from './utils';
@@ -60,6 +61,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const getSavedleaderboardOp = await Result.safe(getSavedLeaderboard(guildId));
   const savedResult = getSavedleaderboardOp.unwrap();
   if (!getSavedleaderboardOp.isErr() && savedResult && differenceInMinutes(new Date(), savedResult.updatedAt) <= 15) {
+    setSpanAttributes({ 'bot.aoc.cached': true });
     logger.info('[get-aoc-leaderboard]: Returning saved leaderboard data');
     const formattedLeaderboard = formatLeaderboard(savedResult);
     await interaction.editReply(formattedLeaderboard);
@@ -94,6 +96,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const leaderboardData = fetchAndSaveOp.unwrap();
+  setSpanAttributes({ 'bot.aoc.cached': false });
   const message = formatLeaderboard(leaderboardData);
   await interaction.editReply(message);
 };
