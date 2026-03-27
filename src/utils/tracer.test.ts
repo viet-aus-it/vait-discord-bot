@@ -1,11 +1,13 @@
 import type { Span } from '@opentelemetry/api';
 import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { ATTR_ERROR_TYPE } from '@opentelemetry/semantic-conventions';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 import { recordSpanError } from './tracer';
 
 describe('recordSpanError', () => {
+  afterEach(() => vi.restoreAllMocks());
+
   it('is a no-op when there is no active span', () => {
     vi.spyOn(trace, 'getActiveSpan').mockReturnValue(undefined);
     expect(() => recordSpanError(new Error('test'), 'err-test')).not.toThrow();

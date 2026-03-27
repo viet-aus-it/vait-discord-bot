@@ -136,6 +136,8 @@ const cleanup = async () => {
 };
 ```
 
+Every span must be ended (via `span.end()` in `finally`) before the script exits. If `process.exit()` is called before the span ends, the span will be dropped and never exported. In production, background tasks run with `--import telemetry.cjs` which uses a `BatchSpanProcessor`, so spans are buffered and flushed on shutdown.
+
 See [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) for the wide events pattern.
 
 ## What's Next
