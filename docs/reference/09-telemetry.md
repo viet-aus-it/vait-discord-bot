@@ -11,8 +11,8 @@ Reference for the bot's [OpenTelemetry](https://opentelemetry.io/) (OTel) instru
 
 ## Span Lifecycle
 
-- Every span opened with `tracer.startActiveSpan()` **must** be ended via `span.end()` in a `finally` block.
-- Calling `process.exit()` before `span.end()` drops the span — it will never be exported.
+- Every span opened with `tracer.startActiveSpan()` **must** be ended gracefully via `span.end()`. If the code is wrapped in a `try/catch` block, there must be a `span.end()` in the `finally` to handle that.
+- Calling `process.exit()` in a script before `span.end()` will drop the span — it will never be exported.
 - In production, background tasks use `BatchSpanProcessor`, which buffers spans and flushes on shutdown. The SIGTERM handler in `bin/telemetry.ts` handles graceful flush.
 
 ```typescript
