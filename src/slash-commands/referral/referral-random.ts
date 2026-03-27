@@ -2,7 +2,7 @@ import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive } from '../../utils/random';
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { getAllReferralCodesForService } from './utils';
 
@@ -21,6 +21,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const op = await Result.safe(getAllReferralCodesForService({ guildId, service }));
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-referral-random-failed');
     logger.error(`[referral-random]: Error getting referral codes for ${service} service`, op.unwrapErr());
     await interaction.reply(`Error getting referral codes for ${service} service. Please try again later.`);
     return;

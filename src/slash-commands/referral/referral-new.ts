@@ -2,7 +2,7 @@ import { addDays, getUnixTime } from 'date-fns';
 import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { services } from './services';
@@ -65,6 +65,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const findOp = await Result.safe(findExistingReferralCode({ userId, guildId, service }));
   if (findOp.isErr()) {
+    recordSpanError(findOp.unwrapErr(), 'err-referral-new-search-failed');
     logger.error('[referral-new]: Error while searching for referral code', findOp.unwrapErr());
     await interaction.reply('This might be an error with the database. Please try again later.');
     return;
@@ -79,6 +80,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const createOp = await Result.safe(createReferralCode({ userId, guildId, service, code, expiryDate }));
   if (createOp.isErr()) {
+    recordSpanError(createOp.unwrapErr(), 'err-referral-new-create-failed');
     logger.error('[referral-new]: Error while creating referral code', createOp.unwrapErr());
     await interaction.reply('Failed to add referral code. This might be an error with the database. Please try again later.');
     return;

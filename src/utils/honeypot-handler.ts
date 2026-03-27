@@ -2,7 +2,7 @@ import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDbClient } from '../clients';
 import { logger } from './logger';
-import { setSpanAttributes } from './tracer';
+import { recordSpanError, setSpanAttributes } from './tracer';
 
 const honeypotChannels = new Map<string, string>();
 
@@ -61,6 +61,7 @@ export const handleHoneypotTrigger = async (message: Message<true>): Promise<voi
   if (result.isOk()) {
     logger.info(`[honeypot]: Banned ${author.username} from guild ${guild.name}`);
   } else {
+    recordSpanError(result.unwrapErr(), 'err-honeypot-ban-failed');
     logger.error(`[honeypot]: Failed to ban ${author.username}`, result.unwrapErr());
   }
 };

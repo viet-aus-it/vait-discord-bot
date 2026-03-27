@@ -2,7 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { convertDateToEpoch } from '../../utils/date';
 import { logger } from '../../utils/logger';
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { updateReminder } from './utils';
 
@@ -35,6 +35,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-reminder-update-failed');
     logger.error('[reminder-update]: Error while updating reminder', op.unwrapErr());
     await interaction.reply(`Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`);
     return;

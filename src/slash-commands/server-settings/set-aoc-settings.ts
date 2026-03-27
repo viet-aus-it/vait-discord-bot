@@ -1,7 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setAocSettings } from './utils';
 
@@ -19,6 +19,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const op = await Result.safe(setAocSettings(guildId, key, leaderboardId));
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-settings-aoc-save-failed');
     logger.info(`[set-aoc-key]: ${interaction.member!.user.username} failed to set AOC Key. Error: ${op.unwrapErr()}`);
     await interaction.reply(`Cannot set this AOC key. Please try again. Error: ${op.unwrapErr()}`);
     return;

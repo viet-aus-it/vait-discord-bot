@@ -1,7 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { removeAutobumpThread } from './utils';
 
@@ -18,6 +18,7 @@ export const removeAutobumpThreadCommand: SlashCommandHandler = async (interacti
   setSpanAttributes({ 'bot.autobump.thread_id': thread.id });
   const op = await Result.safe(removeAutobumpThread(guildId, thread.id));
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-autobump-remove-failed');
     logger.error(`[remove-autobump-thread]: Cannot remove thread ${thread.id} from autobump list for guild ${guildId}`, op.unwrapErr());
     await interaction.reply(`ERROR: Cannot remove thread id <#${thread.id}> from the bump list for this server. Please try again.`);
     return;

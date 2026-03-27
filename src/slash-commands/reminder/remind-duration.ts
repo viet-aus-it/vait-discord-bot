@@ -3,7 +3,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import parseDuration from 'parse-duration';
 import { logger } from '../../utils/logger';
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './utils';
 
@@ -35,6 +35,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-reminder-in-failed');
     logger.error('[reminder-in]: Error while saving reminder', op.unwrapErr());
     await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
     return;

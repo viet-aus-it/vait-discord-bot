@@ -2,7 +2,7 @@ import { getUnixTime } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
-import { setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { updateReferralCode } from './utils';
@@ -61,6 +61,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-referral-update-failed');
     logger.error('[referral-update]: Error while updating referral code', op.unwrapErr());
     await interaction.reply('Failed to update referral code. Please try again later.');
     return;
