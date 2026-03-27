@@ -8,6 +8,7 @@ Reference for the bot's [OpenTelemetry](https://opentelemetry.io/) (OTel) instru
 |--------|-------------|
 | `tracer` | The OTel tracer instance, used to create spans via `tracer.startActiveSpan()` |
 | `recordSpanError(error, slug)` | Records an error on the active span: sets status to ERROR, records the exception, and sets `error.type` to the given slug. No-op when OTel is disabled. |
+| `setSpanAttributes(attributes)` | Sets multiple attributes on the active span in one call. Accepts a `Record<string, string \| number \| boolean>`. No-op when OTel is disabled. |
 
 ## Span Lifecycle
 
