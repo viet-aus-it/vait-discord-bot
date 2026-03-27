@@ -33,26 +33,15 @@ All changes must be:
 
 ## Project Structure
 
+> Full layout: [`docs/reference/03-project-structure.md`](docs/reference/03-project-structure.md)
+
 ```
 docs/                            # Project documentation (Diataxis framework)
-  tutorials/                     # Learning-oriented guides
-    developers/                  # For contributors
-    users/                       # For bot users
-  how-to/                        # Task-oriented guides
-  reference/                     # Information-oriented lookup
-  explanation/                   # Understanding-oriented discussion
-  index.md                       # Documentation hub
-
 .agents/
   skills/                        # Task-specific toolkits with proven workflows
-    update-docs/SKILL.md         # Documentation audit and update workflow
   rules/                         # Domain-specific guidelines and constraints
-    commands.md
-    code-style.md
-    patterns.md
-    engineering-principles.md
-    communication.md
-    special-considerations.md
+src/                             # Application source code
+test/                            # Test fixtures, mocks, and helpers
 ```
 
 ## Execution Protocol
@@ -91,9 +80,7 @@ Load a skill when its trigger condition matches the task:
 
 ### Tech Stack
 
-- TypeScript, Node.js 22+, discord.js v14
-- Prisma ORM with PostgreSQL
-- Vitest for testing, MSW for mocking
+See the [README](README.md) for the full tech stack.
 
 ### Essential Commands
 

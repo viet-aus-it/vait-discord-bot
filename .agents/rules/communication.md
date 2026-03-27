@@ -22,11 +22,7 @@
 
 ## For Documentation
 
-- **Mandatory**: All project documentation MUST follow the [Diataxis](https://diataxis.fr/) framework
-  - **Tutorials** (`docs/tutorials/`): Learning-oriented, step-by-step walkthroughs for newcomers
-  - **How-to guides** (`docs/how-to/`): Task-oriented, practical recipes for specific goals
-  - **Reference** (`docs/reference/`): Information-oriented, factual lookup material
-  - **Explanation** (`docs/explanation/`): Understanding-oriented, context and design rationale
+- **Mandatory**: All project documentation MUST follow the [Diataxis](https://diataxis.fr/) framework (see [`docs/index.md`](../../docs/index.md) for category definitions and the full doc index)
 - Each document serves ONE Diataxis purpose, never mix categories
 - Documentation lives in `docs/` under the appropriate category directory
 - Lead with context and audience awareness
