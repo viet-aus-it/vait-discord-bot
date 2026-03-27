@@ -18,6 +18,8 @@
 
 ## Naming Conventions
 
+> See also: [`docs/reference/03-project-structure.md`](../../docs/reference/03-project-structure.md)
+
 - **Variables/Functions**: camelCase (`getUserData`, `messageContent`)
 - **Types/Interfaces/Classes**: PascalCase (`UserData`, `CommandHandler`)
 - **Constants**: UPPER_SNAKE_CASE (`MAX_RETRIES`, `DEFAULT_TIMEOUT`)
@@ -26,6 +28,8 @@
 - **Private members**: Prefix with `_` when needed (`_internalState`)
 
 ## Project Structure
+
+> See also: [`docs/reference/03-project-structure.md`](../../docs/reference/03-project-structure.md)
 
 - **Documentation**: `/docs/` (Diataxis framework: tutorials, how-to, reference, explanation)
 - **Slash Commands**: `/src/slash-commands/[command-name]/index.ts`

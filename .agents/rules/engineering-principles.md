@@ -9,7 +9,10 @@
 
 ## Error Handling
 
+> See also: [`docs/reference/08-error-handling.md`](../../docs/reference/08-error-handling.md)
+
 - **Use Result types**: Prefer `Ok`/`Err` from oxide.ts over throwing exceptions
+- **Record span errors**: Use `recordSpanError` to attach errors to OTel spans
 - **Log errors**: Always log errors with winston logger
 - **User feedback**: Provide clear error messages to Discord users
 - **Graceful degradation**: Bot should continue running even if one command fails
