@@ -1,6 +1,7 @@
 import { ChannelType, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { addAutobumpThread } from './utils';
 
@@ -21,6 +22,7 @@ export const addAutobumpThreadCommand: SlashCommandHandler = async (interaction)
     return;
   }
 
+  setSpanAttributes({ 'bot.autobump.thread_id': thread.id });
   const op = await Result.safe(addAutobumpThread(guildId, thread.id));
   if (op.isErr()) {
     logger.error(`[add-autobump-thread]: Cannot save thread ${thread.id} to be autobumped for guild ${guildId}`, op.unwrapErr());

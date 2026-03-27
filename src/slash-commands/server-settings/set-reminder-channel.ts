@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setReminderChannel } from './utils';
 
@@ -21,6 +22,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   }
 
   const channelId = op.unwrap();
+  setSpanAttributes({ 'bot.settings.type': 'reminder-channel', 'bot.settings.channel_id': channelId });
   logger.info(`[set-reminder-channel]: ${interaction.member!.user.username} successfully set reminder channel to ${channel.name}`);
   await interaction.reply(`Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
 };

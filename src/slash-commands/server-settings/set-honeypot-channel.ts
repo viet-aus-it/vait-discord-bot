@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { setHoneypotChannelId } from '../../utils/honeypot-handler';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setHoneypotChannel } from './utils';
 
@@ -22,6 +23,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   }
 
   const channelId = op.unwrap();
+  setSpanAttributes({ 'bot.settings.type': 'honeypot-channel', 'bot.settings.channel_id': channelId });
   setHoneypotChannelId(guildId, channelId);
   logger.info(`[set-honeypot-channel]: ${interaction.member!.user.username} successfully set honeypot channel to ${channel.name}`);
   await interaction.reply(`Successfully saved setting. Honeypot channel set to <#${channelId}>`);

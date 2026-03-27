@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setAocSettings } from './utils';
 
@@ -23,6 +24,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
     return;
   }
 
+  setSpanAttributes({ 'bot.settings.type': 'aoc-key' });
   logger.info(`[set-aoc-key]: ${interaction.member!.user.username} successfully set AOC key for guild ${guildId}`);
   await interaction.reply('Successfully saved setting. You can now get AOC Leaderboard.');
 };
