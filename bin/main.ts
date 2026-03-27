@@ -38,17 +38,14 @@ const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestC
 
 const loadHoneypots = async () => {
   return tracer.startActiveSpan('loadHoneypots', async (span) => {
-    try {
-      const op = await Result.safe(loadHoneypotChannels());
-      if (op.isErr()) {
-        recordSpanError(op.unwrapErr(), 'err-load-honeypots-failed');
-        logger.error('[honeypot]: Failed to load honeypot channels', op.unwrapErr());
-        return;
-      }
-      setSpanAttributes({ 'bot.honeypot.channel_count': op.unwrap() });
-    } finally {
-      span.end();
+    const op = await Result.safe(loadHoneypotChannels());
+    if (op.isErr()) {
+      recordSpanError(op.unwrapErr(), 'err-load-honeypots-failed');
+      logger.error('[honeypot]: Failed to load honeypot channels', op.unwrapErr());
+      return;
     }
+    setSpanAttributes({ 'bot.honeypot.channel_count': op.unwrap() });
+    span.end();
   });
 };
 
