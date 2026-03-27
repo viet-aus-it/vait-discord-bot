@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { removeReminder } from './utils';
 
@@ -13,6 +14,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const { user } = interaction.member!;
   const guildId = interaction.guildId!;
   const reminderId = interaction.options.getString('id', true);
+  setSpanAttributes({ 'bot.reminder.id': reminderId });
 
   const op = await Result.safe(
     removeReminder({
