@@ -49,7 +49,7 @@ export class FilteringSpanProcessor implements SpanProcessor {
    */
   private shouldExport(span: ReadableSpan): boolean {
     // Rule 1: Drop unprocessed messages entirely
-    if (span.attributes['discord.message.processed'] === false) {
+    if (span.attributes['bot.message.processed'] === false) {
       return false;
     }
 

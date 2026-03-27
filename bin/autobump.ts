@@ -4,6 +4,7 @@ import { getDiscordClient } from '../src/clients';
 import { listAllThreads } from '../src/slash-commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
+import { recordSpanError, tracer } from '../src/utils/tracer';
 
 const DEFAULT_AUTOBUMP_MESSAGE = '👋 Thread auto-bumped to keep it active!';
 
@@ -33,45 +34,60 @@ const autobump = async () => {
   const env = loadEnv();
   logger.info('AUTOBUMPING THREADS');
 
-  const settings = await Result.safe(listAllThreads());
-  if (settings.isErr()) {
-    logger.error('[autobump]: Cannot retrieve autobump thread lists', settings.unwrapErr());
-    process.exit(1);
-  }
-
-  const data = settings.unwrap();
-  if (data.length === 0) {
-    logger.info('[autobump]: No autobump threads settings found');
-    process.exit(0);
-  }
-
-  const client = await getDiscordClient({ token: env.TOKEN });
-  const clientId = client.user?.id;
-
-  const jobs = await data.reduce(
-    async (accumulator, { guildId, autobumpThreads }) => {
-      const guild = client.guilds.cache.find((g) => g.available && g.id === guildId);
-      if (!guild) {
-        logger.info(`[autobump]: Cannot find guild ${guildId} for autobump`);
-        return accumulator;
+  return tracer.startActiveSpan('autobump', async (span) => {
+    try {
+      const settings = await Result.safe(listAllThreads());
+      if (settings.isErr()) {
+        recordSpanError(settings.unwrapErr(), 'err-autobump-list-failed');
+        logger.error('[autobump]: Cannot retrieve autobump thread lists', settings.unwrapErr());
+        span.end();
+        process.exit(1);
       }
 
-      const prev = await accumulator;
-      logger.info(`[autobump]: Bumping ${autobumpThreads.length} threads in guild ${guild.name} (${guild.id})`);
-      const bumpPromises = autobumpThreads.map(async (id) => {
-        const thread = (await guild.channels.fetch(id)) as ThreadChannel;
-        await bumpThread(thread, clientId);
-        return { threadId: id, success: true };
-      });
-      const results = await Promise.all(bumpPromises);
-      logger.info(`[autobump]: Bumped ${results.filter((r) => r.success).length} threads in guild ${guild.name} (${guild.id})`);
-      return [...prev, ...results];
-    },
-    Promise.resolve([] as unknown[])
-  );
+      const data = settings.unwrap();
+      if (data.length === 0) {
+        logger.info('[autobump]: No autobump threads settings found');
+        span.end();
+        process.exit(0);
+      }
 
-  logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
-  process.exit(0);
+      span.setAttribute(
+        'bot.autobump.thread_count',
+        data.reduce((sum, d) => sum + d.autobumpThreads.length, 0)
+      );
+
+      const client = await getDiscordClient({ token: env.TOKEN });
+      const clientId = client.user?.id;
+
+      const jobs = await data.reduce(
+        async (accumulator, { guildId, autobumpThreads }) => {
+          const guild = client.guilds.cache.find((g) => g.available && g.id === guildId);
+          if (!guild) {
+            logger.info(`[autobump]: Cannot find guild ${guildId} for autobump`);
+            return accumulator;
+          }
+
+          const prev = await accumulator;
+          logger.info(`[autobump]: Bumping ${autobumpThreads.length} threads in guild ${guild.name} (${guild.id})`);
+          const bumpPromises = autobumpThreads.map(async (id) => {
+            const thread = (await guild.channels.fetch(id)) as ThreadChannel;
+            await bumpThread(thread, clientId);
+            return { threadId: id, success: true };
+          });
+          const results = await Promise.all(bumpPromises);
+          logger.info(`[autobump]: Bumped ${results.filter((r) => r.success).length} threads in guild ${guild.name} (${guild.id})`);
+          return [...prev, ...results];
+        },
+        Promise.resolve([] as unknown[])
+      );
+
+      logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
+      span.end();
+      process.exit(0);
+    } finally {
+      span.end();
+    }
+  });
 };
 
 autobump();

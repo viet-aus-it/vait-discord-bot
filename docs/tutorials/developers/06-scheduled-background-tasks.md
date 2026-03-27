@@ -113,6 +113,31 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 ```
 
+## Step 5: Add Span Tracing
+
+Wrap your task's main logic in a span to track execution in the OTel pipeline:
+
+```typescript
+import { recordSpanError, tracer } from '../src/utils/tracer';
+
+const cleanup = async () => {
+  loadEnv();
+
+  return tracer.startActiveSpan('cleanupOldLogs', async (span) => {
+    try {
+      // ... task logic
+    } catch (error) {
+      recordSpanError(error, 'err-cleanup-old-logs-failed');
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+};
+```
+
+See [Span Lifecycle](../../reference/09-telemetry.md#span-lifecycle) for rules on ending spans and graceful shutdown, and [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) for the wide events pattern.
+
 ## What's Next
 
 - [Permission-Based Access Control](./07-permission-based-access.md)

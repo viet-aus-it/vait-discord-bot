@@ -52,12 +52,31 @@ The bot uses [OpenTelemetry](https://opentelemetry.io/) (OTel) for instrumenting
 
 This was chosen over vendor-specific SDKs (e.g., Axiom's own SDK) because:
 
-- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a complete code rewrite, as long as the provider accepts the [OpenTelemtry Protocol](https://opentelemetry.io/docs/specs/otlp/) (or OTLP)
-- **Standardised semantic conventions** — attributes like `messaging.system`, `enduser.id`, and `error.type` follow an industry standard, making traces readable by anyone familiar with OTEL
+- **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a complete code rewrite, as long as the provider accepts the [OpenTelemetry Protocol](https://opentelemetry.io/docs/specs/otlp/) (or OTLP)
+- **Standardised semantic conventions** — attributes like `enduser.id` and `error.type` follow an industry standard, making traces readable by anyone familiar with OTel
 
 Locally, [Jaeger](https://www.jaegertracing.io/) provides a lightweight trace viewer with span graph visualisation. In production, traces export to [Axiom](https://axiom.co/) for centralised observability. The `FilteringSpanProcessor` reduces production costs by dropping unprocessed messages entirely and sampling success spans at 1%, while always exporting error spans.
 
 OTel is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behaviour when off.
+
+### Why Wide Events over Deep Traces
+
+The bot follows the "wide events" approach to tracing — one rich span per unit of work rather than deep span hierarchies with many child spans.
+
+Each entrypoint — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span and enriches it with all relevant attributes. No child spans are created manually.
+
+Auto-instrumentation (`@opentelemetry/auto-instrumentations-node`) automatically captures Prisma/PostgreSQL queries and Node.js HTTP calls as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
+
+See [Telemetry Reference](../reference/09-telemetry.md) for the full attribute namespace table, span lifecycle rules, and `FilteringSpanProcessor` sampling behaviour.
+
+### References
+
+- [A Practitioner's Guide to Wide Events](https://jeremymorrell.dev/blog/a-practitioners-guide-to-wide-events/)
+- [All You Need Is Wide Events, Not Metrics](https://isburmistrov.substack.com/p/all-you-need-is-wide-events-not-metrics)
+- [Observability Wide Events 101](https://boristane.com/blog/observability-wide-events-101/)
+- [Is It Time to Version Observability?](https://charity.wtf/2024/08/07/is-it-time-to-version-observability-signs-point-to-yes/)
+- [One Key Difference: Observability 1.0 vs 2.0](https://www.honeycomb.io/blog/one-key-difference-observability1dot0-2dot0)
+- [AWS: Instrumenting Distributed Systems](https://aws.amazon.com/builders-library/instrumenting-distributed-systems-for-operational-visibility/)
 
 ## Why In-Memory Caching for Honeypot
 

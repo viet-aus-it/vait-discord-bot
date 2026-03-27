@@ -124,8 +124,27 @@ pnpm test src/slash-commands/ping/index.test.ts
 
 You should see both tests pass.
 
+## Step 7: Record Span Errors
+
+Record errors on the active OTel span using `recordSpanError` so they appear in traces. This is a no-op when OTel is disabled, so it has no impact on regular operation.
+
+```typescript
+import { recordSpanError } from '../../utils/tracer';
+
+const execute = async (interaction: ChatInputCommandInteraction) => {
+  const op = await Result.safe(fetchSomething());
+  if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-ping-fetch-failed');
+    await interaction.reply('Something went wrong.');
+    return;
+  }
+  await interaction.reply('Pong!');
+};
+```
+
+See [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) for the wide events pattern.
+
 ## What's Next
 
 - [Add a Database-Backed Feature](./02-database-backed-feature.md)
 - [Test Your Command](./03-testing-your-command.md)
-- The `8ball` command (`src/slash-commands/8ball/index.ts`) is the production example of this pattern

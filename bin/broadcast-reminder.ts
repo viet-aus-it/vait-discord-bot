@@ -6,71 +6,86 @@ import { getReminderChannel } from '../src/slash-commands/server-settings/utils'
 import { getCurrentUnixTime } from '../src/utils/date';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
+import { recordSpanError, tracer } from '../src/utils/tracer';
 
 const broadcastReminder = async () => {
   const env = loadEnv();
   logger.info('BROADCASTING REMINDERS');
 
-  const queryTime = getCurrentUnixTime();
-  const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
-  if (reminders.isErr()) {
-    logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Query Time: ${queryTime}`, reminders.unwrapErr());
-    process.exit(1);
-  }
+  return tracer.startActiveSpan('broadcastReminder', async (span) => {
+    try {
+      const queryTime = getCurrentUnixTime();
+      span.setAttribute('bot.reminder.query_time', queryTime);
 
-  const remindersData = reminders.unwrap();
-  if (remindersData.length === 0) {
-    logger.info(`[broadcast-reminder]: No reminders to broadcast. Query Time: ${queryTime}`);
-    process.exit(0);
-  }
-
-  const client = await getDiscordClient({ token: env.TOKEN });
-
-  const jobs = await remindersData.reduce(
-    async (accumulator, reminder) => {
-      const guild = client.guilds.cache.find((g) => g.available && g.id === reminder.guildId);
-      if (!guild) {
-        logger.info(`[broadcast-reminder]: Cannot find guild ${reminder.guildId} for reminder`);
-        return accumulator;
+      const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
+      if (reminders.isErr()) {
+        recordSpanError(reminders.unwrapErr(), 'err-broadcast-reminder-query-failed');
+        logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Query Time: ${queryTime}`, reminders.unwrapErr());
+        span.end();
+        process.exit(1);
       }
 
-      const channelId = await Result.safe(getReminderChannel(guild.id));
-      if (channelId.isErr()) {
-        logger.info(`[broadcast-reminder]: Cannot find reminder channel settings for guild ${reminder.guildId}`);
-        return accumulator;
+      const remindersData = reminders.unwrap();
+      span.setAttribute('bot.reminder.count', remindersData.length);
+
+      if (remindersData.length === 0) {
+        logger.info(`[broadcast-reminder]: No reminders to broadcast. Query Time: ${queryTime}`);
+        span.end();
+        process.exit(0);
       }
 
-      const data = channelId.unwrap();
-      if (!data) {
-        logger.info(`[broadcast-reminder]: Cannot unwrap reminder channel for guild ${reminder.guildId}`);
-        return accumulator;
-      }
-      const channel = client.channels.cache.get(data);
-      if (!channel) {
-        logger.info(`[broadcast-reminder]: Cannot find reminder channel id ${data} for guild ${reminder.guildId}`);
-        return accumulator;
-      }
-      if (channel.type !== ChannelType.GuildText) {
-        logger.info(`[broadcast-reminder]: Reminder channel id ${data} for guild ${reminder.guildId} is not a text channel`);
-        return accumulator;
-      }
+      const client = await getDiscordClient({ token: env.TOKEN });
 
-      const prev = await accumulator;
+      const jobs = await remindersData.reduce(
+        async (accumulator, reminder) => {
+          const guild = client.guilds.cache.find((g) => g.available && g.id === reminder.guildId);
+          if (!guild) {
+            logger.info(`[broadcast-reminder]: Cannot find guild ${reminder.guildId} for reminder`);
+            return accumulator;
+          }
 
-      logger.info(`[broadcast-reminder]: Broadcasting reminder ${reminder.id} in guild ${guild.name} (${guild.id})`);
-      const message = formatReminderMessage(reminder);
-      const promise = channel.send(message);
-      logger.info(`[broadcast-reminder]: Broadcasted reminder ${reminder.id} in guild ${guild.name} (${guild.id})`);
+          const channelId = await Result.safe(getReminderChannel(guild.id));
+          if (channelId.isErr()) {
+            logger.info(`[broadcast-reminder]: Cannot find reminder channel settings for guild ${reminder.guildId}`);
+            return accumulator;
+          }
 
-      return [...prev, promise];
-    },
-    Promise.resolve([] as unknown[])
-  );
+          const data = channelId.unwrap();
+          if (!data) {
+            logger.info(`[broadcast-reminder]: Cannot unwrap reminder channel for guild ${reminder.guildId}`);
+            return accumulator;
+          }
+          const channel = client.channels.cache.get(data);
+          if (!channel) {
+            logger.info(`[broadcast-reminder]: Cannot find reminder channel id ${data} for guild ${reminder.guildId}`);
+            return accumulator;
+          }
+          if (channel.type !== ChannelType.GuildText) {
+            logger.info(`[broadcast-reminder]: Reminder channel id ${data} for guild ${reminder.guildId} is not a text channel`);
+            return accumulator;
+          }
 
-  await removeReminders(remindersData);
+          const prev = await accumulator;
 
-  logger.info(`[broadcast-reminder]: Reminders fan out complete. Jobs: ${jobs.length}`);
-  process.exit(0);
+          logger.info(`[broadcast-reminder]: Broadcasting reminder ${reminder.id} in guild ${guild.name} (${guild.id})`);
+          const message = formatReminderMessage(reminder);
+          const promise = channel.send(message);
+          logger.info(`[broadcast-reminder]: Broadcasted reminder ${reminder.id} in guild ${guild.name} (${guild.id})`);
+
+          return [...prev, promise];
+        },
+        Promise.resolve([] as unknown[])
+      );
+
+      await removeReminders(remindersData);
+
+      logger.info(`[broadcast-reminder]: Reminders fan out complete. Jobs: ${jobs.length}`);
+      span.end();
+      process.exit(0);
+    } finally {
+      span.end();
+    }
+  });
 };
 
 broadcastReminder();

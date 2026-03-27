@@ -18,6 +18,12 @@
 - **Transactions**: Use Prisma transactions for atomic operations
 - **Queries**: Prefer Prisma's type-safe query builder over raw SQL
 
+## OpenTelemetry
+
+- **Telemetry is compulsory**: Adding telemetry instrumentation is a required step when creating new commands or background tasks. Tracer utilities like `recordSpanError` are no-ops when OTel is disabled, so they have no impact on regular operation.
+- See [Telemetry Reference](../../docs/reference/09-telemetry.md) for span lifecycle, attribute namespaces, and tracer API
+- See [Why OpenTelemetry](../../docs/explanation/01-architecture.md#why-opentelemetry) for architecture decisions and the wide events pattern
+
 ## Testing
 
 - **Framework**: Vitest with coverage
