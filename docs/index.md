@@ -38,6 +38,7 @@ Welcome to the VAIT Discord Bot documentation, organised following the [Diataxis
 - [Command Interfaces](./reference/06-command-interfaces.md) — SlashCommand, Subcommand, and ContextMenuCommand API
 - [Testing Utilities](./reference/07-testing-utilities.md) — Test fixtures, seed helpers, and mock infrastructure
 - [Error Handling](./reference/08-error-handling.md) — oxide.ts Result types, logging, and Discord error responses
+- [Telemetry](./reference/09-telemetry.md) — OTel tracer utilities, span lifecycle, attribute namespaces, and sampling
 
 ## Explanation
 

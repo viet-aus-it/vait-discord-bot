@@ -63,27 +63,11 @@ OTel is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behav
 
 The bot follows the "wide events" approach to tracing — one rich span per unit of work rather than deep span hierarchies with many child spans.
 
-Each entrypoint - `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function - creates a single root span and enrich it with all relevant attributes. No child spans are created manually.
+Each entrypoint — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span and enriches it with all relevant attributes. No child spans are created manually.
 
-**Attribute naming follows [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/):**
+Auto-instrumentation (`@opentelemetry/auto-instrumentations-node`) automatically captures Prisma/PostgreSQL queries and Node.js HTTP calls as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
 
-| Category | Attributes | Source |
-|----------|-----------|--------|
-| OTEL EndUser | `enduser.id` | [General Conventions](https://opentelemetry.io/docs/specs/semconv/general/attributes/) |
-| OTEL Error | `error.type` (low-cardinality slug like `err-command-rep-failed`) | [Error Conventions](https://opentelemetry.io/docs/specs/semconv/general/attributes/) |
-| Discord data | `discord.guild.id`, `discord.channel.id`, `discord.message.id`, `discord.interaction.type` | Custom, `discord.*` namespace for data from the Discord API |
-| Bot logic | `bot.command.name`, `bot.message.processed`, `bot.message.honeypot`, `bot.rep.*`, `bot.referral.*`, `bot.reminder.*`, etc. | Custom, `bot.*` namespace for bot-specific state and logic |
-| Service (resource) | `service.name`, `service.version` | Set once on the OTEL resource in `bin/telemetry.ts`, auto-attached to all spans |
-
-This means any single span in the tracing backend contains enough information to understand what happened, who triggered it, where it ran, and whether it succeeded — without clicking through a span waterfall.
-
-**FilteringSpanProcessor** (`src/utils/filtering-span-processor.ts`) implements tail-based sampling, deciding _after_ a span ends whether to export it:
-
-- **Errors** — always exported (100%). Every failed request reaches the backend.
-- **Unprocessed messages** — spans where `bot.message.processed === false` (messages that did not trigger a honeypot and did not match any keyword) are dropped entirely.
-- **Success spans** — sampled at 1% to keep costs manageable while still providing a statistical picture of normal traffic.
-
-**Auto-instrumentation** — Prisma/PostgreSQL queries and Node.js HTTP calls are automatically captured by `@opentelemetry/auto-instrumentations-node`. These appear as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
+See [Telemetry Reference](../reference/09-telemetry.md) for the full attribute namespace table, span lifecycle rules, and `FilteringSpanProcessor` sampling behaviour.
 
 ### References
 
