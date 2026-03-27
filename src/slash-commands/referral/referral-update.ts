@@ -2,6 +2,7 @@ import { getUnixTime } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { updateReferralCode } from './utils';
@@ -19,6 +20,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const userId = interaction.user.id;
   const guildId = interaction.guildId!;
   const service = interaction.options.getString('service', true);
+  setSpanAttributes({ 'bot.referral.service': service });
   const code = interaction.options.getString('link_or_code');
   const expiryDateInput = interaction.options.getString('expiry_date');
 

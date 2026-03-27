@@ -2,6 +2,7 @@ import { addDays, getUnixTime } from 'date-fns';
 import { type Guild, SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { parseDate } from './parse-date';
 import { services } from './services';
@@ -83,6 +84,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
     return;
   }
 
+  setSpanAttributes({ 'bot.referral.service': service });
   const newReferralCode = createOp.unwrap();
   await interaction.reply(
     `${nickname} just added referral code ${newReferralCode.code} in ${newReferralCode.service} expired on <t:${getUnixTime(newReferralCode.expiry_date)}:D>`

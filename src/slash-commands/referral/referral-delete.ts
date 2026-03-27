@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { deleteReferralCode } from './utils';
 
@@ -15,6 +16,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const userId = interaction.user.id;
   const guildId = interaction.guildId!;
   const service = interaction.options.getString('service', true);
+  setSpanAttributes({ 'bot.referral.service': service });
 
   logger.info(`[referral-delete]: Deleting referral for service ${service} for user ${userId}`);
 
