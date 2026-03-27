@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { convertDateToEpoch } from '../../utils/date';
 import { logger } from '../../utils/logger';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { saveReminder } from './utils';
 
@@ -27,11 +28,13 @@ export const execute: SlashCommandHandler = async (interaction) => {
     })
   );
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-reminder-on-failed');
     logger.error('[reminder-on]: Error while saving reminder', op.unwrapErr());
     await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
     return;
   }
 
+  setSpanAttributes({ 'bot.reminder.target_timestamp': op.unwrap().onTimestamp });
   await interaction.reply(`New Reminder for <@${user.id}> set on <t:${op.unwrap().onTimestamp}> with the message: "${message}".`);
 };
 

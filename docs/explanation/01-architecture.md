@@ -63,7 +63,7 @@ OTel is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behav
 
 The bot follows the "wide events" approach to tracing — one rich span per unit of work rather than deep span hierarchies with many child spans.
 
-Each entrypoint — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span and enriches it with all relevant attributes. No child spans are created manually.
+Each entrypoint — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span. Individual command handlers then enrich that span with domain-specific attributes (e.g., `bot.rep.new_value`, `bot.weather.location`) via `setSpanAttributes()`, and record errors on the span via `recordSpanError()`. No child spans are created manually.
 
 Auto-instrumentation (`@opentelemetry/auto-instrumentations-node`) automatically captures Prisma/PostgreSQL queries and Node.js HTTP calls as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
 

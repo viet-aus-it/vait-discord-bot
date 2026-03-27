@@ -9,10 +9,6 @@ const keywordMatched = (sentence: string, keyword: string): boolean => {
   return regex.test(sentence);
 };
 
-type CommandPromise = Promise<void> | void;
-
-type CommandPromises = Array<CommandPromise>;
-
 interface KeywordMatchCommand {
   matchers: Array<string>;
   fn: (message: Message<true>) => Promise<void>;
@@ -20,15 +16,20 @@ interface KeywordMatchCommand {
 
 type KeywordMatchCommands = Array<KeywordMatchCommand>;
 
-const processKeywordMatch = (message: Message<true>, config: KeywordMatchCommands): CommandPromises => {
-  return config.map((conf) => {
-    const hasKeyword = conf.matchers.some((keyword) => keywordMatched(message.content, keyword));
+interface KeywordMatchResult {
+  keyword: string;
+  promise: Promise<void>;
+}
 
-    if (!hasKeyword) {
+const processKeywordMatch = (message: Message<true>, config: KeywordMatchCommands): Array<KeywordMatchResult | undefined> => {
+  return config.map((conf) => {
+    const matchedKeyword = conf.matchers.find((keyword) => keywordMatched(message.content, keyword));
+
+    if (!matchedKeyword) {
       return undefined;
     }
 
-    return conf.fn(message);
+    return { keyword: matchedKeyword, promise: conf.fn(message) };
   });
 };
 
@@ -56,12 +57,15 @@ export const processMessage = async (message: Message<true>, config: CommandConf
         return;
       }
 
-      const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
-      const hasKeywordMatch = keywordPromises.some((p) => p !== undefined);
-      span.setAttribute('bot.message.processed', hasKeywordMatch);
+      const keywordResults = processKeywordMatch(message, config.keywordMatchCommands);
+      const matches = keywordResults.filter((r): r is KeywordMatchResult => r !== undefined);
+      span.setAttribute('bot.message.processed', matches.length > 0);
+      if (matches.length > 0) {
+        span.setAttribute('bot.message.matched_keywords', matches.map((m) => m.keyword).join(','));
+      }
 
       try {
-        await Promise.all(keywordPromises);
+        await Promise.all(matches.map((m) => m.promise));
       } catch (error) {
         recordSpanError(error, 'err-keyword-processing-failed');
         logger.error('ERROR PROCESSING MESSAGE', error);

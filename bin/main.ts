@@ -10,7 +10,7 @@ import { processInteraction } from '../src/utils/interaction-processor';
 import { type ConfigSchema, loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
-import { recordSpanError, tracer } from '../src/utils/tracer';
+import { recordSpanError, setSpanAttributes, tracer } from '../src/utils/tracer';
 
 const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestConfig, 'guildId'> & { nodeEnv: ConfigSchema['NODE_ENV'] }) => {
   if (nodeEnv !== 'production') {
@@ -36,6 +36,19 @@ const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestC
   });
 };
 
+const loadHoneypots = async () => {
+  return tracer.startActiveSpan('loadHoneypots', async (span) => {
+    const op = await Result.safe(loadHoneypotChannels());
+    if (op.isErr()) {
+      recordSpanError(op.unwrapErr(), 'err-load-honeypots-failed');
+      logger.error('[honeypot]: Failed to load honeypot channels', op.unwrapErr());
+      return;
+    }
+    setSpanAttributes({ 'bot.honeypot.channel_count': op.unwrap() });
+    span.end();
+  });
+};
+
 const main = async () => {
   const env = loadEnv();
   logger.info('[main]: STARTING BOT');
@@ -47,10 +60,8 @@ const main = async () => {
 
   await deployCommands({ token: env.TOKEN, clientId: client.user.id, nodeEnv: env.NODE_ENV });
 
-  const honeypotOp = await Result.safe(loadHoneypotChannels());
-  if (honeypotOp.isErr()) {
-    logger.error('[honeypot]: Failed to load honeypot channels', honeypotOp.unwrapErr());
-  }
+  await loadHoneypots();
+
   const configs = getConfigs();
   client.on(Events.MessageCreate, (msg) => {
     return processMessage(msg as Message<true>, configs);

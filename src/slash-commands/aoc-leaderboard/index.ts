@@ -4,6 +4,7 @@ import { Result } from 'oxide.ts';
 import type { AocLeaderboard as AocLeaderboardModel } from '../../clients/prisma/generated/client/client';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { logger } from '../../utils/logger';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import type { AocLeaderboard as AocLeaderboardSchema } from './schema';
 import { fetchAndSaveLeaderboard, getAocSettings, getSavedLeaderboard } from './utils';
@@ -60,6 +61,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const getSavedleaderboardOp = await Result.safe(getSavedLeaderboard(guildId));
   const savedResult = getSavedleaderboardOp.unwrap();
   if (!getSavedleaderboardOp.isErr() && savedResult && differenceInMinutes(new Date(), savedResult.updatedAt) <= 15) {
+    setSpanAttributes({ 'bot.aoc.cached': true });
     logger.info('[get-aoc-leaderboard]: Returning saved leaderboard data');
     const formattedLeaderboard = formatLeaderboard(savedResult);
     await interaction.editReply(formattedLeaderboard);
@@ -70,6 +72,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const settingsOp = await Result.safe(getAocSettings(guildId));
   if (settingsOp.isErr()) {
+    recordSpanError(settingsOp.unwrapErr(), 'err-aoc-settings-fetch-failed');
     const errorMessage = 'Error getting AOC settings';
     logger.error(`[get-aoc-leaderboard]: : ${errorMessage}`, settingsOp.unwrapErr());
     await interaction.editReply(`ERROR: ${errorMessage}`);
@@ -87,6 +90,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const year = getAocYear();
   const fetchAndSaveOp = await Result.safe(fetchAndSaveLeaderboard(year, settings));
   if (fetchAndSaveOp.isErr()) {
+    recordSpanError(fetchAndSaveOp.unwrapErr(), 'err-aoc-leaderboard-fetch-failed');
     const errorMessage = `Error fetching and/or saving new leaderboard result`;
     logger.error(`[get-aoc-leaderboard]: ${errorMessage}`, fetchAndSaveOp.unwrapErr());
     await interaction.editReply(`ERROR: ${errorMessage}`);
@@ -94,6 +98,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const leaderboardData = fetchAndSaveOp.unwrap();
+  setSpanAttributes({ 'bot.aoc.cached': false });
   const message = formatLeaderboard(leaderboardData);
   await interaction.editReply(message);
 };
