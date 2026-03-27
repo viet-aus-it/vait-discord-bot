@@ -10,7 +10,7 @@ export const checkReputation = async (interaction: ChatInputCommandInteraction) 
   const discordUser = interaction.member!.user;
   logger.info(`[reputation]: ${discordUser.username} is checking their reputation`);
   const user = await getOrCreateUser(discordUser.id);
-  setSpanAttributes({ 'bot.rep.value': user.reputation });
+  setSpanAttributes({ 'bot.rep.actor_user_id': discordUser.id, 'bot.rep.value': user.reputation });
   await interaction.reply(`<@${discordUser.id}>: ${user.reputation} Rep`);
 };
 

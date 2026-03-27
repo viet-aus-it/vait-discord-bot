@@ -40,7 +40,7 @@ export const thankUserInMessage = async (msg: Message<true>) => {
     Promise.resolve(`${giver?.displayName} gave 1 rep to the following users:`)
   );
 
-  setSpanAttributes({ 'bot.rep.mention_count': mentionedUsers.size });
+  setSpanAttributes({ 'bot.rep.actor_user_id': author.id, 'bot.rep.mention_count': mentionedUsers.size });
   logger.info(`[thank-user-in-message]: ${message}`);
   await channel.send(message);
 };
@@ -61,7 +61,7 @@ export const giveRepSlashCommand = async (interaction: ChatInputCommandInteracti
   }
 
   const updatedUser = await plusRep(author.id, discordUser.id);
-  setSpanAttributes({ 'bot.rep.target_user_id': discordUser.id, 'bot.rep.new_value': updatedUser.reputation });
+  setSpanAttributes({ 'bot.rep.actor_user_id': author.id, 'bot.rep.target_user_id': discordUser.id, 'bot.rep.new_value': updatedUser.reputation });
   const receiver = interaction.guild?.members.cache.get(discordUser.id);
   const giver = interaction.guild?.members.cache.get(author.id);
   const message = `${giver?.displayName} gave 1 rep to ${receiver?.displayName}.\n${receiver?.displayName} → ${updatedUser.reputation} reps`;

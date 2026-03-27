@@ -32,7 +32,7 @@ export const setReputation = async (interaction: ChatInputCommandInteraction) =>
     adjustment: { reputation: { set: repNumber } },
   });
 
-  setSpanAttributes({ 'bot.rep.target_user_id': discordUser.id, 'bot.rep.new_value': updatedUser.reputation });
+  setSpanAttributes({ 'bot.rep.actor_user_id': author.id, 'bot.rep.target_user_id': discordUser.id, 'bot.rep.new_value': updatedUser.reputation });
   const receiver = interaction.guild?.members.cache.get(discordUser.id);
   const setter = interaction.guild?.members.cache.get(author.id);
   await interaction.reply(
