@@ -33,7 +33,7 @@ describe('FilteringSpanProcessor', () => {
     const delegate = mockDeep<SpanProcessor>();
     const processor = new FilteringSpanProcessor({ delegate, successRate: 1 });
 
-    const span = createMockSpan({ attributes: { 'discord.message.processed': false } });
+    const span = createMockSpan({ attributes: { 'bot.message.processed': false } });
     processor.onEnd(span);
 
     expect(delegate.onEnd).not.toHaveBeenCalled();

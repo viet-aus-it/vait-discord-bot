@@ -46,8 +46,8 @@ export const processMessage = async (message: Message<true>, config: CommandConf
 
       const honeypotChannelId = getHoneypotChannelId(message.guildId);
       if (honeypotChannelId && message.channelId === honeypotChannelId) {
-        span.setAttribute('discord.message.processed', true);
-        span.setAttribute('discord.message.honeypot', true);
+        span.setAttribute('bot.message.processed', true);
+        span.setAttribute('bot.message.honeypot', true);
         const result = await Result.safe(handleHoneypotTrigger(message));
         if (result.isErr()) {
           recordSpanError(result.unwrapErr(), 'err-honeypot-trigger-failed');
@@ -58,7 +58,7 @@ export const processMessage = async (message: Message<true>, config: CommandConf
 
       const keywordPromises = processKeywordMatch(message, config.keywordMatchCommands);
       const hasKeywordMatch = keywordPromises.some((p) => p !== undefined);
-      span.setAttribute('discord.message.processed', hasKeywordMatch);
+      span.setAttribute('bot.message.processed', hasKeywordMatch);
 
       try {
         await Promise.all(keywordPromises);

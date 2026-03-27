@@ -15,7 +15,7 @@ const broadcastReminder = async () => {
   return tracer.startActiveSpan('broadcastReminder', async (span) => {
     try {
       const queryTime = getCurrentUnixTime();
-      span.setAttribute('discord.reminder.query_time', queryTime);
+      span.setAttribute('bot.reminder.query_time', queryTime);
 
       const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
       if (reminders.isErr()) {
@@ -26,7 +26,7 @@ const broadcastReminder = async () => {
       }
 
       const remindersData = reminders.unwrap();
-      span.setAttribute('discord.reminder.count', remindersData.length);
+      span.setAttribute('bot.reminder.count', remindersData.length);
 
       if (remindersData.length === 0) {
         logger.info(`[broadcast-reminder]: No reminders to broadcast. Query Time: ${queryTime}`);

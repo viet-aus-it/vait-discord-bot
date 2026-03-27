@@ -52,7 +52,7 @@ const autobump = async () => {
       }
 
       span.setAttribute(
-        'discord.autobump.thread_count',
+        'bot.autobump.thread_count',
         data.reduce((sum, d) => sum + d.autobumpThreads.length, 0)
       );
 

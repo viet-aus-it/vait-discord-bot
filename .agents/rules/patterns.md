@@ -22,7 +22,7 @@
 
 - **Telemetry is compulsory**: Adding telemetry instrumentation is a required step when creating new commands or background tasks. Tracer utilities like `recordSpanError` are no-ops when OTel is disabled, so they have no impact on regular operation.
 - **Error recording**: All error paths must call `recordSpanError(error, slug)` from `src/utils/tracer.ts`
-- **Span attributes**: Prefer constants from `@opentelemetry/semantic-conventions` when the attribute matches an existing [OTel Semantic Convention](https://opentelemetry.io/docs/specs/semconv/). Only create custom `discord.*` attributes when no standard convention applies.
+- **Span attributes**: Prefer constants from `@opentelemetry/semantic-conventions` when the attribute matches an existing [OTel Semantic Convention](https://opentelemetry.io/docs/specs/semconv/). For custom attributes, use `discord.*` for data from the Discord API (guild ID, channel ID, etc.) and `bot.*` for bot-specific logic and state (command name, message processed, etc.).
 - See [Why OpenTelemetry](../docs/explanation/01-architecture.md#why-opentelemetry) for architecture decisions, wide events pattern, and attribute conventions
 
 ## Testing
