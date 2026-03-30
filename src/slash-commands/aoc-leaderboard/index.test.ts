@@ -7,6 +7,7 @@ import { setAocSettings } from '../server-settings/utils';
 import { execute, formatLeaderboard, getAocYear } from '.';
 import mockAocData from './sample/aoc-data.json';
 import { AocLeaderboard } from './schema';
+import * as utils from './utils';
 import { deleteLeaderboard, saveLeaderboard } from './utils';
 
 const parsedMockData = AocLeaderboard.parse(mockAocData);
@@ -80,6 +81,14 @@ Last updated at: 25/12/2024 16:00
 `);
 
       await deleteLeaderboard(interaction.guildId!);
+    });
+
+    chatInputCommandInteractionTest('Should reply with database error if getSavedLeaderboard fails', async ({ interaction }) => {
+      vi.spyOn(utils, 'getSavedLeaderboard').mockRejectedValueOnce(new Error('connection refused'));
+
+      await execute(interaction);
+
+      expect(interaction.editReply).toHaveBeenCalledWith('ERROR: Error connecting to the database');
     });
 
     chatInputCommandInteractionTest('Should reply with error if server is not configured', async ({ interaction }) => {

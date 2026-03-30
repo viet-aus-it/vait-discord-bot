@@ -59,8 +59,15 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const guildId = interaction.guildId!;
 
   const getSavedleaderboardOp = await Result.safe(getSavedLeaderboard(guildId));
+  if (getSavedleaderboardOp.isErr()) {
+    recordSpanError(getSavedleaderboardOp.unwrapErr(), 'err-aoc-saved-leaderboard-fetch-failed');
+    logger.error('[get-aoc-leaderboard]: Error connecting to the database', getSavedleaderboardOp.unwrapErr());
+    await interaction.editReply('ERROR: Error connecting to the database');
+    return;
+  }
+
   const savedResult = getSavedleaderboardOp.unwrap();
-  if (!getSavedleaderboardOp.isErr() && savedResult && differenceInMinutes(new Date(), savedResult.updatedAt) <= 15) {
+  if (savedResult && differenceInMinutes(new Date(), savedResult.updatedAt) <= 15) {
     setSpanAttributes({ 'bot.aoc.cached': true });
     logger.info('[get-aoc-leaderboard]: Returning saved leaderboard data');
     const formattedLeaderboard = formatLeaderboard(savedResult);
