@@ -1,4 +1,3 @@
-import type { Span } from '@opentelemetry/api';
 import { Events, type Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { getDiscordClient } from '../src/clients';
@@ -13,7 +12,7 @@ import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
 import { recordSpanError, setSpanAttributes, tracer } from '../src/utils/tracer';
 
-const handleDeployCommands = async (span: Span, { token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
+const handleDeployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
   logger.info('[deploy-commands]: Deploying global commands in production mode');
   const commands = [...slashCommandList, ...contextMenuCommandList];
   const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
@@ -34,7 +33,7 @@ const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestC
   }
 
   const result = await tracer.startActiveSpan('deployCommands', async (span) => {
-    const op = await Result.safe(handleDeployCommands(span, { token, clientId }));
+    const op = await Result.safe(handleDeployCommands({ token, clientId }));
     span.end();
     return op;
   });
