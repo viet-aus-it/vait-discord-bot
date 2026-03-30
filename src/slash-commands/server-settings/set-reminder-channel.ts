@@ -25,7 +25,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const channelId = op.unwrap();
   setSpanAttributes({ 'bot.settings.type': 'reminder-channel', 'bot.settings.channel_id': channelId });
   logger.info(`[set-reminder-channel]: ${interaction.member!.user.username} successfully set reminder channel to ${channel.name}`);
-  await interaction.reply(`Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
+  await interaction.reply(`Successfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
 };
 
 const command: Subcommand = {
