@@ -27,6 +27,6 @@ describe('Set reminder channel', () => {
     await execute(interaction);
 
     expect(interaction.reply).toHaveBeenCalledOnce();
-    expect(interaction.reply).toHaveBeenCalledWith(`Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
+    expect(interaction.reply).toHaveBeenCalledWith(`Successfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
   });
 });
