@@ -56,8 +56,10 @@ describe('setSpanAttributes', () => {
       'bot.test.boolean': true,
     });
 
-    expect(mockSpan.setAttribute).toHaveBeenCalledWith('bot.test.string', 'hello');
-    expect(mockSpan.setAttribute).toHaveBeenCalledWith('bot.test.number', 42);
-    expect(mockSpan.setAttribute).toHaveBeenCalledWith('bot.test.boolean', true);
+    expect(mockSpan.setAttributes).toHaveBeenCalledWith({
+      'bot.test.string': 'hello',
+      'bot.test.number': 42,
+      'bot.test.boolean': true,
+    });
   });
 });
