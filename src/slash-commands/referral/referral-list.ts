@@ -3,6 +3,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { ReferralCode } from '../../clients/prisma/generated/client/client';
 import { logger } from '../../utils/logger';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { getUserReferralCodes } from './utils';
 
@@ -36,12 +37,14 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const op = await Result.safe(getUserReferralCodes({ userId, guildId }));
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-referral-list-failed');
     logger.error('[referral-list]: Error while retrieving referral codes', op.unwrapErr());
     await interaction.reply('There is some error retrieving your referral codes. Please try again later.');
     return;
   }
 
   const referrals = op.unwrap();
+  setSpanAttributes({ 'bot.referral.count': referrals.length });
   if (referrals.length === 0) {
     logger.info(`[referral-list]: No referral codes found for user ${userId}`);
     await interaction.reply("You currently don't have any referral codes set up.");

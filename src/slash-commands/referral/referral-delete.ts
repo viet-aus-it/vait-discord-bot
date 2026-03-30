@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
 import { deleteReferralCode } from './utils';
 
@@ -15,6 +16,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const userId = interaction.user.id;
   const guildId = interaction.guildId!;
   const service = interaction.options.getString('service', true);
+  setSpanAttributes({ 'bot.referral.service': service });
 
   logger.info(`[referral-delete]: Deleting referral for service ${service} for user ${userId}`);
 
@@ -27,6 +29,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-referral-delete-failed');
     logger.error('[referral-delete]: Error while deleting referral code', op.unwrapErr());
     await interaction.reply('Failed to delete referral code. Please try again later.');
     return;

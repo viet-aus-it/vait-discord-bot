@@ -1,6 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { setReminderChannel } from './utils';
 
@@ -15,14 +16,16 @@ export const execute: SlashCommandHandler = async (interaction) => {
   logger.info(`[set-reminder-channel]: ${interaction.member!.user.username} is setting reminder channel to ${channel.name}`);
   const op = await Result.safe(setReminderChannel(guildId, channel.id));
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-settings-reminder-save-failed');
     logger.error(`[set-reminder-channel]: ${interaction.member!.user.username} failed to set reminder channel to ${channel.name}`, op.unwrapErr());
     await interaction.reply('Cannot save this reminder channel for this server. Please try again.');
     return;
   }
 
   const channelId = op.unwrap();
+  setSpanAttributes({ 'bot.settings.type': 'reminder-channel', 'bot.settings.channel_id': channelId });
   logger.info(`[set-reminder-channel]: ${interaction.member!.user.username} successfully set reminder channel to ${channel.name}`);
-  await interaction.reply(`Sucessfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
+  await interaction.reply(`Successfully saved setting. Reminders will be broadcasted in <#${channelId}>`);
 };
 
 const command: Subcommand = {

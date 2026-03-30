@@ -2,6 +2,7 @@ import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import type { ServerChannelsSettings } from '../../clients/prisma/generated/client/client';
 import { logger } from '../../utils/logger';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
 import { listThreadsByGuild } from './utils';
 
@@ -20,12 +21,14 @@ export const listAutobumpThreadsCommand: SlashCommandHandler = async (interactio
   logger.info(`[list-autobump-threads]: Listing autobump threads for guild ${guildId}`);
 
   if (threads.isErr()) {
+    recordSpanError(threads.unwrapErr(), 'err-autobump-list-failed');
     logger.error(`[list-autobump-threads]: Cannot get list of threads from the database for guild ${guildId}`, threads.unwrapErr());
     await interaction.reply("ERROR: Cannot get list of threads from the database, maybe the server threads aren't setup yet?");
     return;
   }
 
   const data = threads.unwrap();
+  setSpanAttributes({ 'bot.autobump.thread_count': data.length });
   if (data.length === 0) {
     logger.error(`[list-autobump-threads]: No threads have been setup for autobumping in guild ${guildId}`);
     await interaction.reply('ERROR: No threads have been setup for autobumping in this server');

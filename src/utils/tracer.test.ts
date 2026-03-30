@@ -3,7 +3,7 @@ import { SpanStatusCode, trace } from '@opentelemetry/api';
 import { ATTR_ERROR_TYPE } from '@opentelemetry/semantic-conventions';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
-import { recordSpanError } from './tracer';
+import { recordSpanError, setSpanAttributes } from './tracer';
 
 describe('recordSpanError', () => {
   afterEach(() => vi.restoreAllMocks());
@@ -35,5 +35,31 @@ describe('recordSpanError', () => {
     recordSpanError('string error', 'err-string');
 
     expect(mockSpan.recordException).toHaveBeenCalledWith(new Error('string error'));
+  });
+});
+
+describe('setSpanAttributes', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('is a no-op when there is no active span', () => {
+    vi.spyOn(trace, 'getActiveSpan').mockReturnValue(undefined);
+    expect(() => setSpanAttributes({ 'bot.test': 'value' })).not.toThrow();
+  });
+
+  it('sets all provided attributes on the active span', () => {
+    const mockSpan = mockDeep<Span>();
+    vi.spyOn(trace, 'getActiveSpan').mockReturnValue(mockSpan);
+
+    setSpanAttributes({
+      'bot.test.string': 'hello',
+      'bot.test.number': 42,
+      'bot.test.boolean': true,
+    });
+
+    expect(mockSpan.setAttributes).toHaveBeenCalledWith({
+      'bot.test.string': 'hello',
+      'bot.test.number': 42,
+      'bot.test.boolean': true,
+    });
   });
 });

@@ -1,5 +1,6 @@
 import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import type { Subcommand } from '../builder';
 import { getRepLeaderboard } from './utils';
 
@@ -39,6 +40,7 @@ export const getLeaderboard = async (interaction: ChatInputCommandInteraction) =
   }
 
   const records = await getRepLeaderboard(size);
+  setSpanAttributes({ 'bot.rep.leaderboard_size': size, 'bot.rep.result_count': records.length });
   if (records.length === 0) {
     logger.info('[rep-leaderboard]: no one has rep in this server.');
     await interaction.reply('No one has rep to be on the leaderboard, yet.');

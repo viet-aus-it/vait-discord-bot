@@ -8,6 +8,7 @@ Reference for the bot's [OpenTelemetry](https://opentelemetry.io/) (OTel) instru
 |--------|-------------|
 | `tracer` | The OTel tracer instance, used to create spans via `tracer.startActiveSpan()` |
 | `recordSpanError(error, slug)` | Records an error on the active span: sets status to ERROR, records the exception, and sets `error.type` to the given slug. No-op when OTel is disabled. |
+| `setSpanAttributes(attributes)` | Sets multiple attributes on the active span in one call. Accepts a `Record<string, string \| number \| boolean>`. No-op when OTel is disabled. |
 
 ## Span Lifecycle
 
@@ -37,6 +38,61 @@ Prefer constants from [`@opentelemetry/semantic-conventions`](https://openteleme
 | OTel standard | Attributes defined in the [OTel Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/) | `enduser.id`, `error.type` |
 | `discord.*` | Data received from the Discord API | `discord.guild.id`, `discord.channel.id`, `discord.message.id`, `discord.interaction.type` |
 | `bot.*` | Bot-specific logic and state | `bot.command.name`, `bot.message.processed`, `bot.message.honeypot`, `bot.rep.*`, `bot.reminder.*` |
+
+## Span Enrichment
+
+Command handlers enrich the wide event span with domain-specific attributes via `setSpanAttributes()`. Errors caught internally (via `Result.safe`) are recorded on the span with `recordSpanError()` so they appear in OTel even when the handler replies gracefully to the user.
+
+### Interaction Processor (set on every command span)
+
+| Attribute | Description |
+|-----------|-------------|
+| `enduser.id` | Discord user ID of the invoking user |
+| `discord.guild.id` | Guild where the interaction occurred |
+| `discord.channel.id` | Channel where the interaction occurred |
+| `bot.command.name` | Slash command name |
+| `discord.interaction.type` | `chatInputCommand`, `contextMenuCommand`, or `autocomplete` |
+
+### Command-Specific Attributes
+
+| Command | Attributes |
+|---------|------------|
+| **reputation** (give/set/take) | `bot.rep.actor_user_id`, `bot.rep.target_user_id`, `bot.rep.new_value` |
+| **reputation** (check) | `bot.rep.actor_user_id`, `bot.rep.value` |
+| **reputation** (leaderboard) | `bot.rep.leaderboard_size`, `bot.rep.result_count` |
+| **reminder** (in/on) | `bot.reminder.target_timestamp` |
+| **reminder** (list) | `bot.reminder.count` |
+| **reminder** (delete/update) | `bot.reminder.id` |
+| **referral** (new/delete/update) | `bot.referral.service` |
+| **referral** (list) | `bot.referral.count` |
+| **referral** (random) | `bot.referral.service`, `bot.referral.count` |
+| **weather** | `bot.weather.location`, `bot.weather.success` |
+| **quote-of-the-day** | `bot.quote.success` |
+| **aoc-leaderboard** | `bot.aoc.cached` |
+| **server-settings** | `bot.settings.type`, `bot.settings.channel_id` |
+| **autobump-threads** (add/remove) | `bot.autobump.thread_id` |
+| **autobump-threads** (list) | `bot.autobump.thread_count` |
+| **moderate-users** | `bot.moderate.role_id`, `bot.moderate.members_removed` |
+
+### Message Processor (set on every message span)
+
+| Attribute | Description |
+|-----------|-------------|
+| `enduser.id` | Discord user ID of the message author |
+| `discord.guild.id` | Guild where the message was sent |
+| `discord.channel.id` | Channel where the message was sent |
+| `discord.message.id` | Discord message ID |
+| `bot.message.processed` | Whether any keyword matched |
+| `bot.message.matched_keywords` | Comma-separated list of matched keywords (when processed) |
+| `bot.message.honeypot` | `true` when the message was in a honeypot channel |
+
+### Message Handler Attributes
+
+| Handler | Attributes |
+|---------|------------|
+| **thankUserInMessage** | `bot.rep.actor_user_id`, `bot.rep.mention_count` |
+| **honeypot trigger** | `bot.honeypot.user_id`, `bot.honeypot.ban_success`, `bot.honeypot.timestamp` |
+| **loadHoneypots** (startup) | `bot.honeypot.channel_count` |
 
 ## FilteringSpanProcessor (`src/utils/filtering-span-processor.ts`)
 

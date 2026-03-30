@@ -62,6 +62,23 @@ import { logger } from '../../utils/logger';
 | Development | Console with pretty-printing and colours |
 | Production | Console + [Axiom](https://axiom.co/) (including exception and rejection handlers) |
 
+## Span Error Recording
+
+When a command handler catches an error internally (via `Result.safe`), it must record the error on the active OTel span so it appears in traces. Use `recordSpanError` from `src/utils/tracer.ts` before logging.
+
+```typescript
+import { recordSpanError } from '../../utils/tracer';
+
+if (op.isErr()) {
+  recordSpanError(op.unwrapErr(), 'err-command-action-failed');
+  logger.error('[command]: Error message', op.unwrapErr());
+  await interaction.reply('Something went wrong.');
+  return;
+}
+```
+
+Error slugs follow the pattern `err-<command>-<action>-failed` (e.g., `err-reminder-in-failed`, `err-referral-delete-failed`). See [Telemetry](./09-telemetry.md) for the full attribute reference.
+
 ## Discord Error Replies
 
 Ephemeral replies are visible only to the invoking user:
