@@ -11,7 +11,7 @@
 
 > See also: [`docs/reference/08-error-handling.md`](../../docs/reference/08-error-handling.md)
 
-- **Use Result types**: Prefer `Ok`/`Err` from oxide.ts over throwing exceptions
+- **Use Result types**: Prefer `Ok`/`Err` from oxide.ts over throwing exceptions. Use `Result.safe` instead of try/catch/finally.
 - **Record span errors**: Use `recordSpanError` to attach errors to OTel spans
 - **Log errors**: Always log errors with winston logger
 - **User feedback**: Provide clear error messages to Discord users

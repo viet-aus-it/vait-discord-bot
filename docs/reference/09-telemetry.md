@@ -12,21 +12,36 @@ Reference for the bot's [OpenTelemetry](https://opentelemetry.io/) (OTel) instru
 
 ## Span Lifecycle
 
-- Every span opened with `tracer.startActiveSpan()` **must** be ended gracefully via `span.end()`. If the code is wrapped in a `try/catch` block, there must be a `span.end()` in the `finally` to handle that.
-- Calling `process.exit()` in a script before `span.end()` will drop the span — it will never be exported.
+- Every span opened with `tracer.startActiveSpan()` **must** be ended gracefully via `span.end()`.
+- Wrap the span callback body in `Result.safe` so `span.end()` always runs without `try/finally`. Extract the logic into a named function at module level.
+- Calling `process.exit()` in a script before `span.end()` will drop the span — it will never be exported. In bin scripts, return an exit code from the span callback and call `process.exit()` after the span ends.
 - In production, background tasks use `BatchSpanProcessor`, which buffers spans and flushes on shutdown. The SIGTERM handler in `bin/telemetry.ts` handles graceful flush.
 
 ```typescript
-return tracer.startActiveSpan('operationName', async (span) => {
-  try {
-    // ... task logic
-  } catch (error) {
-    recordSpanError(error, 'err-operation-failed');
-    throw error;
-  } finally {
-    span.end();
+// Long-running process (bot, server)
+const handleOperation = async (span: Span) => {
+  span.setAttribute('bot.key', 'value');
+  const op = await Result.safe(doWork());
+  if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-operation-failed');
+    return;
   }
+  // ... use op.unwrap()
+};
+
+return tracer.startActiveSpan('operationName', async (span) => {
+  await Result.safe(handleOperation(span));
+  span.end();
 });
+
+// Bin script (exits after completion)
+const result = await tracer.startActiveSpan('taskName', async (span) => {
+  const op = await Result.safe(handleTask(span));
+  span.end();
+  return op;
+});
+const exitCode = result.isOk() ? result.unwrap() : 1;
+process.exit(exitCode);
 ```
 
 ## Attribute Namespaces
