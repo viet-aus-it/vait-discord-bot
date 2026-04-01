@@ -1,5 +1,6 @@
 import { Collection, type GuildMember, PermissionFlagsBits, type Role } from 'discord.js';
 import { describe, expect, it } from 'vitest';
+
 import { isAdmin, isModerator } from './permission';
 
 describe('isModerator', () => {

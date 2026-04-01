@@ -1,4 +1,5 @@
 import { type ChatInputCommandInteraction, type Message, SlashCommandSubcommandBuilder } from 'discord.js';
+
 import { logger } from '../../utils/logger';
 import { setSpanAttributes } from '../../utils/tracer';
 import type { Subcommand } from '../builder';

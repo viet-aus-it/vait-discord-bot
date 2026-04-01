@@ -1,6 +1,7 @@
 import type { GuildMember } from 'discord.js';
 import { describe, expect } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
+
 import { chatInputCommandInteractionTest } from '../../test/fixtures/chat-input-command-interaction';
 import { handleHoneypotTrigger } from './honeypot-handler';
 

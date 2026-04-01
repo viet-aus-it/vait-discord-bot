@@ -1,6 +1,7 @@
 import { getUnixTime } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { logger } from '../../utils/logger';
 import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';

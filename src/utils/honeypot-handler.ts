@@ -1,5 +1,6 @@
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { getDbClient } from '../clients';
 import { logger } from './logger';
 import { recordSpanError, setSpanAttributes } from './tracer';

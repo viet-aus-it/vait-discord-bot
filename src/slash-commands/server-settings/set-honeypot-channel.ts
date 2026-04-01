@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { setHoneypotChannelId } from '../../utils/honeypot-handler';
 import { logger } from '../../utils/logger';
 import { recordSpanError, setSpanAttributes } from '../../utils/tracer';

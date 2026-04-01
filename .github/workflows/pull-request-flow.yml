@@ -1,4 +1,4 @@
-name: "Pull Request Action: Test & Lint"
+name: 'Pull Request Action: Test & Lint'
 
 on:
   pull_request:

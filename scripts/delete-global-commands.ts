@@ -1,4 +1,5 @@
 import { Result } from 'oxide.ts';
+
 import { deployGlobalCommands } from '../src/deploy-command';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';

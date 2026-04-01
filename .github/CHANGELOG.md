@@ -67,7 +67,7 @@ release because Discord API has changed by the time this was released.
 - Add a webpack and esbuild build process into our build and tests pipeline.
   - The tests will now be run with esbuild jest, making it run a lot faster
   - The package will now be bundled using webpack and esbuild, making it fast
-  and also reducing the size of our deployment package.
+    and also reducing the size of our deployment package.
 
 ## 1.2.1
 
@@ -171,7 +171,7 @@ release because Discord API has changed by the time this was released.
 
 - Remove the restart policy for the db-migrate service. Because "No" is already the default.
 - Move the port config from `docker-compose.yml` into an override file, since it's only needed
-in development, and was messing up deployments.
+  in development, and was messing up deployments.
 
 ## 2.4.2
 
@@ -358,7 +358,7 @@ in development, and was messing up deployments.
 ### Added
 
 - Installed `winston` for logging, and integrate with [`Axiom`](https://axiom.co) for log
-ingestions and queries.
+  ingestions and queries.
 
 ## 2.12.0
 
@@ -385,22 +385,16 @@ ingestions and queries.
 
 - Migrate our linting and formatting setup from Rome to Biome
 
-[//]: # (Template:)
-
-[//]: # (Version number)
-[//]: # (### Added)
-
-[//]: # ()
-[//]: # (### Changed)
-
-[//]: # ()
-[//]: # (### Deprecated)
-
-[//]: # ()
-[//]: # (### Removed)
-
-[//]: # ()
-[//]: # (### Fixed)
-
-[//]: # ()
-[//]: # (### Security)
+[//]: # 'Template:'
+[//]: # 'Version number'
+[//]: # '### Added'
+[//]: #
+[//]: # '### Changed'
+[//]: #
+[//]: # '### Deprecated'
+[//]: #
+[//]: # '### Removed'
+[//]: #
+[//]: # '### Fixed'
+[//]: #
+[//]: # '### Security'

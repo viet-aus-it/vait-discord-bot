@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { format } from 'date-fns';
 import { describe, expect, vi } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { seedReferralCode, seedUser } from '../../../test/fixtures/db-seed';
 import { DAY_MONTH_YEAR_FORMAT } from '../../utils/date';

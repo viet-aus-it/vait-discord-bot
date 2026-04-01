@@ -2,6 +2,7 @@ import { addDays } from 'date-fns';
 import type { AutocompleteInteraction, Guild } from 'discord.js';
 import { afterEach, beforeEach, describe, expect, vi } from 'vitest';
 import { captor } from 'vitest-mock-extended';
+
 import { autocompleteInteractionTest } from '../../../test/fixtures/autocomplete-interaction';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { seedReferralCode, seedUser } from '../../../test/fixtures/db-seed';

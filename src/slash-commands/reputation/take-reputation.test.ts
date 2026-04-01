@@ -1,5 +1,6 @@
 import type { GuildMember, User } from 'discord.js';
 import { beforeAll, describe, expect, vi } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { seedUser } from '../../../test/fixtures/db-seed';
 import { isAdmin } from '../../utils/permission';

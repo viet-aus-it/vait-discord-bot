@@ -1,5 +1,6 @@
 import { Collection, type GuildMember } from 'discord.js';
 import { describe, expect } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { seedUser } from '../../../test/fixtures/db-seed';
 import { DEFAULT_LEADERBOARD, getLeaderboard as getLeaderboardCommand, MAX_LEADERBOARD } from './leaderboard';

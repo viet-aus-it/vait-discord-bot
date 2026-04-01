@@ -1,4 +1,5 @@
 import wretch from 'wretch';
+
 import { logger } from '../../utils/logger';
 import { AocLeaderboard } from './schema';
 

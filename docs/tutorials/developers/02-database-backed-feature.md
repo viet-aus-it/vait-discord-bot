@@ -3,6 +3,7 @@
 Build a `/kudos` command with two subcommands that reads from and writes to [PostgreSQL](https://www.postgresql.org/) using [Prisma](https://www.prisma.io/).
 
 The finished command has:
+
 - `/kudos give @user` — give kudos to someone (writes to DB)
 - `/kudos check @user` — check someone's kudos count (reads from DB)
 

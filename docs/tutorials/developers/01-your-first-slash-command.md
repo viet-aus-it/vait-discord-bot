@@ -23,10 +23,7 @@ Create `src/slash-commands/ping/index.ts`:
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import type { SlashCommand } from '../builder';
 
-const data = new SlashCommandBuilder()
-  .setName('ping')
-  .setDescription('Check if the bot is alive')
-  .setContexts(InteractionContextType.Guild);
+const data = new SlashCommandBuilder().setName('ping').setDescription('Check if the bot is alive').setContexts(InteractionContextType.Guild);
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.reply('Pong!');
@@ -63,9 +60,7 @@ Update the command to accept an optional message:
 const data = new SlashCommandBuilder()
   .setName('ping')
   .setDescription('Check if the bot is alive')
-  .addStringOption((option) =>
-    option.setName('message').setDescription('Optional message to echo back').setRequired(false)
-  )
+  .addStringOption((option) => option.setName('message').setDescription('Optional message to echo back').setRequired(false))
   .setContexts(InteractionContextType.Guild);
 
 const execute = async (interaction: ChatInputCommandInteraction) => {

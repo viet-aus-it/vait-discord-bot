@@ -1,4 +1,5 @@
 import { PrismaPg } from '@prisma/adapter-pg';
+
 import { PrismaClient } from './prisma/generated/client/client';
 
 let prisma: InstanceType<typeof PrismaClient> | undefined;

@@ -1,4 +1,5 @@
 import { InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
+
 import type { SlashCommand, SlashCommandHandler } from '../builder';
 import setAocSettings from './set-aoc-settings';
 import setHoneypotChannel from './set-honeypot-channel';

@@ -1,6 +1,7 @@
 import type { Span } from '@opentelemetry/api';
 import type { Message } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
 import { recordSpanError, tracer } from './tracer';

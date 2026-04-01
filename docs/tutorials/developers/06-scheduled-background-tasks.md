@@ -43,6 +43,7 @@ cleanup();
 ```
 
 Key parts:
+
 - `loadEnv()` loads the `.env` file (the script runs standalone, not inside the bot)
 - `process.exit(0)` on success, `process.exit(1)` on failure
 - Wrap the operation in `Result.safe()` for error handling
@@ -100,7 +101,7 @@ Example GitHub Actions cron workflow (`.github/workflows/cleanup.yml`):
 ```yaml
 on:
   schedule:
-    - cron: '0 0 * * *'  # daily at midnight
+    - cron: '0 0 * * *' # daily at midnight
 jobs:
   cleanup:
     runs-on: ubuntu-latest

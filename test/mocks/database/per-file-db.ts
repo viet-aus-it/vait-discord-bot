@@ -1,5 +1,6 @@
 import pg from 'pg';
 import { afterAll, beforeEach } from 'vitest';
+
 import { cleanDb } from '../../fixtures/db-seed';
 
 const baseUrl = process.env.DATABASE_URL || '';

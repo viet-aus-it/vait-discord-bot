@@ -1,4 +1,5 @@
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
+
 import type { SlashCommand } from '../builder';
 import checkRep from './check-reputation';
 import giveRep from './give-reputation';

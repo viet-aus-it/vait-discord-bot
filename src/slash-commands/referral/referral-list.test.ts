@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { describe, expect, vi } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { seedReferralCode, seedUser } from '../../../test/fixtures/db-seed';
 import { execute, MAX_REFERRAL_CODE_LENGTH } from './referral-list';

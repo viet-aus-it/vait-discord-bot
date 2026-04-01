@@ -1,6 +1,7 @@
 import { format } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import type { ReferralCode } from '../../clients/prisma/generated/client/client';
 import { logger } from '../../utils/logger';
 import { recordSpanError, setSpanAttributes } from '../../utils/tracer';

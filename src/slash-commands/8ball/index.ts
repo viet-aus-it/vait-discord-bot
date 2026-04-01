@@ -1,4 +1,5 @@
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
+
 import { logger } from '../../utils/logger';
 import { getRandomIntInclusive } from '../../utils/random';
 import type { SlashCommand } from '../builder';

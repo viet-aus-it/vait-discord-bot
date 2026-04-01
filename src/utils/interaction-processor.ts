@@ -1,6 +1,7 @@
 import type { Span } from '@opentelemetry/api';
 import { type Interaction, InteractionType } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { commands as contextMenuCommandList } from '../context-menu-commands';
 import { commands as slashCommandList } from '../slash-commands';
 import { logger } from './logger';

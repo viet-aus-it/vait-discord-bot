@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:17-alpine
     restart: on-failure
-    env_file: ".env"
+    env_file: '.env'
     container_name: discord_bot_db
     ports:
       - 5432:5432

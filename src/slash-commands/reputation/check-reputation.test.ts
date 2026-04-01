@@ -1,4 +1,5 @@
 import { describe, expect } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { checkReputation } from './check-reputation';
 

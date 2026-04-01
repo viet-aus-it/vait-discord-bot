@@ -1,8 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Collection, type Message } from 'discord.js';
 import { describe, expect } from 'vitest';
-import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+
 import { allCapExpandText } from '.';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 
 describe('All caps test', () => {
   chatInputCommandInteractionTest('Should return text app cap and expanded', async ({ interaction }) => {

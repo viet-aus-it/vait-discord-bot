@@ -1,8 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Collection, type Message } from 'discord.js';
 import { describe, expect } from 'vitest';
-import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+
 import { mockSomeone } from '.';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 
 describe('mockSomeone test', () => {
   chatInputCommandInteractionTest('Should mock text if it was called by /mock', async ({ interaction }) => {

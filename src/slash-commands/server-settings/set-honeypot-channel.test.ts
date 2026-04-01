@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, vi } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { setHoneypotChannelId } from '../../utils/honeypot-handler';
 import { execute } from './set-honeypot-channel';

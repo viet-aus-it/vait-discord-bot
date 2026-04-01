@@ -6,6 +6,7 @@ import {
   SlashCommandBuilder,
   type ThreadChannel,
 } from 'discord.js';
+
 import { logger } from '../../utils/logger';
 import { setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';

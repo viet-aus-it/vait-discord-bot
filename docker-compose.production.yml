@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     restart: always
-    env_file: ".env.production"
+    env_file: '.env.production'
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: discord_bot_prod
 
@@ -14,29 +14,29 @@ services:
     volumes:
       - ./prisma:/src/prisma
       - ./prisma.config.ts:/src/prisma.config.ts
-    env_file: ".env.production"
+    env_file: '.env.production'
     container_name: discord_bot_db_migrate_prod
 
   broadcast-reminder:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: reminder_broadcaster_prod
-    env_file: ".env.production"
-    command: ["--import", "/app/build/server/telemetry.cjs", "--enable-source-maps", "/app/build/server/broadcast-reminder.cjs"]
+    env_file: '.env.production'
+    command: ['--import', '/app/build/server/telemetry.cjs', '--enable-source-maps', '/app/build/server/broadcast-reminder.cjs']
     environment:
       - OTEL_SERVICE_NAME=vait-discord-bot-broadcast-reminder
 
   autobump:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: autobump_prod
-    env_file: ".env.production"
-    command: ["--import", "/app/build/server/telemetry.cjs", "--enable-source-maps", "/app/build/server/autobump.cjs"]
+    env_file: '.env.production'
+    command: ['--import', '/app/build/server/telemetry.cjs', '--enable-source-maps', '/app/build/server/autobump.cjs']
     environment:
       - OTEL_SERVICE_NAME=vait-discord-bot-autobump
 
   cleanup-referrals:
     image: ghcr.io/viet-aus-it/discord-bot:production
     container_name: cleanup_referrals_prod
-    env_file: ".env.production"
-    command: ["--import", "/app/build/server/telemetry.cjs", "--enable-source-maps", "/app/build/server/cleanup-expired-referrals.cjs"]
+    env_file: '.env.production'
+    command: ['--import', '/app/build/server/telemetry.cjs', '--enable-source-maps', '/app/build/server/cleanup-expired-referrals.cjs']
     environment:
       - OTEL_SERVICE_NAME=vait-discord-bot-cleanup-referrals
