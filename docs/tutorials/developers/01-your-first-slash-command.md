@@ -5,7 +5,7 @@ Create a `/ping` command from scratch, register it, deploy it, and write a test 
 ## Prerequisites
 
 - Completed the [Quick Start](../../how-to/01-quick-start.md) setup
-- Bot running locally with `pnpm start`
+- Bot running locally with `pnpm run start`
 
 ## Step 1: Create the Command Directory
 

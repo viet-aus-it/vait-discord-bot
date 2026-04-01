@@ -5,7 +5,7 @@ Add dynamic autocomplete suggestions to a slash command option so users see filt
 ## Prerequisites
 
 - Completed [Build Your First Slash Command](./01-your-first-slash-command.md)
-- Bot running locally with `pnpm start`
+- Bot running locally with `pnpm run start`
 
 ## Step 1: Create a Data Source
 
