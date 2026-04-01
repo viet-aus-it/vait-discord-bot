@@ -21,14 +21,14 @@ When user asks to:
 
 ## Documentation Locations
 
-| Location | Content | Key Sections |
-|----------|---------|-------------|
-| `README.md` | Project overview, quick start, tech stack | Entry point only, links to `docs/` |
-| `docs/` | User-facing docs ([Diataxis](https://diataxis.fr/) framework) | Tutorials, how-to, reference, explanation |
-| `AGENTS.md` | Agent control manifest | Project structure, tech stack, available skills/rules, commands |
-| `.agents/rules/` | Domain-specific guidelines | Code style, patterns, commands, communication, special considerations |
-| `.agents/skills/` | Task-specific toolkits | Each skill's SKILL.md |
-| `.env.dist` | Environment variable reference | All required/optional env vars |
+| Location          | Content                                                       | Key Sections                                                          |
+| ----------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `README.md`       | Project overview, quick start, tech stack                     | Entry point only, links to `docs/`                                    |
+| `docs/`           | User-facing docs ([Diataxis](https://diataxis.fr/) framework) | Tutorials, how-to, reference, explanation                             |
+| `AGENTS.md`       | Agent control manifest                                        | Project structure, tech stack, available skills/rules, commands       |
+| `.agents/rules/`  | Domain-specific guidelines                                    | Code style, patterns, commands, communication, special considerations |
+| `.agents/skills/` | Task-specific toolkits                                        | Each skill's SKILL.md                                                 |
+| `.env.dist`       | Environment variable reference                                | All required/optional env vars                                        |
 
 ## Workflow
 
@@ -59,16 +59,16 @@ Group changes by their documentation impact:
 
 For each category, note which documentation locations are affected using the mapping:
 
-| Change Type | Docs to Check |
-|-------------|---------------|
-| New command | `docs/reference/01-commands-list.md`, `docs/explanation/02-bot-commands-design.md`, `docs/index.md` |
-| New env var | `.env.dist`, `docs/reference/05-environment-variables.md` |
-| New dependency | `README.md`, `AGENTS.md` (tech stack), `docs/reference/02-pnpm-scripts.md` |
-| New pnpm script | `docs/reference/02-pnpm-scripts.md`, `.agents/rules/commands.md` |
-| Database change | `docs/reference/04-database-schema.md` |
-| New skill/rule | `AGENTS.md` (available skills/rules) |
-| Test changes | `docs/explanation/03-testing-strategy.md`, `.agents/rules/patterns.md` |
-| Project structure change | `docs/reference/03-project-structure.md`, `AGENTS.md` |
+| Change Type              | Docs to Check                                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| New command              | `docs/reference/01-commands-list.md`, `docs/explanation/02-bot-commands-design.md`, `docs/index.md` |
+| New env var              | `.env.dist`, `docs/reference/05-environment-variables.md`                                           |
+| New dependency           | `README.md`, `AGENTS.md` (tech stack), `docs/reference/02-pnpm-scripts.md`                          |
+| New pnpm script          | `docs/reference/02-pnpm-scripts.md`, `.agents/rules/commands.md`                                    |
+| Database change          | `docs/reference/04-database-schema.md`                                                              |
+| New skill/rule           | `AGENTS.md` (available skills/rules)                                                                |
+| Test changes             | `docs/explanation/03-testing-strategy.md`, `.agents/rules/patterns.md`                              |
+| Project structure change | `docs/reference/03-project-structure.md`, `AGENTS.md`                                               |
 
 ### Step 3: Audit Each Location
 
@@ -80,6 +80,7 @@ For each affected documentation file:
 4. **Identify removals**: documented features that no longer exist
 
 Pay special attention to:
+
 - Command names and options (do they match the source?)
 - pnpm script names (do they match `package.json`?)
 - File paths (do they still exist?)
@@ -131,12 +132,12 @@ pnpm lint
 
 The `docs/` directory follows the [Diataxis](https://diataxis.fr/) framework. Each document must serve **one** primary purpose:
 
-| Type | Purpose | Question It Answers |
-|------|---------|---------------------|
-| **Tutorial** | Learning-oriented guided experience | "Can you teach me to...?" |
-| **How-to guide** | Goal-oriented steps | "How do I...?" |
-| **Reference** | Information-oriented lookup | "What is...?" |
-| **Explanation** | Understanding-oriented discussion | "Why...? Can you tell me about...?" |
+| Type             | Purpose                             | Question It Answers                 |
+| ---------------- | ----------------------------------- | ----------------------------------- |
+| **Tutorial**     | Learning-oriented guided experience | "Can you teach me to...?"           |
+| **How-to guide** | Goal-oriented steps                 | "How do I...?"                      |
+| **Reference**    | Information-oriented lookup         | "What is...?"                       |
+| **Explanation**  | Understanding-oriented discussion   | "Why...? Can you tell me about...?" |
 
 Current `docs/` structure:
 

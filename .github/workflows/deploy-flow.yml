@@ -1,4 +1,4 @@
-name: "Deployment Action: Build and push Docker images"
+name: 'Deployment Action: Build and push Docker images'
 
 on:
   push:

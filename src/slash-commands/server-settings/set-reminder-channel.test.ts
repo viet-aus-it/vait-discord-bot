@@ -1,5 +1,6 @@
 import type { TextChannel } from 'discord.js';
 import { describe, expect, vi } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { execute } from './set-reminder-channel';
 import * as utils from './utils';

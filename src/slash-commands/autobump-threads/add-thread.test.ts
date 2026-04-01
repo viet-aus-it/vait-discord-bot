@@ -1,6 +1,7 @@
 import { ChannelType, type PublicThreadChannel, type TextChannel } from 'discord.js';
 import { describe, expect, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { addAutobumpThreadCommand } from './add-thread';
 import * as utils from './utils';

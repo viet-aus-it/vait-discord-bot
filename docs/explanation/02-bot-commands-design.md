@@ -29,11 +29,13 @@ These require permission checks before execution and affect server-wide configur
 Commands with multiple related operations use [discord.js](https://discord.js.org/) subcommands rather than separate top-level commands. This keeps the command namespace clean and groups related functionality.
 
 **When to use subcommands:**
+
 - The operations share a domain (e.g. reputation: check, give, take, set, leaderboard)
 - The operations share utility functions or database models
 - Grouping improves discoverability for users
 
 **When to keep commands separate:**
+
 - The command does one thing only (e.g. `8ball`, `cowsay`)
 - The operations are unrelated
 

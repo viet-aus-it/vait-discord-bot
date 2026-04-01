@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { describe, expect, vi } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { execute } from './set-aoc-settings';
 import * as utils from './utils';

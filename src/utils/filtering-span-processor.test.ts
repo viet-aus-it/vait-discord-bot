@@ -2,6 +2,7 @@ import { type SpanContext, SpanStatusCode } from '@opentelemetry/api';
 import type { ReadableSpan, SpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { describe, expect, it } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
+
 import { FilteringSpanProcessor } from './filtering-span-processor';
 
 const createMockSpan = (overrides: { attributes?: ReadableSpan['attributes']; statusCode?: SpanStatusCode; traceId?: string }) => {

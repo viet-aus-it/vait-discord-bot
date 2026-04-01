@@ -17,9 +17,7 @@ import wretch from 'wretch';
 const jokeApi = wretch('https://official-joke-api.appspot.com');
 
 export const fetchJoke = async () => {
-  const response = await jokeApi
-    .get('/random_joke')
-    .json<{ setup: string; punchline: string }>();
+  const response = await jokeApi.get('/random_joke').json<{ setup: string; punchline: string }>();
 
   return response;
 };
@@ -38,10 +36,7 @@ import { logger } from '../../utils/logger';
 import type { SlashCommand } from '../builder';
 import { fetchJoke } from './fetch-joke';
 
-const data = new SlashCommandBuilder()
-  .setName('joke')
-  .setDescription('Get a random joke')
-  .setContexts(InteractionContextType.Guild);
+const data = new SlashCommandBuilder().setName('joke').setDescription('Get a random joke').setContexts(InteractionContextType.Guild);
 
 export const joke = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
@@ -66,6 +61,7 @@ export default command;
 ```
 
 Key parts:
+
 - `deferReply()` tells Discord the bot is working. Without it, the interaction times out after 3 seconds.
 - After deferring, use `editReply()` instead of `reply()` to send the response.
 - `Result.safe()` wraps the async call — if it throws, you get an `Err` instead of a crash.
@@ -115,9 +111,7 @@ describe('joke', () => {
     await joke(interaction);
 
     expect(interaction.deferReply).toHaveBeenCalledOnce();
-    expect(interaction.editReply).toHaveBeenCalledWith(
-      'Why did the chicken cross the road?\n\n||To get to the other side||'
-    );
+    expect(interaction.editReply).toHaveBeenCalledWith('Why did the chicken cross the road?\n\n||To get to the other side||');
   });
 
   chatInputCommandInteractionTest('should handle API errors', async ({ interaction }) => {

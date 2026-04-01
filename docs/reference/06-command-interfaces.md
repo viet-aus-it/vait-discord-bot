@@ -16,11 +16,11 @@ interface SlashCommand {
 }
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `data` | `SlashCommandOptionsOnlyBuilder \| SlashCommandSubcommandsOnlyBuilder` | Yes | [discord.js](https://discord.js.org/) builder defining command name, description, and options |
-| `execute` | `(interaction: ChatInputCommandInteraction) => Promise<void>` | Yes | Async handler called when the command is invoked |
-| `autocomplete` | `(autocomplete: AutocompleteInteraction) => Promise<void>` | No | Handler for autocomplete suggestions |
+| Property       | Type                                                                   | Required | Description                                                                                   |
+| -------------- | ---------------------------------------------------------------------- | -------- | --------------------------------------------------------------------------------------------- |
+| `data`         | `SlashCommandOptionsOnlyBuilder \| SlashCommandSubcommandsOnlyBuilder` | Yes      | [discord.js](https://discord.js.org/) builder defining command name, description, and options |
+| `execute`      | `(interaction: ChatInputCommandInteraction) => Promise<void>`          | Yes      | Async handler called when the command is invoked                                              |
+| `autocomplete` | `(autocomplete: AutocompleteInteraction) => Promise<void>`             | No       | Handler for autocomplete suggestions                                                          |
 
 **File:** `src/slash-commands/builder.ts`
 
@@ -36,11 +36,11 @@ interface Subcommand {
 }
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `data` | `SlashCommandSubcommandBuilder \| (builder) => builder` | Yes | Subcommand builder or builder function |
-| `execute` | `(interaction: ChatInputCommandInteraction) => Promise<void>` | Yes | Async handler for the subcommand |
-| `autocomplete` | `(autocomplete: AutocompleteInteraction) => Promise<void>` | No | Handler for autocomplete suggestions |
+| Property       | Type                                                          | Required | Description                            |
+| -------------- | ------------------------------------------------------------- | -------- | -------------------------------------- |
+| `data`         | `SlashCommandSubcommandBuilder \| (builder) => builder`       | Yes      | Subcommand builder or builder function |
+| `execute`      | `(interaction: ChatInputCommandInteraction) => Promise<void>` | Yes      | Async handler for the subcommand       |
+| `autocomplete` | `(autocomplete: AutocompleteInteraction) => Promise<void>`    | No       | Handler for autocomplete suggestions   |
 
 **File:** `src/slash-commands/builder.ts`
 
@@ -55,10 +55,10 @@ interface ContextMenuCommand {
 }
 ```
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `data` | `ContextMenuCommandBuilder` | Yes | [discord.js](https://discord.js.org/) builder defining the context menu entry |
-| `execute` | `(interaction: ContextMenuCommandInteraction) => Promise<void>` | Yes | Async handler for the context menu action |
+| Property  | Type                                                            | Required | Description                                                                   |
+| --------- | --------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
+| `data`    | `ContextMenuCommandBuilder`                                     | Yes      | [discord.js](https://discord.js.org/) builder defining the context menu entry |
+| `execute` | `(interaction: ContextMenuCommandInteraction) => Promise<void>` | Yes      | Async handler for the context menu action                                     |
 
 **File:** `src/context-menu-commands/builder.ts`
 

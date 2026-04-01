@@ -1,5 +1,6 @@
 import { Events, type Message } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { getDiscordClient } from '../src/clients';
 import { getConfigs } from '../src/config';
 import { commands as contextMenuCommandList } from '../src/context-menu-commands';

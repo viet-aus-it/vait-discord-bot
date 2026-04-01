@@ -8,10 +8,10 @@
 
 Core user model, keyed by Discord user ID.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | String (PK) | Discord user ID |
-| `reputation` | Int | Reputation score (default: 0) |
+| Field        | Type        | Description                   |
+| ------------ | ----------- | ----------------------------- |
+| `id`         | String (PK) | Discord user ID               |
+| `reputation` | Int         | Reputation score (default: 0) |
 
 **Relations:** `thankTo` (ReputationLog[]), `thankBy` (ReputationLog[]), `reminders` (Reminder[]), `referralCodes` (ReferralCode[])
 
@@ -19,38 +19,38 @@ Core user model, keyed by Discord user ID.
 
 Audit trail for reputation changes.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | String (PK) | Auto-generated CUID |
-| `fromUserId` | String (FK) | User who initiated the change |
-| `toUserId` | String (FK) | User whose reputation changed |
-| `operation` | Json | Operation details (increment/decrement/set) |
-| `createdAt` | DateTime | Timestamp (default: now) |
+| Field        | Type        | Description                                 |
+| ------------ | ----------- | ------------------------------------------- |
+| `id`         | String (PK) | Auto-generated CUID                         |
+| `fromUserId` | String (FK) | User who initiated the change               |
+| `toUserId`   | String (FK) | User whose reputation changed               |
+| `operation`  | Json        | Operation details (increment/decrement/set) |
+| `createdAt`  | DateTime    | Timestamp (default: now)                    |
 
 ### ReferralCode
 
 User-submitted referral codes.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | String (PK) | Auto-generated CUID |
-| `service` | String | Service name (e.g. "Uber", "GoGet") |
-| `code` | String | The referral code or link |
-| `expiry_date` | DateTime | When the code expires |
-| `guildId` | String | Discord server ID |
-| `userId` | String (FK) | Owner's Discord user ID |
+| Field         | Type        | Description                         |
+| ------------- | ----------- | ----------------------------------- |
+| `id`          | String (PK) | Auto-generated CUID                 |
+| `service`     | String      | Service name (e.g. "Uber", "GoGet") |
+| `code`        | String      | The referral code or link           |
+| `expiry_date` | DateTime    | When the code expires               |
+| `guildId`     | String      | Discord server ID                   |
+| `userId`      | String (FK) | Owner's Discord user ID             |
 
 ### Reminder
 
 Scheduled reminders for users.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | String (PK) | Auto-generated CUID |
-| `userId` | String (FK) | Owner's Discord user ID |
-| `onTimestamp` | Int | Unix timestamp for when to fire |
-| `message` | String | Reminder message content |
-| `guildId` | String | Discord server ID |
+| Field         | Type        | Description                     |
+| ------------- | ----------- | ------------------------------- |
+| `id`          | String (PK) | Auto-generated CUID             |
+| `userId`      | String (FK) | Owner's Discord user ID         |
+| `onTimestamp` | Int         | Unix timestamp for when to fire |
+| `message`     | String      | Reminder message content        |
+| `guildId`     | String      | Discord server ID               |
 
 **Indexes:** `id`, `userId`
 
@@ -58,24 +58,24 @@ Scheduled reminders for users.
 
 Per-server configuration.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `guildId` | String (unique) | Discord server ID |
-| `reminderChannel` | String? | Channel ID for reminder notifications |
-| `honeypotChannel` | String? | Channel ID for the honeypot trap |
-| `autobumpThreads` | String[] | Thread IDs to automatically bump |
-| `aocKey` | String? | Advent of Code session key |
-| `aocLeaderboardId` | String? | Advent of Code leaderboard ID |
+| Field              | Type            | Description                           |
+| ------------------ | --------------- | ------------------------------------- |
+| `guildId`          | String (unique) | Discord server ID                     |
+| `reminderChannel`  | String?         | Channel ID for reminder notifications |
+| `honeypotChannel`  | String?         | Channel ID for the honeypot trap      |
+| `autobumpThreads`  | String[]        | Thread IDs to automatically bump      |
+| `aocKey`           | String?         | Advent of Code session key            |
+| `aocLeaderboardId` | String?         | Advent of Code leaderboard ID         |
 
 ### AocLeaderboard
 
 Cached Advent of Code leaderboard data.
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `guildId` | String (unique) | Discord server ID |
-| `result` | Json | Cached leaderboard response |
-| `updatedAt` | DateTime | Last cache update time |
+| Field       | Type            | Description                 |
+| ----------- | --------------- | --------------------------- |
+| `guildId`   | String (unique) | Discord server ID           |
+| `result`    | Json            | Cached leaderboard response |
+| `updatedAt` | DateTime        | Last cache update time      |
 
 ## Entity Relationship Diagram
 

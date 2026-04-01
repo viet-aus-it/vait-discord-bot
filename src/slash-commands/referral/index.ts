@@ -1,6 +1,6 @@
 import { InteractionContextType, SlashCommandBuilder } from 'discord.js';
-import type { AutocompleteHandler, SlashCommand, SlashCommandHandler, Subcommand } from '../builder';
 
+import type { AutocompleteHandler, SlashCommand, SlashCommandHandler, Subcommand } from '../builder';
 import * as referralDelete from './referral-delete';
 import * as referralList from './referral-list';
 import * as referralNew from './referral-new';

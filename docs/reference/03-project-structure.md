@@ -51,14 +51,14 @@ vait-discord-bot/
 
 ## Naming Conventions
 
-| Entity | Convention | Example |
-|--------|-----------|---------|
-| Variables, functions | camelCase | `getUserData`, `messageContent` |
-| Types, interfaces, classes | PascalCase | `UserData`, `CommandHandler` |
-| Constants | UPPER_SNAKE_CASE | `MAX_RETRIES`, `DEFAULT_TIMEOUT` |
-| Files | kebab-case | `user-reputation.ts`, `fetch-weather.ts` |
-| Test files | `.test.ts` suffix | `index.test.ts` |
-| Command directories | kebab-case | `8ball/`, `mock-someone/`, `quote-of-the-day/` |
+| Entity                     | Convention        | Example                                        |
+| -------------------------- | ----------------- | ---------------------------------------------- |
+| Variables, functions       | camelCase         | `getUserData`, `messageContent`                |
+| Types, interfaces, classes | PascalCase        | `UserData`, `CommandHandler`                   |
+| Constants                  | UPPER_SNAKE_CASE  | `MAX_RETRIES`, `DEFAULT_TIMEOUT`               |
+| Files                      | kebab-case        | `user-reputation.ts`, `fetch-weather.ts`       |
+| Test files                 | `.test.ts` suffix | `index.test.ts`                                |
+| Command directories        | kebab-case        | `8ball/`, `mock-someone/`, `quote-of-the-day/` |
 
 ## Key Patterns
 

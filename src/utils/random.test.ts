@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+
 import { getUniqueRandomIntInclusive } from './random';
 
 describe('Random unique number', () => {

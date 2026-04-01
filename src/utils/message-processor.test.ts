@@ -1,4 +1,5 @@
 import { describe, expect, vi } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../test/fixtures/chat-input-command-interaction';
 import { type CommandConfig, processMessage } from './message-processor';
 

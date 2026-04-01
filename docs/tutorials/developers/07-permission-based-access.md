@@ -13,13 +13,7 @@ Build a slash command that only server administrators can see and use, with a ru
 Create `src/slash-commands/announce/index.ts`:
 
 ```typescript
-import {
-  type ChatInputCommandInteraction,
-  type GuildMember,
-  InteractionContextType,
-  PermissionFlagsBits,
-  SlashCommandBuilder,
-} from 'discord.js';
+import { type ChatInputCommandInteraction, type GuildMember, InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import { isAdmin } from '../../utils/permission';
 import type { SlashCommand } from '../builder';
 
@@ -107,9 +101,7 @@ describe('announce', () => {
     const { execute } = await import('./index');
     await execute(interaction);
 
-    expect(interaction.reply).toHaveBeenCalledWith(
-      expect.objectContaining({ content: 'You do not have permission to use this command.', ephemeral: true })
-    );
+    expect(interaction.reply).toHaveBeenCalledWith(expect.objectContaining({ content: 'You do not have permission to use this command.', ephemeral: true }));
   });
 });
 ```

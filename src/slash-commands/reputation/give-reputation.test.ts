@@ -1,5 +1,6 @@
 import { Collection, type User } from 'discord.js';
 import { describe, expect } from 'vitest';
+
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { giveRepSlashCommand, thankUserInMessage } from './give-reputation';
 
