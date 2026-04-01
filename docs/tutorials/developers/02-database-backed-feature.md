@@ -11,7 +11,7 @@ The finished command has:
 
 - Completed [Build Your First Slash Command](./01-your-first-slash-command.md)
 - [Docker](https://www.docker.com/) running (for the local database)
-- Bot running with `pnpm start`
+- Bot running with `pnpm run start`
 
 ## Step 1: Update the Schema
 

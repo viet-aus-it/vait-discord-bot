@@ -5,7 +5,7 @@ Build a slash command that only server administrators can see and use, with a ru
 ## Prerequisites
 
 - Completed [Build Your First Slash Command](./01-your-first-slash-command.md)
-- Bot running locally with `pnpm start`
+- Bot running locally with `pnpm run start`
 - An admin role on your test Discord server
 
 ## Step 1: Create the Command with Permission Restriction

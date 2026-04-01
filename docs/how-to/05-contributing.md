@@ -12,7 +12,7 @@ How to contribute to the VAIT Discord Bot.
 
 1. Implement your changes.
 2. Add tests for new features.
-3. Run `pnpm lint` and `pnpm test`.
+3. Run `pnpm run lint` and `pnpm run test`.
 4. Submit a pull request.
 
 ## Report a Bug

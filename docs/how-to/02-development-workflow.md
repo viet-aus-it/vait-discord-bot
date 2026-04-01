@@ -26,14 +26,14 @@ Keep commits small and atomic. Reference the issue number in the message.
 Before pushing:
 
 ```bash
-pnpm lint
-pnpm test
+pnpm run lint
+pnpm run test
 ```
 
 To auto-format:
 
 ```bash
-pnpm format
+pnpm run format
 ```
 
 See [pnpm Scripts](../reference/02-pnpm-scripts.md) for the full list.

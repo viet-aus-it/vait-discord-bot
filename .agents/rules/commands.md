@@ -4,8 +4,8 @@
 
 ## Quick Reference
 
-- `pnpm start` — run bot with migrations
-- `pnpm test` — run all tests
-- `pnpm lint:fix:unsafe` — auto-fix all linting issues
-- `pnpm ci` — run full CI checks locally
-- `pnpm deploy:command` — deploy Discord commands (use sparingly!)
+- `pnpm run start` — run bot with migrations
+- `pnpm run test` — run all tests
+- `pnpm run lint:fix:unsafe` — auto-fix all linting issues
+- `pnpm run ci` — run full CI checks locally
+- `pnpm run deploy:command` — deploy Discord commands (use sparingly!)

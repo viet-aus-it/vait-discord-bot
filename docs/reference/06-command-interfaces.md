@@ -77,4 +77,4 @@ Commands are registered in their respective index files:
 - **Slash commands:** `src/slash-commands/index.ts` — exports `commands: SlashCommand[]`
 - **Context menu commands:** `src/context-menu-commands/index.ts` — exports `commandList: ContextMenuCommand[]`
 
-Both arrays are consumed by `pnpm deploy:command` to register commands with the [Discord API](https://discord.com/developers/docs/interactions/application-commands).
+Both arrays are consumed by `pnpm run deploy:command` to register commands with the [Discord API](https://discord.com/developers/docs/interactions/application-commands).

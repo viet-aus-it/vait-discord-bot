@@ -109,8 +109,8 @@ Review all changes for:
 
 ```bash
 # Verify commands still work
-pnpm typecheck
-pnpm lint
+pnpm run typecheck
+pnpm run lint
 ```
 
 ## Checklist

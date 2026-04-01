@@ -27,7 +27,7 @@ All changes must be:
 - **Atomic**: The smallest possible and logically complete unit of change
 - **Safe**: Reviewed, tested, and production-ready
 - **Tested**: Unit tests required for new features, integration tests for database interactions
-- **Linted**: Must pass `pnpm lint` and `pnpm typecheck` before commit
+- **Linted**: Must pass `pnpm run lint` and `pnpm run typecheck` before commit
 - **Documented**: Clear commit messages following conventional commits pattern
 - **Delivered**: Merged via pull request after review
 
@@ -85,10 +85,10 @@ See the [README](README.md) for the full tech stack.
 ### Essential Commands
 
 ```bash
-pnpm start              # Run bot with migrations
-pnpm test              # Run tests
-pnpm lint              # Check code quality
-pnpm deploy:command    # Deploy Discord commands (use sparingly!)
+pnpm run start              # Run bot with migrations
+pnpm run test              # Run tests
+pnpm run lint              # Check code quality
+pnpm run deploy:command    # Deploy Discord commands (use sparingly!)
 ```
 
 ### Key Principles

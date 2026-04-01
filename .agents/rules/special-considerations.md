@@ -24,10 +24,10 @@
 ## Important Reminders
 
 - **Never commit `.env` file**: It contains secrets and is gitignored
-- **Deploy commands sparingly**: Running `pnpm deploy:command` too often will rate limit the bot
-- **Test before deploying**: Always run `pnpm test` and `pnpm lint` before pushing
+- **Deploy commands sparingly**: Running `pnpm run deploy:command` too often will rate limit the bot
+- **Test before deploying**: Always run `pnpm run test` and `pnpm run lint` before pushing
 - **Message content intent**: Required for bot to read message content
-- **Database migrations**: Must be run before starting bot locally (`pnpm start` does this automatically)
+- **Database migrations**: Must be run before starting bot locally (`pnpm run start` does this automatically)
 - **Node version**: Use Node 22+ (check `.nvmrc`)
 - **PNPM version**: Use PNPM 10+ (check `packageManager` in package.json)
 

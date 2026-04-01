@@ -5,7 +5,7 @@ Build a slash command that calls an external HTTP API, handles slow responses wi
 ## Prerequisites
 
 - Completed [Build Your First Slash Command](./01-your-first-slash-command.md)
-- Bot running locally with `pnpm start`
+- Bot running locally with `pnpm run start`
 
 ## Step 1: Create the Fetch Function
 
