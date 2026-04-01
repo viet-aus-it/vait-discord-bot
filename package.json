@@ -19,7 +19,7 @@
     "build:typecheck": "pnpm typecheck && pnpm build",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
-    "lint:fix:unsafe": "oxlint --fix",
+    "lint:fix:unsafe": "oxlint --fix-dangerously",
     "format:oxfmt": "oxfmt --write .",
     "ci": "oxlint && oxfmt --check .",
     "format": "pnpm format:oxfmt && prisma format",
