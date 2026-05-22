@@ -1,8 +1,9 @@
 import { HttpResponse, http } from 'msw';
 import { describe, expect } from 'vitest';
+
+import { getQuoteOfTheDay } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
 import { server } from '../../../test/mocks/msw/server';
-import { getQuoteOfTheDay } from '.';
 import { ZEN_QUOTES_URL } from './fetch-quote';
 
 describe('Get quote of the day test', () => {

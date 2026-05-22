@@ -1,6 +1,7 @@
 import type { Span } from '@opentelemetry/api';
 import type { ThreadChannel } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { getDiscordClient } from '../src/clients';
 import { listAllThreads } from '../src/slash-commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';

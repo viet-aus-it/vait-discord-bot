@@ -20,11 +20,11 @@ chatInputCommandInteractionTest('description', async ({ interaction, message, th
 });
 ```
 
-| Fixture | Type | Description |
-|---------|------|-------------|
+| Fixture       | Type                                         | Description                                             |
+| ------------- | -------------------------------------------- | ------------------------------------------------------- |
 | `interaction` | `DeepMockProxy<ChatInputCommandInteraction>` | Mocked slash command interaction with `guildId` pre-set |
-| `message` | `DeepMockProxy<Message<true>>` | Mocked guild message with `guildId` pre-set |
-| `thread` | `DeepMockProxy<PublicThreadChannel>` | Mocked public thread channel |
+| `message`     | `DeepMockProxy<Message<true>>`               | Mocked guild message with `guildId` pre-set             |
+| `thread`      | `DeepMockProxy<PublicThreadChannel>`         | Mocked public thread channel                            |
 
 All mocks are automatically reset between tests via [vitest-mock-extended](https://www.npmjs.com/package/vitest-mock-extended) `mockReset`.
 
@@ -42,8 +42,8 @@ contextMenuCommandTest('description', async ({ interaction }) => {
 });
 ```
 
-| Fixture | Type | Description |
-|---------|------|-------------|
+| Fixture       | Type                                                  | Description                     |
+| ------------- | ----------------------------------------------------- | ------------------------------- |
 | `interaction` | `DeepMockProxy<MessageContextMenuCommandInteraction>` | Mocked context menu interaction |
 
 ### autocompleteInteractionTest
@@ -60,8 +60,8 @@ autocompleteInteractionTest('description', async ({ interaction }) => {
 });
 ```
 
-| Fixture | Type | Description |
-|---------|------|-------------|
+| Fixture       | Type                                     | Description                                            |
+| ------------- | ---------------------------------------- | ------------------------------------------------------ |
 | `interaction` | `DeepMockProxy<AutocompleteInteraction>` | Mocked autocomplete interaction with `guildId` pre-set |
 
 ## Database Seed Helpers
@@ -70,13 +70,13 @@ autocompleteInteractionTest('description', async ({ interaction }) => {
 
 All helpers interact with the real [PostgreSQL](https://www.postgresql.org/) database via [Prisma](https://www.prisma.io/).
 
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `seedUser` | `(id: string, reputation?: number) => Promise<User>` | Create a user with optional reputation (default: 0) |
-| `seedServerSettings` | `(guildId: string, overrides?: Record<string, unknown>) => Promise<ServerChannelsSettings>` | Create server config with optional field overrides |
-| `seedReferralCode` | `(data: { userId, guildId, service, code, expiry_date }) => Promise<ReferralCode>` | Create a referral code |
-| `seedReminder` | `(data: { userId, guildId, onTimestamp, message }) => Promise<Reminder>` | Create a reminder |
-| `cleanDb` | `() => Promise<void>` | Delete all records from all tables (called automatically before each test) |
+| Function             | Signature                                                                                   | Description                                                                |
+| -------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `seedUser`           | `(id: string, reputation?: number) => Promise<User>`                                        | Create a user with optional reputation (default: 0)                        |
+| `seedServerSettings` | `(guildId: string, overrides?: Record<string, unknown>) => Promise<ServerChannelsSettings>` | Create server config with optional field overrides                         |
+| `seedReferralCode`   | `(data: { userId, guildId, service, code, expiry_date }) => Promise<ReferralCode>`          | Create a referral code                                                     |
+| `seedReminder`       | `(data: { userId, guildId, onTimestamp, message }) => Promise<Reminder>`                    | Create a reminder                                                          |
+| `cleanDb`            | `() => Promise<void>`                                                                       | Delete all records from all tables (called automatically before each test) |
 
 ## MSW Mock Server
 
@@ -88,11 +88,11 @@ The mock server starts before all tests, resets handlers after each test, and sh
 
 ### Available Handlers
 
-| File | API Mocked |
-|------|------------|
-| `test/mocks/msw/weather-handlers.ts` | Weather API responses |
-| `test/mocks/msw/qotd-handlers.ts` | Quote of the Day API responses |
-| `test/mocks/msw/aoc-handlers.ts` | Advent of Code API responses |
+| File                                 | API Mocked                     |
+| ------------------------------------ | ------------------------------ |
+| `test/mocks/msw/weather-handlers.ts` | Weather API responses          |
+| `test/mocks/msw/qotd-handlers.ts`    | Quote of the Day API responses |
+| `test/mocks/msw/aoc-handlers.ts`     | Advent of Code API responses   |
 
 ### Adding Custom Handlers
 
@@ -116,5 +116,6 @@ Handlers added via `server.use()` are reset after each test.
 See [Testing Strategy](../explanation/03-testing-strategy.md) for the full explanation of testcontainer setup and per-file database isolation.
 
 **Key files:**
+
 - `test/mocks/database/globalSetup.ts` — starts PostgreSQL container, applies schema
 - `test/mocks/database/per-file-db.ts` — creates isolated DB per test file, registers `beforeEach(cleanDb)` and `afterAll` cleanup

@@ -1,8 +1,8 @@
 import { Result } from 'oxide.ts';
-import { commands as slashCommandList } from '../src/slash-commands';
+
 import { commands as contextMenuCommandList } from '../src/context-menu-commands';
 import { deployGuildCommands } from '../src/deploy-command';
-import { getCurrentUnixTime } from '../src/utils/date';
+import { commands as slashCommandList } from '../src/slash-commands';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 
@@ -27,7 +27,7 @@ const deploy = async () => {
     process.exit(0);
   }
 
-  logger.error(`[deploy-guild-commands]: Cannot deploy guild commands.`, op.unwrapErr() );
+  logger.error(`[deploy-guild-commands]: Cannot deploy guild commands.`, op.unwrapErr());
   process.exit(1);
 };
 

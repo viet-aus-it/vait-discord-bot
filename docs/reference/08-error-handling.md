@@ -12,13 +12,13 @@ import { Ok, Err, type Result } from 'oxide.ts';
 
 ### Result API
 
-| Method | Description |
-|--------|-------------|
-| `Ok(value)` | Create a success result |
-| `Err(error)` | Create a failure result |
-| `result.isOk()` | Returns `true` if the result is Ok |
-| `result.isErr()` | Returns `true` if the result is Err |
-| `result.unwrap()` | Extract the Ok value (throws if Err) |
+| Method               | Description                          |
+| -------------------- | ------------------------------------ |
+| `Ok(value)`          | Create a success result              |
+| `Err(error)`         | Create a failure result              |
+| `result.isOk()`      | Returns `true` if the result is Ok   |
+| `result.isErr()`     | Returns `true` if the result is Err  |
+| `result.unwrap()`    | Extract the Ok value (throws if Err) |
 | `result.unwrapErr()` | Extract the Err value (throws if Ok) |
 
 ### Example
@@ -48,19 +48,19 @@ import { logger } from '../../utils/logger';
 
 ### Log Methods
 
-| Method | Level | Description |
-|--------|-------|-------------|
+| Method                     | Level | Description                    |
+| -------------------------- | ----- | ------------------------------ |
 | `logger.debug(msg, meta?)` | debug | Detailed debugging information |
-| `logger.info(msg, meta?)` | info | General operational events |
-| `logger.warn(msg, meta?)` | warn | Potential issues |
-| `logger.error(msg, meta?)` | error | Failures requiring attention |
+| `logger.info(msg, meta?)`  | info  | General operational events     |
+| `logger.warn(msg, meta?)`  | warn  | Potential issues               |
+| `logger.error(msg, meta?)` | error | Failures requiring attention   |
 
 ### Transports
 
-| Environment | Transports |
-|-------------|------------|
-| Development | Console with pretty-printing and colours |
-| Production | Console + [Axiom](https://axiom.co/) (including exception and rejection handlers) |
+| Environment | Transports                                                                        |
+| ----------- | --------------------------------------------------------------------------------- |
+| Development | Console with pretty-printing and colours                                          |
+| Production  | Console + [Axiom](https://axiom.co/) (including exception and rejection handlers) |
 
 ## Span Error Recording
 

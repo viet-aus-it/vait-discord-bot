@@ -5,7 +5,7 @@ Add dynamic autocomplete suggestions to a slash command option so users see filt
 ## Prerequisites
 
 - Completed [Build Your First Slash Command](./01-your-first-slash-command.md)
-- Bot running locally with `pnpm start`
+- Bot running locally with `pnpm run start`
 
 ## Step 1: Create a Data Source
 
@@ -56,9 +56,7 @@ import { autocomplete } from './lookup-autocomplete';
 const data = new SlashCommandBuilder()
   .setName('lookup')
   .setDescription('Look up a service')
-  .addStringOption((option) =>
-    option.setName('service').setDescription('Service name').setRequired(true).setAutocomplete(true)
-  )
+  .addStringOption((option) => option.setName('service').setDescription('Service name').setRequired(true).setAutocomplete(true))
   .setContexts(InteractionContextType.Guild);
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
@@ -76,6 +74,7 @@ export default command;
 ```
 
 The key parts:
+
 - `.setAutocomplete(true)` on the string option enables autocomplete
 - The `autocomplete` property on the `SlashCommand` object wires in the handler
 

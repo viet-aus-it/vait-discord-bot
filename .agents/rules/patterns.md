@@ -12,7 +12,7 @@
 ## Database (Prisma)
 
 - **ORM**: Prisma with PostgreSQL adapter
-- **Migrations**: Always create migrations with `pnpm prisma:migrate`
+- **Migrations**: Always create migrations with `pnpm run prisma:migrate`
 - **Schema**: Define in `prisma/schema.prisma`
 - **Client**: Import from `src/clients/db.ts`
 - **Transactions**: Use Prisma transactions for atomic operations

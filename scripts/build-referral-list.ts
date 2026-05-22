@@ -1,7 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+
 import { type HTMLElement, parse as parseHtml } from 'node-html-parser';
 import wretch from 'wretch';
+
 import { logger } from '../src/utils/logger';
 
 const ozbargainApi = wretch('https://www.ozbargain.com.au/wiki/list_of_referral_links');

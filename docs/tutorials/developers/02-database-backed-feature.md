@@ -3,6 +3,7 @@
 Build a `/kudos` command with two subcommands that reads from and writes to [PostgreSQL](https://www.postgresql.org/) using [Prisma](https://www.prisma.io/).
 
 The finished command has:
+
 - `/kudos give @user` — give kudos to someone (writes to DB)
 - `/kudos check @user` — check someone's kudos count (reads from DB)
 
@@ -10,7 +11,7 @@ The finished command has:
 
 - Completed [Build Your First Slash Command](./01-your-first-slash-command.md)
 - [Docker](https://www.docker.com/) running (for the local database)
-- Bot running with `pnpm start`
+- Bot running with `pnpm run start`
 
 ## Step 1: Update the Schema
 

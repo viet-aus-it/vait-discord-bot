@@ -1,6 +1,7 @@
 import type { Span } from '@opentelemetry/api';
 import { ChannelType } from 'discord.js';
 import { Result } from 'oxide.ts';
+
 import { getDiscordClient } from '../src/clients';
 import { formatReminderMessage, getReminderByTime, removeReminders } from '../src/slash-commands/reminder/utils';
 import { getReminderChannel } from '../src/slash-commands/server-settings/utils';
