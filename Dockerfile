@@ -5,11 +5,11 @@ FROM node:24.14 AS build
 WORKDIR /app
 
 # Install global node modules: pnpm
-RUN npm install -g pnpm@10.33
+RUN npm install -g pnpm@11.2
 ENV PNPM_ARGS="--frozen-lockfile --ignore-scripts"
 
 # Install Node modules
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install ${PNPM_ARGS}
 
 # Generate Prisma schemas

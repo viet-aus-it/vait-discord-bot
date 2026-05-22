@@ -1,0 +1,10 @@
+allowBuilds:
+  '@prisma/engines': true
+  cpu-features: true
+  esbuild: true
+  msw: true
+  prisma: true
+  protobufjs: true
+  ssh2: true
+minimumReleaseAgeExclude:
+  - '@dotenvx/dotenvx@1.67.0'

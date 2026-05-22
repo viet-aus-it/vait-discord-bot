@@ -2,21 +2,16 @@
   "name": "@viet-aus-it/discord-bot",
   "version": "2.12.1",
   "description": "Chat bot for VAIT Discord Server",
-  "main": "build/index.js",
-  "engines": {
-    "node": "^24.0.0",
-    "pnpm": "^10.0.0"
+  "homepage": "https://github.com/viet-aus-it/vait-discord-bot#readme",
+  "bugs": {
+    "url": "https://github.com/viet-aus-it/vait-discord-bot"
   },
-  "packageManager": "pnpm@10.33.0",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/viet-aus-it/vait-discord-bot.git"
   },
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/viet-aus-it/vait-discord-bot"
-  },
-  "homepage": "https://github.com/viet-aus-it/vait-discord-bot#readme",
+  "main": "build/index.js",
   "scripts": {
     "prepare": "husky",
     "typecheck": "tsc",
@@ -42,68 +37,60 @@
     "build:referrals": "tsx scripts/build-referral-list.ts"
   },
   "dependencies": {
-    "@axiomhq/winston": "^1.5.0",
+    "@axiomhq/winston": "^1.6.1",
     "@discordjs/rest": "2.0.0",
-    "@dotenvx/dotenvx": "^1.57.2",
+    "@dotenvx/dotenvx": "^1.67.0",
     "@opentelemetry/api": "^1.9.1",
-    "@opentelemetry/auto-instrumentations-node": "^0.72.0",
-    "@opentelemetry/exporter-logs-otlp-http": "^0.214.0",
-    "@opentelemetry/exporter-trace-otlp-http": "^0.214.0",
-    "@opentelemetry/resources": "^2.6.1",
-    "@opentelemetry/sdk-logs": "^0.214.0",
-    "@opentelemetry/sdk-node": "^0.214.0",
-    "@opentelemetry/sdk-trace-base": "^2.6.1",
-    "@opentelemetry/semantic-conventions": "^1.40.0",
-    "@prisma/adapter-pg": "^7.5.0",
-    "@prisma/client": "^7.5.0",
-    "@prisma/client-runtime-utils": "^7.5.0",
-    "@prisma/instrumentation": "^7.5.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.76.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.218.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.218.0",
+    "@opentelemetry/resources": "^2.7.1",
+    "@opentelemetry/sdk-logs": "^0.218.0",
+    "@opentelemetry/sdk-node": "^0.218.0",
+    "@opentelemetry/sdk-trace-base": "^2.7.1",
+    "@opentelemetry/semantic-conventions": "^1.41.1",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@prisma/client-runtime-utils": "^7.8.0",
+    "@prisma/instrumentation": "^7.8.0",
     "cowsay": "^1.6.0",
-    "date-fns": "^4.1.0",
-    "discord-api-types": "^0.38.42",
-    "discord.js": "^14.25.1",
+    "date-fns": "^4.2.1",
+    "discord-api-types": "^0.38.47",
+    "discord.js": "^14.26.4",
     "node-html-parser": "^7.1.0",
     "oxide.ts": "^1.1.0",
-    "parse-duration": "^2.1.5",
+    "parse-duration": "^2.1.6",
     "winston": "^3.19.0",
     "wretch": "^3.0.7",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.8",
+    "@biomejs/biome": "^2.4.15",
     "@faker-js/faker": "^10.4.0",
-    "@testcontainers/postgresql": "^11.13.0",
-    "@types/node": "^25.5.0",
+    "@testcontainers/postgresql": "^12.0.0",
+    "@types/node": "^25.9.1",
     "@types/node-fetch": "^2.6.13",
     "@types/pg": "^8.20.0",
-    "@vitest/coverage-v8": "^4.1.1",
-    "@vitest/ui": "^4.1.1",
-    "esbuild": "^0.27.4",
+    "@vitest/coverage-v8": "^4.1.7",
+    "@vitest/ui": "^4.1.7",
+    "esbuild": "^0.28.0",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "msw": "^2.12.14",
-    "pg": "^8.20.0",
-    "prisma": "^7.5.0",
+    "lint-staged": "^17.0.5",
+    "msw": "^2.14.6",
+    "pg": "^8.21.0",
+    "prisma": "^7.8.0",
     "rolldown": "1.0.0-beta.29",
     "rollup-plugin-copy": "^3.5.0",
-    "testcontainers": "^11.13.0",
-    "tsdown": "^0.21.4",
-    "tsx": "^4.21.0",
-    "typescript": "^6.0.2",
-    "vitest": "^4.1.1",
-    "vitest-mock-extended": "^3.1.0"
+    "testcontainers": "^12.0.0",
+    "tsdown": "^0.22.0",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.7",
+    "vitest-mock-extended": "^4.0.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@biomejs/biome",
-      "@prisma/engines",
-      "@prisma/client",
-      "cpu-features",
-      "esbuild",
-      "msw",
-      "prisma",
-      "protobufjs",
-      "ssh2"
-    ]
-  }
+  "engines": {
+    "node": "^24.0.0",
+    "pnpm": "^11.0.0"
+  },
+  "packageManager": "pnpm@11.2.2"
 }
