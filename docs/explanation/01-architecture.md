@@ -55,7 +55,7 @@ This was chosen over vendor-specific SDKs (e.g., Axiom's own SDK) because:
 - **Vendor independence** — switching backends (Axiom, Grafana, Datadog) requires only a config change, not a complete code rewrite, as long as the provider accepts the [OpenTelemetry Protocol](https://opentelemetry.io/docs/specs/otlp/) (or OTLP)
 - **Standardised semantic conventions** — attributes like `enduser.id` and `error.type` follow an industry standard, making traces readable by anyone familiar with OTel
 
-Locally, [Jaeger](https://www.jaegertracing.io/) provides a lightweight trace viewer with span graph visualisation. In production, traces export to [Axiom](https://axiom.co/) for centralised observability. The `FilteringSpanProcessor` reduces production costs by dropping unprocessed messages entirely and sampling success spans at 1%, while always exporting error spans.
+Locally, [otel-desktop-viewer](https://github.com/CtrlSpice/otel-desktop-viewer) provides a lightweight trace viewer with span graph visualisation. In production, traces export to [Axiom](https://axiom.co/) for centralised observability. The `FilteringSpanProcessor` reduces production costs by dropping unprocessed messages entirely and sampling success spans at 1%, while always exporting error spans.
 
 OTel is disabled by default (`ENABLE_OTEL=false`) and has no impact on bot behaviour when off.
 

@@ -48,13 +48,13 @@ pnpm run start
 
 ### Optional: Local Observability
 
-The bot supports [OpenTelemetry](https://opentelemetry.io/) tracing for debugging and understanding request flows. Locally, [Jaeger](https://www.jaegertracing.io/) provides a trace viewer with span graph visualisation. See [Why OpenTelemetry](../explanation/01-architecture.md#why-opentelemetry) for the design rationale.
+The bot supports [OpenTelemetry](https://opentelemetry.io/) tracing for debugging and understanding request flows. Locally, [otel-desktop-viewer](https://github.com/CtrlSpice/otel-desktop-viewer) provides a trace viewer with span graph visualisation. See [Why OpenTelemetry](../explanation/01-architecture.md#why-opentelemetry) for the design rationale.
 
 ```bash
-docker compose up -d db jaeger
+docker compose up -d db tracing
 ```
 
-Set `ENABLE_OTEL=true` in your `.env`. View traces in the Jaeger UI at `http://localhost:16686`.
+Set `ENABLE_OTEL=true` in your `.env`. View traces in the otel-desktop-viewer UI at `http://localhost:8000`.
 
 ## Next Steps
 

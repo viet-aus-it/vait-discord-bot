@@ -35,12 +35,12 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 
 ## OpenTelemetry
 
-| Variable                      | Required          | Default            | Description                                                                                                                                               |
-| ----------------------------- | ----------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ENABLE_OTEL`                 | No                | `false`            | Enable OpenTelemetry trace collection (`true` or `false`)                                                                                                 |
-| `OTEL_DEBUG`                  | No                | `false`            | Enable OTel SDK diagnostic logging                                                                                                                        |
-| `OTEL_SERVICE_NAME`           | No                | `vait-discord-bot` | Service name for trace attribution                                                                                                                        |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTel enabled | —                  | OTLP HTTP base endpoint URL. The SDK appends signal-specific paths (`/v1/traces`, `/v1/logs`) automatically. Local dev: `http://localhost:4318` (Jaeger). |
+| Variable                      | Required          | Default            | Description                                                                                                                                                            |
+| ----------------------------- | ----------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ENABLE_OTEL`                 | No                | `false`            | Enable OpenTelemetry trace collection (`true` or `false`)                                                                                                              |
+| `OTEL_DEBUG`                  | No                | `false`            | Enable OTel SDK diagnostic logging                                                                                                                                     |
+| `OTEL_SERVICE_NAME`           | No                | `vait-discord-bot` | Service name for trace attribution                                                                                                                                     |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTel enabled | —                  | OTLP HTTP base endpoint URL. The SDK appends signal-specific paths (`/v1/traces`, `/v1/logs`) automatically. Local dev: `http://localhost:4318` (otel-desktop-viewer). |
 
 When `ENABLE_OTEL=true` in production, `AXIOM_TOKEN` and `AXIOM_DATASET` are also required (traces and logs are exported to Axiom via the OTel pipeline). When `ENABLE_OTEL=false`, logs fall back to the direct `@axiomhq/winston` transport.
 
