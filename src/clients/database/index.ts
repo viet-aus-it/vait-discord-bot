@@ -7,7 +7,7 @@ let db: ReturnType<typeof createDb> | undefined;
 
 function createDb() {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-  return drizzle(pool, { schema });
+  return drizzle({ client: pool });
 }
 
 export function getDbClient() {
