@@ -1,7 +1,7 @@
 import { and, eq, lt } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
-import { referralCode } from '../../clients/database/schema/schema';
+import { referralCode } from '../../clients/db/schema/schema';
 import { getOrCreateUser } from '../reputation/utils';
 
 export type CreateReferralInput = {

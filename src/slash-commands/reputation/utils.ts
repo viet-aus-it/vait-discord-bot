@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
-import { reputationLog, user } from '../../clients/database/schema/schema';
+import { reputationLog, user } from '../../clients/db/schema/schema';
 
 export const getOrCreateUser = async (userId: string) => {
   const db = getDbClient();
@@ -52,5 +52,13 @@ export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep
 export const getRepLeaderboard = async (size: number) => {
   const db = getDbClient();
 
-  return db.query.user.findMany({ where: { reputation: { gt: 0 } }, orderBy: { reputation: 'desc' }, limit: size });
+  return db.query.user.findMany({
+    where: { reputation: { gt: 0 } },
+    orderBy: { reputation: 'desc' },
+    columns: {
+      id: true,
+      reputation: true,
+    },
+    limit: size,
+  });
 };

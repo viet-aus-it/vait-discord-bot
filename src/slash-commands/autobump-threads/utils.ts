@@ -1,7 +1,7 @@
 import { eq, sql } from 'drizzle-orm';
 
-import { getDbClient } from '../../clients';
-import { serverChannelsSettings } from '../../clients/database/schema/schema';
+import { getDbClient } from '../../clients/db';
+import { serverChannelsSettings } from '../../clients/db/schema/schema';
 
 export const addAutobumpThread = async (guildId: string, threadId: string) => {
   const db = getDbClient();
@@ -48,7 +48,12 @@ export const listThreadsByGuild = async (guildId: string) => {
 export const listAllThreads = async () => {
   const db = getDbClient();
 
-  return db.query.serverChannelsSettings.findMany({
+  const result = await db.query.serverChannelsSettings.findMany({
     columns: { guildId: true, autobumpThreads: true },
   });
+
+  return result.map((record) => ({
+    guildId: record.guildId,
+    autobumpThreads: record.autobumpThreads ?? [],
+  }));
 };

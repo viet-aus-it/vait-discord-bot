@@ -1,8 +1,8 @@
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
-import { and, eq, inArray, type InferSelectModel } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
-import { reminder } from '../../clients/database/schema/schema';
+import { reminder, ReminderSelect } from '../../clients/db/schema/schema';
 
 type SaveReminderInput = {
   userId: string;
@@ -72,7 +72,7 @@ export const removeReminder = async ({ userId, guildId, reminderId }: RemoveRemi
   return;
 };
 
-export const formatReminderMessage = ({ userId, message, onTimestamp }: InferSelectModel<typeof reminder>) => {
+export const formatReminderMessage = ({ userId, message, onTimestamp }: ReminderSelect) => {
   return `Reminder for <@${userId}> on <t:${onTimestamp}> \nmessage: ${message}`;
 };
 
@@ -81,14 +81,12 @@ export const getReminderByTime = async (timestamp: number) => {
   return db.query.reminder.findMany({ where: { onTimestamp: { lte: timestamp } } });
 };
 
-export const removeReminders = async (reminders: InferSelectModel<typeof reminder>[]) => {
+export const removeReminders = async (reminders: ReminderSelect[]) => {
   const db = getDbClient();
-  await db.delete(reminder).where(
+  return db.delete(reminder).where(
     inArray(
       reminder.id,
       reminders.map((r) => r.id)
     )
   );
-
-  return;
 };

@@ -1,18 +1,20 @@
-import { eq, type InferSelectModel } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
-import { getDbClient } from '../../clients';
-import { aocLeaderboard, serverChannelsSettings } from '../../clients/database/schema/schema';
+import { getDbClient } from '../../clients/db';
+import { aocLeaderboard, ServerChannelsSettingsSelect } from '../../clients/db/schema/schema';
 import { logger } from '../../utils/logger';
 import { fetchLeaderboard } from './client';
 import type { AocLeaderboard } from './schema';
-
-type JsonValue = Record<string, unknown> | unknown[] | string | number | boolean | null;
 
 export const getAocSettings = async (guildId: string) => {
   const db = getDbClient();
   return db.query.serverChannelsSettings.findFirst({
     where: { guildId },
-    columns: { guildId: true, aocKey: true, aocLeaderboardId: true },
+    columns: {
+      guildId: true,
+      aocKey: true,
+      aocLeaderboardId: true,
+    },
   });
 };
 
@@ -20,17 +22,17 @@ export const saveLeaderboard = async (guildId: string, aocLeaderboardResponse: A
   const db = getDbClient();
   const [row] = await db
     .insert(aocLeaderboard)
-    .values({ guildId, result: aocLeaderboardResponse as unknown as JsonValue })
+    .values({ guildId, result: aocLeaderboardResponse })
     .onConflictDoUpdate({
       target: aocLeaderboard.guildId,
-      set: { updatedAt: new Date(), result: aocLeaderboardResponse as unknown as JsonValue },
+      set: { updatedAt: new Date(), result: aocLeaderboardResponse },
     })
     .returning({ result: aocLeaderboard.result, updatedAt: aocLeaderboard.updatedAt });
 
   return row;
 };
 
-type AocSettings = Pick<InferSelectModel<typeof serverChannelsSettings>, 'aocKey' | 'aocLeaderboardId' | 'guildId'>;
+type AocSettings = Pick<ServerChannelsSettingsSelect, 'aocKey' | 'aocLeaderboardId' | 'guildId'>;
 export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderboardId, guildId }: AocSettings) => {
   if (!aocKey || !aocLeaderboardId) {
     const errorMessage = 'Cannot fetch leaderboard without key and leaderboard id';
@@ -54,7 +56,5 @@ export const getSavedLeaderboard = async (guildId: string) => {
 
 export const deleteLeaderboard = async (guildId: string) => {
   const db = getDbClient();
-  const rows = await db.delete(aocLeaderboard).where(eq(aocLeaderboard.guildId, guildId)).returning();
-
-  return rows[0];
+  return db.delete(aocLeaderboard).where(eq(aocLeaderboard.guildId, guildId));
 };

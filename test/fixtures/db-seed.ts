@@ -1,5 +1,5 @@
-import { getDbClient } from '../../src/clients';
-import { aocLeaderboard, referralCode, reminder, reputationLog, serverChannelsSettings, user } from '../../src/clients/database/schema/schema';
+import { getDbClient } from '../../src/clients/db';
+import { aocLeaderboard, referralCode, reminder, reputationLog, serverChannelsSettings, user } from '../../src/clients/db/schema/schema';
 
 export const seedUser = async (id: string, reputation = 0) => {
   const db = getDbClient();

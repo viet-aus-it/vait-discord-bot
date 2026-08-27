@@ -1,5 +1,5 @@
-import { getDbClient } from '../../clients';
-import { serverChannelsSettings } from '../../clients/database/schema/schema';
+import { getDbClient } from '../../clients/db';
+import { serverChannelsSettings } from '../../clients/db/schema/schema';
 
 export const setReminderChannel = async (guildId: string, channelId: string) => {
   const db = getDbClient();
@@ -17,7 +17,9 @@ export const setReminderChannel = async (guildId: string, channelId: string) => 
 
 export const getReminderChannel = async (guildId: string) => {
   const db = getDbClient();
-  const serverSettings = await db.query.serverChannelsSettings.findFirst({ where: { guildId } });
+  const serverSettings = await db.query.serverChannelsSettings.findFirst({
+    where: { guildId },
+  });
   if (!serverSettings) {
     throw new Error('ServerChannelsSettings not found');
   }
