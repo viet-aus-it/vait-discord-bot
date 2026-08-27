@@ -47,3 +47,4 @@ LICENSE
 # Docker
 docker-compose.*
 Dockerfile
+.docker
