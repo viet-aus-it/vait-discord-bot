@@ -1,7 +1,9 @@
 import type { Message } from 'discord.js';
+import { isNotNull } from 'drizzle-orm';
 import { Result } from 'oxide.ts';
 
 import { getDbClient } from '../clients';
+import { serverChannelsSettings } from '../clients/database/schema/schema';
 import { logger } from './logger';
 import { recordSpanError, setSpanAttributes } from './tracer';
 
@@ -17,10 +19,10 @@ export const setHoneypotChannelId = (guildId: string, channelId: string): void =
 
 export const loadHoneypotChannels = async (): Promise<number> => {
   const db = getDbClient();
-  const settings = await db.serverChannelsSettings.findMany({
-    where: { honeypotChannel: { not: null } },
-    select: { guildId: true, honeypotChannel: true },
-  });
+  const settings = await db
+    .select({ guildId: serverChannelsSettings.guildId, honeypotChannel: serverChannelsSettings.honeypotChannel })
+    .from(serverChannelsSettings)
+    .where(isNotNull(serverChannelsSettings.honeypotChannel));
 
   for (const setting of settings) {
     if (setting.honeypotChannel) {

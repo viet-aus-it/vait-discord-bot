@@ -1,56 +1,54 @@
+import { eq, sql } from 'drizzle-orm';
+
 import { getDbClient } from '../../clients';
+import { serverChannelsSettings } from '../../clients/database/schema/schema';
 
 export const addAutobumpThread = async (guildId: string, threadId: string) => {
   const db = getDbClient();
-  const settings = await db.serverChannelsSettings.upsert({
-    where: { guildId },
-    update: {
-      autobumpThreads: {
-        push: threadId,
+  const [settings] = await db
+    .insert(serverChannelsSettings)
+    .values({ guildId, autobumpThreads: [threadId] })
+    .onConflictDoUpdate({
+      target: serverChannelsSettings.guildId,
+      set: {
+        autobumpThreads: sql`array_append(${serverChannelsSettings.autobumpThreads}, ${threadId})`,
       },
-    },
-    create: {
-      guildId,
-      autobumpThreads: [threadId],
-    },
-  });
+    })
+    .returning();
 
   return settings.autobumpThreads;
 };
 
 export const removeAutobumpThread = async (guildId: string, threadId: string) => {
   const db = getDbClient();
-  const { autobumpThreads } = await db.serverChannelsSettings.findFirstOrThrow({
-    where: { guildId },
-  });
+  const rows = await db.select().from(serverChannelsSettings).where(eq(serverChannelsSettings.guildId, guildId)).limit(1);
+  const settings = rows[0];
+  if (!settings) {
+    throw new Error('ServerChannelsSettings not found');
+  }
 
-  const settings = await db.serverChannelsSettings.update({
-    where: { guildId },
-    data: {
-      autobumpThreads: autobumpThreads.filter((t) => t !== threadId),
-    },
-  });
+  const [updated] = await db
+    .update(serverChannelsSettings)
+    .set({ autobumpThreads: settings.autobumpThreads.filter((t) => t !== threadId) })
+    .where(eq(serverChannelsSettings.guildId, guildId))
+    .returning();
 
-  return settings.autobumpThreads;
+  return updated.autobumpThreads;
 };
 
 export const listThreadsByGuild = async (guildId: string) => {
   const db = getDbClient();
-  const settings = await db.serverChannelsSettings.findFirstOrThrow({
-    where: { guildId },
-  });
+  const rows = await db.select().from(serverChannelsSettings).where(eq(serverChannelsSettings.guildId, guildId)).limit(1);
+  const settings = rows[0];
+  if (!settings) {
+    throw new Error('ServerChannelsSettings not found');
+  }
 
   return settings.autobumpThreads;
 };
 
 export const listAllThreads = async () => {
   const db = getDbClient();
-  const settings = await db.serverChannelsSettings.findMany({
-    select: {
-      guildId: true,
-      autobumpThreads: true,
-    },
-  });
 
-  return settings;
+  return db.select({ guildId: serverChannelsSettings.guildId, autobumpThreads: serverChannelsSettings.autobumpThreads }).from(serverChannelsSettings);
 };

@@ -1,14 +1,19 @@
+import { desc, eq, gt } from 'drizzle-orm';
+
 import { getDbClient } from '../../clients';
+import { reputationLog, user } from '../../clients/database/schema/schema';
 
 export const getOrCreateUser = async (userId: string) => {
   const db = getDbClient();
 
-  let user = await db.user.findUnique({ where: { id: userId } });
-  if (!user) {
-    user = await db.user.create({ data: { id: userId } });
+  const existing = await db.select().from(user).where(eq(user.id, userId)).limit(1);
+  let userRow = existing[0];
+  if (!userRow) {
+    const [created] = await db.insert(user).values({ id: userId }).returning();
+    userRow = created;
   }
 
-  return user;
+  return userRow;
 };
 
 type NumberAdjustment = { increment: number } | { decrement: number } | { set: number };
@@ -27,22 +32,13 @@ interface IUpdateRep {
 export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep) => {
   const db = getDbClient();
 
-  const updatedUserPromise = db.user.update({
-    where: { id: toUserId },
-    data: adjustment,
-  });
-
   const operation = getAdjustmentOperation(adjustment.reputation);
 
-  const logPromise = db.reputationLog.create({
-    data: {
-      fromUserId,
-      toUserId,
-      operation,
-    },
+  const [[updatedUser]] = await db.transaction(async (tx) => {
+    const updated = await tx.update(user).set(adjustment).where(eq(user.id, toUserId)).returning();
+    await tx.insert(reputationLog).values({ fromUserId, toUserId, operation });
+    return updated;
   });
-
-  const [updatedUser] = await db.$transaction([updatedUserPromise, logPromise]);
 
   return updatedUser;
 };
@@ -50,13 +46,5 @@ export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep
 export const getRepLeaderboard = async (size: number) => {
   const db = getDbClient();
 
-  return db.user.findMany({
-    where: { reputation: { gt: 0 } },
-    orderBy: [{ reputation: 'desc' }],
-    select: {
-      id: true,
-      reputation: true,
-    },
-    take: size,
-  });
+  return db.select({ id: user.id, reputation: user.reputation }).from(user).where(gt(user.reputation, 0)).orderBy(desc(user.reputation)).limit(size);
 };

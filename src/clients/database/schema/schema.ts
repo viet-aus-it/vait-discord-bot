@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2';
-import { sql } from 'drizzle-orm';
+import { sql, type InferSelectModel } from 'drizzle-orm';
 import { pgTable, timestamp, text, integer, foreignKey, jsonb, index, uniqueIndex } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('User', {
@@ -119,3 +119,10 @@ export const aocLeaderboard = pgTable(
     uniqueIndex('AocLeaderboard_guildId_key').using('btree', table.guildId.asc().nullsLast().op('text_ops')),
   ]
 );
+
+export type UserSelect = InferSelectModel<typeof user>;
+export type ReputationLogSelect = InferSelectModel<typeof reputationLog>;
+export type ReferralCodeSelect = InferSelectModel<typeof referralCode>;
+export type ReminderSelect = InferSelectModel<typeof reminder>;
+export type ServerChannelsSettingsSelect = InferSelectModel<typeof serverChannelsSettings>;
+export type AocLeaderboardSelect = InferSelectModel<typeof aocLeaderboard>;

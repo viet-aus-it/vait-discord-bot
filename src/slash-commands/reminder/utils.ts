@@ -1,7 +1,8 @@
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
+import { and, eq, gte, inArray, lte, type InferSelectModel } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
-import type { Reminder } from '../../clients/prisma/generated/client/client';
+import { reminder } from '../../clients/database/schema/schema';
 
 type SaveReminderInput = {
   userId: string;
@@ -16,16 +17,9 @@ export const saveReminder = async ({ userId, guildId, message, timestamp }: Save
   }
 
   const db = getDbClient();
-  const reminder = await db.reminder.create({
-    data: {
-      userId,
-      guildId,
-      onTimestamp: timestamp,
-      message,
-    },
-  });
+  const [row] = await db.insert(reminder).values({ userId, guildId, onTimestamp: timestamp, message }).returning();
 
-  return reminder;
+  return row;
 };
 
 type UpdateReminderInput = {
@@ -42,36 +36,36 @@ export const updateReminder = async ({ userId, guildId, reminderId, message, tim
   }
 
   const db = getDbClient();
-  let reminder = await db.reminder.findFirstOrThrow({
-    where: { id: reminderId, userId, guildId },
-  });
+  const found = await db
+    .select()
+    .from(reminder)
+    .where(and(eq(reminder.id, reminderId), eq(reminder.userId, userId), eq(reminder.guildId, guildId)))
+    .limit(1);
+  const foundReminder = found[0];
+  if (!foundReminder) {
+    throw new Error('Reminder not found');
+  }
 
-  reminder = await db.reminder.update({
-    where: {
-      id: reminderId,
-    },
-    data: {
-      message: message ?? reminder.message,
-      onTimestamp: timestamp || reminder.onTimestamp,
-    },
-  });
+  const [row] = await db
+    .update(reminder)
+    .set({
+      message: message ?? foundReminder.message,
+      onTimestamp: timestamp || foundReminder.onTimestamp,
+    })
+    .where(eq(reminder.id, reminderId))
+    .returning();
 
-  return reminder;
+  return row;
 };
 
 export const getUserReminders = async (userId: string, guildId: string) => {
   const db = getDbClient();
-  const reminders = await db.reminder.findMany({
-    where: {
-      userId,
-      guildId,
-      onTimestamp: {
-        gte: getUnixTime(new Date()),
-      },
-    },
-  });
+  const rows = await db
+    .select()
+    .from(reminder)
+    .where(and(eq(reminder.userId, userId), eq(reminder.guildId, guildId), gte(reminder.onTimestamp, getUnixTime(new Date()))));
 
-  return reminders;
+  return rows;
 };
 
 type RemoveReminderInput = {
@@ -81,43 +75,30 @@ type RemoveReminderInput = {
 };
 export const removeReminder = async ({ userId, guildId, reminderId }: RemoveReminderInput) => {
   const db = getDbClient();
-  await db.reminder.deleteMany({
-    where: {
-      id: reminderId,
-      userId,
-      guildId,
-    },
-  });
+  await db.delete(reminder).where(and(eq(reminder.userId, userId), eq(reminder.guildId, guildId), eq(reminder.id, reminderId)));
 
   return;
 };
 
-export const formatReminderMessage = ({ userId, message, onTimestamp }: Reminder) => {
+export const formatReminderMessage = ({ userId, message, onTimestamp }: InferSelectModel<typeof reminder>) => {
   return `Reminder for <@${userId}> on <t:${onTimestamp}> \nmessage: ${message}`;
 };
 
 export const getReminderByTime = async (timestamp: number) => {
   const db = getDbClient();
-  const reminders = await db.reminder.findMany({
-    where: {
-      onTimestamp: {
-        lte: timestamp,
-      },
-    },
-  });
+  const rows = await db.select().from(reminder).where(lte(reminder.onTimestamp, timestamp));
 
-  return reminders;
+  return rows;
 };
 
-export const removeReminders = async (reminders: Reminder[]) => {
+export const removeReminders = async (reminders: InferSelectModel<typeof reminder>[]) => {
   const db = getDbClient();
-  await db.reminder.deleteMany({
-    where: {
-      id: {
-        in: reminders.map((r) => r.id),
-      },
-    },
-  });
+  await db.delete(reminder).where(
+    inArray(
+      reminder.id,
+      reminders.map((r) => r.id)
+    )
+  );
 
   return;
 };
