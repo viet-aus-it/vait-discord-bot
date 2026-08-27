@@ -21,8 +21,7 @@ export const addAutobumpThread = async (guildId: string, threadId: string) => {
 
 export const removeAutobumpThread = async (guildId: string, threadId: string) => {
   const db = getDbClient();
-  const rows = await db.select().from(serverChannelsSettings).where(eq(serverChannelsSettings.guildId, guildId)).limit(1);
-  const settings = rows[0];
+  const settings = await db.query.serverChannelsSettings.findFirst({ where: { guildId } });
   if (!settings) {
     throw new Error('ServerChannelsSettings not found');
   }
@@ -38,8 +37,7 @@ export const removeAutobumpThread = async (guildId: string, threadId: string) =>
 
 export const listThreadsByGuild = async (guildId: string) => {
   const db = getDbClient();
-  const rows = await db.select().from(serverChannelsSettings).where(eq(serverChannelsSettings.guildId, guildId)).limit(1);
-  const settings = rows[0];
+  const settings = await db.query.serverChannelsSettings.findFirst({ where: { guildId } });
   if (!settings) {
     throw new Error('ServerChannelsSettings not found');
   }
@@ -50,5 +48,7 @@ export const listThreadsByGuild = async (guildId: string) => {
 export const listAllThreads = async () => {
   const db = getDbClient();
 
-  return db.select({ guildId: serverChannelsSettings.guildId, autobumpThreads: serverChannelsSettings.autobumpThreads }).from(serverChannelsSettings);
+  return db.query.serverChannelsSettings.findMany({
+    columns: { guildId: true, autobumpThreads: true },
+  });
 };

@@ -10,17 +10,10 @@ type JsonValue = Record<string, unknown> | unknown[] | string | number | boolean
 
 export const getAocSettings = async (guildId: string) => {
   const db = getDbClient();
-  const rows = await db
-    .select({
-      guildId: serverChannelsSettings.guildId,
-      aocKey: serverChannelsSettings.aocKey,
-      aocLeaderboardId: serverChannelsSettings.aocLeaderboardId,
-    })
-    .from(serverChannelsSettings)
-    .where(eq(serverChannelsSettings.guildId, guildId))
-    .limit(1);
-
-  return rows[0];
+  return db.query.serverChannelsSettings.findFirst({
+    where: { guildId },
+    columns: { guildId: true, aocKey: true, aocLeaderboardId: true },
+  });
 };
 
 export const saveLeaderboard = async (guildId: string, aocLeaderboardResponse: AocLeaderboard) => {
@@ -53,13 +46,10 @@ export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderb
 
 export const getSavedLeaderboard = async (guildId: string) => {
   const db = getDbClient();
-  const rows = await db
-    .select({ result: aocLeaderboard.result, updatedAt: aocLeaderboard.updatedAt })
-    .from(aocLeaderboard)
-    .where(eq(aocLeaderboard.guildId, guildId))
-    .limit(1);
-
-  return rows[0];
+  return db.query.aocLeaderboard.findFirst({
+    where: { guildId },
+    columns: { result: true, updatedAt: true },
+  });
 };
 
 export const deleteLeaderboard = async (guildId: string) => {

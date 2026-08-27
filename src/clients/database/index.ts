@@ -1,13 +1,14 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 
+import { relations } from './schema/relations';
 import * as schema from './schema/schema';
 
 let db: ReturnType<typeof createDb> | undefined;
 
 function createDb() {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-  return drizzle({ client: pool });
+  return drizzle({ client: pool, relations });
 }
 
 export function getDbClient() {
@@ -22,4 +23,4 @@ export async function disconnectDb() {
   }
 }
 
-export { schema };
+export { relations, schema };

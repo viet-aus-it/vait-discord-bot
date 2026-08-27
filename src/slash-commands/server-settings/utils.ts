@@ -1,5 +1,3 @@
-import { eq } from 'drizzle-orm';
-
 import { getDbClient } from '../../clients';
 import { serverChannelsSettings } from '../../clients/database/schema/schema';
 
@@ -19,8 +17,7 @@ export const setReminderChannel = async (guildId: string, channelId: string) => 
 
 export const getReminderChannel = async (guildId: string) => {
   const db = getDbClient();
-  const rows = await db.select().from(serverChannelsSettings).where(eq(serverChannelsSettings.guildId, guildId)).limit(1);
-  const serverSettings = rows[0];
+  const serverSettings = await db.query.serverChannelsSettings.findFirst({ where: { guildId } });
   if (!serverSettings) {
     throw new Error('ServerChannelsSettings not found');
   }

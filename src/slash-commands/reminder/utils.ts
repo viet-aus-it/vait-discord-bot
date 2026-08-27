@@ -1,5 +1,5 @@
 import { getUnixTime, isAfter, isEqual } from 'date-fns';
-import { and, eq, gte, inArray, lte, type InferSelectModel } from 'drizzle-orm';
+import { and, eq, inArray, type InferSelectModel } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
 import { reminder } from '../../clients/database/schema/schema';
@@ -36,12 +36,7 @@ export const updateReminder = async ({ userId, guildId, reminderId, message, tim
   }
 
   const db = getDbClient();
-  const found = await db
-    .select()
-    .from(reminder)
-    .where(and(eq(reminder.id, reminderId), eq(reminder.userId, userId), eq(reminder.guildId, guildId)))
-    .limit(1);
-  const foundReminder = found[0];
+  const foundReminder = await db.query.reminder.findFirst({ where: { id: reminderId, userId, guildId } });
   if (!foundReminder) {
     throw new Error('Reminder not found');
   }
@@ -60,12 +55,9 @@ export const updateReminder = async ({ userId, guildId, reminderId, message, tim
 
 export const getUserReminders = async (userId: string, guildId: string) => {
   const db = getDbClient();
-  const rows = await db
-    .select()
-    .from(reminder)
-    .where(and(eq(reminder.userId, userId), eq(reminder.guildId, guildId), gte(reminder.onTimestamp, getUnixTime(new Date()))));
-
-  return rows;
+  return db.query.reminder.findMany({
+    where: { userId, guildId, onTimestamp: { gte: getUnixTime(new Date()) } },
+  });
 };
 
 type RemoveReminderInput = {
@@ -86,9 +78,7 @@ export const formatReminderMessage = ({ userId, message, onTimestamp }: InferSel
 
 export const getReminderByTime = async (timestamp: number) => {
   const db = getDbClient();
-  const rows = await db.select().from(reminder).where(lte(reminder.onTimestamp, timestamp));
-
-  return rows;
+  return db.query.reminder.findMany({ where: { onTimestamp: { lte: timestamp } } });
 };
 
 export const removeReminders = async (reminders: InferSelectModel<typeof reminder>[]) => {

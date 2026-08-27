@@ -1,4 +1,4 @@
-import { and, asc, eq, gte, lt } from 'drizzle-orm';
+import { and, eq, lt } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
 import { referralCode } from '../../clients/database/schema/schema';
@@ -25,13 +25,7 @@ export type FindExistingReferralCodeInput = {
 };
 export const findExistingReferralCode = async ({ userId, guildId, service }: FindExistingReferralCodeInput) => {
   const db = getDbClient();
-  const rows = await db
-    .select()
-    .from(referralCode)
-    .where(and(eq(referralCode.userId, userId), eq(referralCode.guildId, guildId), eq(referralCode.service, service)))
-    .limit(1);
-
-  return rows[0];
+  return db.query.referralCode.findFirst({ where: { userId, guildId, service } });
 };
 
 export type GetAllReferralCodesForServiceInput = {
@@ -40,10 +34,9 @@ export type GetAllReferralCodesForServiceInput = {
 };
 export const getAllReferralCodesForService = async ({ guildId, service }: GetAllReferralCodesForServiceInput) => {
   const db = getDbClient();
-  return db
-    .select()
-    .from(referralCode)
-    .where(and(eq(referralCode.guildId, guildId), eq(referralCode.service, service), gte(referralCode.expiryDate, new Date())));
+  return db.query.referralCode.findMany({
+    where: { guildId, service, expiryDate: { gte: new Date() } },
+  });
 };
 
 export const cleanupExpiredCode = async () => {
@@ -58,11 +51,10 @@ export type GetUserReferralCodesInput = {
 };
 export const getUserReferralCodes = async ({ userId, guildId }: GetUserReferralCodesInput) => {
   const db = getDbClient();
-  return db
-    .select()
-    .from(referralCode)
-    .where(and(eq(referralCode.userId, userId), eq(referralCode.guildId, guildId), gte(referralCode.expiryDate, new Date())))
-    .orderBy(asc(referralCode.service));
+  return db.query.referralCode.findMany({
+    where: { userId, guildId, expiryDate: { gte: new Date() } },
+    orderBy: { service: 'asc' },
+  });
 };
 
 export type UpdateReferralCodeInput = {

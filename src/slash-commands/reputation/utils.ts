@@ -1,4 +1,4 @@
-import { desc, eq, gt, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
 import { reputationLog, user } from '../../clients/database/schema/schema';
@@ -6,8 +6,7 @@ import { reputationLog, user } from '../../clients/database/schema/schema';
 export const getOrCreateUser = async (userId: string) => {
   const db = getDbClient();
 
-  const existing = await db.select().from(user).where(eq(user.id, userId)).limit(1);
-  let userRow = existing[0];
+  let userRow = await db.query.user.findFirst({ where: { id: userId } });
   if (!userRow) {
     const [created] = await db.insert(user).values({ id: userId }).returning();
     userRow = created;
@@ -53,5 +52,5 @@ export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep
 export const getRepLeaderboard = async (size: number) => {
   const db = getDbClient();
 
-  return db.select({ id: user.id, reputation: user.reputation }).from(user).where(gt(user.reputation, 0)).orderBy(desc(user.reputation)).limit(size);
+  return db.query.user.findMany({ where: { reputation: { gt: 0 } }, orderBy: { reputation: 'desc' }, limit: size });
 };
