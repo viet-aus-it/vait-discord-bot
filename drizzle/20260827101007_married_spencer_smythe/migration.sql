@@ -1,10 +1,10 @@
-CREATE TABLE "AocLeaderboard" (
+CREATE TABLE IF NOT EXISTS "AocLeaderboard" (
 	"guildId" text NOT NULL,
 	"result" jsonb NOT NULL,
 	"updatedAt" timestamp(3) DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "ReferralCode" (
+CREATE TABLE IF NOT EXISTS "ReferralCode" (
 	"id" text PRIMARY KEY NOT NULL,
 	"service" text NOT NULL,
 	"code" text NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE "ReferralCode" (
 	"userId" text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "Reminder" (
+CREATE TABLE IF NOT EXISTS "Reminder" (
 	"id" text PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
 	"onTimestamp" integer NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE "Reminder" (
 	"guildId" text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "ReputationLog" (
+CREATE TABLE IF NOT EXISTS "ReputationLog" (
 	"id" text PRIMARY KEY NOT NULL,
 	"fromUserId" text NOT NULL,
 	"toUserId" text NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE "ReputationLog" (
 	"operation" jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "ServerChannelsSettings" (
+CREATE TABLE IF NOT EXISTS "ServerChannelsSettings" (
 	"guildId" text NOT NULL,
 	"reminderChannel" text,
 	"autobumpThreads" text[] DEFAULT '{"RAY"}',
@@ -38,22 +38,42 @@ CREATE TABLE "ServerChannelsSettings" (
 	"honeypotChannel" text
 );
 --> statement-breakpoint
-CREATE TABLE "User" (
+CREATE TABLE IF NOT EXISTS "User" (
 	"id" text PRIMARY KEY NOT NULL,
 	"reputation" integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "ReferralCode" ADD CONSTRAINT "ReferralCode_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "Reminder" ADD CONSTRAINT "Reminder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "ReputationLog" ADD CONSTRAINT "ReputationLog_fromUserId_fkey" FOREIGN KEY ("fromUserId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;--> statement-breakpoint
-ALTER TABLE "ReputationLog" ADD CONSTRAINT "ReputationLog_toUserId_fkey" FOREIGN KEY ("toUserId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;--> statement-breakpoint
-CREATE INDEX "AocLeaderboard_guildId_idx" ON "AocLeaderboard" USING btree ("guildId" text_ops);--> statement-breakpoint
-CREATE UNIQUE INDEX "AocLeaderboard_guildId_key" ON "AocLeaderboard" USING btree ("guildId" text_ops);--> statement-breakpoint
-CREATE INDEX "Reminder_id_idx" ON "Reminder" USING btree ("id" text_ops);--> statement-breakpoint
-CREATE INDEX "Reminder_userId_idx" ON "Reminder" USING btree ("userId" text_ops);--> statement-breakpoint
-CREATE INDEX "ServerChannelsSettings_guildId_idx" ON "ServerChannelsSettings" USING btree ("guildId" text_ops);--> statement-breakpoint
-CREATE UNIQUE INDEX "ServerChannelsSettings_guildId_key" ON "ServerChannelsSettings" USING btree ("guildId" text_ops);--> statement-breakpoint
-CREATE UNIQUE INDEX "ServerChannelsSettings_reminderChannel_key" ON "ServerChannelsSettings" USING btree ("reminderChannel" text_ops);
+DO $$ BEGIN
+	IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'ReferralCode_userId_fkey') THEN
+		ALTER TABLE "ReferralCode" ADD CONSTRAINT "ReferralCode_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;
+	END IF;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+	IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'Reminder_userId_fkey') THEN
+		ALTER TABLE "Reminder" ADD CONSTRAINT "Reminder_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;
+	END IF;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+	IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'ReputationLog_fromUserId_fkey') THEN
+		ALTER TABLE "ReputationLog" ADD CONSTRAINT "ReputationLog_fromUserId_fkey" FOREIGN KEY ("fromUserId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;
+	END IF;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+	IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'ReputationLog_toUserId_fkey') THEN
+		ALTER TABLE "ReputationLog" ADD CONSTRAINT "ReputationLog_toUserId_fkey" FOREIGN KEY ("toUserId") REFERENCES "public"."User"("id") ON DELETE restrict ON UPDATE cascade;
+	END IF;
+END $$;
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "AocLeaderboard_guildId_idx" ON "AocLeaderboard" USING btree ("guildId" text_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "AocLeaderboard_guildId_key" ON "AocLeaderboard" USING btree ("guildId" text_ops);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "Reminder_id_idx" ON "Reminder" USING btree ("id" text_ops);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "Reminder_userId_idx" ON "Reminder" USING btree ("userId" text_ops);--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "ServerChannelsSettings_guildId_idx" ON "ServerChannelsSettings" USING btree ("guildId" text_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "ServerChannelsSettings_guildId_key" ON "ServerChannelsSettings" USING btree ("guildId" text_ops);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "ServerChannelsSettings_reminderChannel_key" ON "ServerChannelsSettings" USING btree ("reminderChannel" text_ops);
 
 --> statement-breakpoint
 DROP TABLE IF EXISTS "_prisma_migrations";
