@@ -33,9 +33,9 @@ function getExporterHeaders(): Record<string, string> {
 
 function getLogRecordProcessor(exporter: OTLPLogExporter) {
   if (env.NODE_ENV === 'production') {
-    return new BatchLogRecordProcessor(exporter);
+    return new BatchLogRecordProcessor({ exporter });
   }
-  return new SimpleLogRecordProcessor(exporter);
+  return new SimpleLogRecordProcessor({ exporter });
 }
 
 function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
