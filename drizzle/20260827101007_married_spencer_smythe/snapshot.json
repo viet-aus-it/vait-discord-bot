@@ -1,0 +1,648 @@
+{
+  "id": "119b00c4-b028-4709-aa00-3e91cca6f3ac",
+  "prevIds": ["00000000-0000-0000-0000-000000000000"],
+  "version": "8",
+  "dialect": "postgres",
+  "ddl": [
+    {
+      "isRlsEnabled": false,
+      "name": "AocLeaderboard",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "guildId",
+      "schema": "public",
+      "table": "AocLeaderboard",
+      "entityType": "columns"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "result",
+      "schema": "public",
+      "table": "AocLeaderboard",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp(3)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "CURRENT_TIMESTAMP",
+      "generated": null,
+      "identity": null,
+      "name": "updatedAt",
+      "schema": "public",
+      "table": "AocLeaderboard",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "guildId",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "text_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "AocLeaderboard_guildId_idx",
+      "schema": "public",
+      "table": "AocLeaderboard",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "guildId",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "text_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "AocLeaderboard_guildId_key",
+      "schema": "public",
+      "table": "AocLeaderboard",
+      "entityType": "indexes"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "ReferralCode",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "ReferralCode_pkey",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "pks"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "service",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "code",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp(3)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "expiry_date",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "guildId",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "userId",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": true,
+      "columns": ["userId"],
+      "schemaTo": "public",
+      "tableTo": "User",
+      "columnsTo": ["id"],
+      "onUpdate": "CASCADE",
+      "onDelete": "RESTRICT",
+      "name": "ReferralCode_userId_fkey",
+      "schema": "public",
+      "table": "ReferralCode",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "Reminder",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "Reminder_pkey",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "pks"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "userId",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "onTimestamp",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "message",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "guildId",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "text_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "Reminder_id_idx",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "userId",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "text_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "Reminder_userId_idx",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": true,
+      "columns": ["userId"],
+      "schemaTo": "public",
+      "tableTo": "User",
+      "columnsTo": ["id"],
+      "onUpdate": "CASCADE",
+      "onDelete": "RESTRICT",
+      "name": "Reminder_userId_fkey",
+      "schema": "public",
+      "table": "Reminder",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "ReputationLog",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "ReputationLog_pkey",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "pks"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "fromUserId",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "toUserId",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "columns"
+    },
+    {
+      "type": "timestamp(3)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "CURRENT_TIMESTAMP",
+      "generated": null,
+      "identity": null,
+      "name": "createdAt",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "columns"
+    },
+    {
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'{}'",
+      "generated": null,
+      "identity": null,
+      "name": "operation",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": true,
+      "columns": ["fromUserId"],
+      "schemaTo": "public",
+      "tableTo": "User",
+      "columnsTo": ["id"],
+      "onUpdate": "CASCADE",
+      "onDelete": "RESTRICT",
+      "name": "ReputationLog_fromUserId_fkey",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "fks"
+    },
+    {
+      "nameExplicit": true,
+      "columns": ["toUserId"],
+      "schemaTo": "public",
+      "tableTo": "User",
+      "columnsTo": ["id"],
+      "onUpdate": "CASCADE",
+      "onDelete": "RESTRICT",
+      "name": "ReputationLog_toUserId_fkey",
+      "schema": "public",
+      "table": "ReputationLog",
+      "entityType": "fks"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "ServerChannelsSettings",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "guildId",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "reminderChannel",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 1,
+      "default": "'{\"RAY\"}'",
+      "generated": null,
+      "identity": null,
+      "name": "autobumpThreads",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "aocKey",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "aocLeaderboardId",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "columns"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "honeypotChannel",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "columns"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "guildId",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "text_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "ServerChannelsSettings_guildId_idx",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "guildId",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "text_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "ServerChannelsSettings_guildId_key",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "indexes"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "reminderChannel",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": {
+            "name": "text_ops",
+            "default": false
+          }
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "ServerChannelsSettings_reminderChannel_key",
+      "schema": "public",
+      "table": "ServerChannelsSettings",
+      "entityType": "indexes"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "User",
+      "schema": "public",
+      "entityType": "tables"
+    },
+    {
+      "columns": ["id"],
+      "nameExplicit": false,
+      "name": "User_pkey",
+      "schema": "public",
+      "table": "User",
+      "entityType": "pks"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "schema": "public",
+      "table": "User",
+      "entityType": "columns"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "0",
+      "generated": null,
+      "identity": null,
+      "name": "reputation",
+      "schema": "public",
+      "table": "User",
+      "entityType": "columns"
+    }
+  ],
+  "renames": []
+}
