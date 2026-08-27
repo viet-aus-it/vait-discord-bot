@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 
-import type { ReferralCodeSelect } from '../../../clients/database/schema/schema';
+import type { ReferralCodeSelect } from '../../clients/database/schema/schema';
 import { logger } from '../../utils/logger';
 import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';

@@ -16,7 +16,7 @@ export const reputationLog = pgTable(
       .notNull(),
     fromUserId: text().notNull(),
     toUserId: text().notNull(),
-    createdAt: timestamp({ precision: 3, mode: 'string' })
+    createdAt: timestamp({ precision: 3, mode: 'date' })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     operation: jsonb().default({}).notNull(),
@@ -65,7 +65,7 @@ export const referralCode = pgTable(
       .notNull(),
     service: text().notNull(),
     code: text().notNull(),
-    expiryDate: timestamp('expiry_date', { precision: 3, mode: 'string' }).notNull(),
+    expiryDate: timestamp('expiry_date', { precision: 3, mode: 'date' }).notNull(),
     guildId: text().notNull(),
     userId: text().notNull(),
   },
@@ -110,7 +110,7 @@ export const aocLeaderboard = pgTable(
   {
     guildId: text().notNull(),
     result: jsonb().notNull(),
-    updatedAt: timestamp({ precision: 3, mode: 'string' })
+    updatedAt: timestamp({ precision: 3, mode: 'date' })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },

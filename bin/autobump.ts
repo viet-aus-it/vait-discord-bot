@@ -51,7 +51,7 @@ const handleAutobump = async (span: Span, token: string) => {
 
   span.setAttribute(
     'bot.autobump.thread_count',
-    data.reduce((sum, d) => sum + d.autobumpThreads.length, 0)
+    data.reduce((sum, d) => sum + (d.autobumpThreads ?? []).length, 0)
   );
 
   const client = await getDiscordClient({ token });
@@ -66,8 +66,8 @@ const handleAutobump = async (span: Span, token: string) => {
       }
 
       const prev = await accumulator;
-      logger.info(`[autobump]: Bumping ${autobumpThreads.length} threads in guild ${guild.name} (${guild.id})`);
-      const bumpPromises = autobumpThreads.map(async (id) => {
+      logger.info(`[autobump]: Bumping ${(autobumpThreads ?? []).length} threads in guild ${guild.name} (${guild.id})`);
+      const bumpPromises = (autobumpThreads ?? []).map(async (id) => {
         const thread = (await guild.channels.fetch(id)) as ThreadChannel;
         await bumpThread(thread, clientId);
         return { threadId: id, success: true };

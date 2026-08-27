@@ -90,6 +90,6 @@ export const execute: SlashCommandHandler = async (interaction) => {
   setSpanAttributes({ 'bot.referral.service': service });
   const newReferralCode = createOp.unwrap();
   await interaction.reply(
-    `${nickname} just added referral code ${newReferralCode.code} in ${newReferralCode.service} expired on <t:${getUnixTime(newReferralCode.expiry_date)}:D>`
+    `${nickname} just added referral code ${newReferralCode.code} in ${newReferralCode.service} expired on <t:${getUnixTime(newReferralCode.expiryDate)}:D>`
   );
 };

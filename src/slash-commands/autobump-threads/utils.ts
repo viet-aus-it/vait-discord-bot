@@ -29,11 +29,11 @@ export const removeAutobumpThread = async (guildId: string, threadId: string) =>
 
   const [updated] = await db
     .update(serverChannelsSettings)
-    .set({ autobumpThreads: settings.autobumpThreads.filter((t) => t !== threadId) })
+    .set({ autobumpThreads: (settings.autobumpThreads ?? []).filter((t) => t !== threadId) })
     .where(eq(serverChannelsSettings.guildId, guildId))
     .returning();
 
-  return updated.autobumpThreads;
+  return updated.autobumpThreads ?? [];
 };
 
 export const listThreadsByGuild = async (guildId: string) => {
@@ -44,7 +44,7 @@ export const listThreadsByGuild = async (guildId: string) => {
     throw new Error('ServerChannelsSettings not found');
   }
 
-  return settings.autobumpThreads;
+  return settings.autobumpThreads ?? [];
 };
 
 export const listAllThreads = async () => {

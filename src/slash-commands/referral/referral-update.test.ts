@@ -33,14 +33,14 @@ describe('Update referral code', () => {
     interaction.guildId = guildId;
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
-      if (name === 'expiry_date') return 'invalid-date';
+      if (name === 'expiryDate') return 'invalid-date';
       return null;
     });
 
     await execute(interaction);
 
     expect(interaction.reply).toHaveBeenCalledOnce();
-    expect(interaction.reply).toHaveBeenCalledWith('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
+    expect(interaction.reply).toHaveBeenCalledWith('expiryDate is an invalid date. Please use the format DD/MM/YYYY.');
   });
 
   chatInputCommandInteractionTest('Should reply with error if expiry date is in the past', async ({ interaction }) => {
@@ -48,19 +48,19 @@ describe('Update referral code', () => {
     interaction.guildId = guildId;
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
-      if (name === 'expiry_date') return '01/01/2020';
+      if (name === 'expiryDate') return '01/01/2020';
       return null;
     });
 
     await execute(interaction);
 
     expect(interaction.reply).toHaveBeenCalledOnce();
-    expect(interaction.reply).toHaveBeenCalledWith('expiry_date has already expired');
+    expect(interaction.reply).toHaveBeenCalledWith('expiryDate has already expired');
   });
 
   chatInputCommandInteractionTest('Should update code successfully', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiryDate: new Date('2099-12-31') });
 
     interaction.user.id = userId;
     interaction.guildId = guildId;
@@ -78,14 +78,14 @@ describe('Update referral code', () => {
 
   chatInputCommandInteractionTest('Should update expiry date successfully', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiryDate: new Date('2099-12-31') });
 
     const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.user.id = userId;
     interaction.guildId = guildId;
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
-      if (name === 'expiry_date') return expiryDateString;
+      if (name === 'expiryDate') return expiryDateString;
       return null;
     });
 
@@ -97,7 +97,7 @@ describe('Update referral code', () => {
 
   chatInputCommandInteractionTest('Should update both code and expiry date', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiryDate: new Date('2099-12-31') });
 
     const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.user.id = userId;
@@ -105,7 +105,7 @@ describe('Update referral code', () => {
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
       if (name === 'link_or_code') return newCode;
-      if (name === 'expiry_date') return expiryDateString;
+      if (name === 'expiryDate') return expiryDateString;
       return null;
     });
 

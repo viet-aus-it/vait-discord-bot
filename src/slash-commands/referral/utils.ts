@@ -74,13 +74,15 @@ export type UpdateReferralCodeInput = {
 };
 export const updateReferralCode = async ({ service, userId, guildId, code, expiryDate }: UpdateReferralCodeInput) => {
   const db = getDbClient();
-  return db
+  const result = await db
     .update(referralCode)
     .set({
       ...(code && { code }),
       ...(expiryDate && { expiryDate }),
     })
     .where(and(eq(referralCode.service, service), eq(referralCode.userId, userId), eq(referralCode.guildId, guildId)));
+
+  return { count: result.rowCount ?? 0 };
 };
 
 export type DeleteReferralCodeInput = {
@@ -90,5 +92,9 @@ export type DeleteReferralCodeInput = {
 };
 export const deleteReferralCode = async ({ service, userId, guildId }: DeleteReferralCodeInput) => {
   const db = getDbClient();
-  return db.delete(referralCode).where(and(eq(referralCode.service, service), eq(referralCode.userId, userId), eq(referralCode.guildId, guildId)));
+  const result = await db
+    .delete(referralCode)
+    .where(and(eq(referralCode.service, service), eq(referralCode.userId, userId), eq(referralCode.guildId, guildId)));
+
+  return { count: result.rowCount ?? 0 };
 };

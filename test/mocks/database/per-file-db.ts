@@ -26,7 +26,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-  const { disconnectDb } = await import('../../../src/clients/db');
+  const { disconnectDb } = await import('../../../src/clients');
   await disconnectDb();
 
   const dropClient = new pg.Client({ connectionString: adminUrl.toString() });

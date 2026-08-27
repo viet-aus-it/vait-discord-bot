@@ -33,7 +33,7 @@ describe('List referral codes', () => {
 
   chatInputCommandInteractionTest('Should reply with list of referral codes if exists', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service: 'powershop', code: 'TESTCODE123', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service: 'powershop', code: 'TESTCODE123', expiryDate: new Date('2099-12-31') });
 
     interaction.user.id = userId;
     interaction.guildId = guildId;
@@ -50,8 +50,8 @@ describe('List referral codes', () => {
 
   chatInputCommandInteractionTest('Should format multiple referral codes correctly', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service: 'american express', code: 'AMEX456789', expiry_date: new Date('2099-12-31') });
-    await seedReferralCode({ userId, guildId, service: 'powershop', code: 'POWER123', expiry_date: new Date('2099-06-15') });
+    await seedReferralCode({ userId, guildId, service: 'american express', code: 'AMEX456789', expiryDate: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service: 'powershop', code: 'POWER123', expiryDate: new Date('2099-06-15') });
 
     interaction.user.id = userId;
     interaction.guildId = guildId;
@@ -73,9 +73,9 @@ describe('List referral codes', () => {
     const code3 = faker.string.alphanumeric({ length: MAX_REFERRAL_CODE_LENGTH - 10 });
 
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service: 'american express', code: code1, expiry_date: new Date('2099-12-31') });
-    await seedReferralCode({ userId, guildId, service: 'american express 2', code: code2, expiry_date: new Date('2099-12-31') });
-    await seedReferralCode({ userId, guildId, service: 'american express 3', code: code3, expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service: 'american express', code: code1, expiryDate: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service: 'american express 2', code: code2, expiryDate: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service: 'american express 3', code: code3, expiryDate: new Date('2099-12-31') });
 
     interaction.user.id = userId;
     interaction.guildId = guildId;

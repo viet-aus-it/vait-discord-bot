@@ -12,7 +12,7 @@ const service = 'powershop';
 describe('Delete referral code', () => {
   chatInputCommandInteractionTest('Should delete referral code successfully', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service, code: 'CODE123', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service, code: 'CODE123', expiryDate: new Date('2099-12-31') });
 
     interaction.user.id = userId;
     interaction.guildId = guildId;

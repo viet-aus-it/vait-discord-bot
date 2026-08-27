@@ -96,7 +96,7 @@ describe('execute', () => {
     const guildId = (interaction.guild as Guild).id;
 
     await seedUser('12345');
-    await seedReferralCode({ userId: '12345', guildId, service, code, expiry_date: expiryDate });
+    await seedReferralCode({ userId: '12345', guildId, service, code, expiryDate: expiryDate });
 
     interaction.options.getString.mockReturnValueOnce(service);
 
@@ -113,7 +113,7 @@ describe('execute', () => {
     const guildId = (interaction.guild as Guild).id;
 
     await seedUser('1234');
-    await seedReferralCode({ userId: '1234', guildId, service, code, expiry_date: expiryDate });
+    await seedReferralCode({ userId: '1234', guildId, service, code, expiryDate: expiryDate });
 
     interaction.options.getString.mockReturnValueOnce(service);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

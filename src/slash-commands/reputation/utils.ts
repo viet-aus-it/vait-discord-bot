@@ -1,4 +1,4 @@
-import { desc, eq, gt } from 'drizzle-orm';
+import { desc, eq, gt, sql } from 'drizzle-orm';
 
 import { getDbClient } from '../../clients';
 import { reputationLog, user } from '../../clients/database/schema/schema';
@@ -34,8 +34,15 @@ export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep
 
   const operation = getAdjustmentOperation(adjustment.reputation);
 
-  const [[updatedUser]] = await db.transaction(async (tx) => {
-    const updated = await tx.update(user).set(adjustment).where(eq(user.id, toUserId)).returning();
+  const [updatedUser] = await db.transaction(async (tx) => {
+    const reputationUpdate =
+      'increment' in adjustment.reputation
+        ? sql`${user.reputation} + ${adjustment.reputation.increment}`
+        : 'decrement' in adjustment.reputation
+          ? sql`${user.reputation} - ${adjustment.reputation.decrement}`
+          : adjustment.reputation.set;
+
+    const updated = await tx.update(user).set({ reputation: reputationUpdate }).where(eq(user.id, toUserId)).returning();
     await tx.insert(reputationLog).values({ fromUserId, toUserId, operation });
     return updated;
   });

@@ -96,7 +96,7 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name, required) => {
       if (name === 'service') return service;
       if (name === 'link_or_code') return null;
-      if (name === 'expiry_date' && required) return 'lol';
+      if (name === 'expiryDate' && required) return 'lol';
 
       return null;
     });
@@ -110,35 +110,35 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name) => {
       if (name === 'service') return services[0];
       if (name === 'link_or_code') return null;
-      if (name === 'expiry_date') return 'lol';
+      if (name === 'expiryDate') return 'lol';
 
       return null;
     });
 
     await execute(interaction);
 
-    expect(interaction.reply).toBeCalledWith('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
+    expect(interaction.reply).toBeCalledWith('expiryDate is an invalid date. Please use the format DD/MM/YYYY.');
   });
 
   chatInputCommandInteractionTest('should return EXPIRED_DATE error when expiry date is in the past', async ({ interaction }) => {
     const input: Record<string, string | null> = {
       service: services[0],
       link_or_code: null,
-      expiry_date: `04/04/${new Date().getFullYear() - 10}`,
+      expiryDate: `04/04/${new Date().getFullYear() - 10}`,
     };
 
     interaction.options.getString.mockImplementation((name: string) => input[name]);
 
     await execute(interaction);
 
-    expect(interaction.reply).toBeCalledWith('expiry_date has already expired');
+    expect(interaction.reply).toBeCalledWith('expiryDate has already expired');
   });
 
   chatInputCommandInteractionTest('should block adding referral code if the user already has one', async ({ interaction }) => {
     const data = {
       service: services[0],
       code: 'SomeCodeHere',
-      expiry_date: `04/04/${new Date().getFullYear() + 1}`,
+      expiryDate: `04/04/${new Date().getFullYear() + 1}`,
       userId: '1234',
       guildId: '1234',
     };
@@ -149,7 +149,7 @@ describe('execute', () => {
       guildId: data.guildId,
       service: data.service,
       code: 'EXISTING_CODE',
-      expiry_date: new Date(data.expiry_date),
+      expiryDate: new Date(data.expiryDate),
     });
 
     interaction.user.id = data.userId;
@@ -157,7 +157,7 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return data.service;
       if (name === 'link_or_code') return data.code;
-      if (name === 'expiry_date') return data.expiry_date;
+      if (name === 'expiryDate') return data.expiryDate;
 
       return null;
     });
@@ -171,7 +171,7 @@ describe('execute', () => {
     const data = {
       service: services[0],
       code: 'SomeCodeHere',
-      expiry_date: `04/04/${new Date().getFullYear() + 1}`,
+      expiryDate: `04/04/${new Date().getFullYear() + 1}`,
       userId: '1234',
       guildId: '12345',
     };
@@ -181,7 +181,7 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return data.service;
       if (name === 'link_or_code') return data.code;
-      if (name === 'expiry_date') return data.expiry_date;
+      if (name === 'expiryDate') return data.expiryDate;
 
       return null;
     });
@@ -200,7 +200,7 @@ describe('execute', () => {
         code: 'SomeCodeHere',
         userId: '1234',
         guildId: '12345',
-        expiry_date: addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW),
+        expiryDate: addDays(new Date(), DEFAULT_EXPIRY_DAYS_FROM_NOW),
       };
 
       interaction.user.id = data.userId;
@@ -208,7 +208,7 @@ describe('execute', () => {
       interaction.options.getString.mockImplementation((name: string) => {
         if (name === 'service') return data.service;
         if (name === 'link_or_code') return data.code;
-        if (name === 'expiry_date') return null;
+        if (name === 'expiryDate') return null;
 
         return null;
       });

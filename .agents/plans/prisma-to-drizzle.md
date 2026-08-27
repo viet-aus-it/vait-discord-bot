@@ -11,8 +11,8 @@
 ### 1.1 Install dependencies
 
 ```bash
-pnpm add drizzle-orm pg @paralleldrive/cuid2
-pnpm add -D drizzle-kit @types/pg
+pnpm add drizzle-orm@rc pg @paralleldrive/cuid2
+pnpm add -D drizzle-kit@rc @types/pg
 ```
 
 (`pg` is already a devDependency — move to dependencies since Drizzle needs it at runtime via the driver adapter. `@paralleldrive/cuid2` replaces Prisma's application-level `cuid()` generation.)
