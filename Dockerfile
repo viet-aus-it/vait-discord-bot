@@ -1,7 +1,7 @@
 ################
 # Build assets #
 ################
-FROM node:24.14 AS build
+FROM node:24.19 AS build
 WORKDIR /app
 
 # Install global node modules: pnpm
@@ -25,15 +25,15 @@ RUN pnpm install --production ${PNPM_ARGS}
 ####################
 # Production image #
 ####################
-FROM node:24.14-slim AS production
+FROM node:24.19-slim AS production
 WORKDIR /app
 
 RUN set -xe && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends openssl && \
-    apt-get autoremove -y && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /usr/share/man/* /usr/share/doc/*
+  apt-get update && \
+  apt-get install -y --no-install-recommends openssl && \
+  apt-get autoremove -y && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* /usr/share/man/* /usr/share/doc/*
 
 COPY --chown=node:node --from=build /app/build build
 COPY --chown=node:node --from=build /app/node_modules node_modules
