@@ -7,7 +7,7 @@ import wretch from 'wretch';
 import { logger } from '../src/utils/logger';
 
 const ozbargainApi = wretch('https://www.ozbargain.com.au/wiki/list_of_referral_links');
-const referralModuleDir = path.join(__dirname, '..', 'src', 'slash-commands', 'referral');
+const referralModuleDir = path.join('src', 'slash-commands', 'referral');
 const OUTPUT_DIR = path.join(referralModuleDir, 'generated');
 
 const getOzbReferralNodes = async (): Promise<HTMLElement[]> => {
@@ -19,7 +19,7 @@ const getOzbReferralNodes = async (): Promise<HTMLElement[]> => {
   return nodes;
 };
 
-const cleanOutpitDir = () => {
+const cleanOutputDir = () => {
   logger.info('[clean-output-dir]: Cleaning output directory');
   fs.rmSync(OUTPUT_DIR, { recursive: true });
   fs.mkdirSync(OUTPUT_DIR);
@@ -37,7 +37,7 @@ const buildOzbServicesFile = (nodes: HTMLElement[]) => {
 const build = async () => {
   logger.info('[build-referral-list]: Building Ozbargain referral list');
   const nodes = await getOzbReferralNodes();
-  cleanOutpitDir();
+  cleanOutputDir();
   buildOzbServicesFile(nodes);
   logger.info('[build-referral-list]: Ozbargain referral list complete');
 };

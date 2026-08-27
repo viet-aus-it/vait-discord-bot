@@ -34,7 +34,7 @@
     "delete:command-global": "dotenvx run -- oxnode scripts/delete-global-commands.ts",
     "start:only": "dotenvx run -- oxnode --import ./bin/telemetry.ts --watch ./bin/main.ts",
     "start": "pnpm prisma:migrate && pnpm prisma:gen && pnpm start:only",
-    "build:referrals": "oxnode scripts/build-referral-list.ts"
+    "build:referrals": "dotenvx run -- oxnode scripts/build-referral-list.ts"
   },
   "dependencies": {
     "@axiomhq/winston": "^2.0.0",

@@ -18,6 +18,18 @@ jobs:
           POSTGRES_DB: test
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
+          --health-retries 5
+    env:
+      AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
+      AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
+      AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
+      ENABLE_OTEL: 'true'
+      OTEL_EXPORTER_OTLP_ENDPOINT: https://us-east-1.aws.edge.axiom.co
+      CLIENT_ID: blank
+      TOKEN: blank
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -30,13 +42,7 @@ jobs:
       - name: Build OzBargain referrals list
         run: pnpm run build:referrals
         env:
-          AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
-          AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
-          AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
-          ENABLE_OTEL: 'true'
-          OTEL_EXPORTER_OTLP_ENDPOINT: https://us-east-1.aws.edge.axiom.co
-          CLIENT_ID: blank
-          TOKEN: blank
+          NODE_ENV: production
           DATABASE_URL: blank
 
       - name: Setup Git Credentials
@@ -51,7 +57,7 @@ jobs:
           if [[ `git status --porcelain` ]]; then
             git checkout -b autoupdate/referrals
             cp .env.ci .env
-            npx vitest run -u
+            npx dotenvx run -- npx vitest run -u
             git add src/slash-commands/referral
             git commit -m "chore: update ozbargain referrals list"
             git push -f -u origin autoupdate/referrals
