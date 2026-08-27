@@ -12,10 +12,6 @@ ENV PNPM_ARGS="--frozen-lockfile --ignore-scripts"
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install ${PNPM_ARGS}
 
-# Generate Prisma schemas
-COPY prisma ./prisma
-RUN pnpm prisma:generate
-
 COPY . .
 
 ENV NODE_ENV=production
@@ -27,13 +23,6 @@ RUN pnpm install --production ${PNPM_ARGS}
 ####################
 FROM node:24.19-slim AS production
 WORKDIR /app
-
-RUN set -xe && \
-  apt-get update && \
-  apt-get install -y --no-install-recommends openssl && \
-  apt-get autoremove -y && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* /usr/share/man/* /usr/share/doc/*
 
 COPY --chown=node:node --from=build /app/build build
 COPY --chown=node:node --from=build /app/node_modules node_modules
