@@ -68,7 +68,7 @@ function startTelemetry() {
 
   const sdk = new NodeSDK({
     resource,
-    instrumentations: instrumentations,
+    instrumentations: [instrumentations],
     spanProcessors: [spanProcessor],
     logRecordProcessors: [logRecordProcessor],
   });
