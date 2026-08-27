@@ -11,7 +11,7 @@ export const seedServerSettings = async (guildId: string, overrides: Record<stri
   const db = getDbClient();
   const [row] = await db
     .insert(serverChannelsSettings)
-    .values({ guildId, ...overrides })
+    .values({ guildId, autobumpThreads: [], ...overrides })
     .returning();
   return row;
 };

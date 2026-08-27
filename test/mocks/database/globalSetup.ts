@@ -5,20 +5,19 @@ import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import { loadEnv } from '../../../src/utils/load-env';
 
 function setupDb(databaseUrl?: string) {
-  console.log('Running Prisma Push');
+  console.log('Running Drizzle Push');
   if (databaseUrl) {
     process.env.DATABASE_URL = databaseUrl;
   }
-  childProcess.execSync('pnpm run prisma:push', {
+  childProcess.execSync('pnpm exec drizzle-kit push', {
     env: {
       ...process.env,
       ENABLE_OTEL: 'false',
       OTEL_DEBUG: 'false',
       DATABASE_URL: process.env.DATABASE_URL,
-      DIRECT_DATABASE_URL: process.env.DATABASE_URL,
     },
   });
-  console.log('Prisma Migrate ran');
+  console.log('Drizzle Push ran');
 }
 
 /**

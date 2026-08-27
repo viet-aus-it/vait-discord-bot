@@ -96,7 +96,7 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name, required) => {
       if (name === 'service') return service;
       if (name === 'link_or_code') return null;
-      if (name === 'expiryDate' && required) return 'lol';
+      if (name === 'expiry_date' && required) return 'lol';
 
       return null;
     });
@@ -110,28 +110,28 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name) => {
       if (name === 'service') return services[0];
       if (name === 'link_or_code') return null;
-      if (name === 'expiryDate') return 'lol';
+      if (name === 'expiry_date') return 'lol';
 
       return null;
     });
 
     await execute(interaction);
 
-    expect(interaction.reply).toBeCalledWith('expiryDate is an invalid date. Please use the format DD/MM/YYYY.');
+    expect(interaction.reply).toBeCalledWith('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
   });
 
   chatInputCommandInteractionTest('should return EXPIRED_DATE error when expiry date is in the past', async ({ interaction }) => {
     const input: Record<string, string | null> = {
       service: services[0],
       link_or_code: null,
-      expiryDate: `04/04/${new Date().getFullYear() - 10}`,
+      expiry_date: `04/04/${new Date().getFullYear() - 10}`,
     };
 
     interaction.options.getString.mockImplementation((name: string) => input[name]);
 
     await execute(interaction);
 
-    expect(interaction.reply).toBeCalledWith('expiryDate has already expired');
+    expect(interaction.reply).toBeCalledWith('expiry_date has already expired');
   });
 
   chatInputCommandInteractionTest('should block adding referral code if the user already has one', async ({ interaction }) => {
@@ -157,7 +157,7 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return data.service;
       if (name === 'link_or_code') return data.code;
-      if (name === 'expiryDate') return data.expiryDate;
+      if (name === 'expiry_date') return data.expiryDate;
 
       return null;
     });
@@ -181,7 +181,7 @@ describe('execute', () => {
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return data.service;
       if (name === 'link_or_code') return data.code;
-      if (name === 'expiryDate') return data.expiryDate;
+      if (name === 'expiry_date') return data.expiryDate;
 
       return null;
     });
@@ -208,7 +208,7 @@ describe('execute', () => {
       interaction.options.getString.mockImplementation((name: string) => {
         if (name === 'service') return data.service;
         if (name === 'link_or_code') return data.code;
-        if (name === 'expiryDate') return null;
+        if (name === 'expiry_date') return null;
 
         return null;
       });

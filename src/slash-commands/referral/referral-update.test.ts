@@ -33,14 +33,14 @@ describe('Update referral code', () => {
     interaction.guildId = guildId;
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
-      if (name === 'expiryDate') return 'invalid-date';
+      if (name === 'expiry_date') return 'invalid-date';
       return null;
     });
 
     await execute(interaction);
 
     expect(interaction.reply).toHaveBeenCalledOnce();
-    expect(interaction.reply).toHaveBeenCalledWith('expiryDate is an invalid date. Please use the format DD/MM/YYYY.');
+    expect(interaction.reply).toHaveBeenCalledWith('expiry_date is an invalid date. Please use the format DD/MM/YYYY.');
   });
 
   chatInputCommandInteractionTest('Should reply with error if expiry date is in the past', async ({ interaction }) => {
@@ -48,14 +48,14 @@ describe('Update referral code', () => {
     interaction.guildId = guildId;
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
-      if (name === 'expiryDate') return '01/01/2020';
+      if (name === 'expiry_date') return '01/01/2020';
       return null;
     });
 
     await execute(interaction);
 
     expect(interaction.reply).toHaveBeenCalledOnce();
-    expect(interaction.reply).toHaveBeenCalledWith('expiryDate has already expired');
+    expect(interaction.reply).toHaveBeenCalledWith('expiry_date has already expired');
   });
 
   chatInputCommandInteractionTest('Should update code successfully', async ({ interaction }) => {
@@ -85,7 +85,7 @@ describe('Update referral code', () => {
     interaction.guildId = guildId;
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
-      if (name === 'expiryDate') return expiryDateString;
+      if (name === 'expiry_date') return expiryDateString;
       return null;
     });
 
@@ -105,7 +105,7 @@ describe('Update referral code', () => {
     interaction.options.getString.mockImplementation((name: string) => {
       if (name === 'service') return service;
       if (name === 'link_or_code') return newCode;
-      if (name === 'expiryDate') return expiryDateString;
+      if (name === 'expiry_date') return expiryDateString;
       return null;
     });
 
