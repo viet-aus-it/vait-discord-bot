@@ -20,7 +20,8 @@ vait-discord-bot/
 │   │   ├── discord.ts           # Discord.js client setup
 │   │   └── database/
 │   │       ├── schema/          # Drizzle schema definitions
-│   │       │   └── schema.ts    # Database schema definition
+│   │       │   ├── schema.ts    # Database schema definition
+│   │       │   └── relations.ts # Relational query builder relations
 │   │       └── index.ts         # Drizzle client singleton
 │   ├── context-menu-commands/   # Context menu command definitions
 │   │   ├── builder.ts           # ContextMenuCommand interface

@@ -29,24 +29,16 @@ See [Database Schema](../../reference/04-database-schema.md) for the full model 
 Create `src/slash-commands/kudos/utils.ts`:
 
 ```typescript
-import { eq } from 'drizzle-orm';
 import { getDbClient } from '../../clients';
-import { users } from '../../clients/database/schema/schema';
+import { user } from '../../clients/database/schema/schema';
 
 export const getOrCreateUser = async (userId: string) => {
   const db = getDbClient();
+  const existing = await db.query.user.findFirst({ where: { id: userId } });
 
-  let user = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1)
-    .then((rows) => rows[0]);
-  if (!user) {
-    [user] = await db.insert(users).values({ id: userId }).returning();
-  }
+  if (existing) return existing;
 
-  return user;
+  return db.insert(user).values({ id: userId }).returning()[0];
 };
 ```
 
@@ -83,7 +75,7 @@ Create `src/slash-commands/kudos/give.ts`:
 import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
 import { eq, sql } from 'drizzle-orm';
 import { getDbClient } from '../../clients';
-import { users } from '../../clients/database/schema/schema';
+import { user } from '../../clients/database/schema/schema';
 import type { Subcommand } from '../builder';
 import { getOrCreateUser } from './utils';
 
@@ -105,9 +97,9 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const db = getDbClient();
   const [updated] = await db
-    .update(users)
-    .set({ reputation: sql`${users.reputation} + 1` })
-    .where(eq(users.id, targetUser.id))
+    .update(user)
+    .set({ reputation: sql`${user.reputation} + 1` })
+    .where(eq(user.id, targetUser.id))
     .returning();
 
   await interaction.reply(`Gave kudos to ${targetUser.displayName}! They now have ${updated.reputation}.`);
