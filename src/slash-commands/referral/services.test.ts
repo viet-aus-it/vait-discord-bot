@@ -17,6 +17,14 @@ describe('Service search test', () => {
           "value": "doctors health by avant",
         },
         {
+          "name": "goodlife health clubs",
+          "value": "goodlife health clubs",
+        },
+        {
+          "name": "healthy care",
+          "value": "healthy care",
+        },
+        {
           "name": "phoenix health fund",
           "value": "phoenix health fund",
         },
