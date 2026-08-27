@@ -1,7 +1,7 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 
-import type { Reminder } from '../../clients/prisma/generated/client/client';
+import type { ReminderSelect } from '../../clients/db/schema/schema';
 import { logger } from '../../utils/logger';
 import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler, Subcommand } from '../builder';
@@ -9,7 +9,7 @@ import { getUserReminders } from './utils';
 
 export const data = new SlashCommandSubcommandBuilder().setName('list').setDescription('Get a list of your reminders');
 
-const formatReminders = (reminders: Reminder[]) => {
+const formatReminders = (reminders: ReminderSelect[]) => {
   const reminderList = reminders.reduce((accum, reminder) => {
     return `${accum}\nid: ${reminder.id}\nmessage: ${reminder.message}\non: <t:${reminder.onTimestamp}>\n`;
   }, '');

@@ -7,7 +7,6 @@ import { BatchLogRecordProcessor, SimpleLogRecordProcessor } from '@opentelemetr
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { BatchSpanProcessor, SimpleSpanProcessor, type SpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
-import { PrismaInstrumentation } from '@prisma/instrumentation';
 
 import { FilteringSpanProcessor } from '../src/utils/filtering-span-processor';
 import { loadEnv } from '../src/utils/load-env';
@@ -56,7 +55,6 @@ function startTelemetry() {
   });
 
   const instrumentations = getNodeAutoInstrumentations();
-  const prismaInstrumentation = new PrismaInstrumentation();
 
   if (env.OTEL_DEBUG) {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.ALL);
@@ -70,7 +68,7 @@ function startTelemetry() {
 
   const sdk = new NodeSDK({
     resource,
-    instrumentations: [instrumentations, prismaInstrumentation],
+    instrumentations: [instrumentations],
     spanProcessors: [spanProcessor],
     logRecordProcessors: [logRecordProcessor],
   });

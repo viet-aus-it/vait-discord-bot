@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 
-import type { ReferralCode } from '../../clients/prisma/generated/client/client';
+import type { ReferralCodeSelect } from '../../clients/db/schema/schema';
 import { logger } from '../../utils/logger';
 import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommandHandler } from '../builder';
@@ -12,19 +12,19 @@ export const data = new SlashCommandSubcommandBuilder().setName('list').setDescr
 
 export const MAX_REFERRAL_CODE_LENGTH = 36;
 
-export const buildReferralList = (referrals: ReferralCode[]) => {
+export const buildReferralList = (referrals: ReferralCodeSelect[]) => {
   const serviceLength = Math.max(...referrals.map((referral) => referral.service.length), 'service'.length);
   let codeLength = Math.max(...referrals.map((referral) => referral.code.length), 'code'.length);
   codeLength = Math.min(codeLength, MAX_REFERRAL_CODE_LENGTH);
   const expiryLength = 'expiry date'.length;
   const header = `| ${'service'.padEnd(serviceLength, ' ')} | ${'code'.padEnd(codeLength, ' ')} | ${'expiry date'.padEnd(expiryLength, ' ')} |\n| ${'-'.repeat(serviceLength)} | ${'-'.repeat(codeLength)} | ${'-'.repeat(expiryLength)} |\n`;
-  return referrals.reduce((accum, { service, code, expiry_date }) => {
+  return referrals.reduce((accum, { service, code, expiryDate }) => {
     const paddedService = service.padEnd(serviceLength, ' ');
 
     const formattedCode = code.length <= MAX_REFERRAL_CODE_LENGTH ? code : `${code.slice(0, MAX_REFERRAL_CODE_LENGTH - 3)}...`;
     const paddedCode = formattedCode.padEnd(codeLength, ' ');
 
-    const formattedExpiry = format(expiry_date, 'dd/MM/yyyy');
+    const formattedExpiry = format(expiryDate, 'dd/MM/yyyy');
     const paddedExpiry = formattedExpiry.padEnd(expiryLength, ' ');
     return `${accum}| ${paddedService} | ${paddedCode} | ${paddedExpiry} |\n`;
   }, header);

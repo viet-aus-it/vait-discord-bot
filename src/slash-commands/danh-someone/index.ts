@@ -13,7 +13,7 @@ const getData = () => {
     .addUserOption((option) => option.setName('target1').setDescription('target 1 to hit').setRequired(true))
     .setContexts(InteractionContextType.Guild);
 
-  for (const num of [...Array(MAX_MENTIONS).keys()]) {
+  for (const num of Array(MAX_MENTIONS).keys()) {
     data.addUserOption((option) => option.setName(`target${num + 2}`).setDescription(`target ${num + 2} to hit`));
   }
 

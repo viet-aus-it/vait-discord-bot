@@ -25,7 +25,7 @@ import { Ok, Err, type Result } from 'oxide.ts';
 
 ```typescript
 const fetchData = async (id: string): Promise<Result<Data, string>> => {
-  const data = await db.data.findUnique({ where: { id } });
+  const data = await db.query.data.findFirst({ where: { id } });
   if (!data) {
     return Err('Data not found');
   }

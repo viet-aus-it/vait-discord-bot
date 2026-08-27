@@ -1,6 +1,6 @@
 # Add a Database-Backed Feature
 
-Build a `/kudos` command with two subcommands that reads from and writes to [PostgreSQL](https://www.postgresql.org/) using [Prisma](https://www.prisma.io/).
+Build a `/kudos` command with two subcommands that reads from and writes to [PostgreSQL](https://www.postgresql.org/) using [Drizzle](https://orm.drizzle.team/).
 
 The finished command has:
 
@@ -15,11 +15,11 @@ The finished command has:
 
 ## Step 1: Update the Schema
 
-For this tutorial, reuse the existing `User` model and its `reputation` field. If your feature needs a new model, edit `prisma/schema.prisma` and run:
+For this tutorial, reuse the existing `User` model and its `reputation` field. If your feature needs a new table, add it to `src/clients/database/schema/schema.ts` and run:
 
 ```bash
-pnpm prisma:migrate
-pnpm prisma:generate
+pnpm drizzle:generate
+pnpm drizzle:migrate
 ```
 
 See [Database Schema](../../reference/04-database-schema.md) for the full model reference.
@@ -30,16 +30,15 @@ Create `src/slash-commands/kudos/utils.ts`:
 
 ```typescript
 import { getDbClient } from '../../clients';
+import { user } from '../../clients/database/schema/schema';
 
 export const getOrCreateUser = async (userId: string) => {
   const db = getDbClient();
+  const existing = await db.query.user.findFirst({ where: { id: userId } });
 
-  let user = await db.user.findUnique({ where: { id: userId } });
-  if (!user) {
-    user = await db.user.create({ data: { id: userId } });
-  }
+  if (existing) return existing;
 
-  return user;
+  return db.insert(user).values({ id: userId }).returning()[0];
 };
 ```
 
@@ -74,7 +73,9 @@ Create `src/slash-commands/kudos/give.ts`:
 
 ```typescript
 import { type ChatInputCommandInteraction, SlashCommandSubcommandBuilder } from 'discord.js';
+import { eq, sql } from 'drizzle-orm';
 import { getDbClient } from '../../clients';
+import { user } from '../../clients/database/schema/schema';
 import type { Subcommand } from '../builder';
 import { getOrCreateUser } from './utils';
 
@@ -95,10 +96,11 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
   await getOrCreateUser(targetUser.id);
 
   const db = getDbClient();
-  const updated = await db.user.update({
-    where: { id: targetUser.id },
-    data: { reputation: { increment: 1 } },
-  });
+  const [updated] = await db
+    .update(user)
+    .set({ reputation: sql`${user.reputation} + 1` })
+    .where(eq(user.id, targetUser.id))
+    .returning();
 
   await interaction.reply(`Gave kudos to ${targetUser.displayName}! They now have ${updated.reputation}.`);
 };

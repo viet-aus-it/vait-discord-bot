@@ -14,7 +14,7 @@
 ## For Code/Technical Discussions
 
 - Reference specific file paths with line numbers (e.g. `src/utils/logger.ts:45`)
-- Cite libraries' (e.g. Discord.js, Prisma...) documentation when relevant
+- Cite libraries' (e.g. Discord.js, Drizzle...) documentation when relevant
 - Emphasise architecture decisions and modular boundaries
 - Explain trade-offs clearly
 - Focus on testable, atomic changes with clear intent

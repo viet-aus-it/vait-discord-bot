@@ -9,14 +9,16 @@
 - **Error Handling**: Catch and reply to user with meaningful error messages
 - **Ephemeral**: Use ephemeral replies for error messages and sensitive data
 
-## Database (Prisma)
+## Database (Drizzle)
 
-- **ORM**: Prisma with PostgreSQL adapter
-- **Migrations**: Always create migrations with `pnpm run prisma:migrate`
-- **Schema**: Define in `prisma/schema.prisma`
-- **Client**: Import from `src/clients/db.ts`
-- **Transactions**: Use Prisma transactions for atomic operations
-- **Queries**: Prefer Prisma's type-safe query builder over raw SQL
+- **ORM**: [Drizzle](https://orm.drizzle.team/) with PostgreSQL (via `node-postgres`)
+- **Migrations**: Create migrations with `pnpm run drizzle:generate`, apply with `pnpm run drizzle:migrate`
+- **Schema**: Define in `src/clients/database/schema/schema.ts`; relations in `schema/relations.ts` via `defineRelations`
+- **Client**: Import from `src/clients` (`getDbClient()`)
+- **Reads**: Use the relational query builder — `db.query.<table>.findFirst()/findMany()` with the object filter shorthand (`where: { id, field: { gt: 0 } }`, `orderBy: { field: 'asc' }`, `columns`) over `.select()`
+- **Mutations**: Use `.insert().returning()`, `.update().set()`, `.delete()`, `.onConflictDoUpdate()` — the RQB is read-only
+- **Transactions**: Use `db.transaction()` for atomic operations
+- **Raw SQL**: Use `sql\`...\``only where the query builder falls short (e.g. incrementing values,`array_append`)
 
 ## OpenTelemetry
 

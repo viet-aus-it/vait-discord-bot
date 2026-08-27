@@ -16,7 +16,3 @@ runs:
     - name: Set up project
       shell: bash
       run: pnpm install
-
-    - name: Generate Prisma types
-      shell: bash
-      run: pnpm prisma:generate

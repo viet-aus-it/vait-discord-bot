@@ -4,7 +4,6 @@ import { captor } from 'vitest-mock-extended';
 
 import { execute, formatLeaderboard, getAocYear } from '.';
 import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
-import type { JsonValue } from '../../clients/prisma/generated/client/internal/prismaNamespace';
 import { setAocSettings } from '../server-settings/utils';
 import mockAocData from './sample/aoc-data.json';
 import { AocLeaderboard } from './schema';
@@ -48,7 +47,7 @@ describe('Get AOC Leaderboard test', () => {
     describe('Format leaderboard', () => {
       it('Should match the leaderboard format', () => {
         const leaderboardMessage = formatLeaderboard({
-          result: parsedMockData as JsonValue,
+          result: parsedMockData as unknown,
           updatedAt: mockSystemTime,
         });
         expect(leaderboardMessage).toEqual(`\`\`\`

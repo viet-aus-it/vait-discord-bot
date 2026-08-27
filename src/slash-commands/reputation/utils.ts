@@ -1,14 +1,18 @@
+import { eq, sql } from 'drizzle-orm';
+
 import { getDbClient } from '../../clients';
+import { reputationLog, user } from '../../clients/db/schema/schema';
 
 export const getOrCreateUser = async (userId: string) => {
   const db = getDbClient();
 
-  let user = await db.user.findUnique({ where: { id: userId } });
-  if (!user) {
-    user = await db.user.create({ data: { id: userId } });
+  let userRow = await db.query.user.findFirst({ where: { id: userId } });
+  if (!userRow) {
+    const [created] = await db.insert(user).values({ id: userId }).returning();
+    userRow = created;
   }
 
-  return user;
+  return userRow;
 };
 
 type NumberAdjustment = { increment: number } | { decrement: number } | { set: number };
@@ -27,22 +31,20 @@ interface IUpdateRep {
 export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep) => {
   const db = getDbClient();
 
-  const updatedUserPromise = db.user.update({
-    where: { id: toUserId },
-    data: adjustment,
-  });
-
   const operation = getAdjustmentOperation(adjustment.reputation);
 
-  const logPromise = db.reputationLog.create({
-    data: {
-      fromUserId,
-      toUserId,
-      operation,
-    },
-  });
+  const [updatedUser] = await db.transaction(async (tx) => {
+    const reputationUpdate =
+      'increment' in adjustment.reputation
+        ? sql`${user.reputation} + ${adjustment.reputation.increment}`
+        : 'decrement' in adjustment.reputation
+          ? sql`${user.reputation} - ${adjustment.reputation.decrement}`
+          : adjustment.reputation.set;
 
-  const [updatedUser] = await db.$transaction([updatedUserPromise, logPromise]);
+    const updated = await tx.update(user).set({ reputation: reputationUpdate }).where(eq(user.id, toUserId)).returning();
+    await tx.insert(reputationLog).values({ fromUserId, toUserId, operation });
+    return updated;
+  });
 
   return updatedUser;
 };
@@ -50,13 +52,13 @@ export const updateRep = async ({ fromUserId, toUserId, adjustment }: IUpdateRep
 export const getRepLeaderboard = async (size: number) => {
   const db = getDbClient();
 
-  return db.user.findMany({
+  return db.query.user.findMany({
     where: { reputation: { gt: 0 } },
-    orderBy: [{ reputation: 'desc' }],
-    select: {
+    orderBy: { reputation: 'desc' },
+    columns: {
       id: true,
       reputation: true,
     },
-    take: size,
+    limit: size,
   });
 };

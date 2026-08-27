@@ -1,31 +1,39 @@
-import { getDbClient } from '../../src/clients';
+import { getDbClient } from '../../src/clients/db';
+import { aocLeaderboard, referralCode, reminder, reputationLog, serverChannelsSettings, user } from '../../src/clients/db/schema/schema';
 
 export const seedUser = async (id: string, reputation = 0) => {
   const db = getDbClient();
-  return db.user.create({ data: { id, reputation } });
+  const [row] = await db.insert(user).values({ id, reputation }).returning();
+  return row;
 };
 
 export const seedServerSettings = async (guildId: string, overrides: Record<string, unknown> = {}) => {
   const db = getDbClient();
-  return db.serverChannelsSettings.create({ data: { guildId, ...overrides } });
+  const [row] = await db
+    .insert(serverChannelsSettings)
+    .values({ guildId, autobumpThreads: [], ...overrides })
+    .returning();
+  return row;
 };
 
-export const seedReferralCode = async (data: { userId: string; guildId: string; service: string; code: string; expiry_date: Date }) => {
+export const seedReferralCode = async (data: { userId: string; guildId: string; service: string; code: string; expiryDate: Date }) => {
   const db = getDbClient();
-  return db.referralCode.create({ data });
+  const [row] = await db.insert(referralCode).values(data).returning();
+  return row;
 };
 
 export const seedReminder = async (data: { userId: string; guildId: string; onTimestamp: number; message: string }) => {
   const db = getDbClient();
-  return db.reminder.create({ data });
+  const [row] = await db.insert(reminder).values(data).returning();
+  return row;
 };
 
 export const cleanDb = async () => {
   const db = getDbClient();
-  await db.reputationLog.deleteMany();
-  await db.referralCode.deleteMany();
-  await db.reminder.deleteMany();
-  await db.user.deleteMany();
-  await db.aocLeaderboard.deleteMany();
-  await db.serverChannelsSettings.deleteMany();
+  await db.delete(reputationLog);
+  await db.delete(referralCode);
+  await db.delete(reminder);
+  await db.delete(user);
+  await db.delete(aocLeaderboard);
+  await db.delete(serverChannelsSettings);
 };

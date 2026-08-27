@@ -1,4 +1,7 @@
+import { and, eq, lt } from 'drizzle-orm';
+
 import { getDbClient } from '../../clients';
+import { referralCode } from '../../clients/db/schema/schema';
 import { getOrCreateUser } from '../reputation/utils';
 
 export type CreateReferralInput = {
@@ -11,15 +14,8 @@ export type CreateReferralInput = {
 export const createReferralCode = async ({ userId, guildId, service, code, expiryDate }: CreateReferralInput) => {
   const db = getDbClient();
   await getOrCreateUser(userId);
-  return db.referralCode.create({
-    data: {
-      userId,
-      guildId,
-      service,
-      code,
-      expiry_date: expiryDate,
-    },
-  });
+  const [row] = await db.insert(referralCode).values({ userId, guildId, service, code, expiryDate }).returning();
+  return row;
 };
 
 export type FindExistingReferralCodeInput = {
@@ -29,13 +25,7 @@ export type FindExistingReferralCodeInput = {
 };
 export const findExistingReferralCode = async ({ userId, guildId, service }: FindExistingReferralCodeInput) => {
   const db = getDbClient();
-  return db.referralCode.findFirst({
-    where: {
-      userId,
-      guildId,
-      service,
-    },
-  });
+  return db.query.referralCode.findFirst({ where: { userId, guildId, service } });
 };
 
 export type GetAllReferralCodesForServiceInput = {
@@ -44,27 +34,15 @@ export type GetAllReferralCodesForServiceInput = {
 };
 export const getAllReferralCodesForService = async ({ guildId, service }: GetAllReferralCodesForServiceInput) => {
   const db = getDbClient();
-  return db.referralCode.findMany({
-    where: {
-      guildId,
-      service,
-      expiry_date: {
-        gte: new Date(),
-      },
-    },
+  return db.query.referralCode.findMany({
+    where: { guildId, service, expiryDate: { gte: new Date() } },
   });
 };
 
 export const cleanupExpiredCode = async () => {
   const db = getDbClient();
   const currentDate = new Date();
-  return db.referralCode.deleteMany({
-    where: {
-      expiry_date: {
-        lt: currentDate,
-      },
-    },
-  });
+  return db.delete(referralCode).where(lt(referralCode.expiryDate, currentDate));
 };
 
 export type GetUserReferralCodesInput = {
@@ -73,17 +51,9 @@ export type GetUserReferralCodesInput = {
 };
 export const getUserReferralCodes = async ({ userId, guildId }: GetUserReferralCodesInput) => {
   const db = getDbClient();
-  return db.referralCode.findMany({
-    where: {
-      userId,
-      guildId,
-      expiry_date: {
-        gte: new Date(),
-      },
-    },
-    orderBy: {
-      service: 'asc',
-    },
+  return db.query.referralCode.findMany({
+    where: { userId, guildId, expiryDate: { gte: new Date() } },
+    orderBy: { service: 'asc' },
   });
 };
 
@@ -96,17 +66,15 @@ export type UpdateReferralCodeInput = {
 };
 export const updateReferralCode = async ({ service, userId, guildId, code, expiryDate }: UpdateReferralCodeInput) => {
   const db = getDbClient();
-  return db.referralCode.updateMany({
-    where: {
-      service,
-      userId,
-      guildId,
-    },
-    data: {
+  const result = await db
+    .update(referralCode)
+    .set({
       ...(code && { code }),
-      ...(expiryDate && { expiry_date: expiryDate }),
-    },
-  });
+      ...(expiryDate && { expiryDate }),
+    })
+    .where(and(eq(referralCode.service, service), eq(referralCode.userId, userId), eq(referralCode.guildId, guildId)));
+
+  return { count: result.rowCount ?? 0 };
 };
 
 export type DeleteReferralCodeInput = {
@@ -116,11 +84,9 @@ export type DeleteReferralCodeInput = {
 };
 export const deleteReferralCode = async ({ service, userId, guildId }: DeleteReferralCodeInput) => {
   const db = getDbClient();
-  return db.referralCode.deleteMany({
-    where: {
-      service,
-      userId,
-      guildId,
-    },
-  });
+  const result = await db
+    .delete(referralCode)
+    .where(and(eq(referralCode.service, service), eq(referralCode.userId, userId), eq(referralCode.guildId, guildId)));
+
+  return { count: result.rowCount ?? 0 };
 };

@@ -60,7 +60,7 @@ describe('Update referral code', () => {
 
   chatInputCommandInteractionTest('Should update code successfully', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiryDate: new Date('2099-12-31') });
 
     interaction.user.id = userId;
     interaction.guildId = guildId;
@@ -78,7 +78,7 @@ describe('Update referral code', () => {
 
   chatInputCommandInteractionTest('Should update expiry date successfully', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiryDate: new Date('2099-12-31') });
 
     const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.user.id = userId;
@@ -97,7 +97,7 @@ describe('Update referral code', () => {
 
   chatInputCommandInteractionTest('Should update both code and expiry date', async ({ interaction }) => {
     await seedUser(userId);
-    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiry_date: new Date('2099-12-31') });
+    await seedReferralCode({ userId, guildId, service, code: 'OLDCODE', expiryDate: new Date('2099-12-31') });
 
     const expiryDateString = format(faker.date.future({ years: 1 }), DAY_MONTH_YEAR_FORMAT);
     interaction.user.id = userId;

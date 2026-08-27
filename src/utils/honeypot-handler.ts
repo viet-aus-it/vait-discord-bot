@@ -17,9 +17,9 @@ export const setHoneypotChannelId = (guildId: string, channelId: string): void =
 
 export const loadHoneypotChannels = async (): Promise<number> => {
   const db = getDbClient();
-  const settings = await db.serverChannelsSettings.findMany({
-    where: { honeypotChannel: { not: null } },
-    select: { guildId: true, honeypotChannel: true },
+  const settings = await db.query.serverChannelsSettings.findMany({
+    where: { honeypotChannel: { isNotNull: true } },
+    columns: { guildId: true, honeypotChannel: true },
   });
 
   for (const setting of settings) {

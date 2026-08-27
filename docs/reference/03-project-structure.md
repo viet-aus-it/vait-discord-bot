@@ -13,14 +13,16 @@ vait-discord-bot/
 │   ├── how-to/                  # Task-oriented guides
 │   ├── reference/               # Information-oriented lookup
 │   └── explanation/             # Understanding-oriented discussion
-├── prisma/
-│   └── schema.prisma            # Database schema definition
+├── drizzle/                     # Generated Drizzle migrations
 ├── scripts/                     # Build and deployment scripts
 ├── src/
-│   ├── clients/                 # Database and Discord client initialisation
-│   │   ├── db.ts                # Prisma client singleton
+│   ├── clients/                 # Discord and database client initialisation
 │   │   ├── discord.ts           # Discord.js client setup
-│   │   └── prisma/generated/    # Generated Prisma client
+│   │   └── database/
+│   │       ├── schema/          # Drizzle schema definitions
+│   │       │   ├── schema.ts    # Database schema definition
+│   │       │   └── relations.ts # Relational query builder relations
+│   │       └── index.ts         # Drizzle client singleton
 │   ├── context-menu-commands/   # Context menu command definitions
 │   │   ├── builder.ts           # ContextMenuCommand interface
 │   │   └── index.ts             # Command registry

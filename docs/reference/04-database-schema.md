@@ -1,6 +1,6 @@
 # Database Schema
 
-[Prisma](https://www.prisma.io/) models and relationships for the VAIT Discord Bot. The schema is defined in `prisma/schema.prisma`.
+[Drizzle](https://orm.drizzle.team/) schema and relationships for the VAIT Discord Bot. The schema is defined in `src/clients/database/schema/schema.ts`.
 
 ## Models
 
@@ -31,14 +31,14 @@ Audit trail for reputation changes.
 
 User-submitted referral codes.
 
-| Field         | Type        | Description                         |
-| ------------- | ----------- | ----------------------------------- |
-| `id`          | String (PK) | Auto-generated CUID                 |
-| `service`     | String      | Service name (e.g. "Uber", "GoGet") |
-| `code`        | String      | The referral code or link           |
-| `expiry_date` | DateTime    | When the code expires               |
-| `guildId`     | String      | Discord server ID                   |
-| `userId`      | String (FK) | Owner's Discord user ID             |
+| Field        | Type        | Description                         |
+| ------------ | ----------- | ----------------------------------- |
+| `id`         | String (PK) | Auto-generated CUID                 |
+| `service`    | String      | Service name (e.g. "Uber", "GoGet") |
+| `code`       | String      | The referral code or link           |
+| `expiryDate` | DateTime    | When the code expires               |
+| `guildId`    | String      | Discord server ID                   |
+| `userId`     | String (FK) | Owner's Discord user ID             |
 
 ### Reminder
 

@@ -6,7 +6,7 @@ Design decisions behind the VAIT Discord Bot's testing approach.
 
 The project previously used mocked database calls, but this approach had a critical flaw: mocked tests could pass while the actual database queries failed in production. Mocks cannot catch query errors, constraint violations, or migration issues.
 
-By using [testcontainers](https://node.testcontainers.org/), every database test runs against a real [PostgreSQL](https://www.postgresql.org/) instance with the actual [Prisma](https://www.prisma.io/) schema applied. The trade-off is speed — container startup adds ~5-10 seconds to the first test run and requires [Docker](https://www.docker.com/) to be running locally. The reliability gain is worth it.
+By using [testcontainers](https://node.testcontainers.org/), every database test runs against a real [PostgreSQL](https://www.postgresql.org/) instance with the actual [Drizzle](https://orm.drizzle.team/) schema applied. The trade-off is speed — container startup adds ~5-10 seconds to the first test run and requires [Docker](https://www.docker.com/) to be running locally. The reliability gain is worth it.
 
 ## Why Template Database Isolation
 

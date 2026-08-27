@@ -1,15 +1,16 @@
-import { getDbClient } from '../../clients';
-import type { ServerChannelsSettings } from '../../clients/prisma/generated/client/client';
-import type { InputJsonValue } from '../../clients/prisma/generated/client/internal/prismaNamespace';
+import { eq } from 'drizzle-orm';
+
+import { getDbClient } from '../../clients/db';
+import { aocLeaderboard, ServerChannelsSettingsSelect } from '../../clients/db/schema/schema';
 import { logger } from '../../utils/logger';
 import { fetchLeaderboard } from './client';
 import type { AocLeaderboard } from './schema';
 
 export const getAocSettings = async (guildId: string) => {
   const db = getDbClient();
-  return db.serverChannelsSettings.findFirst({
+  return db.query.serverChannelsSettings.findFirst({
     where: { guildId },
-    select: {
+    columns: {
       guildId: true,
       aocKey: true,
       aocLeaderboardId: true,
@@ -19,24 +20,19 @@ export const getAocSettings = async (guildId: string) => {
 
 export const saveLeaderboard = async (guildId: string, aocLeaderboardResponse: AocLeaderboard) => {
   const db = getDbClient();
-  return db.aocLeaderboard.upsert({
-    where: { guildId },
-    update: {
-      updatedAt: new Date(),
-      result: aocLeaderboardResponse as InputJsonValue,
-    },
-    create: {
-      guildId,
-      result: aocLeaderboardResponse as InputJsonValue,
-    },
-    select: {
-      result: true,
-      updatedAt: true,
-    },
-  });
+  const [row] = await db
+    .insert(aocLeaderboard)
+    .values({ guildId, result: aocLeaderboardResponse })
+    .onConflictDoUpdate({
+      target: aocLeaderboard.guildId,
+      set: { updatedAt: new Date(), result: aocLeaderboardResponse },
+    })
+    .returning({ result: aocLeaderboard.result, updatedAt: aocLeaderboard.updatedAt });
+
+  return row;
 };
 
-type AocSettings = Pick<ServerChannelsSettings, 'aocKey' | 'aocLeaderboardId' | 'guildId'>;
+type AocSettings = Pick<ServerChannelsSettingsSelect, 'aocKey' | 'aocLeaderboardId' | 'guildId'>;
 export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderboardId, guildId }: AocSettings) => {
   if (!aocKey || !aocLeaderboardId) {
     const errorMessage = 'Cannot fetch leaderboard without key and leaderboard id';
@@ -52,18 +48,13 @@ export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderb
 
 export const getSavedLeaderboard = async (guildId: string) => {
   const db = getDbClient();
-  return db.aocLeaderboard.findFirst({
+  return db.query.aocLeaderboard.findFirst({
     where: { guildId },
-    select: {
-      result: true,
-      updatedAt: true,
-    },
+    columns: { result: true, updatedAt: true },
   });
 };
 
 export const deleteLeaderboard = async (guildId: string) => {
   const db = getDbClient();
-  return db.aocLeaderboard.delete({
-    where: { guildId },
-  });
+  return db.delete(aocLeaderboard).where(eq(aocLeaderboard.guildId, guildId));
 };

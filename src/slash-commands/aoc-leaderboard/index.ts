@@ -2,7 +2,6 @@ import { differenceInMinutes, format } from 'date-fns';
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 
-import type { AocLeaderboard as AocLeaderboardModel } from '../../clients/prisma/generated/client/client';
 import { DAY_MONTH_YEAR_HOUR_MINUTE_FORMAT } from '../../utils/date';
 import { logger } from '../../utils/logger';
 import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
@@ -29,7 +28,7 @@ export function getAocYear(): number {
   return year;
 }
 
-export function formatLeaderboard({ result: leaderboard, updatedAt }: Pick<AocLeaderboardModel, 'result' | 'updatedAt'>): string {
+export function formatLeaderboard({ result: leaderboard, updatedAt }: { result: unknown; updatedAt: string | Date }): string {
   const memberScores = Object.values((leaderboard as AocLeaderboardSchema).members)
     .sort((prev, next) => next.local_score - prev.local_score)
     .slice(0, DEFAULT_LEADERBOARD);
