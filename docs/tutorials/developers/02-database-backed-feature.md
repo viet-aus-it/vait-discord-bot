@@ -19,7 +19,7 @@ For this tutorial, reuse the existing `User` model and its `reputation` field. I
 
 ```bash
 pnpm prisma:migrate
-pnpm prisma:gen
+pnpm prisma:generate
 ```
 
 See [Database Schema](../../reference/04-database-schema.md) for the full model reference.

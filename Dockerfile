@@ -14,7 +14,7 @@ RUN pnpm install ${PNPM_ARGS}
 
 # Generate Prisma schemas
 COPY prisma ./prisma
-RUN pnpm prisma:gen
+RUN pnpm prisma:generate
 
 COPY . .
 

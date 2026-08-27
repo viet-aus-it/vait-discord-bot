@@ -28,12 +28,12 @@ All available scripts for the VAIT Discord Bot.
 
 ## Database
 
-| Script                    | Description                                      |
-| ------------------------- | ------------------------------------------------ |
-| `pnpm run prisma:migrate` | Run database migrations                          |
-| `pnpm run prisma:gen`     | Generate [Prisma](https://www.prisma.io/) client |
-| `pnpm run prisma:push`    | Push schema to database (no migration file)      |
-| `pnpm run prisma:studio`  | Open Prisma Studio GUI                           |
+| Script                     | Description                                      |
+| -------------------------- | ------------------------------------------------ |
+| `pnpm run prisma:migrate`  | Run database migrations                          |
+| `pnpm run prisma:generate` | Generate [Prisma](https://www.prisma.io/) client |
+| `pnpm run prisma:push`     | Push schema to database (no migration file)      |
+| `pnpm run prisma:studio`   | Open Prisma Studio GUI                           |
 
 ## Discord Commands
 

@@ -19,4 +19,4 @@ runs:
 
     - name: Generate Prisma types
       shell: bash
-      run: pnpm prisma:gen
+      run: pnpm prisma:generate
