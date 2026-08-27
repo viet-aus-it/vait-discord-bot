@@ -47,8 +47,8 @@ jobs:
 
       - name: Setup Git Credentials
         run: |
-          git config --global user.email "admin@vietausit.com"
-          git config --global user.name "Vietausit Admin (Github Actions)"
+          git config --global user.email "admin@vait.au"
+          git config --global user.name "VAIT Admin (Github Actions)"
 
       - name: Compare changes and create PR if succeed
         env:
