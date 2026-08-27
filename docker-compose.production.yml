@@ -10,10 +10,10 @@ services:
     container_name: discord_bot_prod
 
   db-migrate:
-    image: ghcr.io/viet-aus-it/prisma-migrate-service
+    image: ghcr.io/viet-aus-it/drizzle-migrate-service
     volumes:
-      - ./prisma:/src/prisma
-      - ./prisma.config.ts:/src/prisma.config.ts
+      - ./drizzle:/src/drizzle
+      - ./drizzle.config.ts:/src/drizzle.config.ts
     env_file: '.env.production'
     container_name: discord_bot_db_migrate_prod
 
