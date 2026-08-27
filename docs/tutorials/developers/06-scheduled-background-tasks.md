@@ -55,7 +55,7 @@ See [Error Handling](../../reference/08-error-handling.md) for the Result type A
 Add to `package.json` under `"scripts"`:
 
 ```json
-"cleanup:old-logs": "tsx bin/cleanup-old-logs.ts"
+"cleanup:old-logs": "oxnode bin/cleanup-old-logs.ts"
 ```
 
 Run it manually to verify:
