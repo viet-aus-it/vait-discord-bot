@@ -1,6 +1,6 @@
 # Database Schema
 
-[Prisma](https://www.prisma.io/) models and relationships for the VAIT Discord Bot. The schema is defined in `prisma/schema.prisma`.
+[Drizzle](https://orm.drizzle.team/) schema and relationships for the VAIT Discord Bot. The schema is defined in `src/clients/database/schema/schema.ts`.
 
 ## Models
 

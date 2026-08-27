@@ -9,14 +9,14 @@
 - **Error Handling**: Catch and reply to user with meaningful error messages
 - **Ephemeral**: Use ephemeral replies for error messages and sensitive data
 
-## Database (Prisma)
+## Database (Drizzle)
 
-- **ORM**: Prisma with PostgreSQL adapter
-- **Migrations**: Always create migrations with `pnpm run prisma:migrate`
-- **Schema**: Define in `prisma/schema.prisma`
-- **Client**: Import from `src/clients/db.ts`
-- **Transactions**: Use Prisma transactions for atomic operations
-- **Queries**: Prefer Prisma's type-safe query builder over raw SQL
+- **ORM**: [Drizzle](https://orm.drizzle.team/) with PostgreSQL (via `node-postgres`)
+- **Migrations**: Create migrations with `pnpm run drizzle:generate`, apply with `pnpm run drizzle:migrate`
+- **Schema**: Define in `src/clients/database/schema/schema.ts`
+- **Client**: Import from `src/clients` (`getDbClient()`)
+- **Transactions**: Use `db.transaction()` for atomic operations
+- **Queries**: Use Drizzle's type-safe query builder — prefer `.select()`, `.insert()`, `.update()`, `.delete()` over raw SQL
 
 ## OpenTelemetry
 

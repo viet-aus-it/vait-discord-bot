@@ -41,10 +41,11 @@ Fill in the `.env` file with the values from Step 1. See [Environment Variables]
 ```bash
 docker compose up -d db
 pnpm install
-pnpm run prisma:generate
 pnpm run deploy:command
 pnpm run start
 ```
+
+Drizzle needs no generate step — the schema is plain TypeScript bundled directly into the build.
 
 ### Optional: Local Observability
 

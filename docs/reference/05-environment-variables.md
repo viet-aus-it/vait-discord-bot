@@ -15,15 +15,14 @@ All configuration is via environment variables in the `.env` file. Copy `.env.di
 
 ## Database
 
-| Variable              | Required | Default      | Description                                          |
-| --------------------- | -------- | ------------ | ---------------------------------------------------- |
-| `POSTGRES_USER`       | Yes      | `postgres`   | PostgreSQL username                                  |
-| `POSTGRES_PASSWORD`   | Yes      | `postgres`   | PostgreSQL password                                  |
-| `POSTGRES_HOST`       | Yes      | `localhost`  | Database host (`db` for Docker production)           |
-| `POSTGRES_DB`         | Yes      | `discordbot` | Database name                                        |
-| `PORT`                | Yes      | `5432`       | PostgreSQL port                                      |
-| `DATABASE_URL`        | Yes      | Composed     | Full connection URL (auto-composed from above)       |
-| `DIRECT_DATABASE_URL` | Yes      | Composed     | Direct connection URL (same as DATABASE_URL locally) |
+| Variable            | Required | Default      | Description                                    |
+| ------------------- | -------- | ------------ | ---------------------------------------------- |
+| `POSTGRES_USER`     | Yes      | `postgres`   | PostgreSQL username                            |
+| `POSTGRES_PASSWORD` | Yes      | `postgres`   | PostgreSQL password                            |
+| `POSTGRES_HOST`     | Yes      | `localhost`  | Database host (`db` for Docker production)     |
+| `POSTGRES_DB`       | Yes      | `discordbot` | Database name                                  |
+| `PORT`              | Yes      | `5432`       | PostgreSQL port                                |
+| `DATABASE_URL`      | Yes      | Composed     | Full connection URL (auto-composed from above) |
 
 ## Observability (Production Only)
 

@@ -6,7 +6,7 @@ A community-driven Discord bot for the [Vietnamese Australians in IT](https://di
 
 - [TypeScript](https://www.typescriptlang.org/), [Node.js](https://nodejs.org/) 24+
 - [discord.js](https://discord.js.org/) v14
-- [Prisma](https://www.prisma.io/) ORM with [PostgreSQL](https://www.postgresql.org/)
+- [Drizzle](https://orm.drizzle.team/) ORM with [PostgreSQL](https://www.postgresql.org/)
 - [Vitest](https://vitest.dev/) for testing
 
 ## Quick Start

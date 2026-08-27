@@ -68,7 +68,7 @@ autocompleteInteractionTest('description', async ({ interaction }) => {
 
 **File:** `test/fixtures/db-seed.ts`
 
-All helpers interact with the real [PostgreSQL](https://www.postgresql.org/) database via [Prisma](https://www.prisma.io/).
+All helpers interact with the real [PostgreSQL](https://www.postgresql.org/) database via [Drizzle](https://orm.drizzle.team/).
 
 | Function             | Signature                                                                                   | Description                                                                |
 | -------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |

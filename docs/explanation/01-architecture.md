@@ -20,11 +20,11 @@ The trade-off is that the parent command needs a routing function to dispatch to
 
 See [Bot Commands Design](./02-bot-commands-design.md) for the full categorisation of commands.
 
-## Why Prisma with PrismaPg
+## Why Drizzle ORM
 
-[Prisma](https://www.prisma.io/) was chosen as the ORM for type-safe database queries that integrate well with TypeScript. The `PrismaPg` adapter connects directly to [PostgreSQL](https://www.postgresql.org/) without an intermediate query engine binary.
+[Drizzle](https://orm.drizzle.team/) was chosen as the ORM for its lightweight, type-safe query builder that maps closely to SQL without a code generation step. The schema is plain TypeScript — no compilation or binary engine required.
 
-The database client uses a singleton pattern with lazy initialisation. This means the Prisma instance is only created when the first database query is made, avoiding unnecessary connections during bot startup for commands that do not use the database.
+The database client uses a singleton pattern with lazy initialisation. This means the Drizzle instance is only created when the first database query is made, avoiding unnecessary connections during bot startup for commands that do not use the database.
 
 ## Why Result Types Over Exceptions
 
@@ -65,7 +65,7 @@ The bot follows the "wide events" approach to tracing — one rich span per unit
 
 Each entrypoint — `processInteraction` for Discord commands, `processMessage` for message handlers, or a bin script's `main` function — creates a single root span. Individual command handlers then enrich that span with domain-specific attributes (e.g., `bot.rep.new_value`, `bot.weather.location`) via `setSpanAttributes()`, and record errors on the span via `recordSpanError()`. No child spans are created manually.
 
-Auto-instrumentation (`@opentelemetry/auto-instrumentations-node`) automatically captures Prisma/PostgreSQL queries and Node.js HTTP calls as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
+Auto-instrumentation (`@opentelemetry/auto-instrumentations-node`) automatically captures PostgreSQL queries (via the pg driver, used by Drizzle) and Node.js HTTP calls as child spans beneath the wide root span, providing low-level timing without any manual instrumentation code.
 
 See [Telemetry Reference](../reference/09-telemetry.md) for the full attribute namespace table, span lifecycle rules, and `FilteringSpanProcessor` sampling behaviour.
 

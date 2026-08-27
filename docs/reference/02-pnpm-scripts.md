@@ -15,25 +15,26 @@ All available scripts for the VAIT Discord Bot.
 
 ## Code Quality
 
-| Script                     | Description                                                                              |
-| -------------------------- | ---------------------------------------------------------------------------------------- |
-| `pnpm run lint`            | Check for linting issues with [Oxlint](https://oxc.rs/docs/guide/usage/linter)           |
-| `pnpm run lint:fix`        | Auto-fix linting issues with [Oxlint](https://oxc.rs/docs/guide/usage/linter)            |
-| `pnpm run lint:fix:unsafe` | Auto-fix linting issues with [Oxlint](https://oxc.rs/docs/guide/usage/linter)            |
-| `pnpm run format`          | Format code with [Oxfmt](https://oxc.rs/docs/guide/usage/formatter) and Prisma formatter |
-| `pnpm run test`            | Run all tests                                                                            |
-| `pnpm run test <path>`     | Run a specific test file                                                                 |
-| `pnpm run test:silent`     | Run tests without console output                                                         |
-| `pnpm run ci`              | Run full CI checks locally                                                               |
+| Script                     | Description                                                                    |
+| -------------------------- | ------------------------------------------------------------------------------ |
+| `pnpm run lint`            | Check for linting issues with [Oxlint](https://oxc.rs/docs/guide/usage/linter) |
+| `pnpm run lint:fix`        | Auto-fix linting issues with [Oxlint](https://oxc.rs/docs/guide/usage/linter)  |
+| `pnpm run lint:fix:unsafe` | Auto-fix linting issues with [Oxlint](https://oxc.rs/docs/guide/usage/linter)  |
+| `pnpm run format`          | Format code with [Oxfmt](https://oxc.rs/docs/guide/usage/formatter)            |
+| `pnpm run test`            | Run all tests                                                                  |
+| `pnpm run test <path>`     | Run a specific test file                                                       |
+| `pnpm run test:silent`     | Run tests without console output                                               |
+| `pnpm run ci`              | Run full CI checks locally                                                     |
 
 ## Database
 
-| Script                     | Description                                      |
-| -------------------------- | ------------------------------------------------ |
-| `pnpm run prisma:migrate`  | Run database migrations                          |
-| `pnpm run prisma:generate` | Generate [Prisma](https://www.prisma.io/) client |
-| `pnpm run prisma:push`     | Push schema to database (no migration file)      |
-| `pnpm run prisma:studio`   | Open Prisma Studio GUI                           |
+| Script                        | Description                                    |
+| ----------------------------- | ---------------------------------------------- |
+| `pnpm run drizzle:migrate`    | Run database migrations                        |
+| `pnpm run drizzle:generate`   | Generate Drizzle migration files               |
+| `pnpm run drizzle:push`       | Push schema to database (no migration file)    |
+| `pnpm run drizzle:studio`     | Open Drizzle Studio GUI                        |
+| `pnpm run drizzle:introspect` | Introspect live DB and generate Drizzle schema |
 
 ## Discord Commands
 

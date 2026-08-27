@@ -17,7 +17,7 @@ You are working on the VAIT Discord Bot, a community-driven bot for the Viet-Aus
 
 - **Domain**: Discord bot for community engagement, utilities, and moderation
 - **Team**: VAIT (Vietnamese Australians in Information Technology community)
-- **Tech Stack**: TypeScript, Node.js 22+, discord.js v14, Prisma ORM, PostgreSQL, Vitest, MSW
+- **Tech Stack**: TypeScript, Node.js 22+, discord.js v14, Drizzle ORM, PostgreSQL, Vitest, MSW
 - **Architecture**: Modular command-based architecture with slash commands, context menu commands, and event handlers
 
 ## Change Management Philosophy
@@ -65,7 +65,7 @@ Load these rules when working on relevant domains:
 
 - **[commands.md](.agents/rules/commands.md)** - Complete reference of available pnpm commands
 - **[code-style.md](.agents/rules/code-style.md)** - Code formatting, TypeScript conventions, project structure
-- **[patterns.md](.agents/rules/patterns.md)** - Discord.js, Prisma, and testing patterns
+- **[patterns.md](.agents/rules/patterns.md)** - Discord.js, Drizzle, and testing patterns
 - **[engineering-principles.md](.agents/rules/engineering-principles.md)** - Clean code, error handling, security, decision framework
 - **[communication.md](.agents/rules/communication.md)** - Communication style and output expectations
 - **[special-considerations.md](.agents/rules/special-considerations.md)** - Discord API limitations, community focus, important reminders
