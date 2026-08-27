@@ -74,7 +74,7 @@ All helpers interact with the real [PostgreSQL](https://www.postgresql.org/) dat
 | -------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
 | `seedUser`           | `(id: string, reputation?: number) => Promise<User>`                                        | Create a user with optional reputation (default: 0)                        |
 | `seedServerSettings` | `(guildId: string, overrides?: Record<string, unknown>) => Promise<ServerChannelsSettings>` | Create server config with optional field overrides                         |
-| `seedReferralCode`   | `(data: { userId, guildId, service, code, expiry_date }) => Promise<ReferralCode>`          | Create a referral code                                                     |
+| `seedReferralCode`   | `(data: { userId, guildId, service, code, expiryDate }) => Promise<ReferralCode>`           | Create a referral code                                                     |
 | `seedReminder`       | `(data: { userId, guildId, onTimestamp, message }) => Promise<Reminder>`                    | Create a reminder                                                          |
 | `cleanDb`            | `() => Promise<void>`                                                                       | Delete all records from all tables (called automatically before each test) |
 
