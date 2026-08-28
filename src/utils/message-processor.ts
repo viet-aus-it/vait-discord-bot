@@ -40,15 +40,27 @@ export interface CommandConfig {
 }
 
 const handleMessage = async (message: Message<true>, config: CommandConfig, span: Span) => {
-  span.setAttribute('discord.channel.id', message.channelId);
-  span.setAttribute('discord.message.id', message.id);
-  span.setAttribute('discord.guild.id', message.guildId);
-  span.setAttribute('enduser.id', message.author.id);
+  span.setAttributes({
+    'discord.channel.id': message.channelId,
+    'discord.message.id': message.id,
+    'discord.guild.id': message.guildId,
+    'enduser.id': message.author.id,
+  });
+
+  if (message.author.bot) {
+    span.setAttributes({
+      'bot.message.processed': false,
+      'bot.message.fromBot': true,
+    });
+    return;
+  }
 
   const honeypotChannelId = getHoneypotChannelId(message.guildId);
   if (honeypotChannelId && message.channelId === honeypotChannelId) {
-    span.setAttribute('bot.message.processed', true);
-    span.setAttribute('bot.message.honeypot', true);
+    span.setAttributes({
+      'bot.message.processed': true,
+      'bot.message.honeypot': true,
+    });
     const result = await Result.safe(handleHoneypotTrigger(message));
     if (result.isErr()) {
       recordSpanError(result.unwrapErr(), 'err-honeypot-trigger-failed');

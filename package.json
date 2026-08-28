@@ -29,12 +29,12 @@
     "drizzle:migrate": "dotenvx run -- drizzle-kit migrate",
     "drizzle:push": "dotenvx run -- drizzle-kit push",
     "drizzle:studio": "dotenvx run -- drizzle-kit studio",
-    "deploy:command": "dotenvx run -- oxnode scripts/deploy-guild-commands.ts",
-    "delete:command": "dotenvx run -- oxnode scripts/delete-guild-commands.ts",
-    "delete:command-global": "dotenvx run -- oxnode scripts/delete-global-commands.ts",
+    "deploy:command": "dotenvx run -- oxnode --import ./bin/telemetry.ts scripts/deploy-guild-commands.ts",
+    "delete:command": "dotenvx run -- oxnode --import ./bin/telemetry.ts scripts/delete-guild-commands.ts",
+    "delete:command-global": "dotenvx run -- oxnode --import ./bin/telemetry.ts scripts/delete-global-commands.ts",
     "start:only": "dotenvx run -- oxnode --import ./bin/telemetry.ts --watch ./bin/main.ts",
     "start": "pnpm drizzle:migrate && pnpm start:only",
-    "build:referrals": "dotenvx run -- oxnode scripts/build-referral-list.ts"
+    "build:referrals": "dotenvx run -- oxnode --import ./bin/telemetry.ts ./bin/build-referral-list.ts"
   },
   "dependencies": {
     "@axiomhq/winston": "^2.0.0",

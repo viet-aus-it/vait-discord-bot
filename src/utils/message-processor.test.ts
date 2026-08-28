@@ -30,6 +30,7 @@ describe('processMessage', () => {
     message.channelId = channel.id;
     message.id = 'test-message-id';
     message.author.id = 'test-author-id';
+    message.author.bot = false;
 
     await processMessage(message, config);
 

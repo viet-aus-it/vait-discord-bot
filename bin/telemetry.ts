@@ -13,6 +13,8 @@ import { loadEnv } from '../src/utils/load-env';
 
 const env = loadEnv();
 
+let sdk: NodeSDK | undefined;
+
 if (env.ENABLE_OTEL) {
   console.log('Starting OpenTelemetry');
   startTelemetry();
@@ -48,6 +50,14 @@ function getSpanProcessor(exporter: OTLPTraceExporter): SpanProcessor {
   return new SimpleSpanProcessor(exporter);
 }
 
+export async function shutdownTelemetry(): Promise<void> {
+  if (!sdk) {
+    return;
+  }
+
+  await sdk.shutdown();
+}
+
 function startTelemetry() {
   const resource = resourceFromAttributes({
     [ATTR_SERVICE_NAME]: env.OTEL_SERVICE_NAME,
@@ -66,7 +76,7 @@ function startTelemetry() {
   const logExporter = new OTLPLogExporter({ headers });
   const logRecordProcessor = getLogRecordProcessor(logExporter);
 
-  const sdk = new NodeSDK({
+  sdk = new NodeSDK({
     resource,
     instrumentations: [instrumentations],
     spanProcessors: [spanProcessor],
@@ -81,7 +91,7 @@ function startTelemetry() {
     logExporter.forceFlush();
     logExporter.shutdown();
 
-    sdk
+    sdk!
       .shutdown()
       .then(() => console.log('Telemetry SDK shut down gracefully'))
       .catch((error) => console.error('Error shutting down telemetry SDK', error));

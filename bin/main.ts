@@ -1,3 +1,4 @@
+import { context, ROOT_CONTEXT } from '@opentelemetry/api';
 import { Events, type Message } from 'discord.js';
 import { Result } from 'oxide.ts';
 
@@ -75,11 +76,11 @@ const main = async () => {
 
   const configs = getConfigs();
   client.on(Events.MessageCreate, (msg) => {
-    return processMessage(msg as Message<true>, configs);
+    return context.with(ROOT_CONTEXT, () => processMessage(msg as Message<true>, configs));
   });
 
   client.on(Events.InteractionCreate, async (interaction) => {
-    return processInteraction(interaction);
+    return context.with(ROOT_CONTEXT, () => processInteraction(interaction));
   });
 };
 

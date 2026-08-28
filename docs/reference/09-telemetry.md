@@ -91,15 +91,16 @@ Command handlers enrich the wide event span with domain-specific attributes via 
 
 ### Message Processor (set on every message span)
 
-| Attribute                      | Description                                               |
-| ------------------------------ | --------------------------------------------------------- |
-| `enduser.id`                   | Discord user ID of the message author                     |
-| `discord.guild.id`             | Guild where the message was sent                          |
-| `discord.channel.id`           | Channel where the message was sent                        |
-| `discord.message.id`           | Discord message ID                                        |
-| `bot.message.processed`        | Whether any keyword matched                               |
-| `bot.message.matched_keywords` | Comma-separated list of matched keywords (when processed) |
-| `bot.message.honeypot`         | `true` when the message was in a honeypot channel         |
+| Attribute                      | Description                                                  |
+| ------------------------------ | ------------------------------------------------------------ |
+| `enduser.id`                   | Discord user ID of the message author                        |
+| `discord.guild.id`             | Guild where the message was sent                             |
+| `discord.channel.id`           | Channel where the message was sent                           |
+| `discord.message.id`           | Discord message ID                                           |
+| `bot.message.processed`        | Whether any keyword matched                                  |
+| `bot.message.fromBot`          | `true` when the message author is a bot (processing skipped) |
+| `bot.message.matched_keywords` | Comma-separated list of matched keywords (when processed)    |
+| `bot.message.honeypot`         | `true` when the message was in a honeypot channel            |
 
 ### Message Handler Attributes
 
