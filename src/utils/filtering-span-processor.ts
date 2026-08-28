@@ -12,10 +12,11 @@ interface FilteringProcessorConfig {
 export class FilteringSpanProcessor implements SpanProcessor {
   private readonly delegate: SpanProcessor;
   private readonly successRate: number;
+  private readonly DEFAULT_SUCCESS_RATE: number = 0.01;
 
   constructor(config: FilteringProcessorConfig) {
     this.delegate = config.delegate;
-    this.successRate = config.successRate ?? 0.01;
+    this.successRate = config.successRate ?? this.DEFAULT_SUCCESS_RATE;
   }
 
   onStart(span: Span, parentContext: Context): void {
