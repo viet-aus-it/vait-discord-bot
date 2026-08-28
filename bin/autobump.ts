@@ -7,6 +7,7 @@ import { listAllThreads } from '../src/slash-commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { recordSpanError, tracer } from '../src/utils/tracer';
+import { shutdownTelemetry } from './telemetry';
 
 const DEFAULT_AUTOBUMP_MESSAGE = '👋 Thread auto-bumped to keep it active!';
 
@@ -94,6 +95,7 @@ const autobump = async () => {
   });
 
   const exitCode = result.isOk() ? result.unwrap() : 1;
+  await shutdownTelemetry();
   process.exit(exitCode);
 };
 

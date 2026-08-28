@@ -9,6 +9,7 @@ import { getCurrentUnixTime } from '../src/utils/date';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { recordSpanError, tracer } from '../src/utils/tracer';
+import { shutdownTelemetry } from './telemetry';
 
 const handleBroadcast = async (span: Span, token: string) => {
   const queryTime = getCurrentUnixTime();
@@ -89,6 +90,7 @@ const broadcastReminder = async () => {
   });
 
   const exitCode = result.isOk() ? result.unwrap() : 1;
+  await shutdownTelemetry();
   process.exit(exitCode);
 };
 

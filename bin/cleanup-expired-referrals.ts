@@ -4,6 +4,7 @@ import { cleanupExpiredCode } from '../src/slash-commands/referral/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { recordSpanError, tracer } from '../src/utils/tracer';
+import { shutdownTelemetry } from './telemetry';
 
 const handleCleanup = async () => {
   const op = await Result.safe(cleanupExpiredCode());
@@ -28,6 +29,7 @@ const cleanup = async () => {
   });
 
   const exitCode = result.isOk() ? result.unwrap() : 1;
+  await shutdownTelemetry();
   process.exit(exitCode);
 };
 
