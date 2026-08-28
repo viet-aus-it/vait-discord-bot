@@ -15,8 +15,7 @@ const handleInteraction = async (interaction: Interaction, span: Span) => {
   const isCommand = interaction.isChatInputCommand();
   if (isCommand) {
     const { commandName } = interaction;
-    span.setAttribute('bot.command.name', commandName);
-    span.setAttribute('discord.interaction.type', 'chatInputCommand');
+    span.setAttributes({ 'bot.command.name': commandName, 'discord.interaction.type': 'chatInputCommand' });
     logger.info(`[process-interaction]: RECEIVED COMMAND. COMMAND: ${commandName}`);
     const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
     if (!command) {
@@ -38,8 +37,7 @@ const handleInteraction = async (interaction: Interaction, span: Span) => {
   const isContextMenuCommand = interaction.isContextMenuCommand();
   if (isContextMenuCommand) {
     const { commandName } = interaction;
-    span.setAttribute('bot.command.name', commandName);
-    span.setAttribute('discord.interaction.type', 'contextMenuCommand');
+    span.setAttributes({ 'bot.command.name': commandName, 'discord.interaction.type': 'contextMenuCommand' });
     logger.info(`[process-interaction]: RECEIVED CONTEXT MENU COMMAND. COMMAND: ${commandName}`);
     const command = contextMenuCommandList.find((cmd) => cmd.data.name === commandName);
     if (!command) {
@@ -61,8 +59,7 @@ const handleInteraction = async (interaction: Interaction, span: Span) => {
   const isAutocomplete = interaction.type === InteractionType.ApplicationCommandAutocomplete;
   if (isAutocomplete) {
     const { commandName } = interaction;
-    span.setAttribute('bot.command.name', commandName);
-    span.setAttribute('discord.interaction.type', 'autocomplete');
+    span.setAttributes({ 'bot.command.name': commandName, 'discord.interaction.type': 'autocomplete' });
     logger.info(`[process-interaction]: RECEIVED AUTOCOMPLETE. COMMAND: ${commandName}`);
     const command = slashCommandList.find((cmd) => cmd.data.name === commandName);
     if (!command || !command.autocomplete) {
