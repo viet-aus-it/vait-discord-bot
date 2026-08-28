@@ -34,7 +34,7 @@
     "delete:command-global": "dotenvx run -- oxnode --import ./bin/telemetry.ts scripts/delete-global-commands.ts",
     "start:only": "dotenvx run -- oxnode --import ./bin/telemetry.ts --watch ./bin/main.ts",
     "start": "pnpm drizzle:migrate && pnpm start:only",
-    "build:referrals": "dotenvx run -- oxnode --import ./bin/telemetry.ts scripts/build-referral-list.ts"
+    "build:referrals": "dotenvx run -- oxnode --import ./bin/telemetry.ts ./bin/build-referral-list.ts"
   },
   "dependencies": {
     "@axiomhq/winston": "^2.0.0",
