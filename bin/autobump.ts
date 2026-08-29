@@ -6,7 +6,7 @@ import { getDiscordClient } from '../src/clients';
 import { listAllThreads } from '../src/slash-commands/autobump-threads/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
-import { recordSpanError, tracer } from '../src/utils/tracer';
+import { recordSpanError, setSpanAttributes, tracer } from '../src/utils/tracer';
 import { shutdownTelemetry } from './telemetry';
 
 const DEFAULT_AUTOBUMP_MESSAGE = '👋 Thread auto-bumped to keep it active!';
@@ -29,17 +29,21 @@ const performBump = async (thread: ThreadChannel, clientId?: string) => {
   await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
 };
 
-const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
+const bumpThread = async (thread: ThreadChannel, clientId?: string): Promise<boolean> => {
   const op = await Result.safe(performBump(thread, clientId));
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-autobump-bump-failed');
     logger.error(`[autobump]: Failed to bump thread ${thread.id}`, op.unwrapErr());
+    return false;
   }
+  return true;
 };
 
 const handleAutobump = async (span: Span, token: string) => {
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
     recordSpanError(settings.unwrapErr(), 'err-autobump-list-failed');
+    setSpanAttributes({ 'bot.autobump.success': false });
     logger.error('[autobump]: Cannot retrieve autobump thread lists', settings.unwrapErr());
     return 1;
   }
@@ -70,8 +74,8 @@ const handleAutobump = async (span: Span, token: string) => {
       logger.info(`[autobump]: Bumping ${autobumpThreads.length} threads in guild ${guild.name} (${guild.id})`);
       const bumpPromises = autobumpThreads.map(async (id) => {
         const thread = (await guild.channels.fetch(id)) as ThreadChannel;
-        await bumpThread(thread, clientId);
-        return { threadId: id, success: true };
+        const success = await bumpThread(thread, clientId);
+        return { threadId: id, success };
       });
       const results = await Promise.all(bumpPromises);
       logger.info(`[autobump]: Bumped ${results.filter((r) => r.success).length} threads in guild ${guild.name} (${guild.id})`);
@@ -81,6 +85,7 @@ const handleAutobump = async (span: Span, token: string) => {
   );
 
   logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
+  setSpanAttributes({ 'bot.autobump.success': true });
   return 0;
 };
 

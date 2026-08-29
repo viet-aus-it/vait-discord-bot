@@ -36,7 +36,7 @@ type AocSettings = Pick<ServerChannelsSettingsSelect, 'aocKey' | 'aocLeaderboard
 export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderboardId, guildId }: AocSettings) => {
   if (!aocKey || !aocLeaderboardId) {
     const errorMessage = 'Cannot fetch leaderboard without key and leaderboard id';
-    logger.error(`[fetch-and-save-leaderboard]: ${errorMessage}!`);
+    logger.warn(`[fetch-and-save-leaderboard]: ${errorMessage}!`);
     throw new Error(errorMessage);
   }
   const aocLeaderboardResponse = await fetchLeaderboard(aocKey, aocLeaderboardId, year);

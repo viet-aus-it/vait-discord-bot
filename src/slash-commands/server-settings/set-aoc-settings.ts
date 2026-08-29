@@ -21,12 +21,13 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const op = await Result.safe(setAocSettings(guildId, key, leaderboardId));
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-settings-aoc-save-failed');
-    logger.info(`[set-aoc-key]: ${interaction.member!.user.username} failed to set AOC Key. Error: ${op.unwrapErr()}`);
+    logger.error(`[set-aoc-key]: ${interaction.member!.user.username} failed to set AOC Key. Error: ${op.unwrapErr()}`);
+    setSpanAttributes({ 'bot.settings.success': false });
     await interaction.reply(`Cannot set this AOC key. Please try again. Error: ${op.unwrapErr()}`);
     return;
   }
 
-  setSpanAttributes({ 'bot.settings.type': 'aoc-key' });
+  setSpanAttributes({ 'bot.settings.type': 'aoc-key', 'bot.settings.success': true });
   logger.info(`[set-aoc-key]: ${interaction.member!.user.username} successfully set AOC key for guild ${guildId}`);
   await interaction.reply('Successfully saved setting. You can now get AOC Leaderboard.');
 };

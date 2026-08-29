@@ -23,6 +23,7 @@ export const listAutobumpThreadsCommand: SlashCommandHandler = async (interactio
   if (threads.isErr()) {
     recordSpanError(threads.unwrapErr(), 'err-autobump-list-failed');
     logger.error(`[list-autobump-threads]: Cannot get list of threads from the database for guild ${guildId}`, threads.unwrapErr());
+    setSpanAttributes({ 'bot.autobump.success': false });
     await interaction.reply("ERROR: Cannot get list of threads from the database, maybe the server threads aren't setup yet?");
     return;
   }
@@ -30,12 +31,14 @@ export const listAutobumpThreadsCommand: SlashCommandHandler = async (interactio
   const data = threads.unwrap();
   setSpanAttributes({ 'bot.autobump.thread_count': data.length });
   if (data.length === 0) {
-    logger.error(`[list-autobump-threads]: No threads have been setup for autobumping in guild ${guildId}`);
+    logger.info(`[list-autobump-threads]: No threads have been setup for autobumping in guild ${guildId}`);
+    setSpanAttributes({ 'bot.autobump.success': false });
     await interaction.reply('ERROR: No threads have been setup for autobumping in this server');
     return;
   }
 
   logger.info(`[list-autobump-threads]: Found autobump threads for guild ${guildId}`);
+  setSpanAttributes({ 'bot.autobump.success': true });
   const body = buildThreadList(data);
   await interaction.reply(body);
 };

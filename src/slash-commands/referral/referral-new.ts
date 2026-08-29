@@ -68,13 +68,15 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (findOp.isErr()) {
     recordSpanError(findOp.unwrapErr(), 'err-referral-new-search-failed');
     logger.error('[referral-new]: Error while searching for referral code', findOp.unwrapErr());
+    setSpanAttributes({ 'bot.referral.success': false });
     await interaction.reply('This might be an error with the database. Please try again later.');
     return;
   }
 
   const existingReferralCode = findOp.unwrap();
   if (existingReferralCode) {
-    logger.error(`[referral-new]: Referral code for ${service} by ${nickname} already exists.`);
+    logger.warn(`[referral-new]: Referral code for ${service} by ${nickname} already exists.`);
+    setSpanAttributes({ 'bot.referral.success': false });
     await interaction.reply(`You have already entered the referral code for ${service}.`);
     return;
   }
@@ -83,11 +85,12 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (createOp.isErr()) {
     recordSpanError(createOp.unwrapErr(), 'err-referral-new-create-failed');
     logger.error('[referral-new]: Error while creating referral code', createOp.unwrapErr());
+    setSpanAttributes({ 'bot.referral.success': false });
     await interaction.reply('Failed to add referral code. This might be an error with the database. Please try again later.');
     return;
   }
 
-  setSpanAttributes({ 'bot.referral.service': service });
+  setSpanAttributes({ 'bot.referral.service': service, 'bot.referral.success': true });
   const newReferralCode = createOp.unwrap();
   await interaction.reply(
     `${nickname} just added referral code ${newReferralCode.code} in ${newReferralCode.service} expired on <t:${getUnixTime(newReferralCode.expiryDate)}:D>`

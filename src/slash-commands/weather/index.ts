@@ -29,7 +29,7 @@ export const weather = async (interaction: ChatInputCommandInteraction) => {
   setSpanAttributes({ 'bot.weather.location': location, 'bot.weather.success': weatherData.isOk() });
   if (weatherData.isErr()) {
     recordSpanError(weatherData.unwrapErr(), 'err-weather-fetch-failed');
-    logger.info('[weather]: Error getting weather data', weatherData.unwrapErr());
+    logger.error('[weather]: Error getting weather data', weatherData.unwrapErr());
     await interaction.editReply('Error getting weather data for location.');
     return;
   }

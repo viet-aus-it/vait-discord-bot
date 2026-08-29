@@ -4,6 +4,7 @@ import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
 import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
+import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -27,6 +28,7 @@ export const allCapExpandText = async (interaction: ChatInputCommandInteraction)
   if (content && !isBlank(content)) {
     logger.info(`[allcap]: Received message: ${content}`);
     const reply = generateAllCapText(content);
+    setSpanAttributes({ 'bot.allcap.success': true });
     await interaction.reply(reply);
     return;
   }
@@ -35,14 +37,23 @@ export const allCapExpandText = async (interaction: ChatInputCommandInteraction)
   const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
 
   // If it's still blank at this point, then exit
-  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
-    logger.error('[allcap]: Cannot fetch message to allcap', fetchedMessage.unwrapErr());
+  if (fetchedMessage.isErr()) {
+    recordSpanError(fetchedMessage.unwrapErr(), 'err-fetch-message-failed');
+    setSpanAttributes({ 'bot.allcap.success': false });
+    logger.error('[allcap]: Cannot fetch latest message', fetchedMessage.unwrapErr());
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
+    return;
+  }
+  if (isBlank(fetchedMessage.unwrap().content)) {
+    setSpanAttributes({ 'bot.allcap.success': false });
+    logger.warn('[allcap]: Latest message is blank'); // business condition, not an error
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 
   logger.info(`[allcap]: Fetched message: ${fetchedMessage.unwrap().content}`);
   const reply = generateAllCapText(fetchedMessage.unwrap().content);
+  setSpanAttributes({ 'bot.allcap.success': true });
   await interaction.reply(reply);
 };
 
