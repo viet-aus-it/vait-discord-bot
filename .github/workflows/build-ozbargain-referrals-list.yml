@@ -23,8 +23,6 @@ jobs:
           --health-retries 5
     env:
       AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
-      AXIOM_DATASET: ${{ secrets.AXIOM_DATASET }}
-      AXIOM_ORG_ID: ${{ secrets.AXIOM_ORG_ID }}
       ENABLE_OTEL: 'true'
       OTEL_EXPORTER_OTLP_ENDPOINT: https://us-east-1.aws.edge.axiom.co
       CLIENT_ID: blank
