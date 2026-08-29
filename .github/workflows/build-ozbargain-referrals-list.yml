@@ -56,7 +56,10 @@ jobs:
         run: |
           git checkout -b autoupdate/referrals
           pnpm run lint:fix && pnpm run format
+
           if [[ `git status --porcelain` ]]; then
+            # --- changes detected.
+            echo "DETECTED CHANGES IN OZBARGAIN SERVICE LIST. BUILDING PR."
             cp .env.ci .env
             npx dotenvx run -- npx vitest run -u
             git add src/slash-commands/referral
@@ -64,5 +67,6 @@ jobs:
             git push -f -u origin autoupdate/referrals
             gh pr create --title "chore: update ozbargain referrals list" --body "this is generated via build-ozbargain-referrals-list.yml" --base master --head autoupdate/referrals
           else
-            echo "No changes to report"
+            # --- no changes detected.
+            echo "NO CHANGES TO REPORT. EXITING."
           fi
