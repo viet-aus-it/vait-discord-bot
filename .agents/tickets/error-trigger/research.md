@@ -1,14 +1,12 @@
 # Error-Trigger Research — Site Inventory
 
-Raw findings for [`plan.md`](./plan.md). Every error-signaling site, grouped by signal type, verbatim call-site excerpts — readable without opening repo.
-
-Line numbers current working tree (verified by re-reading each file).
+Raw findings for [`plan.md`](./plan.md). Every error-signaling site, grouped by signal type, verbatim call-site excerpts — readable without opening repo. Line numbers current working tree (verified by re-reading each file).
 
 **Conventions:**
 
-- **OTel span error** = `recordSpanError(error, slug)` → active span `status=ERROR` + `error.type` slug. Single choke `src/utils/tracer.ts:6`. Guaranteed 100% export via `FilteringSpanProcessor` (`src/utils/filtering-span-processor.ts:58`).
-- **Log error** = `logger.error` / `console.error` → winston record (→ OTel logs prod via `instrumentation-winston`, or direct Axiom transport OTel off).
-- **OTel on/off**: `bin/telemetry.ts:18` boots SDK only `env.ENABLE_OTEL` (default `false`, `src/utils/load-env.ts:19`). Real prod sets in deployment env (outside repo — committed `.env.production` only local docker-reproduction copy).
+- **OTel span error** = `recordSpanError(error, slug)` sets active span `status=ERROR` + `error.type` slug. Single choke `src/utils/tracer.ts:6`. 100% export via `FilteringSpanProcessor` (`src/utils/filtering-span-processor.ts:58`).
+- **Log error** = `logger.error` / `console.error` — winston record (OTel logs prod via `instrumentation-winston`; direct Axiom transport OTel off).
+- **OTel on/off**: `bin/telemetry.ts:18` boots SDK only `env.ENABLE_OTEL` (default `false`, `src/utils/load-env.ts:19`). Real prod sets via deployment env (outside repo; committed `.env.production` = local docker-repro copy only).
 
 ### Two choke points (verbatim)
 
@@ -38,7 +36,7 @@ private shouldExport(span: ReadableSpan): boolean {
 }
 ```
 
-**Trigger implication:** site calls `recordSpanError` → triggerable on `error.type=<slug>` 100% fidelity. Site only `logger.error` (§4.2 gap) → log record, no error span — invisible to span triggers.
+**Trigger implication:** site calls `recordSpanError` = triggerable on `error.type=<slug>`, 100% fidelity. Site logs only `logger.error` (§4.2 gap) = log record, no error span — invisible to span triggers.
 
 ---
 
@@ -64,13 +62,13 @@ if (botMessages.size === 0) {
 
 **Zero** `.fatal(` calls. Near-fatal / unguarded sites:
 
-| Location                                                                                             | Signal                                            | Catchable by OTel?                                                                                                                                                                 |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/utils/logger.ts:40-41`                                                                          | winston `exceptionHandlers` + `rejectionHandlers` | **Only when OTel OFF.** Wired to Axiom transport only in non-OTel branch. OTel ON (prod) → neither handler exists → `unhandledRejection` / `uncaughtException` **export nothing**. |
-| `src/utils/load-env.ts:62`                                                                           | `console.error` on env load failure → throws      | Logged before logger/OTel exist. Invisible in prod.                                                                                                                                |
-| `bin/telemetry.ts:97`                                                                                | `console.error` on SDK shutdown (SIGTERM)         | Pre-shutdown, effectively lost.                                                                                                                                                    |
-| `scripts/deploy-guild-commands.ts:31`, `delete-guild-commands.ts:28`, `delete-global-commands.ts:23` | `logger.error` + `process.exit(1)`                | OTel boots via `--import` (`package.json:32-34`), log record exports if lands before exit — but manual ops, accepted un-triggered.                                                 |
-| `bin/main.ts:43-44`                                                                                  | `process.exit(1)`                                 | Error already logged before exit (`main.ts:22-23`, `:50-51`).                                                                                                                      |
+| Location                                                                                             | Signal                                            | Catchable by OTel?                                                                                                                                                               |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/utils/logger.ts:40-41`                                                                          | winston `exceptionHandlers` + `rejectionHandlers` | **Only when OTel OFF.** Wired to Axiom transport only in non-OTel branch. OTel ON (prod): neither handler exists; `unhandledRejection` / `uncaughtException` **export nothing**. |
+| `src/utils/load-env.ts:62`                                                                           | `console.error` on env load failure → throws      | Logged before logger/OTel exist. Invisible in prod.                                                                                                                              |
+| `bin/telemetry.ts:97`                                                                                | `console.error` on SDK shutdown (SIGTERM)         | Pre-shutdown, effectively lost.                                                                                                                                                  |
+| `scripts/deploy-guild-commands.ts:31`, `delete-guild-commands.ts:28`, `delete-global-commands.ts:23` | `logger.error` + `process.exit(1)`                | OTel boots via `--import` (`package.json:32-34`), log record exports if lands before exit — but manual ops, accepted un-triggered.                                               |
+| `bin/main.ts:43-44`                                                                                  | `process.exit(1)`                                 | Error already logged before exit (`main.ts:22-23`, `:50-51`).                                                                                                                    |
 
 `src/utils/logger.ts:21-43` — fatal handlers exist **only** OTel-off branch:
 
@@ -545,7 +543,7 @@ if (weatherData.isErr()) {
 
 ### 4.2 The log-only gap (13 sites) — invisible to span-status triggers
 
-Never mark active span ERROR → no error span exported (may ride 1%-sampled success span or nothing):
+Never mark active span ERROR. No error span exported (may ride 1%-sampled success span or nothing):
 
 | Location                                                 | What                                                                     | Category                                                            |
 | -------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------- |
@@ -690,5 +688,5 @@ if (existingReferralCode) {
 
 ## Notes
 
-- No `err-*` slug collision: 34 all unique except two dynamic processor families suffix `-failed` (unique by interpolation).
+- Slug collision: `err-autobump-list-failed` reused at `bin/autobump.ts:42` + `autobump-threads/list-threads.ts:24` (bin job + slash command, same failure semantic). Watch in P5 tiers — single slug spans High (bin) + Medium (DB command) intent. Rest unique except two dynamic processor families suffix `-failed` (unique by interpolation).
 - Log-severity (`severity_text = ERROR`) trigger clean ONLY after §4.3 reclassification — these sites otherwise page on normal activity.

@@ -2,15 +2,15 @@
 
 ## Goal
 
-Add granular, tiered error triggers in OTel backend (Axiom today, Honeycomb considered). Community notices real failures, deafened by noise. Plan execution-focused. Site inventory: [`research.md`](./research.md).
+Granular, tiered error triggers in OTel backend (Axiom today, Honeycomb considered). Community notice real failures, deafened by noise. Execution-focused. Site inventory: [`research.md`](./research.md).
 
 ## Start state
 
-- Two prod log paths today: OTel on (console + `instrumentation-winston` → OTLP) or OTel off (`@axiomhq/winston` direct). Logs + traces share pipeline only OTel on.
-- Every OTel error one choke point: `recordSpanError(err, slug)` (`src/utils/tracer.ts:6`) → span `status=ERROR` + `error.type=<slug>`. `FilteringSpanProcessor` exports error spans 100% (`src/utils/filtering-span-processor.ts:58`).
+- Two prod log paths: OTel on (console + `instrumentation-winston` to OTLP), OTel off (`@axiomhq/winston` direct). Logs+traces share pipeline only OTel on.
+- Every OTel error one choke: `recordSpanError(err, slug)` (`src/utils/tracer.ts:6`) sets span `status=ERROR` + `error.type=<slug>`. `FilteringSpanProcessor` exports error spans 100% (`src/utils/filtering-span-processor.ts:58`).
 - Runtime entry points boot OTel via `--import ./bin/telemetry.ts` (`package.json:32-37`, `docker-compose.production.yml` `command:`). `telemetry.ts` gates on `env.ENABLE_OTEL` (`bin/telemetry.ts:18`).
 - NO `.env*` committed. Tracked only `.env.ci` (CI) + `.env.dist` (dev template). `.env.production` = untracked local docker copy; live prod env = deployment-managed (untracked), already OTel-on. Local `.env*` not ground truth.
-- Logs `defaultMeta.service = 'vait-chatbot'` (hardcoded, `src/utils/logger.ts:15,24`) — mismatch trace `service.name = OTEL_SERVICE_NAME` (`bin/telemetry.ts:63`). Log↔trace grouping already diverges.
+- Logs `defaultMeta.service = 'vait-chatbot'` (hardcoded, `src/utils/logger.ts:15,24`) — mismatch trace `service.name = OTEL_SERVICE_NAME` (`bin/telemetry.ts:63`). Log/trace grouping already diverges.
 
 ---
 
@@ -47,12 +47,12 @@ function getLoggerOptions(): winston.LoggerOptions {
 Changes:
 
 - Remove `AxiomTransport` import + `env.ENABLE_OTEL` split (lines 21-43). OTel only path.
-- Wire `exceptionHandlers`/`rejectionHandlers` always in prod — today only OTel-off branch; OTel on → `uncaughtException`/`unhandledRejection` silent. (Fatal handling complete in Phase 4.)
-- Align service identity: `defaultMeta.service = env.OTEL_SERVICE_NAME ?? 'vait-chatbot'` so log + trace `service.name` agree (fix §Start-state grouping mismatch).
+- Wire `exceptionHandlers`/`rejectionHandlers` always in prod. Today only OTel-off branch; OTel on = `uncaughtException`/`unhandledRejection` silent. Fatal handling complete Phase 4.
+- Align service identity: `defaultMeta.service = env.OTEL_SERVICE_NAME ?? 'vait-chatbot'`. Log + trace `service.name` agree (fixes Start-state mismatch).
 
 ### 1.2 Keep `ENABLE_OTEL` gate as-is (`src/utils/load-env.ts:19`)
 
-`ENABLE_OTEL` keeps conventional default `false` — no flip. Live prod enables in untracked deployment env; no `.env.production` committed (local copy only), live flag entirely outside repo. Existing validation fails fast when `ENABLE_OTEL=true` without `OTEL_EXPORTER_OTLP_ENDPOINT` (`load-env.ts:47-56`).
+`ENABLE_OTEL` keeps default `false` — no flip. Live prod enables via untracked deployment env; no `.env.production` committed (local docker copy only), live flag entirely outside repo. Validation fails fast when `ENABLE_OTEL=true` without `OTEL_EXPORTER_OTLP_ENDPOINT` (`load-env.ts:47-56`).
 
 ### 1.4 Clean up deps
 
@@ -61,7 +61,7 @@ Stop referencing `AXIOM_ORG_ID` (transport gone) in `.env.dist` + docs/reference
 
 ### 1.5 Rewrite `recordSpanError` for OTel 2026 conventions (`src/utils/tracer.ts:6`)
 
-`span.recordException` = Span Events API, deprecated (OTEP 4430, https://opentelemetry.io/blog/2026/deprecating-span-events/). Recording-errors guidance (https://opentelemetry.io/docs/specs/semconv/general/recording-errors/): failed span → `status=ERROR` + `error.type` attribute (+ status description = exception message when useful); exception detail emitted as LOG RECORD correlated with active span (Logs API), NOT span event.
+`span.recordException` = Span Events API, deprecated (OTEP 4430, https://opentelemetry.io/blog/2026/deprecating-span-events/). Recording-errors guidance (https://opentelemetry.io/docs/specs/semconv/general/recording-errors/): failed span sets `status=ERROR` + `error.type` attribute (+ status description = exception message when useful); exception detail = LOG RECORD correlated with active span (Logs API), NOT span event.
 
 ```ts
 export function recordSpanError(error: unknown, slug: string): void {
@@ -75,22 +75,22 @@ export function recordSpanError(error: unknown, slug: string): void {
 ```
 
 - Drop `span.recordException(error instanceof Error ? error : new Error(String(error)))`.
-- Exception detail lives in `logger.error` on same path → `instrumentation-winston` correlates log to active span via trace context. Satisfies "record exceptions as log records".
-- 3 span-only sites (`weather:31`, `qotd:18`, `set-aoc:23`) lose exception payload now → P3 §3.4 symmetrize becomes REQUIRED, not optional parity.
-- Spec tension: "record same exception once". aoc `client.ts` logs then throws → logged twice (client + upstream catch). Accepted: different signals (log at source, status+error.type at boundary). Revisit if Xhoy noise appears.
+- Exception detail lives in `logger.error` on same path; `instrumentation-winston` correlates log to active span via trace context. Satisfies "record exceptions as log records".
+- 3 span-only sites (`weather:31`, `qotd:18`, `set-aoc:23`) lose exception payload now. P3 §3.4 symmetrize REQUIRED, not optional parity.
+- Spec tension: record same exception once. aoc `client.ts` logs then throws = logged twice (client + upstream catch). Accepted: different signals (log at source, status+error.type at boundary). Revisit if noise appears.
 
 ### Assertions (Phase 1)
 
-- `rg '@axiomhq/winston' src bin package.json` → 0 hits.
-- `rg 'recordException' src bin` → 0 hits (after P1 + P3 symmetrize).
+- `rg '@axiomhq/winston' src bin package.json`: 0 hits.
+- `rg 'recordException' src bin`: 0 hits (after P1 + P3 symmetrize).
 - `logger.error('boom', e)` produces OTLP log record with `severity` in backend.
-- Login → trace + debug log same event grouped same `service.name`.
+- Login: trace + debug log same event grouped same `service.name`.
 
 ---
 
 ## Phase 2 — Rename `.env.dist` → `.env.sample`
 
-`.env.dist` ambiguous, non-standard template; `.env.sample` community convention. Purely dev-onboarding artifact — nothing in code reads `.env.dist`, rename mechanical, independent of runtime config.
+`.env.dist` ambiguous, non-standard template. `.env.sample` community convention. Dev-onboarding artifact only — nothing in code reads `.env.dist`, rename mechanical, independent of runtime config.
 
 ### 2.1 Rename file
 
@@ -106,12 +106,12 @@ export function recordSpanError(error: unknown, slug: string): void {
 | `docs/how-to/04-production-testing.md:10`      | `cp .env.dist .env.production` → `cp .env.sample .env.production` |
 | `.agents/skills/update-docs/SKILL.md` (5 refs) | env-var reference + mapping tables, audit + checklist             |
 
-Keep historical mentions (`.github/CHANGELOG.md`, `prisma-to-drizzle` ticket) untouched — describe past state.
+Keep historical mentions (`.github/CHANGELOG.md`, `prisma-to-drizzle` ticket) untouched — they describe past state.
 
 ### Assertions
 
 - `git ls-files` shows `.env.sample`; `.env.dist` absent.
-- `rg '\.env\.dist'` → hits only `.github/CHANGELOG.md` + archived tickets.
+- `rg '\.env\.dist'` = hits only `.github/CHANGELOG.md` + archived tickets.
 
 ---
 
@@ -119,7 +119,7 @@ Keep historical mentions (`.github/CHANGELOG.md`, `prisma-to-drizzle` ticket) un
 
 Rule after: every `logger.error` paired with span error; every business condition `warn`/`info`, never error; every operation records success twin.
 
-### 3.1 Real-error, log-only sites → add span error
+### 3.1 Real-error, log-only sites: add span error
 
 **`src/slash-commands/all-cap/index.ts:38-39`** — latent bug: `fetchedMessage.unwrapErr()` runs on OK-but-blank result (unwraps `Ok`). Split branches:
 
@@ -139,30 +139,30 @@ if (isBlank(fetchedMessage.unwrap().content)) {
 
 **`src/slash-commands/mock-someone/index.ts:43,50`** — levels inverted vs all-cap:
 
-- `:43` fetch failure `logger.info` → `recordSpanError(err, 'err-fetch-message-failed')` + `logger.error` (share all-cap slug).
-- `:50` blank content `logger.error` → `logger.warn` (business condition).
+- `:43` fetch failure `logger.info` becomes `recordSpanError(err, 'err-fetch-message-failed')` + `logger.error` (share all-cap slug).
+- `:50` blank content `logger.error` becomes `logger.warn` (business condition).
 
 **`bin/autobump.ts:35`** — per-thread bump failure: add `recordSpanError(op.unwrapErr(), 'err-autobump-bump-failed')`. Multiple per run fine; slug stays granular.
 
-**`src/slash-commands/aoc-leaderboard/client.ts:20`** — NO change. `logger.error` re-throws, re-caught upstream `index.ts:100` → span already `err-aoc-leaderboard-fetch-failed`. No fresh slug; existing upstream span error = trigger key.
+**`src/slash-commands/aoc-leaderboard/client.ts:20`** — NO change. `logger.error` re-throws, re-caught upstream `index.ts:100`; span already `err-aoc-leaderboard-fetch-failed`. No fresh slug; existing upstream span error = trigger key.
 
-### 3.2 Reclassify business conditions → `warn`/`info`
+### 3.2 Reclassify business conditions to `warn`/`info`
 
 | Site                                  | Current                | New            | Message                                     |
 | ------------------------------------- | ---------------------- | -------------- | ------------------------------------------- |
 | `aoc-leaderboard/index.ts:92`         | `logger.error`         | `warn`         | Settings not configured                     |
 | `aoc-leaderboard/utils.ts:39`         | `logger.error` + throw | `warn` + throw | Missing key/id (span still caught upstream) |
 | `autobump-threads/add-thread.ts:21`   | `logger.error`         | `warn`         | "Not a thread"                              |
-| `autobump-threads/list-threads.ts:33` | `logger.error`         | `info`         | "No threads setup" (fully expected state)   |
+| `autobump-threads/list-threads.ts:33` | `logger.error`         | `info`         | "No threads setup" (expected state)         |
 | `referral/referral-new.ts:77`         | `logger.error`         | `warn`         | "Code already exists"                       |
 | `mock-someone/index.ts:50`            | `logger.error`         | `warn`         | blank message (covers §3.1)                 |
 | `all-cap/index.ts:39` (blank case)    | —                      | `warn`         | covered in §3.1                             |
 
-After: only `logger.error` without span = `scripts/*` (manual ops, §3.5) → log-severity trigger clean of expected-state noise.
+After: only `logger.error` without span = `scripts/*` (manual ops, §3.5). Log-severity trigger clean of expected-state noise.
 
 ### 3.3 Fix autobump success-flag bug (`bin/autobump.ts:35,74`)
 
-`:74` hardcodes `success: true` even when `performBump` just failed. Failures invisible in logs + `bot.autobump` span. Make `bumpThread` return outcome:
+`:74` hardcodes `success: true` even when `performBump` failed. Failure invisible in logs + `bot.autobump` span. Make `bumpThread` return outcome:
 
 ```ts
 const bumpThread = async (thread: ThreadChannel, clientId?: string): Promise<boolean> => {
@@ -181,9 +181,9 @@ const success = await bumpThread(thread, clientId);
 return { threadId: id, success };
 ```
 
-### 3.4 Symmetrize 3 span-only sites (add `logger.error` for debug parity)
+### 3.4 Symmetrize 3 span-only sites (add `logger.error`)
 
-`weather/index.ts:31`, `quote-of-the-day/index.ts:18`, `server-settings/set-aoc-settings.ts:23` record span errors, no log line. Add paired `logger.error('...', err)`.
+`weather/index.ts:31`, `quote-of-the-day/index.ts:18`, `server-settings/set-aoc-settings.ts:23`: span errors only, no log line, log `info`. After §1.5 log carries exception payload. Add paired `logger.error('...', err)`. Required now, not optional parity.
 
 ### 3.5 Scripts / manual ops
 
@@ -197,12 +197,12 @@ Some spans carry success marker already: `bot.weather.success`, `bot.quote.succe
 
 Standardize: every command/processor/bin span sets `bot.<op>.success` boolean on BOTH paths (false on error, true on success). Backend error-rate = error spans / spans with `bot.*.success`.
 
-Ceiling: `FilteringSpanProcessor` samples success at 1%, errors 100% → rate approximate. Accept: success rate = statistical context for digest/health, never a paging trigger. Raw error-count pages live in P5 tiers. (`ponytail:` keep 1% success sampling; raise only if rate curve unusable in backend.)
+Ceiling: `FilteringSpanProcessor` samples success at 1%, errors 100%; rate approximate. Accept: success rate = statistical context for digest/health, never a paging trigger. Raw error-count pages live in P5 tiers. (`ponytail:` keep 1% success sampling; raise only if rate curve unusable in backend.)
 
 ### Assertions (Phase 3)
 
 - Grep audit: every `logger.error` in `src/`, `bin/` adjacent `recordSpanError`, or marked `scripts/` exception, or business-condition (now `warn`).
-- Grep audit: every `recordSpanError` site also sets `bot.*.success` (or sit under processor wrapper that does).
+- Grep audit: every `recordSpanError` site also sets `bot.*.success` (or sits under processor wrapper that does).
 - `pnpm lint && pnpm typecheck && pnpm test` green.
 
 ---
@@ -225,10 +225,10 @@ process.on('uncaughtException', (error) => {
 });
 ```
 
-- Register BEFORE `main()` → boot-time throws (env validation) captured.
-- Mirror `unhandledRejection` (same handler, slug `err-unhandled-rejection`, `process.exit(1)` — bad rejection = bug; crash → restart = desired policy).
+- Register BEFORE `main()`; boot-time throws (env validation) captured.
+- Mirror `unhandledRejection` (same handler, slug `err-unhandled-rejection`, `process.exit(1)`; bad rejection = bug, crash = restart = desired policy).
 - No `span.recordException` here either — matches §1.5. Exception payload = the `logger.error` record (correlated, exportable even mid-crash if flush lands).
-- `exceptionHandlers` wired in P1.1 → crash also exports ERROR log; both surfaces fire.
+- `exceptionHandlers` wired in P1.1; crash also exports ERROR log; both surfaces fire.
 
 ### 4.2 Pre-boot env failure (`src/utils/load-env.ts:62`)
 
@@ -237,7 +237,7 @@ Accept documented last resort: `loadEnv` module-scope inside `telemetry.ts` impo
 ### Assertions
 
 - `kill -9` mid-run leaves nothing (expected); `kill` (SIGTERM) flushes pending spans.
-- Thrown `Error` in message handler → span `err-uncaught-exception` AND winston ERROR log.
+- Thrown `Error` in message handler produces span `err-uncaught-exception` AND winston ERROR log.
 - Consumer test: throw in dev, confirm both records backend; revert.
 
 ---
@@ -252,11 +252,11 @@ Signal sources after P1-4 (all OTel):
 
 Tiering (slugs from research.md):
 
-| Tier       | Match on                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Gate     | Suggested trigger                    |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------ |
-| **High**   | `err-honeypot-ban-failed` (moderation = security), `err-keyword-processing-failed`, `err-settings-reminder-save-failed`, `err-settings-honeypot-save-failed`, `err-settings-aoc-save-failed`, bin job slugs (`err-autobump-list-failed`, `err-autobump-bump-failed`, `err-broadcast-reminder-query-failed`, `err-cleanup-referrals-failed`, `err-deploy-commands-failed`, `err-load-honeypots-failed`), `err-uncaught-exception`, `err-unhandled-rejection` | any      | **Any occurrence**, 5m window → page |
-| **Medium** | DB-backed command slugs (`err-command-<name>-failed` where name ∈ reminder/referral/server-settings/aoc), `err-weather-fetch-failed`, `err-quote-fetch-failed` (external APIs; flaky)                                                                                                                                                                                                                                                                       | ≥2       | ≥2 occurrences in 10m → digest       |
-| **Low**    | `err-autocomplete-<name>-failed`, `err-contextmenu-<name>-failed`                                                                                                                                                                                                                                                                                                                                                                                           | cosmetic | Count only, weekly review            |
+| Tier       | Match on                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Gate     | Suggested trigger                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------- |
+| **High**   | `err-honeypot-ban-failed` (moderation = security), `err-keyword-processing-failed`, `err-settings-reminder-save-failed`, `err-settings-honeypot-save-failed`, `err-settings-aoc-save-failed`, bin job slugs (`err-autobump-list-failed`, `err-autobump-bump-failed`, `err-broadcast-reminder-query-failed`, `err-cleanup-referrals-failed`, `err-deploy-commands-failed`, `err-load-honeypots-failed`), `err-uncaught-exception`, `err-unhandled-rejection` | any      | **Any occurrence**, 5m window pages |
+| **Medium** | DB-backed command slugs (`err-command-<name>-failed` where name ∈ reminder/referral/server-settings/aoc), `err-weather-fetch-failed`, `err-quote-fetch-failed` (external APIs; flaky)                                                                                                                                                                                                                                                                       | ≥2       | ≥2 occurrences in 10m digest        |
+| **Low**    | `err-autocomplete-<name>-failed`, `err-contextmenu-<name>-failed`                                                                                                                                                                                                                                                                                                                                                                                           | cosmetic | Count only, weekly review           |
 
 **Axiom** (monitors = scheduled dataset queries, alert if query returns rows):
 
@@ -281,12 +281,12 @@ Exact swap points:
 
 ## Verification & rollout order
 
-1. P1 commits (logger + tracer + RecordException removal) → deploy → confirm log+traces unify.
-2. P2 rename `.env.dist` → `.env.sample` — mechanical, land with P1 same commit.
+1. P1 commits (logger + tracer + RecordException removal), deploy, confirm log+traces unify.
+2. P2 rename `.env.dist` → `.env.sample` — mechanical; land with P1 same commit.
 3. P3 (all signal normalization) — pure code, test-covered.
-4. Import research.md tiers → create Axiom monitors Low first (observe 1 week, tune thresholds real traffic).
+4. Import research.md tiers; create Axiom monitors Low first (observe 1 week, tune thresholds real traffic).
 5. Promote Medium/High after one tuned cycle.
-6. P4 fatal signals → add fatal monitor → kill-test.
+6. P4 fatal signals; add fatal monitor; kill-test.
 7. Honeycomb migration whenever ready — Phase 6 only.
 
 ## File change summary
