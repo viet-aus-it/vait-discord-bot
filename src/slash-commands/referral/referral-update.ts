@@ -64,6 +64,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-referral-update-failed');
     logger.error('[referral-update]: Error while updating referral code', op.unwrapErr());
+    setSpanAttributes({ 'bot.referral.success': false, 'bot.referral.reason': 'update-failed' });
     await interaction.reply('Failed to update referral code. Please try again later.');
     return;
   }

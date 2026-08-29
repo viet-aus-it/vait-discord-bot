@@ -5,7 +5,7 @@ import { Result } from 'oxide.ts';
 import { commands as contextMenuCommandList } from '../context-menu-commands';
 import { commands as slashCommandList } from '../slash-commands';
 import { logger } from './logger';
-import { recordSpanError, tracer } from './tracer';
+import { recordSpanError, setSpanAttributes, tracer } from './tracer';
 
 const handleInteraction = async (interaction: Interaction, span: Span) => {
   if (interaction.guildId) span.setAttribute('discord.guild.id', interaction.guildId);
@@ -25,6 +25,7 @@ const handleInteraction = async (interaction: Interaction, span: Span) => {
 
     const op = await Result.safe(command.execute(interaction));
     if (op.isErr()) {
+      setSpanAttributes({ 'bot.processor.success': false, 'bot.processor.reason': `command-${commandName}-failed` });
       recordSpanError(op.unwrapErr(), `err-command-${commandName}-failed`);
       logger.error(`[process-interaction]: ERROR HANDLING COMMAND: ${commandName}`, op.unwrapErr());
       return;
@@ -47,6 +48,7 @@ const handleInteraction = async (interaction: Interaction, span: Span) => {
 
     const op = await Result.safe(command.execute(interaction));
     if (op.isErr()) {
+      setSpanAttributes({ 'bot.processor.success': false, 'bot.processor.reason': `contextmenu-${commandName}-failed` });
       recordSpanError(op.unwrapErr(), `err-contextmenu-${commandName}-failed`);
       logger.error(`[process-interaction]: ERROR HANDLING CONTEXT MENU COMMAND: ${commandName}`, op.unwrapErr());
       return;
@@ -69,6 +71,7 @@ const handleInteraction = async (interaction: Interaction, span: Span) => {
 
     const op = await Result.safe(command.autocomplete(interaction));
     if (op.isErr()) {
+      setSpanAttributes({ 'bot.processor.success': false, 'bot.processor.reason': `autocomplete-${commandName}-failed` });
       recordSpanError(op.unwrapErr(), `err-autocomplete-${commandName}-failed`);
       logger.error(`[process-interaction]: ERROR HANDLING AUTOCOMPLETE: ${commandName}`, op.unwrapErr());
       return;

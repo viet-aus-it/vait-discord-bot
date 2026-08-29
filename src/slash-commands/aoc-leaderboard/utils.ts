@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { getDbClient } from '../../clients/db';
 import { aocLeaderboard, ServerChannelsSettingsSelect } from '../../clients/db/schema/schema';
 import { logger } from '../../utils/logger';
+import { setSpanAttributes } from '../../utils/tracer';
 import { fetchLeaderboard } from './client';
 import type { AocLeaderboard } from './schema';
 
@@ -36,6 +37,7 @@ type AocSettings = Pick<ServerChannelsSettingsSelect, 'aocKey' | 'aocLeaderboard
 export const fetchAndSaveLeaderboard = async (year: number, { aocKey, aocLeaderboardId, guildId }: AocSettings) => {
   if (!aocKey || !aocLeaderboardId) {
     const errorMessage = 'Cannot fetch leaderboard without key and leaderboard id';
+    setSpanAttributes({ 'bot.aoc.success': false, 'bot.aoc.reason': 'missing-config' });
     logger.warn(`[fetch-and-save-leaderboard]: ${errorMessage}!`);
     throw new Error(errorMessage);
   }

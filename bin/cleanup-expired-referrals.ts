@@ -3,12 +3,13 @@ import { Result } from 'oxide.ts';
 import { cleanupExpiredCode } from '../src/slash-commands/referral/utils';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
-import { recordSpanError, tracer } from '../src/utils/tracer';
+import { recordSpanError, setSpanAttributes, tracer } from '../src/utils/tracer';
 import { shutdownTelemetry } from './telemetry';
 
 const handleCleanup = async () => {
   const op = await Result.safe(cleanupExpiredCode());
   if (op.isErr()) {
+    setSpanAttributes({ 'bot.referral.success': false, 'bot.referral.reason': 'cleanup-expired-referrals' });
     recordSpanError(op.unwrapErr(), 'err-cleanup-referrals-failed');
     logger.error('[cleanup-expired-referrals]: Error cleaning up expired referrals', op.unwrapErr());
     return 1;

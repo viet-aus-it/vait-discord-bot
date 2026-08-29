@@ -37,6 +37,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-reminder-update-failed');
+    setSpanAttributes({ 'bot.reminder.success': false, 'bot.reminder.reason': 'update-failed' });
     logger.error('[reminder-update]: Error while updating reminder', op.unwrapErr());
     await interaction.reply(`Cannot update reminder for <@${user.id}> and reminder id ${reminderId}. Please try again later.`);
     return;

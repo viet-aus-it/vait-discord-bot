@@ -39,13 +39,13 @@ export const allCapExpandText = async (interaction: ChatInputCommandInteraction)
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr()) {
     recordSpanError(fetchedMessage.unwrapErr(), 'err-fetch-message-failed');
-    setSpanAttributes({ 'bot.allcap.success': false });
+    setSpanAttributes({ 'bot.allcap.success': false, 'bot.allcap.reason': 'fetch-message' });
     logger.error('[allcap]: Cannot fetch latest message', fetchedMessage.unwrapErr());
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
   if (isBlank(fetchedMessage.unwrap().content)) {
-    setSpanAttributes({ 'bot.allcap.success': false });
+    setSpanAttributes({ 'bot.allcap.success': false, 'bot.allcap.reason': 'blank' });
     logger.warn('[allcap]: Latest message is blank'); // business condition, not an error
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;

@@ -63,6 +63,7 @@ export const handleHoneypotTrigger = async (message: Message<true>): Promise<voi
     logger.info(`[honeypot]: Banned ${author.username} from guild ${guild.name}`);
   } else {
     recordSpanError(result.unwrapErr(), 'err-honeypot-ban-failed');
+    setSpanAttributes({ 'bot.honeypot.ban_success': false, 'bot.honeypot.reason': 'ban-failed' });
     logger.error(`[honeypot]: Failed to ban ${author.username}`, result.unwrapErr());
   }
 };

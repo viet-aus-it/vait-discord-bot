@@ -4,7 +4,7 @@ import { Result } from 'oxide.ts';
 
 import { getHoneypotChannelId, handleHoneypotTrigger } from './honeypot-handler';
 import { logger } from './logger';
-import { recordSpanError, tracer } from './tracer';
+import { recordSpanError, setSpanAttributes, tracer } from './tracer';
 
 const keywordMatched = (sentence: string, keyword: string): boolean => {
   const regex = new RegExp(`\\b${keyword}\\b`, 'i');
@@ -63,6 +63,7 @@ const handleMessage = async (message: Message<true>, config: CommandConfig, span
     });
     const result = await Result.safe(handleHoneypotTrigger(message));
     if (result.isErr()) {
+      setSpanAttributes({ 'bot.processor.success': false, 'bot.processor.reason': 'honeypot-trigger-failed' });
       recordSpanError(result.unwrapErr(), 'err-honeypot-trigger-failed');
       logger.error('[honeypot]: Error processing honeypot trigger', result.unwrapErr());
     }
@@ -78,6 +79,7 @@ const handleMessage = async (message: Message<true>, config: CommandConfig, span
 
   const keywordResult = await Result.safe(Promise.all(matches.map((m) => m.promise)));
   if (keywordResult.isErr()) {
+    setSpanAttributes({ 'bot.processor.success': false, 'bot.processor.reason': 'keyword-processing-failed' });
     recordSpanError(keywordResult.unwrapErr(), 'err-keyword-processing-failed');
     logger.error('ERROR PROCESSING MESSAGE', keywordResult.unwrapErr());
   }

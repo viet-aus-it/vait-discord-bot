@@ -30,6 +30,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-reminder-on-failed');
+    setSpanAttributes({ 'bot.reminder.success': false, 'bot.reminder.reason': 'create-failed' });
     logger.error('[reminder-on]: Error while saving reminder', op.unwrapErr());
     await interaction.reply(`Cannot save reminder for <@${user.id}>. Please try again later.`);
     return;

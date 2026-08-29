@@ -7,7 +7,7 @@ import wretch from 'wretch';
 
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
-import { recordSpanError, tracer } from '../src/utils/tracer';
+import { recordSpanError, setSpanAttributes, tracer } from '../src/utils/tracer';
 import { shutdownTelemetry } from './telemetry';
 
 const ozbargainApi = wretch('https://www.ozbargain.com.au/wiki/list_of_referral_links');
@@ -55,6 +55,7 @@ const build = async () => {
     if (op.isOk()) {
       span.setAttribute('bot.referral.count', op.unwrap());
     } else {
+      setSpanAttributes({ 'bot.referral.success': false, 'bot.referral.reason': 'build-referral-list' });
       recordSpanError(op.unwrapErr(), 'err-build-referral-list-failed');
       logger.error('[build-referral-list]: Error building Ozbargain referral list', op.unwrapErr());
     }

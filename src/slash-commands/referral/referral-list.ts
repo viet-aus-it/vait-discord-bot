@@ -40,6 +40,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-referral-list-failed');
     logger.error('[referral-list]: Error while retrieving referral codes', op.unwrapErr());
+    setSpanAttributes({ 'bot.referral.success': false, 'bot.referral.reason': 'list-failed' });
     await interaction.reply('There is some error retrieving your referral codes. Please try again later.');
     return;
   }

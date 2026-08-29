@@ -8,7 +8,7 @@ import { getReminderChannel } from '../src/slash-commands/server-settings/utils'
 import { getCurrentUnixTime } from '../src/utils/date';
 import { loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
-import { recordSpanError, tracer } from '../src/utils/tracer';
+import { recordSpanError, setSpanAttributes, tracer } from '../src/utils/tracer';
 import { shutdownTelemetry } from './telemetry';
 
 const handleBroadcast = async (span: Span, token: string) => {
@@ -17,6 +17,7 @@ const handleBroadcast = async (span: Span, token: string) => {
 
   const reminders = await Result.safe(getReminderByTime(getCurrentUnixTime()));
   if (reminders.isErr()) {
+    setSpanAttributes({ 'bot.reminder.success': false, 'bot.reminder.reason': 'reminder-query' });
     recordSpanError(reminders.unwrapErr(), 'err-broadcast-reminder-query-failed');
     logger.error(`[broadcast-reminder]: Cannot retrieve reminders. Query Time: ${queryTime}`, reminders.unwrapErr());
     return 1;

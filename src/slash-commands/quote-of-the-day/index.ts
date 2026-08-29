@@ -16,6 +16,7 @@ export const getQuoteOfTheDay = async (interaction: ChatInputCommandInteraction)
   setSpanAttributes({ 'bot.quote.success': quote.isOk() });
   if (quote.isErr()) {
     recordSpanError(quote.unwrapErr(), 'err-quote-fetch-failed');
+    setSpanAttributes({ 'bot.quote.reason': 'fetch' });
     logger.error('[quote-of-the-day]: Error getting quotes', quote.unwrapErr());
     await interaction.editReply('Error getting quotes');
     return;

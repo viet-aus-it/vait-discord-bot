@@ -30,6 +30,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
 
   if (op.isErr()) {
+    setSpanAttributes({ 'bot.referral.success': false, 'bot.referral.reason': 'delete-failed' });
     recordSpanError(op.unwrapErr(), 'err-referral-delete-failed');
     logger.error('[referral-delete]: Error while deleting referral code', op.unwrapErr());
     await interaction.reply('Failed to delete referral code. Please try again later.');

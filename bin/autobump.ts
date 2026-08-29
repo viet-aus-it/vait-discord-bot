@@ -20,6 +20,7 @@ const performBump = async (thread: ThreadChannel, clientId?: string) => {
     const botMessages = messages.filter((m) => m.author.bot && m.author.id === clientId);
 
     if (botMessages.size === 0) {
+      setSpanAttributes({ 'bot.autobump.success': false, 'bot.autobump.reason': 'no-bot-message' });
       logger.warn(`[autobump]: No existing bot message found in thread ${thread.id}`);
     } else {
       await Promise.all(botMessages.map((m) => m.delete()));
@@ -33,6 +34,7 @@ const bumpThread = async (thread: ThreadChannel, clientId?: string): Promise<boo
   const op = await Result.safe(performBump(thread, clientId));
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-autobump-bump-failed');
+    setSpanAttributes({ 'bot.autobump.success': false, 'bot.autobump.reason': 'bump' });
     logger.error(`[autobump]: Failed to bump thread ${thread.id}`, op.unwrapErr());
     return false;
   }
@@ -43,7 +45,7 @@ const handleAutobump = async (span: Span, token: string) => {
   const settings = await Result.safe(listAllThreads());
   if (settings.isErr()) {
     recordSpanError(settings.unwrapErr(), 'err-autobump-list-failed');
-    setSpanAttributes({ 'bot.autobump.success': false });
+    setSpanAttributes({ 'bot.autobump.success': false, 'bot.autobump.reason': 'list-threads' });
     logger.error('[autobump]: Cannot retrieve autobump thread lists', settings.unwrapErr());
     return 1;
   }

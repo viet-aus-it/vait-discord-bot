@@ -22,6 +22,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   const op = await Result.safe(getUserReminders(user.id, guildId));
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-reminder-list-failed');
+    setSpanAttributes({ 'bot.reminder.success': false, 'bot.reminder.reason': 'list-failed' });
     logger.error('[reminder-list]: Error while retrieving reminders', op.unwrapErr());
     await interaction.reply('There is some error retrieving your reminders. Please try again later.');
     return;

@@ -43,7 +43,7 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr()) {
     recordSpanError(fetchedMessage.unwrapErr(), 'err-fetch-message-failed');
-    setSpanAttributes({ 'bot.mock.success': false });
+    setSpanAttributes({ 'bot.mock.success': false, 'bot.mock.reason': 'fetch-message' });
     logger.error('[mock]: Cannot fetch latest message', fetchedMessage.unwrapErr());
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
@@ -51,7 +51,7 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
 
   const { content } = fetchedMessage.unwrap();
   if (isBlank(content)) {
-    setSpanAttributes({ 'bot.mock.success': false });
+    setSpanAttributes({ 'bot.mock.success': false, 'bot.mock.reason': 'blank' });
     logger.warn('[mock]: Cannot fetch message to mock');
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;

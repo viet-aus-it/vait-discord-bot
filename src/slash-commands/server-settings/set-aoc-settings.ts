@@ -22,7 +22,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-settings-aoc-save-failed');
     logger.error(`[set-aoc-key]: ${interaction.member!.user.username} failed to set AOC Key. Error: ${op.unwrapErr()}`);
-    setSpanAttributes({ 'bot.settings.success': false });
+    setSpanAttributes({ 'bot.settings.success': false, 'bot.settings.reason': 'save-aoc' });
     await interaction.reply(`Cannot set this AOC key. Please try again. Error: ${op.unwrapErr()}`);
     return;
   }

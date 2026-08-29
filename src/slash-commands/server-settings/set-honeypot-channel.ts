@@ -20,6 +20,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-settings-honeypot-save-failed');
     logger.error(`[set-honeypot-channel]: ${interaction.member!.user.username} failed to set honeypot channel to ${channel.name}`, op.unwrapErr());
+    setSpanAttributes({ 'bot.settings.success': false, 'bot.settings.reason': 'save-honeypot' });
     await interaction.reply('Cannot save this honeypot channel for this server. Please try again.');
     return;
   }

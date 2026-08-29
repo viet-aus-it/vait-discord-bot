@@ -61,7 +61,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const getSavedleaderboardOp = await Result.safe(getSavedLeaderboard(guildId));
   if (getSavedleaderboardOp.isErr()) {
     recordSpanError(getSavedleaderboardOp.unwrapErr(), 'err-aoc-saved-leaderboard-fetch-failed');
-    setSpanAttributes({ 'bot.aoc.success': false });
+    setSpanAttributes({ 'bot.aoc.success': false, 'bot.aoc.reason': 'fetch-saved-leaderboard' });
     logger.error('[get-aoc-leaderboard]: Error connecting to the database', getSavedleaderboardOp.unwrapErr());
     await interaction.editReply('ERROR: Error connecting to the database');
     return;
@@ -81,7 +81,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const settingsOp = await Result.safe(getAocSettings(guildId));
   if (settingsOp.isErr()) {
     recordSpanError(settingsOp.unwrapErr(), 'err-aoc-settings-fetch-failed');
-    setSpanAttributes({ 'bot.aoc.success': false });
+    setSpanAttributes({ 'bot.aoc.success': false, 'bot.aoc.reason': 'fetch-settings' });
     const errorMessage = 'Error getting AOC settings';
     logger.error(`[get-aoc-leaderboard]: : ${errorMessage}`, settingsOp.unwrapErr());
     await interaction.editReply(`ERROR: ${errorMessage}`);
@@ -92,7 +92,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (!settings || !settings.aocKey || !settings.aocLeaderboardId) {
     const errorMessage = 'Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.';
     logger.warn(`[get-aoc-leaderboard]: ${errorMessage}`);
-    setSpanAttributes({ 'bot.aoc.success': false });
+    setSpanAttributes({ 'bot.aoc.success': false, 'bot.aoc.reason': 'not-configured' });
     await interaction.editReply(`ERROR: ${errorMessage}`);
     return;
   }
@@ -101,7 +101,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const fetchAndSaveOp = await Result.safe(fetchAndSaveLeaderboard(year, settings));
   if (fetchAndSaveOp.isErr()) {
     recordSpanError(fetchAndSaveOp.unwrapErr(), 'err-aoc-leaderboard-fetch-failed');
-    setSpanAttributes({ 'bot.aoc.success': false });
+    setSpanAttributes({ 'bot.aoc.success': false, 'bot.aoc.reason': 'fetch-leaderboard' });
     const errorMessage = `Error fetching and/or saving new leaderboard result`;
     logger.error(`[get-aoc-leaderboard]: ${errorMessage}`, fetchAndSaveOp.unwrapErr());
     await interaction.editReply(`ERROR: ${errorMessage}`);

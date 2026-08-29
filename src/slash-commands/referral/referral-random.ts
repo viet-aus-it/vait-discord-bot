@@ -24,6 +24,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-referral-random-failed');
     logger.error(`[referral-random]: Error getting referral codes for ${service} service`, op.unwrapErr());
+    setSpanAttributes({ 'bot.referral.success': false, 'bot.referral.reason': 'list-random' });
     await interaction.reply(`Error getting referral codes for ${service} service. Please try again later.`);
     return;
   }

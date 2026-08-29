@@ -19,6 +19,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-settings-reminder-save-failed');
     logger.error(`[set-reminder-channel]: ${interaction.member!.user.username} failed to set reminder channel to ${channel.name}`, op.unwrapErr());
+    setSpanAttributes({ 'bot.settings.success': false, 'bot.settings.reason': 'save-reminder' });
     await interaction.reply('Cannot save this reminder channel for this server. Please try again.');
     return;
   }

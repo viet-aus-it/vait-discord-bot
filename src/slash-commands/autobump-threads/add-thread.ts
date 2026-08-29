@@ -19,7 +19,7 @@ export const addAutobumpThreadCommand: SlashCommandHandler = async (interaction)
   const isThread = thread.type === ChannelType.PublicThread || thread.type === ChannelType.PrivateThread;
   if (!isThread) {
     logger.warn(`[add-autobump-thread]: The channel ${thread.id} of ${guildId} is not a thread.`);
-    setSpanAttributes({ 'bot.autobump.success': false });
+    setSpanAttributes({ 'bot.autobump.success': false, 'bot.autobump.reason': 'not-a-thread' });
     await interaction.reply(`ERROR: The channel <#${thread.id}> is not a thread.`);
     return;
   }
@@ -29,7 +29,7 @@ export const addAutobumpThreadCommand: SlashCommandHandler = async (interaction)
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-autobump-add-failed');
     logger.error(`[add-autobump-thread]: Cannot save thread ${thread.id} to be autobumped for guild ${guildId}`, op.unwrapErr());
-    setSpanAttributes({ 'bot.autobump.success': false });
+    setSpanAttributes({ 'bot.autobump.success': false, 'bot.autobump.reason': 'save-failed' });
     await interaction.reply('ERROR: Cannot save this thread to be autobumped for this server. Please try again.');
     return;
   }

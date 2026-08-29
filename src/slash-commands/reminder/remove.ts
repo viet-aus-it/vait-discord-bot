@@ -26,6 +26,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
   );
   if (op.isErr()) {
     recordSpanError(op.unwrapErr(), 'err-reminder-delete-failed');
+    setSpanAttributes({ 'bot.reminder.success': false, 'bot.reminder.reason': 'delete-failed' });
     logger.error('[reminder-delete]: Error while deleting reminder', op.unwrapErr());
     await interaction.reply(`Cannot delete reminder id ${reminderId}. Please try again later.`);
     return;

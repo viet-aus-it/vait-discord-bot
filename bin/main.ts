@@ -19,6 +19,7 @@ const handleDeployCommands = async ({ token, clientId }: Omit<DiscordRequestConf
   const commands = [...slashCommandList, ...contextMenuCommandList];
   const op = await Result.safe(deployGlobalCommands(commands, { token, clientId }));
   if (op.isErr()) {
+    setSpanAttributes({ 'bot.bootstrap.success': false, 'bot.bootstrap.reason': 'deploy-global-commands' });
     recordSpanError(op.unwrapErr(), 'err-deploy-commands-failed');
     logger.error('[deploy-commands]: Cannot deploy global commands', op.unwrapErr());
     return 1;
@@ -47,6 +48,7 @@ const deployCommands = async ({ token, clientId, nodeEnv }: Omit<DiscordRequestC
 const handleLoadHoneypots = async () => {
   const op = await Result.safe(loadHoneypotChannels());
   if (op.isErr()) {
+    setSpanAttributes({ 'bot.bootstrap.success': false, 'bot.bootstrap.reason': 'load-honeypots' });
     recordSpanError(op.unwrapErr(), 'err-load-honeypots-failed');
     logger.error('[honeypot]: Failed to load honeypot channels', op.unwrapErr());
     return;
