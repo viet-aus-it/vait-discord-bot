@@ -51,33 +51,24 @@ Use the templates in `templates/` directory:
 ### 3. Implement the Command
 
 ```typescript
-import {
-  type ChatInputCommandInteraction,
-  InteractionContextType,
-  SlashCommandBuilder,
-} from "discord.js";
-import type { SlashCommand } from "../builder";
+import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
+import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
-  .setName("command-name")
-  .setDescription("What this command does")
+  .setName('command-name')
+  .setDescription('What this command does')
   .setContexts(InteractionContextType.Guild)
   // Add options: addStringOption, addIntegerOption, addUserOption, etc.
-  .addStringOption((option) =>
-    option
-      .setName("option-name")
-      .setDescription("Description")
-      .setRequired(true),
-  );
+  .addStringOption((option) => option.setName('option-name').setDescription('Description').setRequired(true));
 
 const execute = async (interaction: ChatInputCommandInteraction) => {
   // Get options
-  const value = interaction.options.getString("option-name", true);
+  const value = interaction.options.getString('option-name', true);
 
   // Implementation
 
   // Reply to user
-  await interaction.reply("Response message");
+  await interaction.reply('Response message');
 };
 
 const command: SlashCommand = { data, execute };
@@ -89,7 +80,7 @@ export default command;
 Add your command to `src/slash-commands/index.ts`:
 
 ```typescript
-import myCommand from "./my-command";
+import myCommand from './my-command';
 
 // Add to the commands array
 export const commands: SlashCommand[] = [
@@ -107,25 +98,22 @@ Every slash command must have a corresponding `.test.ts` file.
 Use the test fixtures from `test/fixtures/`:
 
 ```typescript
-import { faker } from "@faker-js/faker";
-import { describe, expect } from "vitest";
-import { chatInputCommandInteractionTest } from "../../../test/fixtures/chat-input-command-interaction";
-import { myCommand } from ".";
+import { faker } from '@faker-js/faker';
+import { describe, expect } from 'vitest';
+import { chatInputCommandInteractionTest } from '../../../test/fixtures/chat-input-command-interaction';
+import { myCommand } from '.';
 
-describe("my command tests", () => {
-  chatInputCommandInteractionTest(
-    "Should do something specific",
-    async ({ interaction }) => {
-      // Arrange: Mock option returns
-      interaction.options.getString.mockReturnValueOnce(faker.lorem.words());
+describe('my command tests', () => {
+  chatInputCommandInteractionTest('Should do something specific', async ({ interaction }) => {
+    // Arrange: Mock option returns
+    interaction.options.getString.mockReturnValueOnce(faker.lorem.words());
 
-      // Act: Execute the command
-      await myCommand.execute(interaction);
+    // Act: Execute the command
+    await myCommand.execute(interaction);
 
-      // Assert: Verify the response
-      expect(interaction.reply).toHaveBeenCalledOnce();
-    },
-  );
+    // Assert: Verify the response
+    expect(interaction.reply).toHaveBeenCalledOnce();
+  });
 });
 ```
 
@@ -171,13 +159,13 @@ Import types from `src/slash-commands/builder.ts`:
 - Reply with ephemeral messages for errors
 
 ```typescript
-import { Result } from "oxide.ts";
-import { logger } from "../../utils/logger";
+import { Result } from 'oxide.ts';
+import { logger } from '../../utils/logger';
 
 const op = await Result.safe(someOperation());
 if (op.isErr()) {
   logger.error(op.err());
-  await interaction.reply("An error occurred. Please try again.");
+  await interaction.reply('An error occurred. Please try again.');
   return;
 }
 ```

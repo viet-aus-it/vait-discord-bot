@@ -1,5 +1,6 @@
 // Parent command index.ts
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
+
 import type { SlashCommand } from '../builder';
 import subcommand1 from './subcommand1';
 import subcommand2 from './subcommand2';

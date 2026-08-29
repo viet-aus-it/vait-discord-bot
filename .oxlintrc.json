@@ -7,5 +7,6 @@
     "typescript/no-explicit-any": "off",
     "eslint/no-empty-pattern": "off",
     "typescript/no-non-null-assertion": "off"
-  }
+  },
+  "ignorePatterns": [".agents/**"]
 }
