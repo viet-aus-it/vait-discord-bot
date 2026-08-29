@@ -131,12 +131,12 @@ describe('my command tests', () => {
 - Use `@faker-js/faker` for generating test data
 - Follow Arrange-Act-Assert pattern
 - Test both success and error cases
-- Mock external dependencies (databases, APIs)
+- Mock external dependencies (e.g. API calls)
 
 ### 6. Run Tests
 
 ```bash
-pnpm test
+pnpm run test
 ```
 
 Ensure all tests pass before committing.
