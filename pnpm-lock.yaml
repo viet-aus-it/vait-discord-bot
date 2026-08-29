@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@axiomhq/winston':
-        specifier: ^2.0.0
-        version: 2.0.0
       '@discordjs/rest':
         specifier: 2.0.0
         version: 2.0.0
@@ -152,14 +149,6 @@ importers:
         version: 5.1.1(typescript@7.0.2)(vitest@4.1.11)
 
 packages:
-
-  '@axiomhq/js@2.0.0':
-    resolution: {integrity: sha512-mhDH0KLFkDko9ytoltgmch2gOiwE6kY6VWhCmTux9lzL9hmjTej68JeQKwq9GGqOY7xwDsya88bNiTnp/zc8+Q==}
-    engines: {node: '>=20'}
-
-  '@axiomhq/winston@2.0.0':
-    resolution: {integrity: sha512-PT2/iC4goWKI8yuGJn5AotN157mJNq++5d3UfaMHR41pPkI31OBsZ6MXnQqZi36BR8taRIzsmdR1E5exNyNhIg==}
-    engines: {node: '>=20'}
 
   '@babel/helper-string-parser@7.27.1':
     resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
@@ -2947,9 +2936,6 @@ packages:
     resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
     engines: {node: ^12.20 || >= 14.13}
 
-  fetch-retry@6.0.0:
-    resolution: {integrity: sha512-BUFj1aMubgib37I3v4q78fYo63Po7t4HUPTpQ6/QE6yK6cIQrP+W43FYToeTEyg5m2Y7eFUtijUuAv/PDlWuag==}
-
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
 
@@ -4193,15 +4179,6 @@ packages:
     resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
 
 snapshots:
-
-  '@axiomhq/js@2.0.0':
-    dependencies:
-      fetch-retry: 6.0.0
-
-  '@axiomhq/winston@2.0.0':
-    dependencies:
-      '@axiomhq/js': 2.0.0
-      winston-transport: 4.9.0
 
   '@babel/helper-string-parser@7.27.1': {}
 
@@ -6614,8 +6591,6 @@ snapshots:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
-
-  fetch-retry@6.0.0: {}
 
   fflate@0.8.2: {}
 
