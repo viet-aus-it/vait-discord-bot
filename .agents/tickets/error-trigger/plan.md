@@ -54,17 +54,35 @@ Changes:
 
 `ENABLE_OTEL` keeps conventional default `false` — no flip. Live prod enables in untracked deployment env; no `.env.production` committed (local copy only), live flag entirely outside repo. Existing validation fails fast when `ENABLE_OTEL=true` without `OTEL_EXPORTER_OTLP_ENDPOINT` (`load-env.ts:47-56`).
 
-### 1.3 Verify OTLP endpoint URL (`bin/telemetry.ts:74-76`)
-
-Check LIVE prod env endpoint (repo tracks no live env — `.env.production` untracked local copy): if carries `/v1/traces` already while `docs/reference/05-environment-variables.md:42` says SDK "appends signal-specific paths automatically", traces POST to `/v1/traces/v1/traces` (or logs misfiled). Verify `OTEL_DEBUG=true` + one request: (a) traces land, (b) logs land `/v1/logs`. If Axiom ingress expects explicit `/v1/traces` (SDK double-append), fix = explicit `url` on exporters, not base env. **Verify empirically against real deployment env before shipping P1.**
-
 ### 1.4 Clean up deps
 
 Remove `@axiomhq/winston` from `package.json:40` (+ `pnpm-lock.yaml`).
+Stop referencing `AXIOM_ORG_ID` (transport gone) in `.env.dist` + docs/reference/05-environment-variables.md. `AXIOM_TOKEN`/`AXIOM_DATASET` STAY — still exporting to Axiom; retire only at Phase 6.
 
-### Assertions
+### 1.5 Rewrite `recordSpanError` for OTel 2026 conventions (`src/utils/tracer.ts:6`)
+
+`span.recordException` = Span Events API, deprecated (OTEP 4430, https://opentelemetry.io/blog/2026/deprecating-span-events/). Recording-errors guidance (https://opentelemetry.io/docs/specs/semconv/general/recording-errors/): failed span → `status=ERROR` + `error.type` attribute (+ status description = exception message when useful); exception detail emitted as LOG RECORD correlated with active span (Logs API), NOT span event.
+
+```ts
+export function recordSpanError(error: unknown, slug: string): void {
+  const span = trace.getActiveSpan();
+  if (!span) return;
+  span.setStatus({ code: SpanStatusCode.ERROR, message: String(error) });
+  span.setAttribute(ATTR_ERROR_TYPE, slug);
+  // exception payload rides correlated winston log record (Logs API)
+  // span.recordException removed — Span Events API deprecated (OTEP 4430)
+}
+```
+
+- Drop `span.recordException(error instanceof Error ? error : new Error(String(error)))`.
+- Exception detail lives in `logger.error` on same path → `instrumentation-winston` correlates log to active span via trace context. Satisfies "record exceptions as log records".
+- 3 span-only sites (`weather:31`, `qotd:18`, `set-aoc:23`) lose exception payload now → P3 §3.4 symmetrize becomes REQUIRED, not optional parity.
+- Spec tension: "record same exception once". aoc `client.ts` logs then throws → logged twice (client + upstream catch). Accepted: different signals (log at source, status+error.type at boundary). Revisit if Xhoy noise appears.
+
+### Assertions (Phase 1)
 
 - `rg '@axiomhq/winston' src bin package.json` → 0 hits.
+- `rg 'recordException' src bin` → 0 hits (after P1 + P3 symmetrize).
 - `logger.error('boom', e)` produces OTLP log record with `severity` in backend.
 - Login → trace + debug log same event grouped same `service.name`.
 
@@ -99,7 +117,7 @@ Keep historical mentions (`.github/CHANGELOG.md`, `prisma-to-drizzle` ticket) un
 
 ## Phase 3 — Normalize error signals (close research.md gaps)
 
-Rule after: every `logger.error` paired with span error; every business condition `warn`/`info`, never error.
+Rule after: every `logger.error` paired with span error; every business condition `warn`/`info`, never error; every operation records success twin.
 
 ### 3.1 Real-error, log-only sites → add span error
 
@@ -171,9 +189,20 @@ return { threadId: id, success };
 
 `scripts/*` boot telemetry via `--import` (`package.json:32-34`) but manual admin actions — accept `logger.error` un-triggered (documented). No span.
 
-### Assertions
+### 3.6 Record success states — errors meaningless without baseline
+
+Errors alone = noise. Need success twin to compute error rate + see failure in operation-volume context. Spec: success span keeps `status` UNSET and NO `error.type`; rate derived from success attribute.
+
+Some spans carry success marker already: `bot.weather.success`, `bot.quote.success`, `bot.honeypot.ban_success`. Others carry count only (`bot.reminder.count`, `bot.referral.count`, `bot.autobump.thread_count`), processors none.
+
+Standardize: every command/processor/bin span sets `bot.<op>.success` boolean on BOTH paths (false on error, true on success). Backend error-rate = error spans / spans with `bot.*.success`.
+
+Ceiling: `FilteringSpanProcessor` samples success at 1%, errors 100% → rate approximate. Accept: success rate = statistical context for digest/health, never a paging trigger. Raw error-count pages live in P5 tiers. (`ponytail:` keep 1% success sampling; raise only if rate curve unusable in backend.)
+
+### Assertions (Phase 3)
 
 - Grep audit: every `logger.error` in `src/`, `bin/` adjacent `recordSpanError`, or marked `scripts/` exception, or business-condition (now `warn`).
+- Grep audit: every `recordSpanError` site also sets `bot.*.success` (or sit under processor wrapper that does).
 - `pnpm lint && pnpm typecheck && pnpm test` green.
 
 ---
@@ -188,7 +217,6 @@ Hard crash OTel-on exports nothing today.
 process.on('uncaughtException', (error) => {
   tracer.startActiveSpan('fatal-uncaught-exception', (span) => {
     span.setStatus({ code: SpanStatusCode.ERROR, message: String(error) });
-    span.recordException(error);
     span.setAttribute(ATTR_ERROR_TYPE, 'err-uncaught-exception');
     span.end();
   });
@@ -199,15 +227,12 @@ process.on('uncaughtException', (error) => {
 
 - Register BEFORE `main()` → boot-time throws (env validation) captured.
 - Mirror `unhandledRejection` (same handler, slug `err-unhandled-rejection`, `process.exit(1)` — bad rejection = bug; crash → restart = desired policy).
+- No `span.recordException` here either — matches §1.5. Exception payload = the `logger.error` record (correlated, exportable even mid-crash if flush lands).
 - `exceptionHandlers` wired in P1.1 → crash also exports ERROR log; both surfaces fire.
 
 ### 4.2 Pre-boot env failure (`src/utils/load-env.ts:62`)
 
 Accept documented last resort: `loadEnv` module-scope inside `telemetry.ts` import (before SDK) + `logger.ts` (before transport). Minimal fallback logger impossible. Keep `console.error` (= container stderr); only pre-boot mechanism. uncaughtException handler can't help (process dies in import). Record limit in `docs/reference/08-error-handling.md` so nobody "fixes" into dead-end.
-
-### 4.3 SIGTERM flush (already correct)
-
-`bin/telemetry.ts:88-98` flushes both exporters then SDK shutdown. Keep. `bin/*` already `await shutdownTelemetry()` before `process.exit`.
 
 ### Assertions
 
@@ -256,7 +281,7 @@ Exact swap points:
 
 ## Verification & rollout order
 
-1. P1 commits (logger + env default) → deploy → confirm log+traces unify; confirm endpoint `/v1` empirically.
+1. P1 commits (logger + tracer + RecordException removal) → deploy → confirm log+traces unify.
 2. P2 rename `.env.dist` → `.env.sample` — mechanical, land with P1 same commit.
 3. P3 (all signal normalization) — pure code, test-covered.
 4. Import research.md tiers → create Axiom monitors Low first (observe 1 week, tune thresholds real traffic).
@@ -268,21 +293,15 @@ Exact swap points:
 
 | Phase | Files                                                                                                                                                                                                                                                                             | Type               |
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| P1    | `src/utils/logger.ts`, `package.json`, `.env.dist`, `docs/reference/05-environment-variables.md`, live prod env (endpoint fix)                                                                                                                                                    | code+deps+env+docs |
+| P1    | `src/utils/logger.ts`, `src/utils/tracer.ts`, `package.json`, `.env.dist`, `docs/reference/05-environment-variables.md`                                                                                                                                                           | code+deps+env+docs |
 | P2    | `.env.dist` → `.env.sample` (git mv), `scripts/onboarding.sh`, `docs/reference/05-environment-variables.md`, `docs/how-to/01-quick-start.md`, `docs/how-to/04-production-testing.md`, `.agents/skills/update-docs/SKILL.md`                                                       | docs+scripts+env   |
 | P3    | `all-cap/index.ts`, `mock-someone/index.ts`, `bin/autobump.ts`, `aoc-leaderboard/index.ts` + `utils.ts`, `autobump-threads/add-thread.ts` + `list-threads.ts`, `referral/referral-new.ts`, `weather/index.ts`, `quote-of-the-day/index.ts`, `server-settings/set-aoc-settings.ts` | code (+tests)      |
 | P4    | `bin/main.ts`, `docs/reference/08-error-handling.md`                                                                                                                                                                                                                              | code+docs          |
 | P5    | Backend monitor config (Axiom), tier table in this doc                                                                                                                                                                                                                            | config             |
 | P6    | `bin/telemetry.ts`, env files, docs (if migrating)                                                                                                                                                                                                                                | config+docs        |
 
-## Open questions
-
-1. Confirm Axiom endpoint base-URL behaviour (§1.3) vs LIVE deployment env — prod exporting traces at all now?
-2. Deployment cadence for 3 compose jobs (`broadcast-reminder`, `autobump`, `cleanup-referrals`) — needed for Signal-C heartbeat (alert "no trace in N×expected window"); cadence outside repo.
-3. Retire `AXIOM_ORG_ID`/`AXIOM_TOKEN` namespacing early or fold into Honeycomb rename once?
-
 ## Risk notes
 
-- P1 breaks prod observability momentarily IF endpoint genuinely two-segmented — mitigate `OTEL_DEBUG=1` deploy, check ingress before/after.
+- P1 removes the OTel-off log path entirely — momentary gap only if OTel export breaks silently; verify ingress right after first deploy.
 - Log-only `scripts/*` un-triggered; accepted manual ops.
 - Rising edge: `err-autobump-bump-failed` splat N times/run by design; monitors count-of-spans, not count-of-events.
