@@ -26,6 +26,7 @@ function getExporterHeaders(): Record<string, string> {
   if (env.NODE_ENV === 'production') {
     return {
       Authorization: `Bearer ${env.AXIOM_TOKEN || ''}`,
+      'X-Axiom-Dataset': env.AXIOM_DATASET || '',
     };
   }
   return {};

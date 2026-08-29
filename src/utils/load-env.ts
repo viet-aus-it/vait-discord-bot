@@ -12,6 +12,7 @@ export const ConfigSchema = z
 
     // Axiom config
     AXIOM_TOKEN: z.string().optional(),
+    AXIOM_DATASET: z.string().optional(),
 
     // OpenTelemetry config
     ENABLE_OTEL: z.stringbool().default(false),
@@ -35,10 +36,10 @@ export const ConfigSchema = z
   .refine(
     (env) => {
       if (env.NODE_ENV !== 'production') return true;
-      return !!env.AXIOM_TOKEN;
+      return !!env.AXIOM_TOKEN && !!env.AXIOM_DATASET;
     },
     {
-      message: 'AXIOM_TOKEN is required in production',
+      message: 'AXIOM_TOKEN and AXIOM_DATASET are required in production',
       path: ['AXIOM_TOKEN'],
     }
   )
