@@ -20,7 +20,7 @@ prompt_and_set "Please enter your bot public key if you have one, or leave it bl
 prompt_and_set "Please enter your guild id if you have one, or leave it blank:" GUILD_ID
 
 echo "Creating env files for discord bot"
-cp .env.dist .env
+cp .env.sample .env
 sed -i'' -e "s/TOKEN=YOUR_BOT_TOKEN_HERE/TOKEN=${BOT_TOKEN}/g" .env
 sed -i'' -e "s/CLIENT_ID=CLIENT_ID_GOES_HERE/CLIENT_ID=${CLIENT_ID}/g" .env
 sed -i'' -e "s/PUBLIC_KEY=PUBLIC_KEY_GOES_HERE/PUBLIC_KEY=${PUBLIC_KEY}/g" .env
