@@ -31,7 +31,7 @@ On macOS, Linux, or WSL:
 If the script does not work, create the config file manually:
 
 ```bash
-cp .env.dist .env
+cp .env.sample .env
 ```
 
 Fill in the `.env` file with the values from Step 1. See [Environment Variables](../reference/05-environment-variables.md) for the full reference.

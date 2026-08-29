@@ -28,7 +28,7 @@ When user asks to:
 | `AGENTS.md`       | Agent control manifest                                        | Project structure, tech stack, available skills/rules, commands       |
 | `.agents/rules/`  | Domain-specific guidelines                                    | Code style, patterns, commands, communication, special considerations |
 | `.agents/skills/` | Task-specific toolkits                                        | Each skill's SKILL.md                                                 |
-| `.env.dist`       | Environment variable reference                                | All required/optional env vars                                        |
+| `.env.sample`     | Environment variable reference                                | All required/optional env vars                                        |
 
 ## Workflow
 
@@ -62,7 +62,7 @@ For each category, note which documentation locations are affected using the map
 | Change Type              | Docs to Check                                                                                       |
 | ------------------------ | --------------------------------------------------------------------------------------------------- |
 | New command              | `docs/reference/01-commands-list.md`, `docs/explanation/02-bot-commands-design.md`, `docs/index.md` |
-| New env var              | `.env.dist`, `docs/reference/05-environment-variables.md`                                           |
+| New env var              | `.env.sample`, `docs/reference/05-environment-variables.md`                                         |
 | New dependency           | `README.md`, `AGENTS.md` (tech stack), `docs/reference/02-pnpm-scripts.md`                          |
 | New pnpm script          | `docs/reference/02-pnpm-scripts.md`, `.agents/rules/commands.md`                                    |
 | Database change          | `docs/reference/04-database-schema.md`                                                              |
@@ -84,7 +84,7 @@ Pay special attention to:
 - Command names and options (do they match the source?)
 - pnpm script names (do they match `package.json`?)
 - File paths (do they still exist?)
-- Environment variables (match `.env.dist`?)
+- Environment variables (match `.env.sample`?)
 - Project structure trees (match actual directory layout?)
 
 ### Step 4: Apply Updates
@@ -103,7 +103,7 @@ Review all changes for:
 
 - All file paths referenced in docs exist
 - All commands referenced in docs are valid
-- All env vars in `.env.dist` are documented and vice versa
+- All env vars in `.env.sample` are documented and vice versa
 - Cross-references between docs are consistent
 - `docs/index.md` links are current and complete
 
@@ -123,7 +123,7 @@ pnpm run lint
 - [ ] `AGENTS.md` checked: project structure, tech stack, skills, rules, commands
 - [ ] `.agents/rules/` checked for affected rules
 - [ ] `.agents/skills/` checked for affected skills
-- [ ] `.env.dist` checked against actual env var usage
+- [ ] `.env.sample` checked against actual env var usage
 - [ ] Cross-references between docs are consistent
 - [ ] Australian/British English spelling throughout
 - [ ] No stale file paths or broken references

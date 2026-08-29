@@ -7,7 +7,7 @@ Test the production Docker build locally before deploying.
 1. Create a production environment file:
 
 ```bash
-cp .env.dist .env.production
+cp .env.sample .env.production
 ```
 
 2. Fill in the `.env.production` file. Set `POSTGRES_HOST` to `db` instead of `localhost` (the Docker network hostname).

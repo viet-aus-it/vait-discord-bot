@@ -14,7 +14,7 @@ describe('recordSpanError', () => {
     expect(() => recordSpanError(new Error('test'), 'err-test')).not.toThrow();
   });
 
-  it('sets status, records exception, and sets error.type on the active span', () => {
+  it('sets status and error.type on the active span', () => {
     const mockSpan = mockDeep<Span>();
     vi.spyOn(trace, 'getActiveSpan').mockReturnValue(mockSpan);
 
@@ -25,17 +25,19 @@ describe('recordSpanError', () => {
       code: SpanStatusCode.ERROR,
       message: 'Error: something broke',
     });
-    expect(mockSpan.recordException).toHaveBeenCalledWith(error);
     expect(mockSpan.setAttribute).toHaveBeenCalledWith(ATTR_ERROR_TYPE, 'err-command-failed');
   });
 
-  it('wraps non-Error values in an Error for recordException', () => {
+  it('stringifies non-Error values', () => {
     const mockSpan = mockDeep<Span>();
     vi.spyOn(trace, 'getActiveSpan').mockReturnValue(mockSpan);
 
     recordSpanError('string error', 'err-string');
 
-    expect(mockSpan.recordException).toHaveBeenCalledWith(new Error('string error'));
+    expect(mockSpan.setStatus).toHaveBeenCalledWith({
+      code: SpanStatusCode.ERROR,
+      message: 'string error',
+    });
   });
 });
 
