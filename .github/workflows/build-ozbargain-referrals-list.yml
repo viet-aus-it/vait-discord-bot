@@ -54,8 +54,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          git checkout -b autoupdate/referrals
+          pnpm run lint:fix && pnpm run format
           if [[ `git status --porcelain` ]]; then
-            git checkout -b autoupdate/referrals
             cp .env.ci .env
             npx dotenvx run -- npx vitest run -u
             git add src/slash-commands/referral
