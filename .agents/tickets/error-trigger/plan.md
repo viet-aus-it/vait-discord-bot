@@ -225,14 +225,15 @@ process.on('uncaughtException', (error) => {
 });
 ```
 
-- Register BEFORE `main()`; boot-time throws (env validation) captured.
+- Scope = post-boot only: register in `main.ts` body BEFORE `main()` call; crashes after SDK up (message handlers, jobs, unpackaged errors) captured. NOT boot env failure — `loadEnv` throws at import time (module scope of `telemetry.ts`/`logger.ts`), handler not registered yet; that path = §4.2.
+- Export possible only if OTel exporter already running. Missing provider env = exporter never constructs → logic cannot even run (`telemetry.ts` SDK init fails first). No export possible in that case by construction; stderr only.
 - Mirror `unhandledRejection` (same handler, slug `err-unhandled-rejection`, `process.exit(1)`; bad rejection = bug, crash = restart = desired policy).
 - No `span.recordException` here either — matches §1.5. Exception payload = the `logger.error` record (correlated, exportable even mid-crash if flush lands).
 - `exceptionHandlers` wired in P1.1; crash also exports ERROR log; both surfaces fire.
 
 ### 4.2 Pre-boot env failure (`src/utils/load-env.ts:62`)
 
-Accept documented last resort: `loadEnv` module-scope inside `telemetry.ts` import (before SDK) + `logger.ts` (before transport). Minimal fallback logger impossible. Keep `console.error` (= container stderr); only pre-boot mechanism. uncaughtException handler can't help (process dies in import). Record limit in `docs/reference/08-error-handling.md` so nobody "fixes" into dead-end.
+Accept documented last resort: `loadEnv` module-scope inside `telemetry.ts` import (before SDK) + `logger.ts` (before transport). Minimal fallback logger impossible. Keep `console.error` (= container stderr); only pre-boot mechanism. uncaughtException handler can't help (process dies in import) — and if missing var = OTel provider config (`OTEL_EXPORTER_OTLP_ENDPOINT` etc.), exporter never constructs, so OTel send impossible in exactly this scenario; stderr is the only signal by construction, and that is correct. Record limit in `docs/reference/08-error-handling.md` so nobody "fixes" into dead-end.
 
 ### Assertions
 
