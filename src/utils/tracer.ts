@@ -3,8 +3,6 @@ import { ATTR_ERROR_TYPE } from '@opentelemetry/semantic-conventions';
 
 export const tracer = trace.getTracer('discord-bot');
 
-// exception payload rides correlated winston log record (Logs API)
-// span.recordException removed — Span Events API deprecated (OTEP 4430)
 export function recordSpanError(error: unknown, slug: string): void {
   const span = trace.getActiveSpan();
   if (!span) return;

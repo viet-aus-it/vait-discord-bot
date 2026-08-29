@@ -26,10 +26,9 @@ All configuration is via environment variables in the `.env` file. Copy `.env.sa
 
 ## Observability (Production Only)
 
-| Variable        | Required  | Description                          |
-| --------------- | --------- | ------------------------------------ |
-| `AXIOM_TOKEN`   | Prod only | [Axiom](https://axiom.co/) API token |
-| `AXIOM_DATASET` | Prod only | Axiom dataset name                   |
+| Variable      | Required  | Description                          |
+| ------------- | --------- | ------------------------------------ |
+| `AXIOM_TOKEN` | Prod only | [Axiom](https://axiom.co/) API token |
 
 ## OpenTelemetry
 
@@ -40,7 +39,7 @@ All configuration is via environment variables in the `.env` file. Copy `.env.sa
 | `OTEL_SERVICE_NAME`           | No                | `vait-discord-bot` | Service name for trace attribution                                                                                                                                     |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | When OTel enabled | —                  | OTLP HTTP base endpoint URL. The SDK appends signal-specific paths (`/v1/traces`, `/v1/logs`) automatically. Local dev: `http://localhost:4318` (otel-desktop-viewer). |
 
-In production `AXIOM_TOKEN` and `AXIOM_DATASET` are required (traces and logs are exported to Axiom via the OTel pipeline).
+In production `AXIOM_TOKEN` is required (traces and logs are exported to Axiom via the OTel pipeline).
 
 ## System
 
