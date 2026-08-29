@@ -74,6 +74,7 @@ Load these rules when working on relevant domains:
 
 Load a skill when its trigger condition matches the task:
 
+- **[create-slash-command](.agents/skills/create-slash-command/SKILL.md)** - Create new slash commands, subcommands, context menu commands, or modify existing Discord commands. Trigger: any work involving `SlashCommandBuilder`, command registration, or command tests.
 - **[update-docs](.agents/skills/update-docs/SKILL.md)** - Audit and update documentation after code changes. Trigger: feature additions, schema changes, new commands, dependency updates, or when docs may have drifted.
 
 ## Quick Reference
