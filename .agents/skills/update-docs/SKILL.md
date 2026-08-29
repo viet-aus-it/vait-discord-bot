@@ -144,7 +144,7 @@ Current `docs/` structure:
 - **`tutorials/developers/`**: `01-your-first-slash-command`, `02-database-backed-feature`, `03-testing-your-command`, `04-autocomplete-handlers`, `05-external-api-integration`, `06-scheduled-background-tasks`, `07-permission-based-access`
 - **`tutorials/users/`**: `01-getting-started`, `02-using-bot-commands`, `03-admin-guide`
 - **`how-to/`**: `01-quick-start`, `02-development-workflow`, `03-deploy-commands`, `04-production-testing`, `05-contributing`
-- **`reference/`**: `01-commands-list`, `02-pnpm-scripts`, `03-project-structure`, `04-database-schema`, `05-environment-variables`, `06-command-interfaces`, `07-testing-utilities`, `08-error-handling`
+- **`reference/`**: `01-commands-list`, `02-pnpm-scripts`, `03-project-structure`, `04-database-schema`, `05-environment-variables`, `06-command-interfaces`, `07-testing-utilities`, `08-error-handling`, `09-telemetry`
 - **`explanation/`**: `01-architecture`, `02-bot-commands-design`, `03-testing-strategy`
 
 When updating docs, do not mix content types. Move how-to steps out of reference docs, move reference tables out of explanation docs, etc.

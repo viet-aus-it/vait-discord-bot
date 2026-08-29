@@ -13,7 +13,7 @@
 
 - **ORM**: [Drizzle](https://orm.drizzle.team/) with PostgreSQL (via `node-postgres`)
 - **Migrations**: Create migrations with `pnpm run drizzle:generate`, apply with `pnpm run drizzle:migrate`
-- **Schema**: Define in `src/clients/database/schema/schema.ts`; relations in `schema/relations.ts` via `defineRelations`
+- **Schema**: Define in `src/clients/db/schema/schema.ts`; relations in `schema/relations.ts` via `defineRelations`
 - **Client**: Import from `src/clients` (`getDbClient()`)
 - **Reads**: Use the relational query builder — `db.query.<table>.findFirst()/findMany()` with the object filter shorthand (`where: { id, field: { gt: 0 } }`, `orderBy: { field: 'asc' }`, `columns`) over `.select()`
 - **Mutations**: Use `.insert().returning()`, `.update().set()`, `.delete()`, `.onConflictDoUpdate()` — the RQB is read-only
