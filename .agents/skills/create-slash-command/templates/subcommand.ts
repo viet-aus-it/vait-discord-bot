@@ -17,7 +17,11 @@ const subcommands = [subcommand1, subcommand2];
 const execute = async (interaction: ChatInputCommandInteraction) => {
   const requestedSubcommand = interaction.options.getSubcommand(true);
   const subcommand = subcommands.find((cmd) => cmd.data.name === requestedSubcommand);
-  return subcommand?.execute(interaction);
+  if (!subcommand) {
+    await interaction.reply({ content: 'Unknown subcommand.', ephemeral: true });
+    return;
+  }
+  await subcommand.execute(interaction);
 };
 
 const command: SlashCommand = {

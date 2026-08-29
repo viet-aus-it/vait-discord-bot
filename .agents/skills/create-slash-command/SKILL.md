@@ -89,6 +89,8 @@ export const commands: SlashCommand[] = [
 ];
 ```
 
+For context menu commands, register in `src/context-menu-commands/index.ts` instead (exports `commandList: ContextMenuCommand[]`).
+
 ### 5. Create Unit Tests (Required)
 
 Every slash command must have a corresponding `.test.ts` file.
@@ -109,13 +111,15 @@ describe('my command tests', () => {
     interaction.options.getString.mockReturnValueOnce(faker.lorem.words());
 
     // Act: Execute the command
-    await myCommand.execute(interaction);
+    await myCommand(interaction);
 
     // Assert: Verify the response
     expect(interaction.reply).toHaveBeenCalledOnce();
   });
 });
 ```
+
+Export the handler as a named export from the command file (e.g. `export const ask8Ball = async (interaction) => ...`) so tests can import and invoke it directly.
 
 #### Available Test Fixtures
 
@@ -125,13 +129,19 @@ describe('my command tests', () => {
 | `contextMenuCommandInteractionTest` | Context menu commands                        |
 | `autocompleteInteractionTest`       | Autocomplete handlers                        |
 
+Also available:
+
+- **DB seed helpers** (`test/fixtures/db-seed.ts`): `seedUser`, `seedServerSettings`, `seedReferralCode`, `seedReminder` for seeding a real [PostgreSQL](https://www.postgresql.org/) test database
+- **MSW** ([Mock Service Worker](https://mswjs.io/)): `server.use(...)` from `test/mocks/msw/server` to intercept HTTP requests in external-API tests
+
 #### Test Guidelines
 
 - Use `vitest-mock-extended` with `mockDeep` for Discord objects
 - Use `@faker-js/faker` for generating test data
 - Follow Arrange-Act-Assert pattern
 - Test both success and error cases
-- Mock external dependencies (e.g. API calls)
+- Mock external dependencies (e.g. API calls) via MSW `server.use()`
+- For database-backed commands, seed data with `db-seed.ts` helpers and assert against the real DB
 
 ### 6. Run Tests
 
@@ -154,21 +164,38 @@ Import types from `src/slash-commands/builder.ts`:
 
 ### Error Handling
 
-- Use `Result` type from `oxide.ts` for operations that can fail
-- Always log errors with the winston logger
+- Use the `Result` type from [oxide.ts](https://www.npmjs.com/package/oxide.ts) for operations that can fail
+- Record errors on the active OTel span with `recordSpanError` **before** logging
+- Log errors with the winston logger
 - Reply with ephemeral messages for errors
 
 ```typescript
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { recordSpanError } from '../../utils/tracer';
 
 const op = await Result.safe(someOperation());
 if (op.isErr()) {
-  logger.error(op.err());
-  await interaction.reply('An error occurred. Please try again.');
+  recordSpanError(op.unwrapErr(), 'err-command-action-failed');
+  logger.error('[command]: Error message', op.unwrapErr());
+  await interaction.reply({
+    content: 'Something went wrong.',
+    ephemeral: true,
+  });
   return;
 }
 ```
+
+Error slugs follow the pattern `err-<command>-<action>-failed` (e.g. `err-reminder-in-failed`).
+
+### Telemetry
+
+Adding telemetry instrumentation is a **compulsory** step when creating a new command (see `.agents/rules/patterns.md`).
+
+- Import `recordSpanError` and `setSpanAttributes` from `src/utils/tracer.ts`. Both are no-ops when OTel is disabled, so they have no impact on regular operation.
+- The interaction processor auto-sets `enduser.id`, `discord.guild.id`, `discord.channel.id`, `bot.command.name`, and `discord.interaction.type` on every command span — you don't need to set these.
+- Enrich the span with command-specific attributes via `setSpanAttributes()` using the `bot.*`/`discord.*` namespaces (e.g. `bot.weather.location`).
+- Don't create or end spans yourself — the interaction processor owns the root span. You only enrich and record errors on the active span.
 
 ### Permissions
 
@@ -201,8 +228,8 @@ See `src/slash-commands/reminder/`:
 
 - Parent command routes to subcommands
 - Multiple subcommand files
-- Database operations with Prisma
-- Error handling with Result types
+- Database operations with Drizzle (`db.query.<table>`, `getDbClient()` from `src/clients/db`)
+- Error handling with Result types and `recordSpanError`
 
 ### Command with Autocomplete
 
