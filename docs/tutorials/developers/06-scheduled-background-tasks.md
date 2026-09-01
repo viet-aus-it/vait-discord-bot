@@ -119,23 +119,28 @@ jobs:
 Wrap your task's main logic in a span to track execution in the OTel pipeline:
 
 ```typescript
+import { Result } from 'oxide.ts';
 import { recordSpanError, tracer } from '../src/utils/tracer';
 
 const cleanup = async () => {
   loadEnv();
 
-  return tracer.startActiveSpan('cleanupOldLogs', async (span) => {
-    try {
-      // ... task logic
-    } catch (error) {
-      recordSpanError(error, 'err-cleanup-old-logs-failed');
-      throw error;
-    } finally {
-      span.end();
+  const result = await tracer.startActiveSpan('cleanupOldLogs', async (span) => {
+    const op = await Result.safe(doCleanup());
+    if (op.isErr()) {
+      recordSpanError(op.unwrapErr(), 'err-cleanup-old-logs-failed');
+      return 1;
     }
+    span.setAttribute('bot.cleanup.count', op.unwrap().count);
+    return 0;
   });
+
+  await shutdownTelemetry();
+  process.exit(result.isOk() ? result.unwrap() : 1);
 };
 ```
+
+Wrap the span callback body in `Result.safe` so `span.end()` always runs. Record failures with `recordSpanError` (this sets the span status to `Error` and `error.type`). In bin scripts, return an exit code from the span callback and call `process.exit()` after the span ends, never inside it.
 
 See [Span Lifecycle](../../reference/09-telemetry.md#span-lifecycle) for rules on ending spans and graceful shutdown, and [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) for the wide events pattern.
 

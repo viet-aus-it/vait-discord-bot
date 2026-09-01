@@ -4,11 +4,11 @@ Reference for the bot's [OpenTelemetry](https://opentelemetry.io/) (OTel) instru
 
 ## Tracer Utilities (`src/utils/tracer.ts`)
 
-| Export                          | Description                                                                                                                                             |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tracer`                        | The OTel tracer instance, used to create spans via `tracer.startActiveSpan()`                                                                           |
-| `recordSpanError(error, slug)`  | Records an error on the active span: sets status to ERROR, records the exception, and sets `error.type` to the given slug. No-op when OTel is disabled. |
-| `setSpanAttributes(attributes)` | Sets multiple attributes on the active span in one call. Accepts a `Record<string, string \| number \| boolean>`. No-op when OTel is disabled.          |
+| Export                          | Description                                                                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tracer`                        | The OTel tracer instance, used to create spans via `tracer.startActiveSpan()`                                                                  |
+| `recordSpanError(error, slug)`  | Records an error on the active span: sets status to ERROR and `error.type` to the given slug. No-op when OTel is disabled.                     |
+| `setSpanAttributes(attributes)` | Sets multiple attributes on the active span in one call. Accepts a `Record<string, string \| number \| boolean>`. No-op when OTel is disabled. |
 
 ## Span Lifecycle
 
@@ -51,8 +51,11 @@ Prefer constants from [`@opentelemetry/semantic-conventions`](https://openteleme
 | Namespace     | Usage                                                                                               | Examples                                                                                           |
 | ------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | OTel standard | Attributes defined in the [OTel Semantic Conventions](https://opentelemetry.io/docs/specs/semconv/) | `enduser.id`, `error.type`                                                                         |
+| `error.*`     | Error classification. `error.type` is the slug                                                      | `error.type=err-weather-fetch-failed`                                                              |
 | `discord.*`   | Data received from the Discord API                                                                  | `discord.guild.id`, `discord.channel.id`, `discord.message.id`, `discord.interaction.type`         |
 | `bot.*`       | Bot-specific logic and state                                                                        | `bot.command.name`, `bot.message.processed`, `bot.message.honeypot`, `bot.rep.*`, `bot.reminder.*` |
+
+Business conditions (empty lists, missing config, duplicate entries) are logged at `warn`/`info` and do NOT become error spans.
 
 ## Span Enrichment
 
@@ -81,8 +84,7 @@ Command handlers enrich the wide event span with domain-specific attributes via 
 | **referral** (new/delete/update)  | `bot.referral.service`                                                 |
 | **referral** (list)               | `bot.referral.count`                                                   |
 | **referral** (random)             | `bot.referral.service`, `bot.referral.count`                           |
-| **weather**                       | `bot.weather.location`, `bot.weather.success`                          |
-| **quote-of-the-day**              | `bot.quote.success`                                                    |
+| **weather**                       | `bot.weather.location`                                                 |
 | **aoc-leaderboard**               | `bot.aoc.cached`                                                       |
 | **server-settings**               | `bot.settings.type`, `bot.settings.channel_id`                         |
 | **autobump-threads** (add/remove) | `bot.autobump.thread_id`                                               |
@@ -104,11 +106,22 @@ Command handlers enrich the wide event span with domain-specific attributes via 
 
 ### Message Handler Attributes
 
-| Handler                     | Attributes                                                                   |
-| --------------------------- | ---------------------------------------------------------------------------- |
-| **thankUserInMessage**      | `bot.rep.actor_user_id`, `bot.rep.mention_count`                             |
-| **honeypot trigger**        | `bot.honeypot.user_id`, `bot.honeypot.ban_success`, `bot.honeypot.timestamp` |
-| **loadHoneypots** (startup) | `bot.honeypot.channel_count`                                                 |
+| Handler                     | Attributes                                       |
+| --------------------------- | ------------------------------------------------ |
+| **thankUserInMessage**      | `bot.rep.actor_user_id`, `bot.rep.mention_count` |
+| **honeypot trigger**        | `bot.honeypot.user_id`, `bot.honeypot.timestamp` |
+| **loadHoneypots** (startup) | `bot.honeypot.channel_count`                     |
+
+## Fatal Process Signals (`bin/main.ts`)
+
+Uncaught exceptions and unhandled rejections crash the process. Handlers registered before `main()` emit a fatal span so the crash is visible in OTel, log it, flush telemetry, then exit with code 1:
+
+| Event                | Span name                   | `error.type`              |
+| -------------------- | --------------------------- | ------------------------- |
+| `uncaughtException`  | `fatal-uncaught-exception`  | `err-uncaught-exception`  |
+| `unhandledRejection` | `fatal-unhandled-rejection` | `err-unhandled-rejection` |
+
+Both use `recordSpanError` (no `span.recordException`, matching the internal error path) and call `shutdownTelemetry().finally(() => process.exit(1))` so the buffered span is flushed before exit. Pre-boot env failures (`loadEnv` throwing at module scope in `bin/telemetry.ts`/`src/utils/logger.ts`) cannot reach these handlers; they fail to stderr only. See [Error Handling](./08-error-handling.md#pre-boot-env-failure).
 
 ## FilteringSpanProcessor (`src/utils/filtering-span-processor.ts`)
 
