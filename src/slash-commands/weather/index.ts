@@ -26,10 +26,10 @@ export const weather = async (interaction: ChatInputCommandInteraction) => {
   logger.info(`[weather]: ${interaction.user.tag} is getting the weather for location ${location}`);
 
   const weatherData = await Result.safe(fetchWeather(location));
-  setSpanAttributes({ 'bot.weather.location': location, 'bot.weather.success': weatherData.isOk() });
+  setSpanAttributes({ 'bot.weather.location': location });
   if (weatherData.isErr()) {
     recordSpanError(weatherData.unwrapErr(), 'err-weather-fetch-failed');
-    logger.info('[weather]: Error getting weather data', weatherData.unwrapErr());
+    logger.error('[weather]: Error getting weather data', weatherData.unwrapErr());
     await interaction.editReply('Error getting weather data for location.');
     return;
   }

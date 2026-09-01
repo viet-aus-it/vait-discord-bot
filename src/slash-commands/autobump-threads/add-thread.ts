@@ -18,7 +18,7 @@ export const addAutobumpThreadCommand: SlashCommandHandler = async (interaction)
 
   const isThread = thread.type === ChannelType.PublicThread || thread.type === ChannelType.PrivateThread;
   if (!isThread) {
-    logger.error(`[add-autobump-thread]: The channel ${thread.id} of ${guildId} is not a thread.`);
+    logger.warn(`[add-autobump-thread]: The channel ${thread.id} of ${guildId} is not a thread.`);
     await interaction.reply(`ERROR: The channel <#${thread.id}> is not a thread.`);
     return;
   }

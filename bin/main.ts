@@ -13,6 +13,7 @@ import { type ConfigSchema, loadEnv } from '../src/utils/load-env';
 import { logger } from '../src/utils/logger';
 import { processMessage } from '../src/utils/message-processor';
 import { recordSpanError, setSpanAttributes, tracer } from '../src/utils/tracer';
+import { shutdownTelemetry } from './telemetry';
 
 const handleDeployCommands = async ({ token, clientId }: Omit<DiscordRequestConfig, 'guildId'>) => {
   logger.info('[deploy-commands]: Deploying global commands in production mode');
@@ -84,5 +85,26 @@ const main = async () => {
   });
 };
 
+const registerFatalHandlers = () => {
+  process.on('uncaughtException', (error) => {
+    tracer.startActiveSpan('fatal-uncaught-exception', (span) => {
+      recordSpanError(error, 'err-uncaught-exception');
+      span.end();
+    });
+    logger.error('[main]: Fatal uncaught exception', error);
+    shutdownTelemetry().finally(() => process.exit(1));
+  });
+
+  process.on('unhandledRejection', (reason) => {
+    tracer.startActiveSpan('fatal-unhandled-rejection', (span) => {
+      recordSpanError(reason, 'err-unhandled-rejection');
+      span.end();
+    });
+    logger.error('[main]: Fatal unhandled rejection', reason);
+    shutdownTelemetry().finally(() => process.exit(1));
+  });
+};
+
+registerFatalHandlers();
 main();
 process.on('SIGTERM', () => process.exit());

@@ -11,6 +11,11 @@ import { shutdownTelemetry } from './telemetry';
 
 const DEFAULT_AUTOBUMP_MESSAGE = '👋 Thread auto-bumped to keep it active!';
 
+interface AutobumpJobResult {
+  threadId: string;
+  success: boolean;
+}
+
 const performBump = async (thread: ThreadChannel, clientId?: string) => {
   const messages = await thread.messages.fetch({ limit: 100 });
 
@@ -29,11 +34,14 @@ const performBump = async (thread: ThreadChannel, clientId?: string) => {
   await thread.send(DEFAULT_AUTOBUMP_MESSAGE);
 };
 
-const bumpThread = async (thread: ThreadChannel, clientId?: string) => {
+const bumpThread = async (thread: ThreadChannel, clientId?: string): Promise<boolean> => {
   const op = await Result.safe(performBump(thread, clientId));
   if (op.isErr()) {
+    recordSpanError(op.unwrapErr(), 'err-autobump-bump-failed');
     logger.error(`[autobump]: Failed to bump thread ${thread.id}`, op.unwrapErr());
+    return false;
   }
+  return true;
 };
 
 const handleAutobump = async (span: Span, token: string) => {
@@ -70,14 +78,14 @@ const handleAutobump = async (span: Span, token: string) => {
       logger.info(`[autobump]: Bumping ${autobumpThreads.length} threads in guild ${guild.name} (${guild.id})`);
       const bumpPromises = autobumpThreads.map(async (id) => {
         const thread = (await guild.channels.fetch(id)) as ThreadChannel;
-        await bumpThread(thread, clientId);
-        return { threadId: id, success: true };
+        const success = await bumpThread(thread, clientId);
+        return { threadId: id, success };
       });
       const results = await Promise.all(bumpPromises);
       logger.info(`[autobump]: Bumped ${results.filter((r) => r.success).length} threads in guild ${guild.name} (${guild.id})`);
       return [...prev, ...results];
     },
-    Promise.resolve([] as unknown[])
+    Promise.resolve([] as AutobumpJobResult[])
   );
 
   logger.info(`[autobump]: Thread autobump complete. Jobs: ${jobs.length}`);
