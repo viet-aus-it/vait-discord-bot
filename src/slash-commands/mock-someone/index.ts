@@ -5,6 +5,7 @@ import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
 import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
 import { getRandomBoolean } from '../../utils/random';
+import { recordSpanError } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -40,14 +41,15 @@ export const mockSomeone = async (interaction: ChatInputCommandInteraction) => {
 
   // If it's still blank at this point, then exit
   if (fetchedMessage.isErr()) {
-    logger.info('[mock]: Cannot fetch latest message.');
+    recordSpanError(fetchedMessage.unwrapErr(), 'err-fetch-message-failed');
+    logger.error('[mock]: Cannot fetch latest message.', fetchedMessage.unwrapErr());
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 
   const { content } = fetchedMessage.unwrap();
   if (isBlank(content)) {
-    logger.error('[mock]: Cannot fetch message to mock');
+    logger.warn('[mock]: Previous message is blank, nothing to mock');
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }

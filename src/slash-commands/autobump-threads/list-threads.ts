@@ -30,7 +30,7 @@ export const listAutobumpThreadsCommand: SlashCommandHandler = async (interactio
   const data = threads.unwrap();
   setSpanAttributes({ 'bot.autobump.thread_count': data.length });
   if (data.length === 0) {
-    logger.error(`[list-autobump-threads]: No threads have been setup for autobumping in guild ${guildId}`);
+    logger.info(`[list-autobump-threads]: No threads have been setup for autobumping in guild ${guildId}`);
     await interaction.reply('ERROR: No threads have been setup for autobumping in this server');
     return;
   }

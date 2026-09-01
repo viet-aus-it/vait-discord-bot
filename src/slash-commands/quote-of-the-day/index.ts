@@ -2,7 +2,7 @@ import { type ChatInputCommandInteraction, EmbedBuilder, InteractionContextType,
 import { Result } from 'oxide.ts';
 
 import { logger } from '../../utils/logger';
-import { recordSpanError, setSpanAttributes } from '../../utils/tracer';
+import { recordSpanError } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import { fetchQuote } from './fetch-quote';
 
@@ -13,10 +13,9 @@ export const getQuoteOfTheDay = async (interaction: ChatInputCommandInteraction)
 
   logger.info(`[quote-of-the-day]: ${interaction.user.tag} is getting a quote of the day`);
   const quote = await Result.safe(fetchQuote());
-  setSpanAttributes({ 'bot.quote.success': quote.isOk() });
   if (quote.isErr()) {
     recordSpanError(quote.unwrapErr(), 'err-quote-fetch-failed');
-    logger.info('[quote-of-the-day]: Error getting quotes', quote.unwrapErr());
+    logger.error('[quote-of-the-day]: Error getting quotes', quote.unwrapErr());
     await interaction.editReply('Error getting quotes');
     return;
   }

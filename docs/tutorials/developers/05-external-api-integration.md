@@ -33,6 +33,7 @@ Create `src/slash-commands/joke/index.ts`:
 import { type ChatInputCommandInteraction, InteractionContextType, SlashCommandBuilder } from 'discord.js';
 import { Result } from 'oxide.ts';
 import { logger } from '../../utils/logger';
+import { recordSpanError } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 import { fetchJoke } from './fetch-joke';
 
@@ -43,6 +44,7 @@ export const joke = async (interaction: ChatInputCommandInteraction) => {
 
   const result = await Result.safe(fetchJoke());
   if (result.isErr()) {
+    recordSpanError(result.unwrapErr(), 'err-joke-fetch-failed');
     logger.error('[joke]: Error fetching joke', result.unwrapErr());
     await interaction.editReply('Could not fetch a joke right now.');
     return;

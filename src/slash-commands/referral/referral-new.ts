@@ -74,7 +74,7 @@ export const execute: SlashCommandHandler = async (interaction) => {
 
   const existingReferralCode = findOp.unwrap();
   if (existingReferralCode) {
-    logger.error(`[referral-new]: Referral code for ${service} by ${nickname} already exists.`);
+    logger.warn(`[referral-new]: Referral code for ${service} by ${nickname} already exists.`);
     await interaction.reply(`You have already entered the referral code for ${service}.`);
     return;
   }

@@ -55,7 +55,6 @@ export const handleHoneypotTrigger = async (message: Message<true>): Promise<voi
 
   setSpanAttributes({
     'bot.honeypot.user_id': author.id,
-    'bot.honeypot.ban_success': result.isOk(),
     'bot.honeypot.timestamp': Date.now(),
   });
 

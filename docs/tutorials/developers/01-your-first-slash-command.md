@@ -137,6 +137,8 @@ const execute = async (interaction: ChatInputCommandInteraction) => {
 };
 ```
 
+Error spans set the span status to `Error` and carry an `error.type` slug. Conditions the handler recovers from (e.g. user input that blocks the operation) are handled, so per the OTel [recording errors](https://opentelemetry.io/docs/specs/semconv/general/recording-errors/) guideline they are logged at `warn`/`info` and do NOT create error spans. See [Span Error Recording](../../reference/08-error-handling.md#span-error-recording).
+
 See [Why OpenTelemetry](../../explanation/01-architecture.md#why-opentelemetry) for the wide events pattern.
 
 ## What's Next

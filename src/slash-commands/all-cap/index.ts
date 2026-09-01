@@ -4,6 +4,7 @@ import { Result } from 'oxide.ts';
 import { isBlank } from '../../utils/is-blank';
 import { logger } from '../../utils/logger';
 import { fetchLastMessageBeforeId } from '../../utils/message-fetcher';
+import { recordSpanError } from '../../utils/tracer';
 import type { SlashCommand } from '../builder';
 
 const data = new SlashCommandBuilder()
@@ -35,14 +36,22 @@ export const allCapExpandText = async (interaction: ChatInputCommandInteraction)
   const fetchedMessage = await Result.safe(fetchLastMessageBeforeId(interaction.channel as TextChannel, interaction.id));
 
   // If it's still blank at this point, then exit
-  if (fetchedMessage.isErr() || isBlank(fetchedMessage.unwrap().content)) {
+  if (fetchedMessage.isErr()) {
+    recordSpanError(fetchedMessage.unwrapErr(), 'err-fetch-message-failed');
     logger.error('[allcap]: Cannot fetch message to allcap', fetchedMessage.unwrapErr());
     await interaction.reply('Cannot fetch latest message. Please try again later.');
     return;
   }
 
-  logger.info(`[allcap]: Fetched message: ${fetchedMessage.unwrap().content}`);
-  const reply = generateAllCapText(fetchedMessage.unwrap().content);
+  const fetchedContent = fetchedMessage.unwrap().content;
+  if (isBlank(fetchedContent)) {
+    logger.warn('[allcap]: Cannot find non-blank message to allcap');
+    await interaction.reply('Cannot fetch latest message. Please try again later.');
+    return;
+  }
+
+  logger.info(`[allcap]: Fetched message: ${fetchedContent}`);
+  const reply = generateAllCapText(fetchedContent);
   await interaction.reply(reply);
 };
 

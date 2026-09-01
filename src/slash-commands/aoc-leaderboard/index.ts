@@ -89,7 +89,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const settings = settingsOp.unwrap();
   if (!settings || !settings.aocKey || !settings.aocLeaderboardId) {
     const errorMessage = 'Server is not configured to get AOC results! Missing Key and/or Leaderboard ID.';
-    logger.error(`[get-aoc-leaderboard]: ${errorMessage}`);
+    logger.warn(`[get-aoc-leaderboard]: ${errorMessage}`);
     await interaction.editReply(`ERROR: ${errorMessage}`);
     return;
   }

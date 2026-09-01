@@ -79,6 +79,20 @@ if (op.isErr()) {
 
 Error slugs follow the pattern `err-<command>-<action>-failed` (e.g., `err-reminder-in-failed`, `err-referral-delete-failed`). See [Telemetry](./09-telemetry.md) for the full attribute reference.
 
+### Business conditions are not errors
+
+Conditions that look like failures but are normal user-facing outcomes must use `warn` or `info`, NOT `logger.error`, and must NOT create an error span. Examples: empty autobump list, duplicate referral code, server not configured, blank message to expand. Every `logger.error` in `src/`/`bin/` must sit next to a `recordSpanError` call (real failure); business conditions are the documented exception.
+
+This follows the OpenTelemetry [recording errors](https://opentelemetry.io/docs/specs/semconv/general/recording-errors/) semantic convention: errors that are handled (allowing the operation to complete gracefully) are not recorded as error spans, and successful operations carry no `error.type` attribute. Only real failures set the span status to `Error` and `error.type`.
+
+## Fatal Process Signals
+
+Uncaught exceptions and unhandled rejections are recorded as fatal spans (`fatal-uncaught-exception`, `fatal-unhandled-rejection`) by handlers in `bin/main.ts`, then the process exits with code 1. See [Telemetry](./09-telemetry.md#fatal-process-signals).
+
+## Pre-boot Env Failure
+
+`loadEnv()` runs at module scope of `bin/telemetry.ts` and `src/utils/logger.ts` before the fatal handlers exist. If env validation fails there, the process dies during import and only the `console.error` in `src/utils/load-env.ts` reaches stderr. This is intentional and the only pre-boot mechanism: do not try to route it through `uncaughtException` handlers or OTel, they are not registered yet.
+
 ## Discord Error Replies
 
 Ephemeral replies are visible only to the invoking user:
