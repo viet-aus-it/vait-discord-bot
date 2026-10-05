@@ -1,4 +1,4 @@
-import { HttpResponse, http } from 'msw';
+import { HttpResponse, http } from 'msw/http';
 import { describe, expect } from 'vitest';
 import { captor } from 'vitest-mock-extended';
 

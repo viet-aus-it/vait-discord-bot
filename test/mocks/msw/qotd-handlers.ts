@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { type HttpHandler, HttpResponse, http } from 'msw';
+import { type HttpHandler, HttpResponse, http } from 'msw/http';
 
 import { ZEN_QUOTES_URL } from '../../../src/slash-commands/quote-of-the-day/fetch-quote';
 

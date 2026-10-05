@@ -1,4 +1,4 @@
-import { type HttpHandler, HttpResponse, http } from 'msw';
+import { type HttpHandler, HttpResponse, http } from 'msw/http';
 
 import aocSampleData from '../../../src/slash-commands/aoc-leaderboard/sample/aoc-data.json';
 

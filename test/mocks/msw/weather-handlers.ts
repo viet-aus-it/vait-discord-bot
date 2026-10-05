@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { type HttpHandler, HttpResponse, http } from 'msw';
+import { type HttpHandler, HttpResponse, http } from 'msw/http';
 
 import { WEATHER_URL } from '../../../src/slash-commands/weather/fetch-weather';
 
