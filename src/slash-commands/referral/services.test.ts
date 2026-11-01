@@ -21,10 +21,6 @@ describe('Service search test', () => {
           "value": "goodlife health clubs",
         },
         {
-          "name": "goodlife health clubs - 5000 qantas points",
-          "value": "goodlife health clubs - 5000 qantas points",
-        },
-        {
           "name": "healthy care",
           "value": "healthy care",
         },
@@ -43,6 +39,10 @@ describe('Service search test', () => {
         {
           "name": "teachers health",
           "value": "teachers health",
+        },
+        {
+          "name": "the healthy chef",
+          "value": "the healthy chef",
         },
         {
           "name": "westfund health insurance",
